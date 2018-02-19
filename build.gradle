@@ -1,0 +1,63 @@
+version = "1.0.0-SNAPSHOT"
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
+
+allprojects {
+
+    project.ext {
+        apiVersion = rootProject.version
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+        maven {
+            url "s3://sdk-snapshots.aevi.com/maven2"
+            credentials(AwsCredentials) {
+                accessKey aws_accessid
+                secretKey aws_accesskey
+            }
+        }
+        maven {
+            url "s3://sdk-qa.aevi.com/maven2"
+            credentials(AwsCredentials) {
+                accessKey aws_accessid
+                secretKey aws_accesskey
+            }
+        }
+        maven {
+            url "s3://sdk-releases.aevi.com/maven2"
+            credentials(AwsCredentials) {
+                accessKey aws_accessid
+                secretKey aws_accesskey
+            }
+        }
+        maven {
+            url "http://dl.bintray.com/aevi/aevi-uk"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+    delete 'documentation/public'
+}
+
+task copyApiLibs(type: Copy) {
+    from 'payment-api/build/libs'
+    from 'payment-service-api/build/libs'
+    from 'flow-service-api/build/libs'
+    into 'build/libs'
+}
+
+apply from: 'dependencies.gradle'
