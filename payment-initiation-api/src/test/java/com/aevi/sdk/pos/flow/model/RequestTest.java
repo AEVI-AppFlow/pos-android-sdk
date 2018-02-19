@@ -1,4 +1,4 @@
-package com.aevi.payment.model;
+package com.aevi.sdk.pos.flow.model;
 
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.util.json.JsonConverter;

@@ -1,10 +1,8 @@
-package com.aevi.payment;
+package com.aevi.sdk.pos.flow;
 
 
 import android.os.Build;
 import android.os.RemoteException;
-
-import com.aevi.sdk.pos.flow.PaymentApi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +15,10 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class PaymentApiTest extends ApiTestBase {
+
+    public PaymentApiTest() {
+        super("payment-api.properties");
+    }
 
     @Test
     public void checkIsProcessingServiceInstalledReportsFalse() throws Exception {

@@ -1,4 +1,4 @@
-package com.aevi.payment.model;
+package com.aevi.sdk.pos.flow.model;
 
 
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class CardBuilderTest {
                 .withCardToken(new com.aevi.sdk.flow.model.Token("abcdefgh12345678", "card", "blaha"))
                 .withAdditionalData("blaha", "bluhu")
                 .build();
-        card.getCardToken().setPaymentServiceId("123");
+        card.getCardToken().setSourceAppId("123");
 
         assertThat(card.getMaskedPan()).isEqualTo("1234 XXXX XXXX 5678");
         assertThat(card.getExpiryDate()).isEqualTo("12/20");
@@ -25,6 +25,6 @@ public class CardBuilderTest {
         assertThat(card.getCardToken().getSource()).isEqualTo("card");
         assertThat(card.getCardToken().getAlgorithm()).isEqualTo("blaha");
         assertThat(card.getAdditionalData().getValue("blaha")).isEqualTo("bluhu");
-        assertThat(card.getCardToken().getPaymentServiceId()).isEqualTo("123");
+        assertThat(card.getCardToken().getSourceAppId()).isEqualTo("123");
     }
 }

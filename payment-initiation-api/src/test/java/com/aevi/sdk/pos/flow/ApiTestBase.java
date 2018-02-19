@@ -1,4 +1,4 @@
-package com.aevi.payment;
+package com.aevi.sdk.pos.flow;
 
 
 import android.app.Service;
@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 
+import com.aevi.sdk.flow.ApiBase;
+
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
@@ -18,17 +20,20 @@ import org.robolectric.shadows.ShadowPackageManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aevi.sdk.flow.ApiHelper.PAYMENT_CONTROL_SERVICE_COMPONENT;
 import static org.mockito.Mockito.mock;
 
-public class ApiTestBase {
+public class ApiTestBase extends ApiBase {
+
+    protected ApiTestBase(String propsFile) {
+        super(propsFile);
+    }
 
     protected void setupMockBoundMessengerService() {
         ShadowApplication shadowApplication = ShadowApplication.getInstance();
         MockMessageService mockMessageService = new MockMessageService();
 
         shadowApplication
-                .setComponentNameAndServiceForBindService(com.aevi.sdk.flow.ApiHelper.PAYMENT_CONTROL_SERVICE_COMPONENT, mockMessageService.onBind(null));
+                .setComponentNameAndServiceForBindService(PAYMENT_CONTROL_SERVICE_COMPONENT, mockMessageService.onBind(null));
 
         Intent intent = new Intent();
         intent.setComponent(PAYMENT_CONTROL_SERVICE_COMPONENT);

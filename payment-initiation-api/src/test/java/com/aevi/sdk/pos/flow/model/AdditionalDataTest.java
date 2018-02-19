@@ -1,4 +1,4 @@
-package com.aevi.payment.model;
+package com.aevi.sdk.pos.flow.model;
 
 
 import org.junit.Before;

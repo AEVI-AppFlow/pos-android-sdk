@@ -45,6 +45,9 @@ allprojects {
         maven {
             url "http://dl.bintray.com/aevi/aevi-uk"
         }
+        maven {
+            url "http://sdk-public-artifacts.s3-website-eu-west-1.amazonaws.com/maven2"
+        }
     }
 }
 
