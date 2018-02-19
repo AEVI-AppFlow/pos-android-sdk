@@ -1,15 +1,14 @@
-package com.aevi.payment;
+package com.aevi.sdk.pos.flow;
 
 import android.content.ComponentName;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.pos.flow.PaymentClientImpl;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.pos.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
 import com.aevi.sdk.pos.flow.model.Response;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,6 @@ import org.robolectric.shadows.ShadowLog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 
-import static com.aevi.sdk.flow.ApiHelper.getInternalData;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -33,14 +31,18 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(RobolectricTestRunner.class)
 public class PaymentClientImplTest extends ApiTestBase {
 
-    private static final String REQUEST_MSG_NO_DATA = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData()).toJson();
-    private com.aevi.sdk.pos.flow.PaymentClientImpl paymentClient;
+    private final String REQUEST_MSG_NO_DATA = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData()).toJson();
+    private PaymentClientImpl paymentClient;
 
     @Mock
     private ObservableEmitter<Response> callback;
 
     @Mock
     private ObservableMessengerClient messengerClient;
+
+    public PaymentClientImplTest() {
+        super("payment-api.properties");
+    }
 
     @Before
     public void setup() {
