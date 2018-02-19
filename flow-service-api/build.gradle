@@ -1,0 +1,39 @@
+apply plugin: 'java-library'
+
+group = 'com.aevi.sdk.pos.flow'
+version = "${apiVersion}"
+
+apply from: '../publish-repo.gradle'
+apply from: '../api-properties.gradle'
+
+ext.propsFile = "flow-service-api.properties"
+
+dependencies {
+    api project(':payment-initiation-api')
+    implementation project(':api-constants')
+    api project(':flow-base-api')
+
+    compileOnly apiDependencies.androidMockable
+    implementation apiDependencies.gson
+    implementation apiDependencies.rxJava
+    implementation apiDependencies.rxMessenger
+    implementation apiDependencies.jsonConverter
+
+    testImplementation apiDependencies.androidMockable
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.assertJ
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    destinationDir = file("../documentation/public/javadocs/flow-service-api")
+    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
+    title = "Flow Service API"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+apply from: '../jar-publisher.gradle'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

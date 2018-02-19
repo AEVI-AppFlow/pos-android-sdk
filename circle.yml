@@ -1,0 +1,41 @@
+machine:
+  environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx2048m"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+  java:
+    version: openjdk8
+  node:
+    version: 0.10.22
+
+dependencies:
+  pre:
+    - /bin/bash writegradleprops.sh
+  override:
+    - sudo pip install awscli
+
+test:
+  override:
+    - ./gradlew clean test
+
+deployment:
+    release:
+        branch: /.*release.*/
+        commands:
+            - ./gradlew javadoc build publishApiJarPublicationToQaRepository
+    feature:
+        branch: /.*feature.*/
+        commands:
+            - ./gradlew javadoc build copyApiLibs
+    development:
+        branch: develop
+        commands:
+            - ./gradlew javadoc build publishApiJarPublicationToSnapshotRepository copyApiLibs
+    production:
+        branch: master
+        commands:
+            - ./gradlew javadoc build publishApiJarPublicationToReleaseRepository
+
+general:
+  artifacts:
+    - "documentation/public"
+    - "build/libs"

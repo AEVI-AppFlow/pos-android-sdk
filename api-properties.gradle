@@ -1,0 +1,11 @@
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/$project.propsFile").withWriter { w ->
+            Properties properties = new Properties()
+            properties['version'] = project.version.toString()
+            properties.store w, null
+        }
+    }
+}
+
+classes.dependsOn createProperties

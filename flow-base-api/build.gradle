@@ -1,0 +1,43 @@
+apply plugin: 'java-library'
+
+group = 'com.aevi.sdk.flow'
+version = "${apiVersion}"
+ext.propsFile = "flow-api.properties"
+
+apply from: '../publish-repo.gradle'
+apply from: '../api-properties.gradle'
+
+dependencies {
+    implementation project(':api-constants')
+
+    compileOnly apiDependencies.androidMockable
+    implementation apiDependencies.gson
+    implementation apiDependencies.rxJava
+    implementation apiDependencies.rxMessenger
+    implementation apiDependencies.jsonConverter
+    implementation apiDependencies.archLifecycle
+    implementation apiDependencies.archLifecycleJava8
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    destinationDir = file("../documentation/public/javadocs/flow-api")
+    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
+    exclude "**/**ClientImpl**"
+    exclude "**/util/**"
+    exclude "**/service/**"
+    exclude "**/ApiBase**"
+    exclude "**/AppMessage**"
+    exclude "**/AppMessageTypes**"
+    exclude "**/BaseModel**"
+    exclude "**/InternalData**"
+    exclude "**/NoOpModel**"
+    exclude "**/MessageErrors**"
+    title = "Flow API"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+apply from: '../jar-publisher.gradle'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

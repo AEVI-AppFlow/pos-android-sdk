@@ -1,0 +1,12 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        apiJar(MavenPublication) {
+            version = rootProject.apiVersion
+            artifactId = project.name
+            groupId = project.group
+            from components.java
+        }
+    }
+}

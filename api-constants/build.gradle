@@ -1,0 +1,15 @@
+apply plugin: 'java-library'
+
+group = 'com.aevi.sdk.flow'
+version = "${apiVersion}"
+
+apply from: '../publish-repo.gradle'
+
+javadoc {
+    enabled = false
+}
+
+apply from: '../jar-publisher.gradle'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
