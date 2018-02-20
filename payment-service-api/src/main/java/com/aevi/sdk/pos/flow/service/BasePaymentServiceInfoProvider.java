@@ -11,7 +11,7 @@ import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
  * ContentProvider base class that should be extended by payment service providers in order to give information as to the capabilities of a payment
  * service implementation. The implementing class will need to provide an implementation of the {@link #getServiceInfo()} method that should return
  * the configuration of the payment service. If this configuration is dynamic and changes then the implementing class should call
- * {@link #notifyConfigurationChange()} on any changes so that the new configuration can be obtained by the system.
+ * {@link #notifyServiceInfoChange()} on any changes so that the new configuration can be obtained by the system.
  *
  * The implementation of this class should be added as a provider in the <code>AndroidManifest.xml</code>
  *
@@ -26,10 +26,10 @@ import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
  */
 public abstract class BasePaymentServiceInfoProvider extends BaseServiceInfoProvider {
 
-    public static final String ACTION_BROADCAST_CONFIG_CHANGE = "com.aevi.intent.action.PAYMENT_APP_CONFIG_CHANGE";
+    public static final String ACTION_BROADCAST_PAYMENT_INFO_CHANGE = "com.aevi.intent.action.PAYMENT_SERVICE_INFO_CHANGE";
 
     protected BasePaymentServiceInfoProvider() {
-        super(ACTION_BROADCAST_CONFIG_CHANGE);
+        super(ACTION_BROADCAST_PAYMENT_INFO_CHANGE);
     }
 
     @Override
@@ -42,9 +42,9 @@ public abstract class BasePaymentServiceInfoProvider extends BaseServiceInfoProv
     /**
      * Notify the system that the configuration has changed.
      */
-    public static void notifyConfigurationChange(Context context) {
+    public static void notifyServiceInfoChange(Context context) {
         String pkg = "package:" + context.getPackageName();
         Uri pkgUri = Uri.parse(pkg);
-        context.sendBroadcast(new Intent(ACTION_BROADCAST_CONFIG_CHANGE).setData(pkgUri));
+        context.sendBroadcast(new Intent(ACTION_BROADCAST_PAYMENT_INFO_CHANGE).setData(pkgUri));
     }
 }
