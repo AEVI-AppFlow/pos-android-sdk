@@ -18,6 +18,7 @@ public abstract class ApiBase {
     protected static final String PAYMENT_CONTROL_SERVICE_PACKAGE = "com.aevi.payment.pcs";
     protected static final ComponentName PAYMENT_CONTROL_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.PaymentControlService");
     protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.PaymentServiceInfoProvider");
+    protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.FlowServiceInfoProvider");
     protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.ConnectedDevicesProvider");
     protected static final ComponentName TOKENIZE_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.TokenizeService");
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.RequestStatusService");

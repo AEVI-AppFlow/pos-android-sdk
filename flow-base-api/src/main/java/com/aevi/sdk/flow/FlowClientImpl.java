@@ -46,7 +46,23 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<List<FlowServiceInfo>> getFlowServices() {
-        return Single.error(new UnsupportedOperationException("Not yet implemented"));
+        final ObservableMessengerClient flowInfoMessenger = new ObservableMessengerClient(context, FLOW_SERVICE_INFO_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        return flowInfoMessenger
+                .sendMessage(appMessage.toJson())
+                .map(new Function<String, FlowServiceInfo>() {
+                    @Override
+                    public FlowServiceInfo apply(String json) throws Exception {
+                        return FlowServiceInfo.fromJson(json);
+                    }
+                })
+                .toList()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        flowInfoMessenger.closeConnection();
+                    }
+                });
     }
 
     @Override
