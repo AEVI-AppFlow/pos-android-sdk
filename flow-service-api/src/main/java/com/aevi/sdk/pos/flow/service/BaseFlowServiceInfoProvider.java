@@ -13,10 +13,10 @@ import com.aevi.sdk.flow.service.BaseServiceInfoProvider;
  */
 public abstract class BaseFlowServiceInfoProvider extends BaseServiceInfoProvider {
 
-    public static final String ACTION_BROADCAST_CONFIG_CHANGE = "com.aevi.intent.action.FLOW_SERVICE_CONFIG_CHANGE";
+    public static final String ACTION_BROADCAST_FLOW_INFO_CHANGE = "com.aevi.intent.action.FLOW_SERVICE_INFO_CHANGE";
 
     protected BaseFlowServiceInfoProvider() {
-        super(ACTION_BROADCAST_CONFIG_CHANGE);
+        super(ACTION_BROADCAST_FLOW_INFO_CHANGE);
     }
 
     @Override
@@ -29,9 +29,9 @@ public abstract class BaseFlowServiceInfoProvider extends BaseServiceInfoProvide
     /**
      * Notify the system that the configuration has changed.
      */
-    public static void notifyConfigurationChange(Context context) {
+    public static void notifyServiceInfoChange(Context context) {
         String pkg = "package:" + context.getPackageName();
         Uri pkgUri = Uri.parse(pkg);
-        context.sendBroadcast(new Intent(ACTION_BROADCAST_CONFIG_CHANGE).setData(pkgUri));
+        context.sendBroadcast(new Intent(ACTION_BROADCAST_FLOW_INFO_CHANGE).setData(pkgUri));
     }
 }

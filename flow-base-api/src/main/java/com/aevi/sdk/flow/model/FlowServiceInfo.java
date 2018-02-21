@@ -3,87 +3,95 @@ package com.aevi.sdk.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 
-// TODO JAvadocs when finalised
-public class FlowServiceInfo extends BaseModel {
+import java.util.Arrays;
 
-    private final String vendor;
-    private final String version;
-    private final String appName;
+/**
+ * Represents the capabilities of a flow service.
+ *
+ * See {@link BaseServiceInfo} for inherited information.
+ *
+ * Use {@link FlowServiceInfoBuilder} to construct an instance.
+ */
+public class FlowServiceInfo extends BaseServiceInfo {
+
     private final String[] stages;
     private final String[] capabilities;
-    private final String[] supportedDataKeys;
     private final boolean backgroundOnly;
-
-    // Payment specific stuff
-    private final String[] supportedCurrencies;
-    private final String[] supportedTransactionTypes;
     private final boolean requiresCardToken;
     private final boolean canAdjustAmounts;
     private final boolean canPayAmounts;
 
-    FlowServiceInfo(String id, String vendor, String version, String appName, String[] stages, String[] capabilities,
-                    String[] supportedCurrencies, String[] supportedTransactionTypes, boolean requiresCardToken,
+    FlowServiceInfo(String id, String vendor, String version, String appName, boolean supportsAccessibility, String[] stages, String[] capabilities,
+                    String[] paymentMethods, String[] supportedCurrencies, String[] supportedTransactionTypes, boolean requiresCardToken,
                     String[] supportedDataKeys, boolean backgroundOnly, boolean canAdjustAmounts, boolean canPayAmounts) {
-        super(id);
-        this.vendor = vendor;
-        this.version = version;
-        this.appName = appName;
+        super(id, vendor, version, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedTransactionTypes, supportedDataKeys);
         this.stages = stages;
         this.capabilities = capabilities;
-        this.supportedCurrencies = supportedCurrencies;
-        this.supportedTransactionTypes = supportedTransactionTypes;
         this.requiresCardToken = requiresCardToken;
-        this.supportedDataKeys = supportedDataKeys;
         this.backgroundOnly = backgroundOnly;
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
     }
 
-    public String getVendor() {
-        return vendor;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
+    /**
+     * Get the stages this service operates in.
+     *
+     * For POS flow, the possible stages are defined in the PaymentStage model and PaymentStage.valueOf(xxx) can be used to map these values.
+     *
+     * @return The set of stages the service operates in.
+     */
     public String[] getStages() {
         return stages;
     }
 
+    /**
+     * Get the capabilities of this service. Examples may be "loyalty", "currencyConversion", "split", etc.
+     *
+     * See reference values in the documentation for possible values.
+     *
+     * @return The set of capabilities this service offers
+     */
     public String[] getCapabilities() {
         return capabilities;
     }
 
-    public String[] getSupportedDataKeys() {
-        return supportedDataKeys;
-    }
-
+    /**
+     * Check whether this service operates solely in the background. If set, the service will not launch any user interface.
+     *
+     * @return True if background only, false otherwise
+     */
     public boolean isBackgroundOnly() {
         return backgroundOnly;
     }
 
-    public String[] getSupportedCurrencies() {
-        return supportedCurrencies;
-    }
-
-    public String[] getSupportedTransactionTypes() {
-        return supportedTransactionTypes;
-    }
-
-    public boolean isRequiresCardToken() {
+    /**
+     * Check whether this services requires a card token to operate.
+     *
+     * If set, the service will not be able to perform its tasks without a card token being passed.
+     *
+     * @return True if card token is required, false otherwise
+     */
+    public boolean requiresCardToken() {
         return requiresCardToken;
     }
 
-    public boolean isCanAdjustAmounts() {
+    /**
+     * Check whether this service can adjust the request amounts.
+     *
+     * This is typically used to add a charge/fee, or for charity, or to split a request.
+     *
+     * @return True if the service can adjust request amounts, false otherwise
+     */
+    public boolean canAdjustAmounts() {
         return canAdjustAmounts;
     }
 
-    public boolean isCanPayAmounts() {
+    /**
+     * Check whether this service can pay amounts via non-payment card means, such as loyalty points.
+     *
+     * @return True if the service can pay amounts, false otherwise.
+     */
+    public boolean canPayAmounts() {
         return canPayAmounts;
     }
 
@@ -94,5 +102,47 @@ public class FlowServiceInfo extends BaseModel {
 
     public static FlowServiceInfo fromJson(String json) {
         return JsonConverter.deserialize(json, FlowServiceInfo.class);
+    }
+
+    @Override
+    public String toString() {
+        return "FlowServiceInfo{" +
+                "stages=" + Arrays.toString(stages) +
+                ", capabilities=" + Arrays.toString(capabilities) +
+                ", backgroundOnly=" + backgroundOnly +
+                ", requiresCardToken=" + requiresCardToken +
+                ", canAdjustAmounts=" + canAdjustAmounts +
+                ", canPayAmounts=" + canPayAmounts +
+                "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FlowServiceInfo that = (FlowServiceInfo) o;
+
+        if (backgroundOnly != that.backgroundOnly) return false;
+        if (requiresCardToken != that.requiresCardToken) return false;
+        if (canAdjustAmounts != that.canAdjustAmounts) return false;
+        if (canPayAmounts != that.canPayAmounts) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(stages, that.stages)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(capabilities, that.capabilities);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Arrays.hashCode(stages);
+        result = 31 * result + Arrays.hashCode(capabilities);
+        result = 31 * result + (backgroundOnly ? 1 : 0);
+        result = 31 * result + (requiresCardToken ? 1 : 0);
+        result = 31 * result + (canAdjustAmounts ? 1 : 0);
+        result = 31 * result + (canPayAmounts ? 1 : 0);
+        return result;
     }
 }

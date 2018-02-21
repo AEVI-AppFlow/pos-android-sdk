@@ -3,7 +3,7 @@ package com.aevi.sdk.pos.flow.model;
 import android.content.Context;
 import android.util.Base64;
 
-import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
+import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Builder to create a {@link PaymentServiceInfo} instance.
@@ -12,6 +12,7 @@ public final class PaymentServiceInfoBuilder {
 
     private String vendor;
     private String version;
+    private String displayName;
     private String[] paymentMethods;
     private String[] supportedCurrencies;
     private String defaultCurrency;
@@ -53,6 +54,17 @@ public final class PaymentServiceInfoBuilder {
     }
 
     /**
+     * Set the name for this payment service to be used for displaying to users.
+     *
+     * @param displayName The display name of the service
+     * @return This builder
+     */
+    public PaymentServiceInfoBuilder withDisplayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    /**
      * Set the supported payment methods for this payment service.
      *
      * See reference values in the documentation for possible values.
@@ -60,7 +72,7 @@ public final class PaymentServiceInfoBuilder {
      * @param paymentMethods The supported payment methods
      * @return This builder
      */
-    public PaymentServiceInfoBuilder withPaymentMethods(String[] paymentMethods) {
+    public PaymentServiceInfoBuilder withPaymentMethods(String... paymentMethods) {
         this.paymentMethods = paymentMethods;
         return this;
     }
@@ -73,7 +85,7 @@ public final class PaymentServiceInfoBuilder {
      * @param supportedCurrencies A list of 3 letter ISO-4217 currency code strings
      * @return This builder
      */
-    public PaymentServiceInfoBuilder withSupportedCurrencies(String[] supportedCurrencies) {
+    public PaymentServiceInfoBuilder withSupportedCurrencies(String... supportedCurrencies) {
         this.supportedCurrencies = supportedCurrencies;
         return this;
     }
@@ -110,7 +122,7 @@ public final class PaymentServiceInfoBuilder {
      * @param merchantIds A list of String merchant ids
      * @return This builder
      */
-    public PaymentServiceInfoBuilder withMerchantIds(String[] merchantIds) {
+    public PaymentServiceInfoBuilder withMerchantIds(String... merchantIds) {
         this.merchantIds = merchantIds;
         return this;
     }
@@ -125,7 +137,7 @@ public final class PaymentServiceInfoBuilder {
      * @param supportedTypes A list of string values indicating the transaction types this payment service can handle.
      * @return This builder
      */
-    public PaymentServiceInfoBuilder withSupportedTransactionTypes(String[] supportedTypes) {
+    public PaymentServiceInfoBuilder withSupportedTransactionTypes(String... supportedTypes) {
         this.supportedTransactionTypes = supportedTypes;
         return this;
     }
@@ -209,7 +221,7 @@ public final class PaymentServiceInfoBuilder {
      * @param dataKeys The array of supported data keys
      * @return This builder
      */
-    public PaymentServiceInfoBuilder withSupportedDataKeys(String[] dataKeys) {
+    public PaymentServiceInfoBuilder withSupportedDataKeys(String... dataKeys) {
         this.supportedDataKeys = dataKeys;
         return this;
     }
@@ -229,11 +241,12 @@ public final class PaymentServiceInfoBuilder {
         checkNotNull(packageName, "Package name must be set");
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(version, "Version must be set");
+        checkNotNull(displayName, "Display name must be set");
         checkNotNull(defaultCurrency, "Default currency must be set");
-        checkNotNull(supportedCurrencies, "Supported currencies must be set");
-        checkNotNull(supportedTransactionTypes, "Supported transaction types must be set");
+        checkNotEmpty(supportedCurrencies, "Supported currencies must be set");
+        checkNotEmpty(supportedTransactionTypes, "Supported transaction types must be set");
         return new PaymentServiceInfo(createPaymentServiceId(packageName, terminalId),
-                packageName, vendor, version, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
+                packageName, vendor, version, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
                 supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, canTokenize, willPrintReceipts,
                 supportsFlowCardReading, supportedDataKeys);
     }
