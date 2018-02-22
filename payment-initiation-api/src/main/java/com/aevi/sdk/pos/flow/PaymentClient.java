@@ -3,8 +3,6 @@ package com.aevi.sdk.pos.flow;
 
 import com.aevi.sdk.pos.flow.model.*;
 
-import java.util.List;
-
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -18,15 +16,15 @@ public interface PaymentClient {
     /**
      * Query for all the installed payment services available on this and connected devices.
      *
-     * Returns a single that emits a list of available payment services currently installed.
+     * Returns a single that emits a {@link PaymentServices} model wrapping the list of available payment services.
      *
-     * This should be queried each time a selection is required to ensure an up-to-date list.
+     * This should be queried each time a selection is required to ensure up to date information.
      *
      * You can subscribe to {@link com.aevi.sdk.flow.FlowClient#subscribeToEventStream()} for updates on changes to the available payment services.
      *
-     * @return Single emitting list of {@link PaymentServiceInfo} objects
+     * @return Single emitting a {@link PaymentServices} object
      */
-    Single<List<PaymentServiceInfo>> getPaymentServices();
+    Single<PaymentServices> getPaymentServices();
 
     /**
      * Initiate payment processing based on the provided {@link Request}.

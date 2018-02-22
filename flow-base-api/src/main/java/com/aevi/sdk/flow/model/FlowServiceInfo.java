@@ -45,6 +45,16 @@ public class FlowServiceInfo extends BaseServiceInfo {
     }
 
     /**
+     * Check whether the flow services operates in the given stage.
+     *
+     * @param stage The stage to check against
+     * @return True if the flow service operates in the given stage, false otherwise
+     */
+    public boolean containsStage(String stage) {
+        return stages.length > 0 && Arrays.asList(stages).contains(stage);
+    }
+
+    /**
      * Get the capabilities of this service. Examples may be "loyalty", "currencyConversion", "split", etc.
      *
      * See reference values in the documentation for possible values.
@@ -53,6 +63,16 @@ public class FlowServiceInfo extends BaseServiceInfo {
      */
     public String[] getCapabilities() {
         return capabilities;
+    }
+
+    /**
+     * Check whether the flow services provides the given capability.
+     *
+     * @param capability The capability to check against
+     * @return True if the flow service provides the given capability, false otherwise
+     */
+    public boolean providesCapability(String capability) {
+        return capabilities.length > 0 && Arrays.asList(capabilities).contains(capability);
     }
 
     /**

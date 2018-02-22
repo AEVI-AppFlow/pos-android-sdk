@@ -45,7 +45,7 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
-    public Single<List<FlowServiceInfo>> getFlowServices() {
+    public Single<FlowServices> getFlowServices() {
         final ObservableMessengerClient flowInfoMessenger = new ObservableMessengerClient(context, FLOW_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return flowInfoMessenger
@@ -57,6 +57,12 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
                     }
                 })
                 .toList()
+                .map(new Function<List<FlowServiceInfo>, FlowServices>() {
+                    @Override
+                    public FlowServices apply(List<FlowServiceInfo> flowServiceInfos) throws Exception {
+                        return new FlowServices(flowServiceInfos);
+                    }
+                })
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
