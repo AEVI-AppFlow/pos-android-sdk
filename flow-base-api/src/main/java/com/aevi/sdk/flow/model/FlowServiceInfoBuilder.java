@@ -16,7 +16,7 @@ public class FlowServiceInfoBuilder {
     private boolean supportsAccessibility;
     private String[] paymentMethods;
     private String[] supportedCurrencies;
-    private String[] supportedTransactionTypes = new String[]{TransactionTypes.TYPE_PAY};
+    private String[] supportedTransactionTypes = new String[]{TransactionTypes.SALE};
     private boolean requiresCardToken;
     private String[] supportedDataKeys;
     private boolean backgroundOnly;

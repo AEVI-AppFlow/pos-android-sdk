@@ -72,6 +72,11 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    public Single<Response> processRequest(Request request) {
+        return Single.error(new UnsupportedOperationException("Not yet implemented"));
+    }
+
+    @Override
     public Observable<Event> subscribeToEventStream() {
         return Observable.error(new UnsupportedOperationException("Not yet implemented"));
     }
