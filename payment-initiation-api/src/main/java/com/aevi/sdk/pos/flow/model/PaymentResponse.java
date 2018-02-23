@@ -10,29 +10,29 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 /**
- * Response for a previously made {@link Request}.
+ * Response for a previously made {@link Payment}.
  *
- * A request can lead to a single or multiple transactions and it is up to the client to ensure this is taken into account.
+ * A payment can lead to a single or multiple transactions and it is up to the client to ensure this is taken into account.
  *
  * This class contains convenience methods to get overall information for the transaction processing.
  */
-public class Response implements Sendable {
+public class PaymentResponse implements Sendable {
 
     /**
-     * The outcome of a request.
+     * The outcome of a payment.
      */
     public enum Outcome {
         /**
-         * The request was fulfilled and the requested amount has been charged.
+         * The payment was fulfilled and the requested amount has been charged.
          */
         FULFILLED,
         /**
-         * The request was only partially fulfilled, meaning that part of the requested amount was charged.
+         * The payment was only partially fulfilled, meaning that part of the requested amount was charged.
          * This can either be due to partial auth (payment app approved less than requested) or one of the reasons in {@link FailureReason}.
          */
         PARTIALLY_FULFILLED,
         /**
-         * The request was not fulfilled and no money was charged.
+         * The payment was not fulfilled and no money was charged.
          * See {@link FailureReason} for the reason of failure.
          */
         FAILED
@@ -47,19 +47,19 @@ public class Response implements Sendable {
          */
         NONE,
         /**
-         * The request was cancelled before completing
+         * The payment was cancelled before completing
          */
         CANCELLED,
         /**
-         * The request was rejected either due to incorrect parameters or due to payment app not being able to process it at this time
+         * The payment was rejected either due to incorrect parameters or due to payment app not being able to process it at this time
          */
         REJECTED,
         /**
-         * The request was declined, meaning that all transactions processed were declined
+         * The payment was declined, meaning that all transactions processed were declined
          */
         DECLINED,
         /**
-         * The request timed out before completing
+         * The payment timed out before completing
          */
         TIMEOUT,
         /**
@@ -68,7 +68,7 @@ public class Response implements Sendable {
         ERROR
     }
 
-    private final Request originatingRequest;
+    private final Payment originatingPayment;
 
     protected Outcome outcome;
     protected FailureReason failureReason;
@@ -79,14 +79,14 @@ public class Response implements Sendable {
     protected FlowAppInfo executedPreFlowApp;
     protected FlowAppInfo executedPostFlowApp;
 
-    protected Response(Request originatingRequest) {
-        this.originatingRequest = originatingRequest;
+    protected PaymentResponse(Payment originatingPayment) {
+        this.originatingPayment = originatingPayment;
         transactions = new CopyOnWriteArrayList<>();
-        totalAmountsProcessed = new Amounts(0, originatingRequest.getAmounts().getCurrency());
+        totalAmountsProcessed = new Amounts(0, originatingPayment.getAmounts().getCurrency());
     }
 
     /**
-     * This can be called to check whether the request was fulfilled via multiple split transactions or not.
+     * This can be called to check whether the payment was fulfilled via multiple split transactions or not.
      *
      * If true, the {@link #getTransactions()} method will return a list with a size greater than 1.
      *
@@ -99,23 +99,23 @@ public class Response implements Sendable {
     @Override
     @NonNull
     public String getId() {
-        return originatingRequest.getId();
+        return originatingPayment.getId();
     }
 
     /**
-     * Get the initial {@link Request} that this response is for.
+     * Get the initial {@link Payment} that this response is for.
      *
-     * @return The {@link Request}
+     * @return The {@link Payment}
      */
     @NonNull
-    public Request getOriginatingRequest() {
-        return originatingRequest;
+    public Payment getOriginatingPayment() {
+        return originatingPayment;
     }
 
     /**
-     * Get the overall outcome of the request.
+     * Get the overall outcome of the payment.
      *
-     * This will indicate whether the request was fulfilled (requested amount processed), partially fulfilled (part of requested amount processed)
+     * This will indicate whether the payment was fulfilled (requested amount processed), partially fulfilled (part of requested amount processed)
      * or failed (no amount processed).
      *
      * @return The overall outcome.
@@ -126,7 +126,7 @@ public class Response implements Sendable {
     }
 
     /**
-     * For {@link Outcome#PARTIALLY_FULFILLED} and {@link Outcome#FAILED}, this will return the reason for why the request was not fully fulfilled.
+     * For {@link Outcome#PARTIALLY_FULFILLED} and {@link Outcome#FAILED}, this will return the reason for why the payment was not fully fulfilled.
      *
      * Note that there are some cases of {@link Outcome#PARTIALLY_FULFILLED} where this will be set to {@link FailureReason#NONE}. An example
      * of this is when the payment app approves an amount less than requested (partial auth), which is not a failure from a transactional point of view.
@@ -150,10 +150,10 @@ public class Response implements Sendable {
 
     /**
      * Convenience method to check whether all transactions that were processed
-     * due to the originating request was approved or not.
+     * due to the originating payment was approved or not.
      *
-     * Note - the request can still have been fulfilled despite failed transactions, so this method
-     * should NOT be used to check the outcome of the request - use getOutcome() for that.
+     * Note - the payment can still have been fulfilled despite failed transactions, so this method
+     * should NOT be used to check the outcome of the payment - use getOutcome() for that.
      *
      * @return True if all transactions were approved, false if some were declined or had errors.
      */
@@ -166,7 +166,7 @@ public class Response implements Sendable {
      *
      * This may not match the initially requested amounts. Note that {@link #getOutcome()} can be used to determine whether
      * a transaction was fulfilled, partially fulfilled or failed. This method is a convenience method to get the amount totals and not intended
-     * to be used to investigate the outcome of the request.
+     * to be used to investigate the outcome of the payment.
      *
      * Note that this may be null or contain empty amounts for non-purchase transactions. It also may be larger than the initially requested amounts.
      *
@@ -230,14 +230,14 @@ public class Response implements Sendable {
         return JsonConverter.serialize(this);
     }
 
-    public static Response fromJson(String json) {
-        return JsonConverter.deserialize(json, Response.class);
+    public static PaymentResponse fromJson(String json) {
+        return JsonConverter.deserialize(json, PaymentResponse.class);
     }
 
     @Override
     public String toString() {
-        return "Response{" +
-                "originatingRequest=" + originatingRequest +
+        return "PaymentResponse{" +
+                "originatingRequest=" + originatingPayment +
                 ", outcome=" + outcome +
                 ", failureReason=" + failureReason +
                 ", failureMessage='" + failureMessage + '\'' +
@@ -254,23 +254,25 @@ public class Response implements Sendable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Response response = (Response) o;
+        PaymentResponse paymentResponse = (PaymentResponse) o;
 
-        if (allTransactionsApproved != response.allTransactionsApproved) return false;
-        if (originatingRequest != null ? !originatingRequest.equals(response.originatingRequest) : response.originatingRequest != null) return false;
-        if (outcome != response.outcome) return false;
-        if (failureReason != response.failureReason) return false;
-        if (failureMessage != null ? !failureMessage.equals(response.failureMessage) : response.failureMessage != null) return false;
-        if (totalAmountsProcessed != null ? !totalAmountsProcessed.equals(response.totalAmountsProcessed) : response.totalAmountsProcessed != null)
+        if (allTransactionsApproved != paymentResponse.allTransactionsApproved) return false;
+        if (originatingPayment != null ? !originatingPayment.equals(paymentResponse.originatingPayment) : paymentResponse.originatingPayment != null)
             return false;
-        if (transactions != null ? !transactions.equals(response.transactions) : response.transactions != null) return false;
-        if (executedPreFlowApp != null ? !executedPreFlowApp.equals(response.executedPreFlowApp) : response.executedPreFlowApp != null) return false;
-        return executedPostFlowApp != null ? executedPostFlowApp.equals(response.executedPostFlowApp) : response.executedPostFlowApp == null;
+        if (outcome != paymentResponse.outcome) return false;
+        if (failureReason != paymentResponse.failureReason) return false;
+        if (failureMessage != null ? !failureMessage.equals(paymentResponse.failureMessage) : paymentResponse.failureMessage != null) return false;
+        if (totalAmountsProcessed != null ? !totalAmountsProcessed.equals(paymentResponse.totalAmountsProcessed) : paymentResponse.totalAmountsProcessed != null)
+            return false;
+        if (transactions != null ? !transactions.equals(paymentResponse.transactions) : paymentResponse.transactions != null) return false;
+        if (executedPreFlowApp != null ? !executedPreFlowApp.equals(paymentResponse.executedPreFlowApp) : paymentResponse.executedPreFlowApp != null)
+            return false;
+        return executedPostFlowApp != null ? executedPostFlowApp.equals(paymentResponse.executedPostFlowApp) : paymentResponse.executedPostFlowApp == null;
     }
 
     @Override
     public int hashCode() {
-        int result = originatingRequest != null ? originatingRequest.hashCode() : 0;
+        int result = originatingPayment != null ? originatingPayment.hashCode() : 0;
         result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
         result = 31 * result + (failureReason != null ? failureReason.hashCode() : 0);
         result = 31 * result + (failureMessage != null ? failureMessage.hashCode() : 0);

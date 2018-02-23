@@ -68,7 +68,7 @@ public class FlowAppInfo {
     /**
      * Get the list of data this flow app augmented as part of its execution.
      *
-     * Note that this simply indicates what was augmented - not to what. The {@link Response} can be parsed to review that information.
+     * Note that this simply indicates what was augmented - not to what. The {@link PaymentResponse} can be parsed to review that information.
      *
      * See {@link #AUGMENTED_DATA_AMOUNTS}, {@link #AUGMENTED_DATA_OPTIONS}, {@link #AUGMENTED_DATA_CANCELLED} and {@link #AUGMENTED_DATA_SPLIT} for
      * the possible options.

@@ -6,9 +6,10 @@ import android.os.Build;
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AppMessageTypes;
-import com.aevi.sdk.pos.flow.model.Request;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentBuilder;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
-import com.aevi.sdk.pos.flow.model.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class PaymentClientImplTest extends ApiTestBase {
     private PaymentClientImpl paymentClient;
 
     @Mock
-    private ObservableEmitter<Response> callback;
+    private ObservableEmitter<PaymentResponse> callback;
 
     @Mock
     private ObservableMessengerClient messengerClient;
@@ -67,15 +68,15 @@ public class PaymentClientImplTest extends ApiTestBase {
 
     @Test
     public void checkInitiatePayment() throws Exception {
-        Request request = new Request.Builder().withTransactionType("pay").build();
+        Payment payment = new PaymentBuilder().withTransactionType("pay").build();
 
-        paymentClient.initiatePayment(request).test();
+        paymentClient.initiatePayment(payment).test();
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(messengerClient).sendMessage(captor.capture());
         AppMessage sentAppMessage = AppMessage.fromJson(captor.getValue());
-        Request sentRequest = Request.fromJson(sentAppMessage.getMessageData());
-        assertThat(sentRequest).isEqualTo(request);
+        Payment sentPayment = Payment.fromJson(sentAppMessage.getMessageData());
+        assertThat(sentPayment).isEqualTo(payment);
 
         verify(messengerClient).closeConnection();
     }
@@ -89,15 +90,15 @@ public class PaymentClientImplTest extends ApiTestBase {
 
     @Test
     public void checkGenerateCardTokenWithPaymentServiceId() throws Exception {
-        Request request = new Request.Builder().withTransactionType("token").withPaymentService("123").build();
+        Payment payment = new PaymentBuilder().withTransactionType("token").usePaymentService("123").build();
 
         paymentClient.generateCardToken("123").test();
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(messengerClient).sendMessage(captor.capture());
         AppMessage sentAppMessage = AppMessage.fromJson(captor.getValue());
-        Request sentRequest = Request.fromJson(sentAppMessage.getMessageData());
-        assertThat(sentRequest.getPaymentServiceId()).isEqualTo("123");
+        Payment sentPayment = Payment.fromJson(sentAppMessage.getMessageData());
+        assertThat(sentPayment.getPaymentServiceId()).isEqualTo("123");
         verify(messengerClient).closeConnection();
     }
 

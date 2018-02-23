@@ -7,7 +7,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 /**
- * This object represents the current request status of a {@link Request} object currently being processed by a payment service
+ * This object represents the current request status of a {@link Payment} object currently being processed by a payment service
  */
 public class RequestStatus extends SendableId {
 
@@ -24,7 +24,7 @@ public class RequestStatus extends SendableId {
     /**
      * Retrieve the current request status in raw string form.
      *
-     * @return String representation of the current request status of the {@link Request}
+     * @return String representation of the current request status of the {@link Payment}
      */
     @NonNull
     public String getStatus() {
