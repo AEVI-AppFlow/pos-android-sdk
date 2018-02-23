@@ -13,24 +13,24 @@ import io.reactivex.annotations.Nullable;
 
 public class SplitRequest extends BaseModel {
 
-    private final Request sourceRequest;
+    private final Payment sourcePayment;
     private final List<Transaction> transactions;
     private DeviceAudience deviceAudience;
 
-    public SplitRequest(Request sourceRequest, List<Transaction> transactions) {
+    public SplitRequest(Payment sourcePayment, List<Transaction> transactions) {
         super(UUID.randomUUID().toString());
-        this.sourceRequest = sourceRequest;
+        this.sourcePayment = sourcePayment;
         this.transactions = transactions;
     }
 
     /**
      * Get the source Request, as provide by the calling VAA.
      *
-     * @return The source {@link Request}
+     * @return The source {@link Payment}
      */
     @NonNull
-    public Request getSourceRequest() {
-        return sourceRequest;
+    public Payment getSourcePayment() {
+        return sourcePayment;
     }
 
     /**
@@ -65,11 +65,11 @@ public class SplitRequest extends BaseModel {
      */
     @Nullable
     public Amounts getRequestedAmounts() {
-        return sourceRequest.getAmounts();
+        return sourcePayment.getAmounts();
     }
 
     /**
-     * Get the remaining amounts to process for this {@link Request} in order to meet the {@link #getRequestedAmounts()}.
+     * Get the remaining amounts to process for this {@link Payment} in order to meet the {@link #getRequestedAmounts()}.
      *
      * @return The remaining {@link Amounts} to process
      */

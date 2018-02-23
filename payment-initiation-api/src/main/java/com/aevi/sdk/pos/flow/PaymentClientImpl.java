@@ -60,16 +60,16 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     }
 
     @Override
-    public Single<Response> initiatePayment(Request request) {
+    public Single<PaymentResponse> initiatePayment(Payment payment) {
         final ObservableMessengerClient transactionMessenger = getNewMessengerClient(PAYMENT_CONTROL_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, payment.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
-                .map(new Function<String, Response>() {
+                .map(new Function<String, PaymentResponse>() {
                     @Override
-                    public Response apply(String json) throws Exception {
-                        return Response.fromJson(json);
+                    public PaymentResponse apply(String json) throws Exception {
+                        return PaymentResponse.fromJson(json);
                     }
                 })
                 .doFinally(new Action() {
@@ -90,8 +90,8 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
         final ObservableMessengerClient tokenizeMessenger = getNewMessengerClient(TOKENIZE_SERVICE_COMPONENT);
         String requestData = null;
         if (paymentServiceId != null) {
-            Request request = new Request.Builder().withTransactionType("token").withPaymentService(paymentServiceId).build();
-            requestData = request.toJson();
+            Payment payment = new PaymentBuilder().withTransactionType("token").usePaymentService(paymentServiceId).build();
+            requestData = payment.toJson();
         }
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestData, getInternalData());
         return tokenizeMessenger
@@ -112,14 +112,14 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     }
 
     @Override
-    public RequestStatus getCurrentRequestStatus(String requestId) {
+    public RequestStatus getCurrentPaymentStatus(String requestId) {
         return subscribeToStatusUpdates(requestId).blockingFirst();
     }
 
     @Override
-    public Observable<RequestStatus> subscribeToStatusUpdates(String requestId) {
+    public Observable<RequestStatus> subscribeToStatusUpdates(String paymentId) {
         final ObservableMessengerClient requestStatusMessenger = getNewMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
-        RequestStatus requestStatus = new RequestStatus(requestId);
+        RequestStatus requestStatus = new RequestStatus(paymentId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestStatus.toJson(), getInternalData());
         return requestStatusMessenger
                 .sendMessage(appMessage.toJson())

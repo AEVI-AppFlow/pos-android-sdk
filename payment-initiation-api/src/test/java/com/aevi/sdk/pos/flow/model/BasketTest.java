@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasketTest {
 
-    private com.aevi.sdk.pos.flow.model.Request defaultRequest;
+    private Payment defaultPayment;
 
     @Before
     public void setUp() throws Exception {
-        defaultRequest = new com.aevi.sdk.pos.flow.model.Request.Builder().withAmounts(new Amounts(1000, "GBP")).withTransactionType(TYPE_PAY).build();
+        defaultPayment = new PaymentBuilder().withAmounts(new Amounts(1000, "GBP")).withTransactionType(TYPE_PAY).build();
     }
 
     @Test
@@ -24,10 +24,10 @@ public class BasketTest {
         BasketItem item1 = new BasketItem("Walls Bangers", new Amount(1000, "GBP"));
         BasketItem item2 = new BasketItem("Golden Delicious Apples", new Amount(400, "GBP"));
         BasketItem item3 = new BasketItem("VAT @20%", new Amount(280, "GBP"));
-        setupBasket(defaultRequest, item1, item2, item3);
+        setupBasket(defaultPayment, item1, item2, item3);
 
-        String json = defaultRequest.toJson();
-        Request result = com.aevi.sdk.pos.flow.model.Request.fromJson(json);
+        String json = defaultPayment.toJson();
+        Payment result = Payment.fromJson(json);
 
         assertBasket(result, item1, item2, item3);
         String json2 = result.toJson();
@@ -38,9 +38,9 @@ public class BasketTest {
     public void canAddBasketItems() {
         BasketItem item1 = new BasketItem("Walls Bangers", new Amount(1000, "GBP"));
         BasketItem item2 = new BasketItem("Golden Delicious Apples", new Amount(400, "GBP"));
-        setupBasket(defaultRequest, item1, item2);
+        setupBasket(defaultPayment, item1, item2);
 
-        String json = defaultRequest.toJson();
+        String json = defaultPayment.toJson();
 
         assertThat(json).isNotNull();
         assertThat(json).containsSequence(
@@ -159,7 +159,7 @@ public class BasketTest {
         return basket;
     }
 
-    private void assertBasket(com.aevi.sdk.pos.flow.model.Request result, BasketItem... items) {
+    private void assertBasket(Payment result, BasketItem... items) {
         Basket basket = (Basket) result.getAdditionalData().getValue(DATA_KEY_BASKET);
         assertThat(basket).isNotNull();
         List<BasketItem> resultItems = basket.getDisplayItems();
@@ -168,10 +168,10 @@ public class BasketTest {
         assertThat(resultItems).containsExactly(items);
     }
 
-    private void setupBasket(com.aevi.sdk.pos.flow.model.Request request, BasketItem... items) {
+    private void setupBasket(Payment payment, BasketItem... items) {
         Basket basket = new Basket();
         basket.addItems(items);
-        request.getAdditionalData().addData(DATA_KEY_BASKET, basket);
+        payment.getAdditionalData().addData(DATA_KEY_BASKET, basket);
     }
 
 
