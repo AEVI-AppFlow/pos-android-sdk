@@ -33,7 +33,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     }
 
     @Override
-    public Single<List<PaymentServiceInfo>> getPaymentServices() {
+    public Single<PaymentServices> getPaymentServices() {
         final ObservableMessengerClient paymentInfoMessenger = getNewMessengerClient(PAYMENT_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return paymentInfoMessenger
@@ -45,6 +45,12 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                     }
                 })
                 .toList()
+                .map(new Function<List<PaymentServiceInfo>, PaymentServices>() {
+                    @Override
+                    public PaymentServices apply(List<PaymentServiceInfo> paymentServiceInfoList) throws Exception {
+                        return new PaymentServices(paymentServiceInfoList);
+                    }
+                })
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {

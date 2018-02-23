@@ -3,7 +3,7 @@ package com.aevi.sdk.flow;
 
 import com.aevi.sdk.flow.model.Device;
 import com.aevi.sdk.flow.model.Event;
-import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.flow.model.FlowServices;
 
 import java.util.List;
 
@@ -31,15 +31,15 @@ public interface FlowClient {
     /**
      * Query for installed flow services on this and connected devices.
      *
-     * Returns a single that emits a list of currently available flow services.
+     * Returns a single that emits a {@link FlowServices} model containing the available flow services.
      *
      * This should be queried each time an up-to-date list is required.
      *
      * You can subscribe to {@link #subscribeToEventStream()} for updates on changes to the available flow services.
      *
-     * @return Single emitting a list of {@link FlowServiceInfo} objects containing flow service info
+     * @return Single emitting a {@link FlowServices} model
      */
-    Single<List<FlowServiceInfo>> getFlowServices();
+    Single<FlowServices> getFlowServices();
 
     /**
      * Subscribe to general system events.

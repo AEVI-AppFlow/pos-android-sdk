@@ -95,6 +95,16 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
+     * Check whether this service supports the given payment method.
+     *
+     * @param paymentMethod The payment method to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsPaymentMethod(String paymentMethod) {
+        return paymentMethods.length > 0 && Arrays.asList(paymentMethods).contains(paymentMethod);
+    }
+
+    /**
      * Gets an array of currency codes supported by the service.
      *
      * May be empty.
@@ -104,6 +114,16 @@ public abstract class BaseServiceInfo extends BaseModel {
     @NonNull
     public String[] getSupportedCurrencies() {
         return supportedCurrencies;
+    }
+
+    /**
+     * Check whether this service supports the given currency.
+     *
+     * @param currency The currency to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsCurrency(String currency) {
+        return supportedCurrencies.length > 0 && Arrays.asList(supportedCurrencies).contains(currency);
     }
 
     /**
@@ -121,9 +141,19 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
-     * Returns an array of supported request {@link com.aevi.sdk.flow.model.AdditionalData} keys.
+     * Check whether this service supports the given transaction type.
      *
-     * A request can set various optional and custom flags in the {@link com.aevi.sdk.flow.model.AdditionalData} object.
+     * @param transactionType The transaction type to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsTransactionType(String transactionType) {
+        return supportedTransactionTypes.length > 0 && Arrays.asList(supportedTransactionTypes).contains(transactionType);
+    }
+
+    /**
+     * Returns an array of supported request {@link AdditionalData} keys.
+     *
+     * A request can set various optional and custom flags in the {@link AdditionalData} object.
      * This array will return an array of the keys this service supports.
      *
      * May be empty.
@@ -135,6 +165,16 @@ public abstract class BaseServiceInfo extends BaseModel {
     @NonNull
     public String[] getSupportedDataKeys() {
         return supportedDataKeys;
+    }
+
+    /**
+     * Check whether this service supports the given data key (for {@link AdditionalData usage}.
+     *
+     * @param dataKey The data key to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsDataKey(String dataKey) {
+        return supportedDataKeys.length > 0 && Arrays.asList(supportedDataKeys).contains(dataKey);
     }
 
     @Override
