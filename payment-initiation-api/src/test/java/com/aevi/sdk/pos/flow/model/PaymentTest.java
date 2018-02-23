@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.*;
 import static com.aevi.sdk.flow.constants.AdditionalDataValues.*;
-import static com.aevi.sdk.flow.constants.TransactionTypes.TYPE_PAY;
+import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PaymentTest {
@@ -18,19 +18,19 @@ public class PaymentTest {
 
     @Before
     public void setup() {
-        defaultPayment = getValidRequest(1000, "GBP", TYPE_PAY);
+        defaultPayment = getValidRequest(1000, "GBP", SALE);
     }
 
     @Test
     public void canBuildValidRequest() {
-        Payment payment = getValidRequest(1000, "GBP", TYPE_PAY);
+        Payment payment = getValidRequest(1000, "GBP", SALE);
 
-        assertValues(payment, 1000, "GBP", TYPE_PAY);
+        assertValues(payment, 1000, "GBP", SALE);
     }
 
     @Test
     public void canSerialise() {
-        Payment payment = getValidRequest(1000, "GBP", TYPE_PAY);
+        Payment payment = getValidRequest(1000, "GBP", SALE);
 
         String json = payment.toJson();
 
@@ -39,11 +39,11 @@ public class PaymentTest {
 
     @Test
     public void canDeserialize() {
-        Payment payment = getValidRequest(1000, "GBP", TYPE_PAY);
+        Payment payment = getValidRequest(1000, "GBP", SALE);
 
         Payment result = Payment.fromJson(payment.toJson());
 
-        assertValues(result, 1000, "GBP", TYPE_PAY);
+        assertValues(result, 1000, "GBP", SALE);
         assertThat(payment).isEqualTo(result);
     }
 

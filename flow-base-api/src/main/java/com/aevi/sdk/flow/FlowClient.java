@@ -1,9 +1,7 @@
 package com.aevi.sdk.flow;
 
 
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.Event;
-import com.aevi.sdk.flow.model.FlowServices;
+import com.aevi.sdk.flow.model.*;
 
 import java.util.List;
 
@@ -40,6 +38,16 @@ public interface FlowClient {
      * @return Single emitting a {@link FlowServices} model
      */
     Single<FlowServices> getFlowServices();
+
+    /**
+     * Initiate processing of the given {@link Request}.
+     *
+     * Returns a single that emits a {@link Response} after processing has completed.
+     *
+     * @param request The request
+     * @return Single emitting a {@link Response} model
+     */
+    Single<Response> processRequest(Request request);
 
     /**
      * Subscribe to general system events.

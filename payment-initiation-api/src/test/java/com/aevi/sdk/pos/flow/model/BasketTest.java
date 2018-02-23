@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_BASKET;
-import static com.aevi.sdk.flow.constants.TransactionTypes.TYPE_PAY;
+import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasketTest {
@@ -16,7 +16,7 @@ public class BasketTest {
 
     @Before
     public void setUp() throws Exception {
-        defaultPayment = new PaymentBuilder().withAmounts(new Amounts(1000, "GBP")).withTransactionType(TYPE_PAY).build();
+        defaultPayment = new PaymentBuilder().withAmounts(new Amounts(1000, "GBP")).withTransactionType(SALE).build();
     }
 
     @Test
