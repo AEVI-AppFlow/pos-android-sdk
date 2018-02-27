@@ -18,11 +18,12 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final boolean hasAccessibilityMode;
     private final String[] paymentMethods;
     private final String[] supportedCurrencies;
+    private final String[] supportedRequestTypes;
     private final String[] supportedTransactionTypes;
     private final String[] supportedDataKeys;
 
     protected BaseServiceInfo(String id, String vendor, String version, String displayName, boolean hasAccessibilityMode,
-                              String[] paymentMethods, String[] supportedCurrencies, String[] supportedTransactionTypes, String[] supportedDataKeys) {
+                              String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, String[] supportedDataKeys) {
         super(id);
         this.vendor = vendor;
         this.version = version;
@@ -30,6 +31,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.hasAccessibilityMode = hasAccessibilityMode;
         this.paymentMethods = paymentMethods != null ? paymentMethods : new String[0];
         this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new String[0];
+        this.supportedRequestTypes = supportedRequestTypes != null ? supportedRequestTypes : new String[0];
         this.supportedTransactionTypes = supportedTransactionTypes != null ? supportedTransactionTypes : new String[0];
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new String[0];
         checkArguments();
@@ -127,6 +129,28 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
+     * Gets an array of the supported request types, indicating what type of requests it can handle.
+     *
+     * See reference values in the documentation for possible values.
+     *
+     * @return array of request types supported by the service
+     */
+    @NonNull
+    public String[] getSupportedRequestTypes() {
+        return supportedRequestTypes;
+    }
+
+    /**
+     * Check whether this service supports the given request type.
+     *
+     * @param requestType The request type to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsRequestType(String requestType) {
+        return supportedRequestTypes.length > 0 && Arrays.asList(supportedRequestTypes).contains(requestType);
+    }
+
+    /**
      * Gets an array of transaction types supported by the service.
      *
      * May be empty.
@@ -186,6 +210,7 @@ public abstract class BaseServiceInfo extends BaseModel {
                 ", hasAccessibilityMode=" + hasAccessibilityMode +
                 ", paymentMethods=" + Arrays.toString(paymentMethods) +
                 ", supportedCurrencies=" + Arrays.toString(supportedCurrencies) +
+                ", supportedRequestTypes=" + Arrays.toString(supportedRequestTypes) +
                 ", supportedTransactionTypes=" + Arrays.toString(supportedTransactionTypes) +
                 ", supportedDataKeys=" + Arrays.toString(supportedDataKeys) +
                 "} " + super.toString();
@@ -208,6 +233,8 @@ public abstract class BaseServiceInfo extends BaseModel {
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(supportedCurrencies, that.supportedCurrencies)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(supportedRequestTypes, that.supportedRequestTypes)) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(supportedTransactionTypes, that.supportedTransactionTypes)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals(supportedDataKeys, that.supportedDataKeys);
@@ -222,6 +249,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         result = 31 * result + (hasAccessibilityMode ? 1 : 0);
         result = 31 * result + Arrays.hashCode(paymentMethods);
         result = 31 * result + Arrays.hashCode(supportedCurrencies);
+        result = 31 * result + Arrays.hashCode(supportedRequestTypes);
         result = 31 * result + Arrays.hashCode(supportedTransactionTypes);
         result = 31 * result + Arrays.hashCode(supportedDataKeys);
         return result;
