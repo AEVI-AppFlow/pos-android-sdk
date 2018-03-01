@@ -18,6 +18,7 @@ public final class PaymentServiceInfoBuilder {
     private String defaultCurrency;
     private String terminalId;
     private String[] merchantIds;
+    private String[] supportedRequestTypes;
     private String[] supportedTransactionTypes;
     private boolean supportManualEntry;
     private String operatingMode;
@@ -128,7 +129,22 @@ public final class PaymentServiceInfoBuilder {
     }
 
     /**
-     * Sets the transaction types supported by this payment service. These types could be unique to the payment service.
+     * Sets the request types supported by this payment service. These types could be unique to the service.
+     *
+     * Mandatory field.
+     *
+     * See reference values in the documentation for possible values.
+     *
+     * @param supportedRequestTypes A list of string values indicating the request types this payment service can handle.
+     * @return This builder
+     */
+    public PaymentServiceInfoBuilder withSupportedRequestTypes(String... supportedRequestTypes) {
+        this.supportedRequestTypes = supportedRequestTypes;
+        return this;
+    }
+
+    /**
+     * Sets the transaction types supported by this payment service for requests of type "payment". These types could be unique to the payment service.
      *
      * Mandatory field.
      *
@@ -243,10 +259,12 @@ public final class PaymentServiceInfoBuilder {
         checkNotNull(version, "Version must be set");
         checkNotNull(displayName, "Display name must be set");
         checkNotNull(defaultCurrency, "Default currency must be set");
+        checkNotEmpty(supportedRequestTypes, "Supported request types must be set");
         checkNotEmpty(supportedCurrencies, "Supported currencies must be set");
         checkNotEmpty(supportedTransactionTypes, "Supported transaction types must be set");
         return new PaymentServiceInfo(createPaymentServiceId(packageName, terminalId),
                 packageName, vendor, version, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
+                supportedRequestTypes,
                 supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, canTokenize, willPrintReceipts,
                 supportsFlowCardReading, supportedDataKeys);
     }

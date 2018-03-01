@@ -2,6 +2,7 @@ package com.aevi.sdk.flow.model;
 
 import android.content.Context;
 
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.constants.TransactionTypes;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
@@ -16,6 +17,8 @@ public class FlowServiceInfoBuilder {
     private boolean supportsAccessibility;
     private String[] paymentMethods;
     private String[] supportedCurrencies;
+    // TODO Until we know how to manage request and transaction types, they will default to payment and sale here
+    private String[] supportedRequestTypes = new String[]{FinancialRequestTypes.PAYMENT};
     private String[] supportedTransactionTypes = new String[]{TransactionTypes.SALE};
     private boolean requiresCardToken;
     private String[] supportedDataKeys;
@@ -110,9 +113,26 @@ public class FlowServiceInfoBuilder {
     }
 
     /**
-     * Sets the transaction types supported by this flow service. These types could be unique to the service.
+     * Sets the request types supported by this flow service. These types could be unique to the service.
      *
-     * If none are set by the service, it will default to supporting payment/sale types.
+     * If none are set by the service, it will default to supporting payment requests (sale, refund, etc) only.
+     *
+     * ONLY set this if service can handle non-payment scenarios.
+     *
+     * See reference values in the documentation for possible values.
+     *
+     * @param supportedRequestTypes A list of string values indicating the request types this flow service can handle.
+     * @return This builder
+     */
+    public FlowServiceInfoBuilder withSupportedRequestTypes(String... supportedRequestTypes) {
+        this.supportedRequestTypes = supportedRequestTypes;
+        return this;
+    }
+
+    /**
+     * Sets the transaction types supported by this flow service for payment requests. These types could be unique to the service.
+     *
+     * If none are set by the service, it will default to supporting "sale" only.
      *
      * ONLY set this if service can handle non-sale flows.
      *
@@ -223,7 +243,8 @@ public class FlowServiceInfoBuilder {
         checkNotNull(displayName, "Display name must be set");
         checkNotEmpty(capabilities, "Capabilities must be set");
         checkNotEmpty(stages, "Stages must be set");
+        checkNotEmpty(supportedRequestTypes, "At least one request type must be supported");
         return new FlowServiceInfo(context.getPackageName(), vendor, version, displayName, supportsAccessibility, stages, capabilities, paymentMethods,
-                supportedCurrencies, supportedTransactionTypes, requiresCardToken, supportedDataKeys, backgroundOnly, canAdjustAmounts, canPayAmounts);
+                supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, requiresCardToken, supportedDataKeys, backgroundOnly, canAdjustAmounts, canPayAmounts);
     }
 }

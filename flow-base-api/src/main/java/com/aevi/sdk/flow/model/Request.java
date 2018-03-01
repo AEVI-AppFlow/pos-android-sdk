@@ -1,6 +1,8 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.sdk.flow.FlowClient;
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.UUID;
@@ -15,6 +17,7 @@ public class Request extends BaseModel {
 
     private final String requestType;
     private final AdditionalData requestData;
+    private String deviceId;
     private String targetAppId;
 
     /**
@@ -42,6 +45,9 @@ public class Request extends BaseModel {
      */
     public Request(String requestType, AdditionalData requestData) {
         super(UUID.randomUUID().toString());
+        if (requestType.equals(FinancialRequestTypes.PAYMENT)) {
+            throw new IllegalArgumentException("For payment requests, please use the Payment model in payment-initiation-api");
+        }
         this.requestType = requestType;
         this.requestData = requestData;
     }
@@ -54,6 +60,32 @@ public class Request extends BaseModel {
     @NonNull
     public String getRequestType() {
         return requestType;
+    }
+
+    /**
+     * Get the id of the device that should be used for customer interactions, if any.
+     *
+     * @return The device to use for this request, if any.
+     */
+    @Nullable
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    /**
+     * Optionally set what device to use for interactions with the customer.
+     *
+     * The available devices can be queried via {@link FlowClient#getDevices()}.
+     *
+     * Setting this means that all customer facing activities will be run on that device.
+     *
+     * Note that it is possible that devices will be disconnected in between querying for the list and this request being handled, in which
+     * case it will fall back to the default device selection mechanism. See docs for more details.
+     *
+     * @param deviceId The id of the customer facing device
+     */
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     /**

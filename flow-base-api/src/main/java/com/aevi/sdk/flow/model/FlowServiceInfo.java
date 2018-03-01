@@ -22,9 +22,9 @@ public class FlowServiceInfo extends BaseServiceInfo {
     private final boolean canPayAmounts;
 
     FlowServiceInfo(String id, String vendor, String version, String appName, boolean supportsAccessibility, String[] stages, String[] capabilities,
-                    String[] paymentMethods, String[] supportedCurrencies, String[] supportedTransactionTypes, boolean requiresCardToken,
+                    String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean requiresCardToken,
                     String[] supportedDataKeys, boolean backgroundOnly, boolean canAdjustAmounts, boolean canPayAmounts) {
-        super(id, vendor, version, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedTransactionTypes, supportedDataKeys);
+        super(id, vendor, version, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
         this.stages = stages;
         this.capabilities = capabilities;
         this.requiresCardToken = requiresCardToken;
