@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class ApiBase {
 
     protected static final String PAYMENT_CONTROL_SERVICE_PACKAGE = "com.aevi.payment.pcs";
-    protected static final ComponentName PAYMENT_CONTROL_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.PaymentControlService");
+    protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.FlowProcessingService");
     protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.PaymentServiceInfoProvider");
     protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.FlowServiceInfoProvider");
     protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.ConnectedDevicesProvider");
@@ -34,9 +34,9 @@ public abstract class ApiBase {
         return internalData;
     }
 
-    protected static void startPcs(Context context) {
+    protected static void startFps(Context context) {
         // Start service explicitly to keep it running
-        Intent intent = getIntent(PAYMENT_CONTROL_SERVICE_COMPONENT);
+        Intent intent = getIntent(FLOW_PROCESSING_SERVICE_COMPONENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {
@@ -53,7 +53,7 @@ public abstract class ApiBase {
     public static boolean isProcessingServiceInstalled(Context context) {
         PackageManager packageManager = context.getPackageManager();
         List<ResolveInfo> resolveInfo = packageManager
-                .queryIntentServices(getIntent(PAYMENT_CONTROL_SERVICE_COMPONENT), PackageManager.MATCH_DEFAULT_ONLY);
+                .queryIntentServices(getIntent(FLOW_PROCESSING_SERVICE_COMPONENT), PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() == 1 && resolveInfo.get(0).serviceInfo != null;
     }
 }

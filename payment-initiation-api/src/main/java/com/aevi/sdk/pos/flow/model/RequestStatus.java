@@ -4,18 +4,13 @@ import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.SendableId;
 
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 /**
- * This object represents the current request status of a {@link Payment} object currently being processed by a payment service
+ * This object represents the current request status of a request object currently being processed by the flow processing service
  */
 public class RequestStatus extends SendableId {
 
     private final String status;
-
-    public RequestStatus(PaymentStage paymentStage) {
-        this.status = paymentStage.name();
-    }
 
     public RequestStatus(String status) {
         this.status = status;
@@ -24,30 +19,11 @@ public class RequestStatus extends SendableId {
     /**
      * Retrieve the current request status in raw string form.
      *
-     * @return String representation of the current request status of the {@link Payment}
+     * @return String representation of the current status of the request
      */
     @NonNull
     public String getStatus() {
         return status;
-    }
-
-    /**
-     * Retrieve the current request status as a {@link PaymentStage} object.
-     *
-     * Note that this may be null if the current request status set is not a PaymentStage value.
-     *
-     * @return The PaymentStage, or null
-     */
-    @Nullable
-    public PaymentStage asPaymentStage() {
-        if (status != null) {
-            try {
-                return PaymentStage.valueOf(status);
-            } catch (IllegalArgumentException e) {
-                // Fall-through
-            }
-        }
-        return null;
     }
 
     @Override

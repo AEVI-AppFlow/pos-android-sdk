@@ -33,10 +33,10 @@ public class ApiTestBase extends ApiBase {
         MockMessageService mockMessageService = new MockMessageService();
 
         shadowApplication
-                .setComponentNameAndServiceForBindService(PAYMENT_CONTROL_SERVICE_COMPONENT, mockMessageService.onBind(null));
+                .setComponentNameAndServiceForBindService(FLOW_PROCESSING_SERVICE_COMPONENT, mockMessageService.onBind(null));
 
         Intent intent = new Intent();
-        intent.setComponent(PAYMENT_CONTROL_SERVICE_COMPONENT);
+        intent.setComponent(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         ShadowPackageManager shadowPackageManager = Shadows.shadowOf(RuntimeEnvironment.application.getPackageManager());
         ResolveInfo resolveInfo = new ResolveInfo();

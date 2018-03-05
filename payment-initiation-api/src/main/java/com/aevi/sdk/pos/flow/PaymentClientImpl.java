@@ -28,7 +28,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     PaymentClientImpl(Context context) {
         super(API_PROPS_FILE);
         this.context = context;
-        startPcs(context);
+        startFps(context);
         Log.i(TAG, "PaymentClient initialised");
     }
 
@@ -61,7 +61,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
     @Override
     public Single<PaymentResponse> initiatePayment(Payment payment) {
-        final ObservableMessengerClient transactionMessenger = getNewMessengerClient(PAYMENT_CONTROL_SERVICE_COMPONENT);
+        final ObservableMessengerClient transactionMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, payment.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
