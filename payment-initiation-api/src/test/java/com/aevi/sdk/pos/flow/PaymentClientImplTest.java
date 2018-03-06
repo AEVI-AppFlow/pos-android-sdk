@@ -4,8 +4,11 @@ import android.content.ComponentName;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
+import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AppMessageTypes;
+import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
@@ -25,7 +28,9 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
@@ -68,14 +73,15 @@ public class PaymentClientImplTest extends ApiTestBase {
 
     @Test
     public void checkInitiatePayment() throws Exception {
-        Payment payment = new PaymentBuilder().withTransactionType("pay").build();
+        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).build();
 
         paymentClient.initiatePayment(payment).test();
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(messengerClient).sendMessage(captor.capture());
         AppMessage sentAppMessage = AppMessage.fromJson(captor.getValue());
-        Payment sentPayment = Payment.fromJson(sentAppMessage.getMessageData());
+        Request request = Request.fromJson(sentAppMessage.getMessageData());
+        Payment sentPayment = request.getRequestData().getValue(FinancialRequestTypes.PAYMENT, Payment.class);
         assertThat(sentPayment).isEqualTo(payment);
 
         verify(messengerClient).closeConnection();
@@ -84,7 +90,12 @@ public class PaymentClientImplTest extends ApiTestBase {
     @Test
     public void checkGenerateCardToken() throws Exception {
         paymentClient.generateCardToken().test();
-        verify(messengerClient).sendMessage(REQUEST_MSG_NO_DATA);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(messengerClient).sendMessage(captor.capture());
+        AppMessage sentAppMessage = AppMessage.fromJson(captor.getValue());
+        Request sentTokenise = Request.fromJson(sentAppMessage.getMessageData());
+        assertThat(sentTokenise).isNotNull();
+        assertThat(sentTokenise.getId()).isNotNull();
         verify(messengerClient).closeConnection();
     }
 
@@ -97,8 +108,8 @@ public class PaymentClientImplTest extends ApiTestBase {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(messengerClient).sendMessage(captor.capture());
         AppMessage sentAppMessage = AppMessage.fromJson(captor.getValue());
-        Payment sentPayment = Payment.fromJson(sentAppMessage.getMessageData());
-        assertThat(sentPayment.getPaymentServiceId()).isEqualTo("123");
+        Request sentTokenise = Request.fromJson(sentAppMessage.getMessageData());
+        assertThat(sentTokenise.getTargetAppId()).isEqualTo("123");
         verify(messengerClient).closeConnection();
     }
 

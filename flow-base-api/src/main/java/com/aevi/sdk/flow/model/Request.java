@@ -2,7 +2,6 @@ package com.aevi.sdk.flow.model;
 
 
 import com.aevi.sdk.flow.FlowClient;
-import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.UUID;
@@ -45,9 +44,6 @@ public class Request extends BaseModel {
      */
     public Request(String requestType, AdditionalData requestData) {
         super(UUID.randomUUID().toString());
-        if (requestType.equals(FinancialRequestTypes.PAYMENT)) {
-            throw new IllegalArgumentException("For payment requests, please use the Payment model in payment-initiation-api");
-        }
         this.requestType = requestType;
         this.requestData = requestData;
     }
