@@ -64,3 +64,22 @@ task copyApiLibs(type: Copy) {
 }
 
 apply from: 'dependencies.gradle'
+
+subprojects {
+
+    apply plugin: 'java'
+}
+
+def exportedProjects = [
+        ":api-constants",
+        ":flow-base-api",
+        ":flow-service-api",
+        ":payment-initiation-api",
+        ":payment-service-api"
+]
+
+task alljavadoc(type: Javadoc) {
+    source exportedProjects.collect { project(it).sourceSets.main.allJava }
+    classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
+    destinationDir = file("${buildDir}/docs/javadoc")
+}

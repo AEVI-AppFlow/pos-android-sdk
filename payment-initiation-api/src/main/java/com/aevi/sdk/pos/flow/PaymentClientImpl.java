@@ -7,9 +7,18 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.ApiBase;
+import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AppMessageTypes;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.Token;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentServices;
+import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.TokenResponse;
 
 import java.util.List;
 
@@ -17,6 +26,10 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
+
+import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
+import static com.aevi.sdk.flow.constants.FinancialRequestTypes.TOKENISATION;
+import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
@@ -28,7 +41,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     PaymentClientImpl(Context context) {
         super(API_PROPS_FILE);
         this.context = context;
-        startPcs(context);
+        startFps(context);
         Log.i(TAG, "PaymentClient initialised");
     }
 
@@ -59,10 +72,27 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                 });
     }
 
+
     @Override
     public Single<PaymentResponse> initiatePayment(Payment payment) {
-        final ObservableMessengerClient transactionMessenger = getNewMessengerClient(PAYMENT_CONTROL_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, payment.toJson(), getInternalData());
+        return initiatePayment(payment, null, null);
+    }
+
+    @Override
+    public Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId) {
+        Token cardToken = payment.getCardToken();
+        if (paymentServiceId != null && cardToken != null) {
+            checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
+        }
+
+        final ObservableMessengerClient transactionMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+
+        AdditionalData paymentData = new AdditionalData();
+        paymentData.addData(PAYMENT, payment);
+        Request request = new Request(PAYMENT, paymentData);
+        request.setTargetAppId(paymentServiceId);
+        request.setDeviceId(deviceId);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
@@ -87,20 +117,22 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
     @Override
     public Single<TokenResponse> generateCardToken(String paymentServiceId) {
-        final ObservableMessengerClient tokenizeMessenger = getNewMessengerClient(TOKENIZE_SERVICE_COMPONENT);
-        String requestData = null;
-        if (paymentServiceId != null) {
-            Payment payment = new PaymentBuilder().withTransactionType("token").usePaymentService(paymentServiceId).build();
-            requestData = payment.toJson();
-        }
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestData, getInternalData());
+        final ObservableMessengerClient tokenizeMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        final Request request = new Request(TOKENISATION);
+        request.setTargetAppId(paymentServiceId);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return tokenizeMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
                 .map(new Function<String, TokenResponse>() {
                     @Override
                     public TokenResponse apply(String json) throws Exception {
-                        return TokenResponse.fromJson(json);
+                        Response response = Response.fromJson(json);
+                        if (response.wasSuccessful()) {
+                            return response.getResponseData().getValue(TOKENISATION, TokenResponse.class);
+                        }
+
+                        return new TokenResponse(null);
                     }
                 })
                 .doFinally(new Action() {

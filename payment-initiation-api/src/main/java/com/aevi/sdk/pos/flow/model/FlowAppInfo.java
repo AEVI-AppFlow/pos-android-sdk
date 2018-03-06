@@ -16,7 +16,7 @@ public class FlowAppInfo {
 
     private final String appName;
     private final String[] capabilities;
-    private final PaymentStage paymentStage;
+    private final String stage;
     private final List<String> augmentedData;
 
     /**
@@ -24,13 +24,13 @@ public class FlowAppInfo {
      *
      * @param appName       The flow application name
      * @param capabilities  The flow capabilities
-     * @param paymentStage  The payment stage at which the flow app is called
+     * @param stage         The stage at which the flow app is called
      * @param augmentedData The list of augmented data
      */
-    public FlowAppInfo(String appName, String[] capabilities, PaymentStage paymentStage, List<String> augmentedData) {
+    public FlowAppInfo(String appName, String[] capabilities, String stage, List<String> augmentedData) {
         this.appName = appName;
         this.capabilities = capabilities;
-        this.paymentStage = paymentStage;
+        this.stage = stage;
         this.augmentedData = augmentedData;
     }
 
@@ -39,10 +39,10 @@ public class FlowAppInfo {
      *
      * @param appName      The flow application name
      * @param capabilities The flow capabilities
-     * @param paymentStage The payment stage at which the flow app is called
+     * @param stage        The stage at which the flow app is called
      */
-    public FlowAppInfo(String appName, String[] capabilities, PaymentStage paymentStage) {
-        this(appName, capabilities, paymentStage, new ArrayList<String>());
+    public FlowAppInfo(String appName, String[] capabilities, String stage) {
+        this(appName, capabilities, stage, new ArrayList<String>());
     }
 
     /**
@@ -97,7 +97,7 @@ public class FlowAppInfo {
         if (!Arrays.equals(capabilities, that.capabilities)) {
             return false;
         }
-        if (paymentStage != that.paymentStage) {
+        if (stage != that.stage) {
             return false;
         }
         return augmentedData != null ? augmentedData.equals(that.augmentedData) : that.augmentedData == null;
@@ -107,7 +107,7 @@ public class FlowAppInfo {
     public int hashCode() {
         int result = appName != null ? appName.hashCode() : 0;
         result = 31 * result + Arrays.hashCode(capabilities);
-        result = 31 * result + (paymentStage != null ? paymentStage.hashCode() : 0);
+        result = 31 * result + (stage != null ? stage.hashCode() : 0);
         result = 31 * result + (augmentedData != null ? augmentedData.hashCode() : 0);
         return result;
     }
@@ -117,7 +117,7 @@ public class FlowAppInfo {
         return "FlowAppInfo{" +
                 "appName='" + appName + '\'' +
                 ", capabilities=" + Arrays.toString(capabilities) +
-                ", paymentStage=" + paymentStage +
+                ", stage=" + stage +
                 ", augmentedData=" + augmentedData +
                 '}';
     }
