@@ -97,7 +97,7 @@ public class FlowAppInfo {
         if (!Arrays.equals(capabilities, that.capabilities)) {
             return false;
         }
-        if (stage != that.stage) {
+        if (stage != null ? !stage.equals(that.stage) : that.stage != null) {
             return false;
         }
         return augmentedData != null ? augmentedData.equals(that.augmentedData) : that.augmentedData == null;
