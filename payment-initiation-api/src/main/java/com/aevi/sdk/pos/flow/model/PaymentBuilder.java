@@ -1,11 +1,9 @@
 package com.aevi.sdk.pos.flow.model;
 
 
-import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.flow.constants.RequestSource;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.PaymentClient;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -14,8 +12,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class PaymentBuilder {
 
-    private String paymentServiceId;
-    private String deviceId;
     private String type;
     private Amounts amounts;
     private boolean splitEnabled;
@@ -27,50 +23,12 @@ public class PaymentBuilder {
     }
 
     public PaymentBuilder(Payment paymentToCopyFrom) {
-        paymentServiceId = paymentToCopyFrom.getPaymentServiceId();
-        deviceId = paymentToCopyFrom.getDeviceId();
         type = paymentToCopyFrom.getTransactionType();
         amounts = paymentToCopyFrom.getAmounts();
         splitEnabled = paymentToCopyFrom.isSplitEnabled();
         cardToken = paymentToCopyFrom.getCardToken();
         additionalData = paymentToCopyFrom.getAdditionalData();
         source = paymentToCopyFrom.getSource();
-    }
-
-    /**
-     * Optionally set what payment service to use for this transaction.
-     *
-     * The available payment services can be queried via {@link PaymentClient#getPaymentServices()}.
-     *
-     * Note that if this is not set, a decision will either be made internally or the merchant/customer will be presented
-     * with a user interface to choose an appropriate payment service in the case where more than one is available.
-     *
-     * If only one payment service is available, this parameter will be ignored.
-     *
-     * @param paymentServiceId The payment service id as available via {@link PaymentServiceInfo#getId()}
-     * @return This builder
-     */
-    public PaymentBuilder usePaymentService(String paymentServiceId) {
-        this.paymentServiceId = paymentServiceId;
-        return this;
-    }
-
-    /**
-     * Optionally set what device to use for interactions with the customer.
-     *
-     * The available devices can be queried via {@link FlowClient#getDevices()}.
-     *
-     * Setting this means that all customer facing activities will be run on that device, such as flow apps and payment apps.
-     *
-     * Note that it is possible that devices will be disconnected in between querying for the list and this payment being handled, in which
-     * case it will fall back to the default device selection mechanism. See docs for more details.
-     *
-     * @param deviceId The id of the customer facing device
-     * @return This builder
-     */
-    public PaymentBuilder sendToDevice(String deviceId) {
-        this.deviceId = deviceId;
-        return this;
     }
 
     /**
@@ -162,12 +120,9 @@ public class PaymentBuilder {
      */
     public Payment build() {
         checkArgument(type != null, "Transaction type must be set");
-        if (paymentServiceId != null && cardToken != null) {
-            checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
-        }
         if (cardToken != null && splitEnabled) {
             throw new IllegalArgumentException("Card token can not be set for a split payment as token relates to only one customer");
         }
-        return new Payment(paymentServiceId, deviceId, type, amounts, splitEnabled, cardToken, additionalData, source);
+        return new Payment(type, amounts, splitEnabled, cardToken, additionalData, source);
     }
 }

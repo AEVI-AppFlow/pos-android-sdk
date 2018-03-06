@@ -19,8 +19,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class Payment extends BaseModel {
 
-    private final String paymentServiceId;
-    private final String deviceId;
     private final String transactionType;
     private final Amounts amounts;
     private final boolean splitEnabled;
@@ -32,12 +30,10 @@ public class Payment extends BaseModel {
     /**
      * Internal constructor for use from the Builder.
      */
-    Payment(String paymentServiceId, String deviceId, String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken,
+    Payment(String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String source) {
         super(UUID.randomUUID().toString());
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
-        this.paymentServiceId = paymentServiceId;
-        this.deviceId = deviceId;
         this.isExternalId = false;
         this.transactionType = transactionType;
         this.amounts = amounts;
@@ -53,12 +49,10 @@ public class Payment extends BaseModel {
      *
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
-    Payment(String id, String requestSource, String paymentServiceId, String deviceId, String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken, AdditionalData additionalData) {
+    Payment(String id, String requestSource, String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken, AdditionalData additionalData) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
         this.source = requestSource;
-        this.paymentServiceId = paymentServiceId;
-        this.deviceId = deviceId;
         this.isExternalId = true;
         this.transactionType = transactionType;
         this.amounts = amounts;
@@ -71,26 +65,6 @@ public class Payment extends BaseModel {
     private void validateArguments() {
         checkArgument(getId() != null, "Id cannot be null");
         checkArgument(transactionType != null, "Type cannot be null");
-    }
-
-    /**
-     * Get the id of the payment service to use for this payment, if any.
-     *
-     * @return The payment service to use for this transaction, if any.
-     */
-    @Nullable
-    public String getPaymentServiceId() {
-        return paymentServiceId;
-    }
-
-    /**
-     * Get the id of the device that should be used for customer interactions, if any.
-     *
-     * @return The device to use for this transaction, if any.
-     */
-    @Nullable
-    public String getDeviceId() {
-        return deviceId;
     }
 
     /**
@@ -174,8 +148,6 @@ public class Payment extends BaseModel {
     @Override
     public String toString() {
         return "Payment{" +
-                "paymentServiceId='" + paymentServiceId + '\'' +
-                ", deviceId='" + deviceId + '\'' +
                 ", transactionType='" + transactionType + '\'' +
                 ", amounts=" + amounts +
                 ", splitEnabled=" + splitEnabled +
@@ -196,8 +168,6 @@ public class Payment extends BaseModel {
 
         if (splitEnabled != payment.splitEnabled) return false;
         if (isExternalId != payment.isExternalId) return false;
-        if (paymentServiceId != null ? !paymentServiceId.equals(payment.paymentServiceId) : payment.paymentServiceId != null) return false;
-        if (deviceId != null ? !deviceId.equals(payment.deviceId) : payment.deviceId != null) return false;
         if (transactionType != null ? !transactionType.equals(payment.transactionType) : payment.transactionType != null) return false;
         if (amounts != null ? !amounts.equals(payment.amounts) : payment.amounts != null) return false;
         if (cardToken != null ? !cardToken.equals(payment.cardToken) : payment.cardToken != null) return false;
@@ -208,8 +178,6 @@ public class Payment extends BaseModel {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (paymentServiceId != null ? paymentServiceId.hashCode() : 0);
-        result = 31 * result + (deviceId != null ? deviceId.hashCode() : 0);
         result = 31 * result + (transactionType != null ? transactionType.hashCode() : 0);
         result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
         result = 31 * result + (splitEnabled ? 1 : 0);

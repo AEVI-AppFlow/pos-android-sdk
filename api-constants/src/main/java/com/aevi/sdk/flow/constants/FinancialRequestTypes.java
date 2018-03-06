@@ -5,8 +5,8 @@ public interface FinancialRequestTypes {
 
     String PAYMENT = "payment";
     String REVERSAL = "reversal";
-    String TOKENIZE = "tokenize";
-    String BATCH_CLOSE = "batchClose";
-    String PRINT_RECEIPT = "printReceipt";
+    String TOKENISATION = "tokenisation";
+    String BATCH_CLOSURE = "batchClosure";
+    String RECEIPT_PRINTING = "receiptPrinting";
 
 }

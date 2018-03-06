@@ -12,6 +12,7 @@ import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
@@ -27,7 +28,8 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
 import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
-import static com.aevi.sdk.flow.constants.FinancialRequestTypes.TOKENIZE;
+import static com.aevi.sdk.flow.constants.FinancialRequestTypes.TOKENISATION;
+import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
@@ -70,13 +72,26 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                 });
     }
 
+
     @Override
     public Single<PaymentResponse> initiatePayment(Payment payment) {
+        return initiatePayment(payment, null, null);
+    }
+
+    @Override
+    public Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId) {
+        Token cardToken = payment.getCardToken();
+        if (paymentServiceId != null && cardToken != null) {
+            checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
+        }
+
         final ObservableMessengerClient transactionMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         AdditionalData paymentData = new AdditionalData();
         paymentData.addData(PAYMENT, payment);
         Request request = new Request(PAYMENT, paymentData);
+        request.setTargetAppId(paymentServiceId);
+        request.setDeviceId(deviceId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
@@ -103,7 +118,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     @Override
     public Single<TokenResponse> generateCardToken(String paymentServiceId) {
         final ObservableMessengerClient tokenizeMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-        final Request request = new Request(TOKENIZE);
+        final Request request = new Request(TOKENISATION);
         request.setTargetAppId(paymentServiceId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return tokenizeMessenger
@@ -114,9 +129,10 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                     public TokenResponse apply(String json) throws Exception {
                         Response response = Response.fromJson(json);
                         if (response.wasSuccessful()) {
-                            return response.getResponseData().getValue(TOKENIZE, TokenResponse.class);
+                            return response.getResponseData().getValue(TOKENISATION, TokenResponse.class);
                         }
-                        throw new IllegalStateException("Unexpected error from FPS during tokenisation");
+
+                        return new TokenResponse(null);
                     }
                 })
                 .doFinally(new Action() {

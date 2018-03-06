@@ -101,8 +101,6 @@ public class PaymentClientImplTest extends ApiTestBase {
 
     @Test
     public void checkGenerateCardTokenWithPaymentServiceId() throws Exception {
-        Payment payment = new PaymentBuilder().withTransactionType("token").usePaymentService("123").build();
-
         paymentClient.generateCardToken("123").test();
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
