@@ -21,9 +21,9 @@ public class BasketTest {
 
     @Test
     public void canDeserializeWithBasketOption() {
-        BasketItem item1 = new BasketItem("Walls Bangers", new Amount(1000, "GBP"));
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", new Amount(400, "GBP"));
-        BasketItem item3 = new BasketItem("VAT @20%", new Amount(280, "GBP"));
+        BasketItem item1 = new BasketItem("Walls Bangers", 1000);
+        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
+        BasketItem item3 = new BasketItem("VAT @20%", 280);
         setupBasket(defaultPayment, item1, item2, item3);
 
         String json = defaultPayment.toJson();
@@ -36,15 +36,15 @@ public class BasketTest {
 
     @Test
     public void canAddBasketItems() {
-        BasketItem item1 = new BasketItem("Walls Bangers", new Amount(1000, "GBP"));
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", new Amount(400, "GBP"));
+        BasketItem item1 = new BasketItem("Walls Bangers", 1000);
+        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
         setupBasket(defaultPayment, item1, item2);
 
         String json = defaultPayment.toJson();
 
         assertThat(json).isNotNull();
         assertThat(json).containsSequence(
-                "{\"data\":{\"basket\":{\"value\":{\"displayItems\":[" + "{\"count\":1,\"label\":\"Walls Bangers\",\"amount\":{\"value\":1000,\"currency\":\"GBP\"}}," + "{\"count\":1,\"label\":\"Golden Delicious Apples\",\"amount\":{\"value\":400,\"currency\":\"GBP\"}}" + "]},\"type\":\"com.aevi.sdk.pos.flow.model.Basket\"}");
+                "{\"data\":{\"basket\":{\"value\":{\"displayItems\":[" + "{\"count\":1,\"label\":\"Walls Bangers\",\"amount\":1000}," + "{\"count\":1,\"label\":\"Golden Delicious Apples\",\"amount\":400}" + "]},\"type\":\"com.aevi.sdk.pos.flow.model.Basket\"}");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class BasketTest {
 
         BasketItem result = basket.getItem("LabelOne");
         assertThat(result).isNotNull();
-        assertThat(result.getIndividualAmount()).isEqualTo(new Amount(1000, "GBP"));
+        assertThat(result.getIndividualAmount()).isEqualTo(1000);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class BasketTest {
     public void canAddOneOfTypeToBasket() {
         Basket basket = setupDefaultBasket();
 
-        basket.addOneOf(new BasketItem("LabelOne", new Amount(1000, "GBP")));
+        basket.addOneOf(new BasketItem("LabelOne", 1000));
 
         assertThat(basket.getDisplayItems().size()).isEqualTo(2);
         assertThat(basket.getItem("LabelOne")).isNotNull();
@@ -92,7 +92,7 @@ public class BasketTest {
     public void canRemoveOneOfTypeFromBasketWithNoRetain() {
         Basket basket = setupDefaultBasket();
 
-        basket.removeOneOf(new BasketItem("LabelOne", new Amount(1000, "GBP")), false);
+        basket.removeOneOf(new BasketItem("LabelOne", 1000), false);
 
         assertThat(basket.getDisplayItems().size()).isEqualTo(1);
         assertThat(basket.getItem("LabelOne")).isNull();
@@ -102,7 +102,7 @@ public class BasketTest {
     public void canRemoveOneOfTypeFromBasketWithWithRetain() {
         Basket basket = setupDefaultBasket();
 
-        basket.removeOneOf(new BasketItem("LabelOne", new Amount(1000, "GBP")), true);
+        basket.removeOneOf(new BasketItem("LabelOne", 1000), true);
 
         assertThat(basket.getDisplayItems().size()).isEqualTo(2);
         assertThat(basket.getItem("LabelOne")).isNotNull();
@@ -113,7 +113,7 @@ public class BasketTest {
     public void canAddItemsAndMerge() {
         Basket basket = setupDefaultBasket();
 
-        basket.addItemMerge(new BasketItem("LabelOne", new Amount(1000, "GBP")));
+        basket.addItemMerge(new BasketItem("LabelOne", 1000));
         assertThat(basket.getDisplayItems().size()).isEqualTo(2);
         assertThat(basket.getItem("LabelOne")).isNotNull();
         assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(2);
@@ -124,7 +124,7 @@ public class BasketTest {
         Basket basket = setupDefaultBasket();
         basket.getItem("LabelOne").setCount(10);
 
-        basket.removeItems(new BasketItem(5, "LabelOne", null, new Amount(1000, "GBP")), true);
+        basket.removeItems(new BasketItem(5, "LabelOne", null, 1000), true);
         assertThat(basket.getDisplayItems().size()).isEqualTo(2);
         assertThat(basket.getItem("LabelOne")).isNotNull();
         assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(5);
@@ -135,7 +135,7 @@ public class BasketTest {
         Basket basket = setupDefaultBasket();
         basket.getItem("LabelOne").setCount(10);
 
-        basket.removeItems(new BasketItem(25, "LabelOne", null, new Amount(1000, "GBP")), true);
+        basket.removeItems(new BasketItem(25, "LabelOne", null, 1000), true);
         assertThat(basket.getDisplayItems().size()).isEqualTo(2);
         assertThat(basket.getItem("LabelOne")).isNotNull();
         assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(0);
@@ -146,14 +146,14 @@ public class BasketTest {
         Basket basket = setupDefaultBasket();
         basket.getItem("LabelOne").setCount(10);
 
-        basket.removeItems(new BasketItem(25, "LabelOne", null, new Amount(1000, "GBP")), false);
+        basket.removeItems(new BasketItem(25, "LabelOne", null, 1000), false);
         assertThat(basket.getDisplayItems().size()).isEqualTo(1);
         assertThat(basket.getItem("LabelOne")).isNull();
     }
 
     private Basket setupDefaultBasket() {
-        BasketItem item1 = new BasketItem("LabelOne", new Amount(1000, "GBP"));
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", new Amount(400, "GBP"));
+        BasketItem item1 = new BasketItem("LabelOne", 1000);
+        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
         Basket basket = new Basket();
         basket.addItems(item1, item2);
         return basket;

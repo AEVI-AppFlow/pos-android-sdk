@@ -14,7 +14,7 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 public class FlowResponse implements Sendable {
 
     private String id;
-    private FlowAmounts updatedRequestAmounts;
+    private Amounts updatedRequestAmounts;
     private AdditionalData requestAdditionalData;
 
     private Amounts amountsPaid;
@@ -41,26 +41,23 @@ public class FlowResponse implements Sendable {
         this.id = id;
     }
 
-    public FlowAmounts getUpdatedRequestAmounts() {
+    public Amounts getUpdatedRequestAmounts() {
         return updatedRequestAmounts;
     }
 
     /**
-     * This can be used to update the amount the payment app should charge the customer for this particular transaction.
+     * This can be used to update the amount values and/or the currency used in the request for this transaction.
      *
-     * A typical use case for this is split transactions, when the current remaining amount is split and the current transaction is set up
-     * to pay a share of that remaining sum.
+     * Please use {@link AmountsModifier} to augment the request amounts correctly.
      *
-     * Note that the total amount across all transactions is NOT reduced by this - the remaining balance is just shifted forward.
-     *
-     * This can be combined with setting amounts paid, typically for a split case where the amount is modified and paid via cash (for instance).
+     * This can be combined with setting amounts paid as long as the paid amount does not exceed the updated requested amount.
      *
      * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
      *
-     * @param updatedAmountsToCharge The updated amounts
+     * @param modifiedRequestAmounts The updated amounts
      */
-    public void updateRequestAmounts(FlowAmounts updatedAmountsToCharge) {
-        this.updatedRequestAmounts = updatedAmountsToCharge;
+    public void updateRequestAmounts(Amounts modifiedRequestAmounts) {
+        this.updatedRequestAmounts = modifiedRequestAmounts;
         validateAmounts();
     }
 
@@ -183,7 +180,7 @@ public class FlowResponse implements Sendable {
     }
 
     private void checkAmountsPaidLessEqualUpdatedAmounts() {
-        checkArgument(amountsPaid.getBaseAmountValue() <= updatedRequestAmounts.getBaseAmount(), "Amounts paid can not be > than updated amounts");
+        checkArgument(amountsPaid.getBaseAmountValue() <= updatedRequestAmounts.getBaseAmountValue(), "Amounts paid can not be > than updated amounts");
     }
 
     private void checkCurrencyMatch() {

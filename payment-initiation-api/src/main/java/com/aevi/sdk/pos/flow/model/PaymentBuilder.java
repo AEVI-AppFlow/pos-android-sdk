@@ -1,6 +1,7 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.RequestSource;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
@@ -49,8 +50,7 @@ public class PaymentBuilder {
     /**
      * Set the amounts.
      *
-     * This parameter is optional here, but would be mandatory for any transaction type
-     * that exchanges money (sale, refund, etc). It is however not required for scenarios such as reversals.
+     * This parameter is mandatory.
      *
      * @param amounts The amounts.
      * @return This builder
@@ -72,6 +72,17 @@ public class PaymentBuilder {
      */
     public PaymentBuilder enableSplit() {
         this.splitEnabled = true;
+        return this;
+    }
+
+    /**
+     * Explicitly set split enabled value.
+     *
+     * @param enabled True to enable split, false to disable
+     * @return This builder
+     */
+    public PaymentBuilder overrideSplit(boolean enabled) {
+        this.splitEnabled = enabled;
         return this;
     }
 
@@ -113,6 +124,15 @@ public class PaymentBuilder {
     }
 
     /**
+     * Get the current additional data model.
+     *
+     * @return The additional data
+     */
+    public AdditionalData getCurrentAdditionalData() {
+        return additionalData;
+    }
+
+    /**
      * Build an instance of {@link Payment} using the provided parameters.
      *
      * @return An instance of {@link Payment}
@@ -120,8 +140,15 @@ public class PaymentBuilder {
      */
     public Payment build() {
         checkArgument(type != null, "Transaction type must be set");
+        checkArgument(amounts != null, "Amounts must be set");
         if (cardToken != null && splitEnabled) {
             throw new IllegalArgumentException("Card token can not be set for a split payment as token relates to only one customer");
+        }
+        if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
+            Basket basket = additionalData.getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
+            if (basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
+                throw new IllegalArgumentException("Basket total value must match the request amount base value!");
+            }
         }
         return new Payment(type, amounts, splitEnabled, cardToken, additionalData, source);
     }
