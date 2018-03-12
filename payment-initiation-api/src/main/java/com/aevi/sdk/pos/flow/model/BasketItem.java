@@ -11,7 +11,7 @@ public class BasketItem {
     private int count = 1;
     private final String label;
     private final String category;
-    private final Amount amount;
+    private final long amount;
 
     /**
      * Create a new basket item with label and amount, but no category.
@@ -19,7 +19,7 @@ public class BasketItem {
      * @param label  The label of the item, such as "Red onion"
      * @param amount The purchase amount for this (individual) item
      */
-    public BasketItem(String label, Amount amount) {
+    public BasketItem(String label, long amount) {
         this(1, label, null, amount);
     }
 
@@ -30,7 +30,7 @@ public class BasketItem {
      * @param category The category the item belongs to, such as "vegetables" or "dairy"
      * @param amount   The purchase amount for this (individual) item
      */
-    public BasketItem(String label, String category, Amount amount) {
+    public BasketItem(String label, String category, long amount) {
         this(1, label, category, amount);
     }
 
@@ -42,7 +42,7 @@ public class BasketItem {
      * @param category The category the item belongs to, such as "vegetables" or "dairy"
      * @param amount   The purchase amount for this (individual) item
      */
-    public BasketItem(int count, String label, String category, Amount amount) {
+    public BasketItem(int count, String label, String category, long amount) {
         if (count < 0) {
             throw new IllegalArgumentException("Basket item must have a count of zero or more");
         }
@@ -81,7 +81,7 @@ public class BasketItem {
      * @return The cost (amount) for a single item of this type
      */
     @NonNull
-    public Amount getIndividualAmount() {
+    public long getIndividualAmount() {
         return amount;
     }
 
@@ -91,8 +91,8 @@ public class BasketItem {
      * @return The total cost (amount) for the items of this type.
      */
     @NonNull
-    public Amount getTotalAmount() {
-        return new Amount(amount.getValue() * count, amount.getCurrency());
+    public long getTotalAmount() {
+        return amount * count;
     }
 
     /**
@@ -151,16 +151,17 @@ public class BasketItem {
         BasketItem that = (BasketItem) o;
 
         if (count != that.count) return false;
+        if (amount != that.amount) return false;
         if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        if (category != null ? !category.equals(that.category) : that.category != null) return false;
-        return amount != null ? amount.equals(that.amount) : that.amount == null;
+        return category != null ? category.equals(that.category) : that.category == null;
     }
 
     @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
+        int result = count;
+        result = 31 * result + (label != null ? label.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (int) (amount ^ (amount >>> 32));
         return result;
     }
 }

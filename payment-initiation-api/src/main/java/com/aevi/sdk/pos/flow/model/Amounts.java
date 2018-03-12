@@ -1,65 +1,39 @@
 package com.aevi.sdk.pos.flow.model;
 
-import com.aevi.sdk.flow.util.Preconditions;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+
 /**
  * Representation of all the amounts relevant for a transaction.
+ *
+ * See {@link Amount} for representation of a single amount value with associated currency.
  */
 public class Amounts implements Jsonable {
 
-    private final Amount base;
-    private final Amount tip;
-    private final Amount other;
+    private final long baseAmount;
+    private final Map<String, Long> additionalAmounts;
+    private final String currency;
+
+    private double currencyExchangeRate;
+    private String originalCurrency;
 
     /**
-     * Initialise with a base amount only.
+     * Initialise with base amount and currency.
      *
-     * @param base     The base amount in subunit form (cents, pence, etc)
-     * @param currency The ISO-4217 currency code
+     * Additional amounts can be set via {@link #addAdditionalAmount(String, long)}.
+     *
+     * See documentation for reference identifiers for additional amounts.
+     *
+     * @param baseAmount The base amount in subunit form (cents, pence, etc)
+     * @param currency   The ISO-4217 currency code
      */
-    public Amounts(long base, String currency) {
-        this(new Amount(base, currency), null, null);
-    }
-
-    /**
-     * Initialise with a base and tip amount.
-     *
-     * @param base     The base amount in subunit form (cents, pence, etc)
-     * @param tip      The tip amount in subunit form (cents, pence, etc)
-     * @param currency The ISO-4217 currency code
-     */
-    public Amounts(long base, long tip, String currency) {
-        this(new Amount(base, currency), new Amount(tip, currency), null);
-    }
-
-    /**
-     * Initialise with a base, tip and other amount.
-     *
-     * @param base     The base amount in subunit form (cents, pence, etc)
-     * @param tip      The tip amount in subunit form (cents, pence, etc)
-     * @param other    The other amount in subunit form (cents, pence, etc)
-     * @param currency The ISO-4217 currency code
-     */
-    public Amounts(long base, long tip, long other, String currency) {
-        this(new Amount(base, currency), new Amount(tip, currency), new Amount(other, currency));
-    }
-
-    /**
-     * Initialise with a base, tip and other amount.
-     *
-     * Note that an exception will be thrown if the currencies differ.
-     *
-     * @param base  The base amount in subunit form (cents, pence, etc) with currency
-     * @param tip   The tip amount in subunit form (cents, pence, etc) with currency
-     * @param other The other amount in subunit form (cents, pence, etc) with currency
-     */
-    public Amounts(Amount base, Amount tip, Amount other) {
-        this.base = base;
-        this.tip = tip != null && tip.getValue() > 0 ? tip : null;
-        this.other = other != null && other.getValue() > 0 ? other : null;
-        validateAmounts();
+    public Amounts(long baseAmount, String currency) {
+        this(baseAmount, currency, new HashMap<String, Long>());
     }
 
     /**
@@ -68,19 +42,40 @@ public class Amounts implements Jsonable {
      * @param from The amounts to copy from
      */
     public Amounts(Amounts from) {
-        this(from.getBaseAmount(), from.getTipAmount(), from.getOtherAmount());
+        this(from.baseAmount, from.currency, from.additionalAmounts);
     }
 
-    private void validateAmounts() {
-        Preconditions.checkArgument(base != null && base.getValue() >= 0, "Base amount must be set and have a positive value");
-        if (tip != null) {
-            Preconditions.checkArgument(tip.getCurrency().equals(base.getCurrency()),
-                    "Tip currency must match base currency and have a positive value");
-        }
-        if (other != null) {
-            Preconditions.checkArgument(other.getCurrency().equals(base.getCurrency()),
-                    "Other currency must match base currency and have a positive value");
-        }
+    /**
+     * Initialise with base amount, currency and additional amounts map.
+     *
+     * See documentation for reference identifiers for additional amounts.
+     *
+     * @param baseAmount        The base amount in subunit form (cents, pence, etc)
+     * @param currency          The ISO-4217 currency code
+     * @param additionalAmounts The additional amounts
+     */
+    public Amounts(long baseAmount, String currency, Map<String, Long> additionalAmounts) {
+        checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
+        this.baseAmount = baseAmount;
+        this.currency = currency;
+        this.additionalAmounts = additionalAmounts;
+    }
+
+    /**
+     * Add an additional amount to complement the base amount.
+     *
+     * The additional amounts are represented via a string identifier and the amount value in subunit form.
+     *
+     * Examples of identifiers are "tip" and "cashback".
+     *
+     * See documentation for reference identifiers.
+     *
+     * @param identifier The string identifier for the amount
+     * @param amount     The amount value
+     */
+    public void addAdditionalAmount(String identifier, long amount) {
+        checkArgument(identifier != null && amount >= 0, "Identifier must be set and value must be >= 0");
+        additionalAmounts.put(identifier, amount);
     }
 
     /**
@@ -89,18 +84,7 @@ public class Amounts implements Jsonable {
      * @return The ISO-4217 currency code
      */
     public String getCurrency() {
-        return base.getCurrency();
-    }
-
-    /**
-     * Get the base amount model.
-     *
-     * Note - base amount is mandatory and never null, but can have a zero value.
-     *
-     * @return The base amount
-     */
-    public Amount getBaseAmount() {
-        return base;
+        return currency;
     }
 
     /**
@@ -111,114 +95,138 @@ public class Amounts implements Jsonable {
      * @return The base amount in subunit form
      */
     public long getBaseAmountValue() {
-        return base.getValue();
+        return baseAmount;
     }
 
     /**
-     * Get the tip amount model.
+     * Get an {@link Amount} representation of the base amount with associated currency.
      *
-     * Note - this can be null if tip has not been set.
-     *
-     * @return The tip amount
+     * @return Base {@link Amount}
      */
-    public Amount getTipAmount() {
-        return tip;
+    public Amount getBaseAmount() {
+        return new Amount(baseAmount, currency);
     }
 
     /**
-     * Get the tip amount in subunit form (cents, pence, etc).
+     * Get the additional amount value for the provided identifier.
      *
-     * This will return zero if the tip amount has not been set.
+     * If none is set, 0 will be returned.
      *
-     * @return The tip amount in subunit form
+     * @param identifier The identifier
+     * @return The amount value
      */
-    public long getTipAmountValue() {
-        return tip != null ? tip.getValue() : 0;
+    public long getAdditionalAmountValue(String identifier) {
+        if (additionalAmounts.containsKey(identifier)) {
+            return additionalAmounts.get(identifier);
+        }
+        return 0;
     }
 
     /**
-     * Get the other amount model.
+     * Get an {@link Amount} representation of the additional amount with associated currency.
      *
-     * Note - this can be null if other has not been set.
-     *
-     * @return The other amount
+     * @param identifier The identifier
+     * @return The additional {@link Amount}
      */
-    public Amount getOtherAmount() {
-        return other;
+    public Amount getAdditionalAmount(String identifier) {
+        return new Amount(getAdditionalAmountValue(identifier), currency);
     }
 
     /**
-     * Get the other amount in subunit form (cents, pence, etc).
+     * Get the map of all the additional amounts set.
      *
-     * This will return zero if other amount has not been set.
-     *
-     * @return The other amount in subunit form
+     * @return The map of identifier keys mapped to amount values
      */
-    public long getOtherAmountValue() {
-        return other != null ? other.getValue() : 0;
+    public Map<String, Long> getAdditionalAmounts() {
+        return additionalAmounts;
     }
 
     /**
-     * Get the total amount which includes base, tip and other.
-     *
-     * @return The total amount.
-     */
-    public Amount getTotalAmount() {
-        return new Amount(getTotalAmountValue(), getCurrency());
-    }
-
-    /**
-     * Get the total amount (base + tip + other) in subunit form.
+     * Get the total amount (base + additional amounts) in subunit form.
      *
      * @return The total amount
      */
     public long getTotalAmountValue() {
-        long total = base.getValue();
-        if (other != null) {
-            total += other.getValue();
-        }
-        if (tip != null) {
-            total += tip.getValue();
+        long total = baseAmount;
+        for (String key : additionalAmounts.keySet()) {
+            total += additionalAmounts.get(key);
         }
         return total;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Amounts that = (Amounts) o;
-
-        if (base != null ? !base.equals(that.base) : that.base != null) {
-            return false;
-        }
-        if (tip != null ? !tip.equals(that.tip) : that.tip != null) {
-            return false;
-        }
-        return other != null ? other.equals(that.other) : that.other == null;
-
+    /**
+     * Get an {@link Amount} representation of the total amount with associated currency.
+     *
+     * @return Total {@link Amount}
+     */
+    public Amount getTotalAmount() {
+        return new Amount(getTotalAmountValue(), currency);
     }
 
-    @Override
-    public int hashCode() {
-        int result = base != null ? base.hashCode() : 0;
-        result = 31 * result + (tip != null ? tip.hashCode() : 0);
-        result = 31 * result + (other != null ? other.hashCode() : 0);
-        return result;
+    /**
+     * Get the currency exchange rate associated with these amounts, if relevant.
+     *
+     * @return The currency exchange rate (from original currency to new currency)
+     */
+    public double getCurrencyExchangeRate() {
+        return currencyExchangeRate;
+    }
+
+    void setCurrencyExchangeRate(double currencyExchangeRate) {
+        this.currencyExchangeRate = currencyExchangeRate;
+    }
+
+    /**
+     * Get the original currency for these amounts.
+     *
+     * This will only be set if the currency has been changed.
+     *
+     * @return The original currency
+     */
+    public String getOriginalCurrency() {
+        return originalCurrency;
+    }
+
+    void setOriginalCurrency(String originalCurrency) {
+        this.originalCurrency = originalCurrency;
     }
 
     @Override
     public String toString() {
         return "Amounts{" +
-                "base=" + base +
-                ", tip=" + tip +
-                ", other=" + other +
+                "baseAmount=" + baseAmount +
+                ", additionalAmounts=" + additionalAmounts +
+                ", currency='" + currency + '\'' +
+                ", currencyExchangeRate=" + currencyExchangeRate +
+                ", originalCurrency='" + originalCurrency + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Amounts amounts = (Amounts) o;
+
+        if (baseAmount != amounts.baseAmount) return false;
+        if (Double.compare(amounts.currencyExchangeRate, currencyExchangeRate) != 0) return false;
+        if (additionalAmounts != null ? !additionalAmounts.equals(amounts.additionalAmounts) : amounts.additionalAmounts != null) return false;
+        if (currency != null ? !currency.equals(amounts.currency) : amounts.currency != null) return false;
+        return originalCurrency != null ? originalCurrency.equals(amounts.originalCurrency) : amounts.originalCurrency == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = (int) (baseAmount ^ (baseAmount >>> 32));
+        result = 31 * result + (additionalAmounts != null ? additionalAmounts.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        temp = Double.doubleToLongBits(currencyExchangeRate);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (originalCurrency != null ? originalCurrency.hashCode() : 0);
+        return result;
     }
 
     /**
@@ -232,23 +240,44 @@ public class Amounts implements Jsonable {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
         }
-        return new Amounts(a1.getBaseAmountValue() + a2.getBaseAmountValue(), a1.getTipAmountValue() + a2.getTipAmountValue(),
-                a1.getOtherAmountValue() + a2.getOtherAmountValue(),
-                a1.getCurrency());
+        long newBaseAmount = a1.getBaseAmountValue() + a2.getBaseAmountValue();
+        Map<String, Long> newAdditionals = new HashMap<>(a1.getAdditionalAmounts());
+        Map<String, Long> a2Additionals = a2.getAdditionalAmounts();
+        for (String a2Key : a2Additionals.keySet()) {
+            if (newAdditionals.containsKey(a2Key)) {
+                newAdditionals.put(a2Key, newAdditionals.get(a2Key) + a2Additionals.get(a2Key));
+            } else {
+                newAdditionals.put(a2Key, a2Additionals.get(a2Key));
+            }
+        }
+
+        return new Amounts(newBaseAmount, a1.getCurrency(), newAdditionals);
     }
 
     /**
      * Subtract one amounts from another.
      *
+     * Note that the result Amounts will only contain additionalAmounts defined in a1, the one being subtracted from.
+     * If an amount is set in a2 only, it will not be added to the resulting Amounts.
+     *
      * @param a1 The amounts to subtract a2 from
-     * @param a2 The amount of which a1 will be reduced by
+     * @param a2 The amounts of which a1 will be reduced by
      * @return The reduced amounts
      */
     public static Amounts subtractAmounts(Amounts a1, Amounts a2) {
+        if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
+            throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
+        }
         long remainingBase = Math.max(a1.getBaseAmountValue() - a2.getBaseAmountValue(), 0);
-        long remainingTip = Math.max(a1.getTipAmountValue() - a2.getTipAmountValue(), 0);
-        long remainingOther = Math.max(a1.getOtherAmountValue() - a2.getOtherAmountValue(), 0);
-        return new Amounts(remainingBase, remainingTip, remainingOther, a1.getCurrency());
+        Map<String, Long> newAdditionals = new HashMap<>(a1.getAdditionalAmounts());
+        Map<String, Long> a2Additionals = a2.getAdditionalAmounts();
+        for (String a2Key : a2Additionals.keySet()) {
+            if (newAdditionals.containsKey(a2Key)) {
+                newAdditionals.put(a2Key, Math.max(newAdditionals.get(a2Key) - a2Additionals.get(a2Key), 0));
+            }
+        }
+
+        return new Amounts(remainingBase, a1.getCurrency(), newAdditionals);
     }
 
     @Override

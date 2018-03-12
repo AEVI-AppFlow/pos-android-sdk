@@ -1,6 +1,8 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import com.aevi.sdk.flow.model.AdditionalData;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdditionalDataTest {
 
-    private com.aevi.sdk.flow.model.AdditionalData additionalData;
+    private AdditionalData additionalData;
 
     @Before
     public void setUp() throws Exception {
-        additionalData = new com.aevi.sdk.flow.model.AdditionalData();
+        additionalData = new AdditionalData();
     }
 
     @Test

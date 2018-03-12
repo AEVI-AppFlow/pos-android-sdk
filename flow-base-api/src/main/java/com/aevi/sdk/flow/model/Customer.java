@@ -3,9 +3,9 @@ package com.aevi.sdk.flow.model;
 import com.aevi.sdk.flow.constants.CustomerDetails;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
@@ -27,7 +27,7 @@ public class Customer extends BaseModel {
     public Customer(String id) {
         super(id);
         customerDetails = new AdditionalData();
-        tokens = new CopyOnWriteArrayList<>();
+        tokens = new ArrayList<>();
     }
 
     /**

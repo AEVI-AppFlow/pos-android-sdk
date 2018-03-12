@@ -9,10 +9,7 @@ import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +25,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
@@ -73,7 +68,7 @@ public class PaymentClientImplTest extends ApiTestBase {
 
     @Test
     public void checkInitiatePayment() throws Exception {
-        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).build();
+        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP")).build();
 
         paymentClient.initiatePayment(payment).test();
 

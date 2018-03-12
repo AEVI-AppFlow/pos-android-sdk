@@ -3,23 +3,30 @@ package com.aevi.sdk.pos.flow.model;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.annotations.Nullable;
 
 /**
- * Represents a customer basket.
+ * Represents a basket consisting of one or multiple {@link BasketItem}.
+ *
+ * Note that the total value of the basket items must match the amounts set for the request that wraps this basket.
  */
 public class Basket implements Jsonable {
 
-    private final List<BasketItem> displayItems = new CopyOnWriteArrayList<>();
+    private final List<BasketItem> displayItems = new ArrayList<>();
 
     public List<BasketItem> getDisplayItems() {
         return displayItems;
     }
 
+    /**
+     * Add a new basket item
+     *
+     * @param item The item to add
+     */
     public void addItem(BasketItem item) {
         this.displayItems.add(0, item);
     }
@@ -144,6 +151,28 @@ public class Basket implements Jsonable {
                 displayItems.remove(itemLine);
             }
         }
+    }
+
+    /**
+     * Get the number of unique items in the basket.
+     *
+     * @return The number of unique items in the basket
+     */
+    public int getNumberOfUniqueItems() {
+        return displayItems.size();
+    }
+
+    /**
+     * Get the total basket value.
+     *
+     * @return The total basket value
+     */
+    public long getTotalBasketValue() {
+        long total = 0;
+        for (BasketItem displayItem : displayItems) {
+            total += displayItem.getTotalAmount();
+        }
+        return total;
     }
 
     /**

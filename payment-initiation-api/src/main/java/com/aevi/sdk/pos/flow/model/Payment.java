@@ -15,7 +15,9 @@ import io.reactivex.annotations.Nullable;
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 /**
- * Payment model containing relevant information for initiating payments.
+ * Payment model containing relevant information for initiating payments involving amounts.
+ *
+ * For other type of requests (such as reversals), please see {@link com.aevi.sdk.flow.model.Request}
  */
 public class Payment extends BaseModel {
 
@@ -65,6 +67,7 @@ public class Payment extends BaseModel {
     private void validateArguments() {
         checkArgument(getId() != null, "Id cannot be null");
         checkArgument(transactionType != null, "Type cannot be null");
+        checkArgument(amounts != null, "Amounts cannot be null");
     }
 
     /**
@@ -72,7 +75,7 @@ public class Payment extends BaseModel {
      *
      * @return The amounts
      */
-    @Nullable
+    @NonNull
     public Amounts getAmounts() {
         return amounts;
     }
