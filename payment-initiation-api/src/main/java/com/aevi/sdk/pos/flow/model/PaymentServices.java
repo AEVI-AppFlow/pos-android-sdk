@@ -48,6 +48,29 @@ public class PaymentServices {
     }
 
     /**
+     * Check whether a particular request type is supported by at least one of the payment services.
+     *
+     * @param requestType The request type to check if supported
+     * @return True if at least one payment service support it, false otherwise
+     */
+    public boolean isRequestTypeSupported(String requestType) {
+        return getAllSupportedRequestTypes().contains(requestType);
+    }
+
+    /**
+     * Retrieve a consolidated set of all the supported request types across all the payment services.
+     *
+     * @return A consolidated set of all the supported request types across all the payment services
+     */
+    public Set<String> getAllSupportedRequestTypes() {
+        Set<String> requestTypes = new HashSet<>();
+        for (PaymentServiceInfo serviceInfo : paymentServiceInfoList) {
+            requestTypes.addAll(Arrays.asList(serviceInfo.getSupportedRequestTypes()));
+        }
+        return requestTypes;
+    }
+
+    /**
      * Check whether a particular transaction type is supported by at least one of the payment services.
      *
      * @param transactionType The transaction type to check if supported
@@ -104,21 +127,6 @@ public class PaymentServices {
             dataKeys.addAll(Arrays.asList(serviceInfo.getSupportedDataKeys()));
         }
         return dataKeys;
-    }
-
-    /**
-     * Retrieve a list of all the payment services that support tokenisation.
-     *
-     * @return A list of all payment services that supports tokenisation
-     */
-    public List<PaymentServiceInfo> getPaymentServicesSupportingTokenisation() {
-        List<PaymentServiceInfo> paymentServices = new ArrayList<>();
-        for (PaymentServiceInfo serviceInfo : paymentServiceInfoList) {
-            if (serviceInfo.supportsTokenization()) {
-                paymentServices.add(serviceInfo);
-            }
-        }
-        return paymentServices;
     }
 
     /**

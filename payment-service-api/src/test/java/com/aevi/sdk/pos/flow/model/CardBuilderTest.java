@@ -27,4 +27,10 @@ public class CardBuilderTest {
         assertThat(card.getAdditionalData().getValue("blaha")).isEqualTo("bluhu");
         assertThat(card.getCardToken().getSourceAppId()).isEqualTo("123");
     }
+
+    @Test
+    public void shouldMaskPanCorrectly() throws Exception {
+        String maskedPan = CardBuilder.maskPan("1234123412341234");
+        assertThat(maskedPan).isEqualTo("123412XXXXXX1234");
+    }
 }

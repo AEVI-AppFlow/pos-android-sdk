@@ -7,6 +7,9 @@ import com.aevi.sdk.flow.constants.TransactionTypes;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
+/**
+ * Builder to construct {@link FlowServiceInfo} instances.
+ */
 public class FlowServiceInfoBuilder {
 
     private String vendor;
@@ -16,7 +19,7 @@ public class FlowServiceInfoBuilder {
     private String[] capabilities;
     private boolean supportsAccessibility;
     private String[] paymentMethods;
-    private String[] supportedCurrencies;
+    private String[] supportedCurrencies = new String[0];
     // TODO Until we know how to manage request and transaction types, they will default to payment and sale here
     private String[] supportedRequestTypes = new String[]{FinancialRequestTypes.PAYMENT};
     private String[] supportedTransactionTypes = new String[]{TransactionTypes.SALE};
@@ -151,6 +154,8 @@ public class FlowServiceInfoBuilder {
      *
      * If this flag is set and the payment service does not provide a card token, this service will not get called.
      *
+     * Defaults to false.
+     *
      * @param requiresCardToken True if card token is required, false otherwise
      * @return This builder
      */
@@ -164,6 +169,8 @@ public class FlowServiceInfoBuilder {
      * Set which {@link com.aevi.sdk.flow.model.AdditionalData} keys this flow service supports / takes into account.
      *
      * See reference values in the documentation for possible values.
+     *
+     * Defaults to empty list.
      *
      * @param supportedDataKeys The array of supported data keys
      * @return This builder
@@ -191,52 +198,73 @@ public class FlowServiceInfoBuilder {
     }
 
     /**
-     * Set whether this service can adjust the requested amounts for the current request, and for what currencies this is supported for.
+     * Set whether this service can adjust the requested amounts for the current request.
      *
      * This is typically used to add a charge/fee, or for charity, or to split a request.
      *
      * Note that such operations will be rejected from this service if the flag is not set.
      *
-     * Defaults to false. If set and there is no currency restriction, the currency var-args can be left out.
+     * In order to specify what currencies this is supported for, please see {@link #withSupportedCurrencies(String...)}.
+     *
+     * Defaults to false.
      *
      * See reference values in the documentation for possible values of payment methods.
      *
-     * @param canAdjustAmounts    True if the service can adjust amounts, false otherwise
-     * @param supportedCurrencies The set of supported currencies as 3 letter ISO-4217 currency codes. If not set, defaults to all possible currencies
+     * @param canAdjustAmounts True if the service can adjust amounts, false otherwise
      * @return This builder
      */
-    public FlowServiceInfoBuilder withCanAdjustAmounts(boolean canAdjustAmounts, String... supportedCurrencies) {
+    public FlowServiceInfoBuilder withCanAdjustAmounts(boolean canAdjustAmounts) {
         this.canAdjustAmounts = canAdjustAmounts;
-        this.supportedCurrencies = supportedCurrencies;
         return this;
     }
 
     /**
      * Set whether this service can pay/charge the customer via non-payment card means, such as rewards or loyalty points.
      *
-     * If set to true, the payment methods used must be set. If no supported currencies are set, it is assumed all currencies are supported.
+     * If set to true, the payment methods used must be set.
      *
      * Note that attempts of paying amounts will be rejected from this service if these flags are not set correctly.
+     *
+     * In order to specify what currencies this is supported for, please see {@link #withSupportedCurrencies(String...)}.
      *
      * Defaults to false.
      *
      * See reference values in the documentation for possible values of payment methods.
      *
-     * @param canPayAmounts       True if the service can pay amounts, false otherwise
-     * @param paymentMethods      A set of payment methods used by the service (must not be empty)
-     * @param supportedCurrencies The set of supported currencies as 3 letter ISO-4217 currency codes (can be empty to support all currencies)
+     * @param canPayAmounts  True if the service can pay amounts, false otherwise
+     * @param paymentMethods A set of payment methods used by the service (must not be empty)
      * @return This builder
      */
-    public FlowServiceInfoBuilder withCanPayAmounts(boolean canPayAmounts, String[] paymentMethods, String... supportedCurrencies) {
+    public FlowServiceInfoBuilder withCanPayAmounts(boolean canPayAmounts, String... paymentMethods) {
         if (canPayAmounts && (paymentMethods == null || paymentMethods.length == 0)) {
             throw new IllegalArgumentException("If canPayAmounts flag is set, payment methods must be provided");
         }
         this.canPayAmounts = canPayAmounts;
         this.paymentMethods = paymentMethods;
+        return this;
+    }
+
+    /**
+     * Set a list of supported currencies. If this is not set, the default is that all currencies are supported.
+     *
+     * Note that if you do restrict the currency support, it is possible your application will not get called for requests of other currencies.
+     *
+     * This is only relevant if the application supports either adjusting or paying amounts.
+     *
+     * @param supportedCurrencies The set of supported currencies as 3 letter ISO-4217 currency codes (can be empty to support all currencies)
+     * @return This builder
+     */
+    public FlowServiceInfoBuilder withSupportedCurrencies(String... supportedCurrencies) {
         this.supportedCurrencies = supportedCurrencies;
         return this;
     }
 
+    /**
+     * Build the {@link FlowServiceInfo}.
+     *
+     * @param context The Android context
+     * @return A new FlowServiceInfo instance
+     */
     public FlowServiceInfo build(Context context) {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(version, "Version must be set");

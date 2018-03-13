@@ -1,4 +1,4 @@
-package com.aevi.sdk.pos.flow.model;
+package com.aevi.sdk.flow.model;
 
 
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -86,8 +86,9 @@ public class AdditionalDataTest {
 
     @Test
     public void canGetOptionOfComplexType() throws IOException {
-        additionalData.addData("basket", new com.aevi.sdk.pos.flow.model.Basket());
-        assertThat(additionalData.getValue("basket", com.aevi.sdk.pos.flow.model.Basket.class)).isNotNull();
+        Customer customer = new Customer("123");
+        additionalData.addData("customer", customer);
+        assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
     }
 
     @Test

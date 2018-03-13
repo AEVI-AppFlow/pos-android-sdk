@@ -23,7 +23,6 @@ public final class PaymentServiceInfoBuilder {
     private boolean supportManualEntry;
     private String operatingMode;
     private boolean hasAccessibilityMode;
-    private boolean canTokenize;
     private boolean willPrintReceipts;
     private boolean supportsFlowCardReading;
     private String[] supportedDataKeys;
@@ -194,17 +193,6 @@ public final class PaymentServiceInfoBuilder {
     }
 
     /**
-     * Flag indicating if this payment service is capable of tokenizing cards or not.
-     *
-     * @param supportsTokenization True if this service can tokenize cards
-     * @return This builder
-     */
-    public PaymentServiceInfoBuilder withSupportsTokenization(boolean supportsTokenization) {
-        this.canTokenize = supportsTokenization;
-        return this;
-    }
-
-    /**
      * Flag indicating if this payment service will print its own receipts or not.
      *
      * @param willPrintReceipts True if this app will print its own receipts
@@ -265,7 +253,7 @@ public final class PaymentServiceInfoBuilder {
         return new PaymentServiceInfo(createPaymentServiceId(packageName, terminalId),
                 packageName, vendor, version, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
                 supportedRequestTypes,
-                supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, canTokenize, willPrintReceipts,
+                supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, willPrintReceipts,
                 supportsFlowCardReading, supportedDataKeys);
     }
 

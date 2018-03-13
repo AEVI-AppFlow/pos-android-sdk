@@ -17,6 +17,12 @@ dependencies {
     implementation apiDependencies.jsonConverter
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
+
+    testImplementation apiDependencies.androidMockable
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.assertJ
+    testImplementation testDependencies.robolectric
 }
 
 javadoc {

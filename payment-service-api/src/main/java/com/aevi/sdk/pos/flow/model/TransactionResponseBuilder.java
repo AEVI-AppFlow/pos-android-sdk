@@ -35,7 +35,7 @@ public final class TransactionResponseBuilder {
      * @param card The card details
      * @return This builder
      */
-    public TransactionResponseBuilder withCard(com.aevi.sdk.pos.flow.model.Card card) {
+    public TransactionResponseBuilder withCard(Card card) {
         this.card = card;
         return this;
     }
@@ -99,6 +99,8 @@ public final class TransactionResponseBuilder {
 
     /**
      * Set the payment method (such as card or cash) for this transaction.
+     *
+     * Defaults to "card".
      *
      * @param paymentMethod The payment method used.
      * @return This builder

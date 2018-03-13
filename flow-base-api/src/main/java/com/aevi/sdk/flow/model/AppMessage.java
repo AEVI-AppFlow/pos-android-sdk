@@ -9,6 +9,8 @@ import com.aevi.util.json.Jsonable;
  */
 public class AppMessage implements Jsonable {
 
+    public static final String EMPTY_DATA = "{}";
+
     private final String messageType; // See AppMessageTypes
     private final String messageData; // The message data in JSON
     private String internalData; // Data that may be useful for internal use, such as API version, etc
@@ -36,7 +38,7 @@ public class AppMessage implements Jsonable {
     }
 
     public String getMessageData() {
-        return messageData != null ? messageData : "{}";
+        return messageData != null ? messageData : EMPTY_DATA;
     }
 
     private void setInternalData(InternalData internalData) {

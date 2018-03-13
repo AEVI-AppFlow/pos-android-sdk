@@ -29,16 +29,7 @@ public class PaymentTest {
     }
 
     @Test
-    public void canSerialise() {
-        Payment payment = getValidRequest(1000, "GBP", SALE);
-
-        String json = payment.toJson();
-
-        assertThat(json).isNotNull();
-    }
-
-    @Test
-    public void canDeserialize() {
+    public void canSerialiseAndDeserialize() {
         Payment payment = getValidRequest(1000, "GBP", SALE);
 
         Payment result = Payment.fromJson(payment.toJson());

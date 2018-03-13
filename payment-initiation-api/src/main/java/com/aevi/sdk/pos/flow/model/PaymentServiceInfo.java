@@ -23,13 +23,12 @@ public class PaymentServiceInfo extends BaseServiceInfo {
     private final String[] merchantIds;
     private final boolean supportManualEntry;
     private final String operatingMode;
-    private final boolean canTokenize;
     private final boolean willPrintReceipts;
     private final boolean supportsFlowCardReading;
 
     PaymentServiceInfo(String paymentServiceId, String packageName, String vendor, String version, String displayName, String[] paymentMethods, String[] supportedCurrencies, String defaultCurrency,
                        String terminalId, String[] merchantIds, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean supportManualEntry,
-                       String operatingMode, boolean hasAccessibilityMode, boolean canTokenize, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {
+                       String operatingMode, boolean hasAccessibilityMode, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {
         super(paymentServiceId, vendor, version, displayName, hasAccessibilityMode, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
         this.packageName = packageName;
         this.defaultCurrency = defaultCurrency;
@@ -37,7 +36,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
         this.merchantIds = merchantIds != null ? merchantIds : new String[0];
         this.supportManualEntry = supportManualEntry;
         this.operatingMode = operatingMode;
-        this.canTokenize = canTokenize;
         this.willPrintReceipts = willPrintReceipts;
         this.supportsFlowCardReading = supportsFlowCardReading;
     }
@@ -94,15 +92,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
     }
 
     /**
-     * Returns whether or not this payment service can tokenize cards for use with later requests.
-     *
-     * @return true if the payment service has the ability to tokenize cards.
-     */
-    public boolean supportsTokenization() {
-        return canTokenize;
-    }
-
-    /**
      * Returns true if this payment service prints transaction receipts internally.
      *
      * If this flag is set, external receipt printing should not be performed.
@@ -150,7 +139,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
                 ", merchantIds=" + Arrays.toString(merchantIds) +
                 ", supportManualEntry=" + supportManualEntry +
                 ", operatingMode='" + operatingMode + '\'' +
-                ", canTokenize=" + canTokenize +
                 ", willPrintReceipts=" + willPrintReceipts +
                 ", supportsFlowCardReading=" + supportsFlowCardReading +
                 "} " + super.toString();
@@ -165,7 +153,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
         PaymentServiceInfo that = (PaymentServiceInfo) o;
 
         if (supportManualEntry != that.supportManualEntry) return false;
-        if (canTokenize != that.canTokenize) return false;
         if (willPrintReceipts != that.willPrintReceipts) return false;
         if (supportsFlowCardReading != that.supportsFlowCardReading) return false;
         if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) return false;
@@ -185,7 +172,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
         result = 31 * result + Arrays.hashCode(merchantIds);
         result = 31 * result + (supportManualEntry ? 1 : 0);
         result = 31 * result + (operatingMode != null ? operatingMode.hashCode() : 0);
-        result = 31 * result + (canTokenize ? 1 : 0);
         result = 31 * result + (willPrintReceipts ? 1 : 0);
         result = 31 * result + (supportsFlowCardReading ? 1 : 0);
         return result;

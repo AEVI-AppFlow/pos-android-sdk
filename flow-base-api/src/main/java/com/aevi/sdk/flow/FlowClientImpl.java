@@ -1,6 +1,7 @@
 package com.aevi.sdk.flow;
 
 
+import android.content.ComponentName;
 import android.content.Context;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
@@ -13,7 +14,7 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
-public final class FlowClientImpl extends ApiBase implements FlowClient {
+public class FlowClientImpl extends ApiBase implements FlowClient {
 
     private static final String API_PROPS_FILE = "flow-api.properties";
     private final Context context;
@@ -25,7 +26,7 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<List<Device>> getDevices() {
-        final ObservableMessengerClient deviceMessenger = new ObservableMessengerClient(context, DEVICE_LIST_SERVICE_COMPONENT);
+        final ObservableMessengerClient deviceMessenger = getClient(DEVICE_LIST_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
@@ -46,7 +47,7 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<FlowServices> getFlowServices() {
-        final ObservableMessengerClient flowInfoMessenger = new ObservableMessengerClient(context, FLOW_SERVICE_INFO_COMPONENT);
+        final ObservableMessengerClient flowInfoMessenger = getClient(FLOW_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return flowInfoMessenger
                 .sendMessage(appMessage.toJson())
@@ -69,6 +70,10 @@ public final class FlowClientImpl extends ApiBase implements FlowClient {
                         flowInfoMessenger.closeConnection();
                     }
                 });
+    }
+
+    protected ObservableMessengerClient getClient(ComponentName componentName) {
+        return new ObservableMessengerClient(context, componentName);
     }
 
     @Override

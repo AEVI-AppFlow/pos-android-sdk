@@ -56,6 +56,19 @@ public class FlowServices {
     }
 
     /**
+     * Retrieve a consolidated set of all the supported request types across all the flow services.
+     *
+     * @return A consolidated set of all the supported request types across all the flow services
+     */
+    public Set<String> getAllSupportedRequestTypes() {
+        Set<String> requestTypes = new HashSet<>();
+        for (FlowServiceInfo serviceInfo : flowServiceInfoList) {
+            requestTypes.addAll(Arrays.asList(serviceInfo.getSupportedRequestTypes()));
+        }
+        return requestTypes;
+    }
+
+    /**
      * Retrieve a consolidated set of supported payment methods across all the flow services.
      *
      * @return A consolidated set of supported payment methods across all the flow services

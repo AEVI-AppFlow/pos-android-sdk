@@ -38,7 +38,7 @@ public class TransactionTest {
         assertThat(transaction.getProcessedAmounts()).isEqualTo(expectedProcessed);
     }
 
-    private static com.aevi.sdk.pos.flow.model.TransactionResponse getResponse(Amounts amounts) {
-        return new com.aevi.sdk.pos.flow.model.TransactionResponse("", null, null, null, amounts, null, null, null);
+    private static TransactionResponse getResponse(Amounts amounts) {
+        return new TransactionResponse("", null, null, null, amounts, null, null, null);
     }
 }

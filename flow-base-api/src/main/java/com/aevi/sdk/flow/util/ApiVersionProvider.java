@@ -12,14 +12,20 @@ public final class ApiVersionProvider {
     }
 
     public static String getApiVersion(String propsFile) {
+        return readProperty(getPropsFileInputStream(propsFile));
+    }
+
+    static String readProperty(InputStream is) {
         try {
             Properties properties = new Properties();
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream is = classLoader.getResourceAsStream(propsFile);
             properties.load(is);
             return properties.getProperty(VERSION_PROP);
         } catch (Exception e) {
             return "Unknown";
         }
+    }
+
+    static InputStream getPropsFileInputStream(String propsFile) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(propsFile);
     }
 }
