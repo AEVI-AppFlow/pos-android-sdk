@@ -2,13 +2,13 @@ package com.aevi.sdk.pos.flow;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.model.*;
@@ -32,17 +32,12 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
-public class PaymentClientImplTest extends ApiTestBase {
+public class PaymentClientImplTest {
 
-    private final String REQUEST_MSG_NO_DATA = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData()).toJson();
     private PaymentClientImpl paymentClient;
 
     @Mock
     private ObservableMessengerClient messengerClient;
-
-    public PaymentClientImplTest() {
-        super("payment-api.properties");
-    }
 
     @Before
     public void setup() {
@@ -64,19 +59,18 @@ public class PaymentClientImplTest extends ApiTestBase {
 
         TestObserver<PaymentServices> testObserver = paymentClient.getPaymentServices().test();
 
-        verify(messengerClient).sendMessage(REQUEST_MSG_NO_DATA);
+        AppMessage appMessage = callSendAndCaptureMessage();
+        assertThat(appMessage.getMessageData()).isEqualTo(AppMessage.EMPTY_DATA);
         PaymentServices result = testObserver.values().get(0);
         assertThat(result.getAllPaymentServices()).hasSize(1);
         assertThat(result.getAllPaymentServices().get(0)).isEqualTo(testInfo);
         verify(messengerClient).closeConnection();
     }
 
-    private PaymentServiceInfo getPaymentServiceInfo() {
-        Context context = mock(Context.class);
-        when(context.getPackageName()).thenReturn("com.test");
+    private PaymentServiceInfo getPaymentServiceInfo() throws PackageManager.NameNotFoundException {
+        Context context = TestEnvironment.mockContext("com.test", "1.2.3");
         return new PaymentServiceInfoBuilder()
                 .withVendor("Test")
-                .withVersion("1.0.0")
                 .withDisplayName("PA one")
                 .withTerminalId("1234")
                 .withMerchantIds("5678")

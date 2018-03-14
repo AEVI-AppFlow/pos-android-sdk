@@ -9,6 +9,17 @@ public final class FlowApi {
     }
 
     /**
+     * Get the API version.
+     *
+     * The API versioning follows semver rules with major.minor.patch versions.
+     *
+     * @return The API version
+     */
+    public static String getApiVersion() {
+        return FlowBaseConfig.VERSION;
+    }
+
+    /**
      * Returns true if the processing service that handles API requests is installed.
      *
      * If not installed, none of the API calls will function.

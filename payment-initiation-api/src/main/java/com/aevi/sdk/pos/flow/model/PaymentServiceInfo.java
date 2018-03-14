@@ -26,10 +26,10 @@ public class PaymentServiceInfo extends BaseServiceInfo {
     private final boolean willPrintReceipts;
     private final boolean supportsFlowCardReading;
 
-    PaymentServiceInfo(String paymentServiceId, String packageName, String vendor, String version, String displayName, String[] paymentMethods, String[] supportedCurrencies, String defaultCurrency,
+    PaymentServiceInfo(String paymentServiceId, String packageName, String vendor, String version, String apiVersion, String displayName, String[] paymentMethods, String[] supportedCurrencies, String defaultCurrency,
                        String terminalId, String[] merchantIds, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean supportManualEntry,
                        String operatingMode, boolean hasAccessibilityMode, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {
-        super(paymentServiceId, vendor, version, displayName, hasAccessibilityMode, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
+        super(paymentServiceId, vendor, version, apiVersion, displayName, hasAccessibilityMode, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
         this.packageName = packageName;
         this.defaultCurrency = defaultCurrency;
         this.terminalId = terminalId;

@@ -15,6 +15,17 @@ public final class PaymentApi {
     }
 
     /**
+     * Get the API version.
+     *
+     * The API versioning follows semver rules with major.minor.patch versions.
+     *
+     * @return The API version
+     */
+    public static String getApiVersion() {
+        return PaymentInitiationConfig.VERSION;
+    }
+
+    /**
      * Returns true if the processing service that handles API requests is installed.
      *
      * If not installed, none of the API calls will function.
@@ -23,6 +34,16 @@ public final class PaymentApi {
      */
     public static boolean isProcessingServiceInstalled(Context context) {
         return ApiBase.isProcessingServiceInstalled(context);
+    }
+
+    /**
+     * Get the processing service version installed on this device.
+     *
+     * @param context The Android context
+     * @return The processing service version (semver format)
+     */
+    public static String getProcessingServiceVersion(Context context) {
+        return ApiBase.getProcessingServiceVersion(context);
     }
 
     /**

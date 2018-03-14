@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 
 public class ApiTestBase extends ApiBase {
 
-    protected ApiTestBase(String propsFile) {
-        super(propsFile);
+    protected ApiTestBase(String version) {
+        super(version);
     }
 
     protected void setupMockBoundMessengerService() {

@@ -10,7 +10,7 @@ import java.util.Arrays;
  *
  * See {@link BaseServiceInfo} for inherited information.
  *
- * Use {@link FlowServiceInfoBuilder} to construct an instance.
+ * Use flow-service-api FlowServiceInfoBuilder to construct an instance.
  */
 public class FlowServiceInfo extends BaseServiceInfo {
 
@@ -21,10 +21,13 @@ public class FlowServiceInfo extends BaseServiceInfo {
     private final boolean canAdjustAmounts;
     private final boolean canPayAmounts;
 
-    FlowServiceInfo(String id, String vendor, String version, String appName, boolean supportsAccessibility, String[] stages, String[] capabilities,
-                    String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean requiresCardToken,
-                    String[] supportedDataKeys, boolean backgroundOnly, boolean canAdjustAmounts, boolean canPayAmounts) {
-        super(id, vendor, version, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
+    /**
+     * Use flow-service-api FlowServiceInfoBuilder for construction.
+     */
+    public FlowServiceInfo(String id, String vendor, String version, String apiVersion, String appName, boolean supportsAccessibility, String[] stages, String[] capabilities,
+                           String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean requiresCardToken,
+                           String[] supportedDataKeys, boolean backgroundOnly, boolean canAdjustAmounts, boolean canPayAmounts) {
+        super(id, vendor, version, apiVersion, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
         this.stages = stages;
         this.capabilities = capabilities;
         this.requiresCardToken = requiresCardToken;

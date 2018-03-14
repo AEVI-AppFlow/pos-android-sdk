@@ -9,7 +9,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.util.ApiVersionProvider;
 
 import java.util.List;
 
@@ -24,8 +23,7 @@ public abstract class ApiBase {
 
     private final InternalData internalData;
 
-    protected ApiBase(String propsFile) {
-        String apiVersion = ApiVersionProvider.getApiVersion(propsFile);
+    protected ApiBase(String apiVersion) {
         internalData = new InternalData(apiVersion);
     }
 
@@ -54,5 +52,13 @@ public abstract class ApiBase {
         List<ResolveInfo> resolveInfo = packageManager
                 .queryIntentServices(getIntent(FLOW_PROCESSING_SERVICE_COMPONENT), PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() == 1 && resolveInfo.get(0).serviceInfo != null;
+    }
+
+    public static String getProcessingServiceVersion(Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(PAYMENT_CONTROL_SERVICE_PACKAGE, 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0.0.0";
+        }
     }
 }

@@ -16,11 +16,10 @@ import io.reactivex.functions.Function;
 
 public class FlowClientImpl extends ApiBase implements FlowClient {
 
-    private static final String API_PROPS_FILE = "flow-api.properties";
     private final Context context;
 
     FlowClientImpl(Context context) {
-        super(API_PROPS_FILE);
+        super(FlowBaseConfig.VERSION);
         this.context = context;
     }
 

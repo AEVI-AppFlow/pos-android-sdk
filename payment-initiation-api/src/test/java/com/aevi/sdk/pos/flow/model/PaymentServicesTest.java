@@ -112,7 +112,6 @@ public class PaymentServicesTest {
     private void buildPaymentServiceInfoOne() {
         paymentServiceInfoOne = new PaymentServiceInfoBuilder()
                 .withVendor("Test")
-                .withVersion("1.0.0")
                 .withDisplayName("PA one")
                 .withTerminalId("1234")
                 .withMerchantIds("5678")
@@ -123,13 +122,12 @@ public class PaymentServicesTest {
                 .withSupportedDataKeys("dataOne", "dataTwo")
                 .withPaymentMethods("pushups", "pullups")
                 .withSupportsFlowCardReading(true)
-                .build("com.test.one");
+                .build("com.test.one", "1.1.1");
     }
 
     private void buildPaymentServiceInfoTwo() {
         paymentServiceInfoTwo = new PaymentServiceInfoBuilder()
                 .withVendor("Test")
-                .withVersion("1.0.0")
                 .withDisplayName("PA two")
                 .withTerminalId("4321")
                 .withMerchantIds("8765")
@@ -141,7 +139,7 @@ public class PaymentServicesTest {
                 .withPaymentMethods("pushups", "situps")
                 .withSupportsFlowCardReading(false)
                 .withSupportsAccessibilityMode(true)
-                .build("com.test.two");
+                .build("com.test.two", "2.2.2");
     }
 
 }

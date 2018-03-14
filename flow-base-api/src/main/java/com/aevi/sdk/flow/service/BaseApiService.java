@@ -94,6 +94,17 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
     }
 
     /**
+     * Get the API version.
+     *
+     * The API versioning follows semver rules with major.minor.patch versions.
+     *
+     * @return The API version
+     */
+    protected String getApiVersion() {
+        return internalData.getSenderApiVersion();
+    }
+
+    /**
      * Finish without passing any response back.
      *
      * This is the preferred approach for any case where no response data was generated.

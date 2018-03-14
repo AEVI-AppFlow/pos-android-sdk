@@ -3,11 +3,9 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 apply from: '../publish-repo.gradle'
-apply from: '../api-properties.gradle'
 
 group = 'com.aevi.sdk.pos.flow'
 version = "${apiVersion}"
-ext.propsFile = "payment-service-api.properties"
 
 dependencies {
     api project(':payment-initiation-api')
@@ -32,6 +30,10 @@ javadoc {
     classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
     title = "Payment Service API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+buildConfig {
+    clsName = 'PaymentServiceConfig'
 }
 
 apply from: '../jar-publisher.gradle'

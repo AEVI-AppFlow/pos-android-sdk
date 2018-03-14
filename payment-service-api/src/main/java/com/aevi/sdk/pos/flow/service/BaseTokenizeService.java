@@ -2,7 +2,7 @@ package com.aevi.sdk.pos.flow.service;
 
 import com.aevi.sdk.flow.model.NoOpModel;
 import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.flow.util.ApiVersionProvider;
+import com.aevi.sdk.pos.flow.PaymentServiceApi;
 import com.aevi.sdk.pos.flow.model.TokenResponse;
 
 /**
@@ -27,7 +27,7 @@ import com.aevi.sdk.pos.flow.model.TokenResponse;
 public abstract class BaseTokenizeService extends BaseApiService<NoOpModel, TokenResponse> {
 
     public BaseTokenizeService() {
-        super(NoOpModel.class, ApiVersionProvider.getApiVersion(ApiProperties.API_PROPERTIES_FILE));
+        super(NoOpModel.class, PaymentServiceApi.getApiVersion());
     }
 
     @Override

@@ -13,7 +13,8 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 public abstract class BaseServiceInfo extends BaseModel {
 
     private final String vendor;
-    private final String version;
+    private final String serviceVersion;
+    private final String apiVersion;
     private final String displayName;
     private final boolean hasAccessibilityMode;
     private final String[] paymentMethods;
@@ -22,11 +23,12 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final String[] supportedTransactionTypes;
     private final String[] supportedDataKeys;
 
-    protected BaseServiceInfo(String id, String vendor, String version, String displayName, boolean hasAccessibilityMode,
+    protected BaseServiceInfo(String id, String vendor, String serviceVersion, String apiVersion, String displayName, boolean hasAccessibilityMode,
                               String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, String[] supportedDataKeys) {
         super(id);
         this.vendor = vendor;
-        this.version = version;
+        this.serviceVersion = serviceVersion;
+        this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
         this.paymentMethods = paymentMethods != null ? paymentMethods : new String[0];
@@ -39,7 +41,8 @@ public abstract class BaseServiceInfo extends BaseModel {
 
     private void checkArguments() {
         checkArgument(vendor != null, "Vendor must be set");
-        checkArgument(version != null, "Version must be set");
+        checkArgument(serviceVersion != null, "Service version must be set");
+        checkArgument(apiVersion != null, "API version must be set");
         checkArgument(displayName != null, "Display name must be set");
     }
 
@@ -54,13 +57,23 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
-     * Gets the service version.
+     * Gets the service application version.
      *
-     * @return The service version string
+     * @return The service application version string
      */
     @NonNull
-    public String getVersion() {
-        return version;
+    public String getServiceVersion() {
+        return serviceVersion;
+    }
+
+    /**
+     * Gets the version of the API the service is built against.
+     *
+     * @return The version of the API the service built against
+     */
+    @NonNull
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     /**
@@ -205,7 +218,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     public String toString() {
         return "BaseServiceInfo{" +
                 "vendor='" + vendor + '\'' +
-                ", version='" + version + '\'' +
+                ", version='" + serviceVersion + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", hasAccessibilityMode=" + hasAccessibilityMode +
                 ", paymentMethods=" + Arrays.toString(paymentMethods) +
@@ -226,7 +239,7 @@ public abstract class BaseServiceInfo extends BaseModel {
 
         if (hasAccessibilityMode != that.hasAccessibilityMode) return false;
         if (vendor != null ? !vendor.equals(that.vendor) : that.vendor != null) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        if (serviceVersion != null ? !serviceVersion.equals(that.serviceVersion) : that.serviceVersion != null) return false;
         if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(paymentMethods, that.paymentMethods)) return false;
@@ -244,7 +257,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (vendor != null ? vendor.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
+        result = 31 * result + (serviceVersion != null ? serviceVersion.hashCode() : 0);
         result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
         result = 31 * result + (hasAccessibilityMode ? 1 : 0);
         result = 31 * result + Arrays.hashCode(paymentMethods);

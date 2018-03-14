@@ -2,10 +2,8 @@ apply plugin: 'java-library'
 
 group = 'com.aevi.sdk.flow'
 version = "${apiVersion}"
-ext.propsFile = "flow-api.properties"
 
 apply from: '../publish-repo.gradle'
-apply from: '../api-properties.gradle'
 
 dependencies {
     implementation project(':api-constants')
@@ -18,6 +16,7 @@ dependencies {
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
 
+    testImplementation project(":flow-service-api")
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
@@ -41,6 +40,10 @@ javadoc {
     exclude "**/MessageErrors**"
     title = "Flow API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+buildConfig {
+    clsName = 'FlowBaseConfig'
 }
 
 apply from: '../jar-publisher.gradle'

@@ -2,13 +2,14 @@ package com.aevi.sdk.flow;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowServiceInfo;
-import com.aevi.sdk.flow.model.FlowServiceInfoBuilder;
 import com.aevi.sdk.flow.model.FlowServices;
+import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -72,12 +73,10 @@ public class FlowClientImplTest {
         verify(messengerClient).closeConnection();
     }
 
-    private FlowServiceInfo getFlowServiceInfo() {
-        Context context = mock(Context.class);
-        when(context.getPackageName()).thenReturn("com.aevi.test");
+    private FlowServiceInfo getFlowServiceInfo() throws PackageManager.NameNotFoundException {
+        Context context = ContextHelper.mockContext("com.test", "1.2.3");
         return new FlowServiceInfoBuilder()
                 .withVendor("Test")
-                .withVersion("1.2.3")
                 .withDisplayName("Hello")
                 .withCapabilities("stuff")
                 .withStages("stage 1")

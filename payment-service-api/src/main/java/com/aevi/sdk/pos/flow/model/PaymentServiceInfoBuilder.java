@@ -1,7 +1,10 @@
 package com.aevi.sdk.pos.flow.model;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Base64;
+
+import com.aevi.sdk.pos.flow.PaymentServiceApi;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
@@ -11,7 +14,6 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
 public final class PaymentServiceInfoBuilder {
 
     private String vendor;
-    private String version;
     private String displayName;
     private String[] paymentMethods;
     private String[] supportedCurrencies;
@@ -37,19 +39,6 @@ public final class PaymentServiceInfoBuilder {
      */
     public PaymentServiceInfoBuilder withVendor(String vendor) {
         this.vendor = vendor;
-        return this;
-    }
-
-    /**
-     * Set the version of this payment service.
-     *
-     * Mandatory field.
-     *
-     * @param version The version number or name as a string
-     * @return This builder
-     */
-    public PaymentServiceInfoBuilder withVersion(String version) {
-        this.version = version;
         return this;
     }
 
@@ -237,28 +226,36 @@ public final class PaymentServiceInfoBuilder {
      * @return The {@link PaymentServiceInfo} instance
      */
     public PaymentServiceInfo build(Context context) {
-        return build(context.getPackageName());
+        return build(context.getPackageName(), getAppVersion(context));
     }
 
-    PaymentServiceInfo build(String packageName) {
+    PaymentServiceInfo build(String packageName, String appVersion) {
         checkNotNull(terminalId, "Terminal id must be set");
         checkNotNull(packageName, "Package name must be set");
         checkNotNull(vendor, "Vendor must be set");
-        checkNotNull(version, "Version must be set");
+        checkNotNull(appVersion, "Version must be set");
         checkNotNull(displayName, "Display name must be set");
         checkNotNull(defaultCurrency, "Default currency must be set");
         checkNotEmpty(supportedRequestTypes, "Supported request types must be set");
         checkNotEmpty(supportedCurrencies, "Supported currencies must be set");
         checkNotEmpty(supportedTransactionTypes, "Supported transaction types must be set");
+        String apiVersion = PaymentServiceApi.getApiVersion();
         return new PaymentServiceInfo(createPaymentServiceId(packageName, terminalId),
-                packageName, vendor, version, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
-                supportedRequestTypes,
-                supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, willPrintReceipts,
+                packageName, vendor, appVersion, apiVersion, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
+                supportedRequestTypes, supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, willPrintReceipts,
                 supportsFlowCardReading, supportedDataKeys);
     }
 
     private static String createPaymentServiceId(String packageName, String terminalId) {
         String id = packageName + ":" + terminalId;
         return Base64.encodeToString(id.getBytes(), Base64.DEFAULT);
+    }
+
+    private static String getAppVersion(Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0.0.0";
+        }
     }
 }
