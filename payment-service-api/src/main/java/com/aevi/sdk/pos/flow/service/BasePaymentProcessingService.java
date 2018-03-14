@@ -2,7 +2,7 @@ package com.aevi.sdk.pos.flow.service;
 
 
 import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.flow.util.ApiVersionProvider;
+import com.aevi.sdk.pos.flow.PaymentServiceApi;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 
@@ -44,6 +44,6 @@ import com.aevi.sdk.pos.flow.model.TransactionResponse;
 public abstract class BasePaymentProcessingService extends BaseApiService<TransactionRequest, TransactionResponse> {
 
     public BasePaymentProcessingService() {
-        super(TransactionRequest.class, ApiVersionProvider.getApiVersion(ApiProperties.API_PROPERTIES_FILE));
+        super(TransactionRequest.class, PaymentServiceApi.getApiVersion());
     }
 }

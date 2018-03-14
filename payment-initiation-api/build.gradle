@@ -4,9 +4,6 @@ group = 'com.aevi.sdk.pos.flow'
 version = "${apiVersion}"
 
 apply from: '../publish-repo.gradle'
-apply from: '../api-properties.gradle'
-
-ext.propsFile = "payment-api.properties"
 
 dependencies {
     implementation project(':api-constants')
@@ -36,6 +33,10 @@ javadoc {
     exclude "**/BasePaymentModel**"
     title = "Payment API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+buildConfig {
+    clsName = 'PaymentInitiationConfig'
 }
 
 apply from: '../jar-publisher.gradle'

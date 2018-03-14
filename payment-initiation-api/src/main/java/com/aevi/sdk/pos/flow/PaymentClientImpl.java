@@ -7,18 +7,8 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.ApiBase;
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
-import com.aevi.sdk.pos.flow.model.PaymentServices;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
-import com.aevi.sdk.pos.flow.model.TokenResponse;
+import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.pos.flow.model.*;
 
 import java.util.List;
 
@@ -27,19 +17,17 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
-import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
-import static com.aevi.sdk.flow.constants.FinancialRequestTypes.TOKENISATION;
+import static com.aevi.sdk.flow.constants.FinancialRequestTypes.*;
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
-    private static final String API_PROPS_FILE = "payment-api.properties";
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
     private final Context context;
 
     PaymentClientImpl(Context context) {
-        super(API_PROPS_FILE);
+        super(PaymentInitiationConfig.VERSION);
         this.context = context;
         startFps(context);
         Log.i(TAG, "PaymentClient initialised");

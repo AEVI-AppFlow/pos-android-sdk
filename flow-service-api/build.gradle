@@ -4,9 +4,6 @@ group = 'com.aevi.sdk.pos.flow'
 version = "${apiVersion}"
 
 apply from: '../publish-repo.gradle'
-apply from: '../api-properties.gradle'
-
-ext.propsFile = "flow-service-api.properties"
 
 dependencies {
     api project(':payment-initiation-api')
@@ -31,6 +28,10 @@ javadoc {
     classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
     title = "Flow Service API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+buildConfig {
+    clsName = 'FlowServiceConfig'
 }
 
 apply from: '../jar-publisher.gradle'

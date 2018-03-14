@@ -45,7 +45,7 @@ public class ApiBaseTest {
         }
     }
 
-    private TestApiBase apiBase = new TestApiBase("test.properties");
+    private TestApiBase apiBase = new TestApiBase("1.2.3");
 
     @Test
     public void shouldParsePropertiesFileAndSetVersion() throws Exception {

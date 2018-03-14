@@ -40,6 +40,19 @@ public class FlowServices {
     }
 
     /**
+     * Retrieve a consolidated set of all the capabilities provided by the flow services.
+     *
+     * @return A consolidated set of all the capabilities provided by the flow services
+     */
+    public Set<String> getAllCapabilities() {
+        Set<String> capabilities = new HashSet<>();
+        for (FlowServiceInfo flowServiceInfo : flowServiceInfoList) {
+            capabilities.addAll(Arrays.asList(flowServiceInfo.getCapabilities()));
+        }
+        return capabilities;
+    }
+
+    /**
      * Retrieve a list of all the flow services that provides the given capability.
      *
      * @param capability The capability to match against

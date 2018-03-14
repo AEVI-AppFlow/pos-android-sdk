@@ -17,7 +17,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class PaymentApiTest extends ApiTestBase {
 
     public PaymentApiTest() {
-        super("payment-api.properties");
+        super("1.2.3");
     }
 
     @Test

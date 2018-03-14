@@ -3,10 +3,12 @@ package com.aevi.sdk.flow.model;
 
 import android.content.Context;
 
+import com.aevi.sdk.flow.ContextHelper;
+import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FlowServicesTest {
@@ -22,14 +23,12 @@ public class FlowServicesTest {
     private FlowServiceInfo flowServiceInfoOne;
     private FlowServiceInfo flowServiceInfoTwo;
 
-    @Mock
     private Context context;
-
     private FlowServices flowServices;
 
     @Before
     public void setUp() throws Exception {
-        when(context.getPackageName()).thenReturn("com.aevi.test");
+        context = ContextHelper.mockContext("com.test", "1.2.3");
         buildFlowServiceOne();
         buildFlowServiceTwo();
         List<FlowServiceInfo> flowServiceInfoList = new ArrayList<>();
@@ -48,6 +47,11 @@ public class FlowServicesTest {
         assertThat(flowServices.getAllFlowServicesForStage("stage1")).hasSize(1);
         assertThat(flowServices.getAllFlowServicesForStage("stage2")).hasSize(2);
         assertThat(flowServices.getAllFlowServicesForStage("stage3")).hasSize(1);
+    }
+
+    @Test
+    public void shouldCollateCapabilitiesCorrectly() throws Exception {
+        assertThat(flowServices.getAllCapabilities()).hasSize(3).containsOnly("capOne", "capTwo", "capThree");
     }
 
     @Test
@@ -93,7 +97,6 @@ public class FlowServicesTest {
     private void buildFlowServiceOne() {
         flowServiceInfoOne = new FlowServiceInfoBuilder()
                 .withVendor("Test One")
-                .withVersion("1.1.1")
                 .withDisplayName("Test One")
                 .withSupportedRequestTypes("one", "two")
                 .withStages("stage1", "stage2")
@@ -107,7 +110,6 @@ public class FlowServicesTest {
     private void buildFlowServiceTwo() {
         flowServiceInfoTwo = new FlowServiceInfoBuilder()
                 .withVendor("Test Two")
-                .withVersion("2.2.2")
                 .withDisplayName("Test Two")
                 .withSupportedRequestTypes("two", "three")
                 .withStages("stage2", "stage3")

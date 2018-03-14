@@ -1,14 +1,16 @@
 package com.aevi.sdk.pos.flow;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestEnvironment {
 
@@ -37,5 +39,16 @@ public class TestEnvironment {
             throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded);
+    }
+
+    public static Context mockContext(String packageName, String version) throws PackageManager.NameNotFoundException {
+        Context context = mock(Context.class);
+        PackageManager packageManager = mock(PackageManager.class);
+        when(context.getPackageName()).thenReturn(packageName);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.versionName = version;
+        when(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(packageInfo);
+        return context;
     }
 }

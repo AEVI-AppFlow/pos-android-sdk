@@ -1,9 +1,12 @@
-package com.aevi.sdk.flow.model;
+package com.aevi.sdk.pos.flow.model;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.constants.TransactionTypes;
+import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.FlowServiceApi;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
@@ -13,7 +16,6 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
 public class FlowServiceInfoBuilder {
 
     private String vendor;
-    private String version;
     private String displayName;
     private String[] stages;
     private String[] capabilities;
@@ -39,19 +41,6 @@ public class FlowServiceInfoBuilder {
      */
     public FlowServiceInfoBuilder withVendor(String vendor) {
         this.vendor = vendor;
-        return this;
-    }
-
-    /**
-     * Set the version of this flow service.
-     *
-     * Mandatory field.
-     *
-     * @param version The version number or name as a string
-     * @return This builder
-     */
-    public FlowServiceInfoBuilder withVersion(String version) {
-        this.version = version;
         return this;
     }
 
@@ -267,12 +256,21 @@ public class FlowServiceInfoBuilder {
      */
     public FlowServiceInfo build(Context context) {
         checkNotNull(vendor, "Vendor must be set");
-        checkNotNull(version, "Version must be set");
         checkNotNull(displayName, "Display name must be set");
         checkNotEmpty(capabilities, "Capabilities must be set");
         checkNotEmpty(stages, "Stages must be set");
         checkNotEmpty(supportedRequestTypes, "At least one request type must be supported");
-        return new FlowServiceInfo(context.getPackageName(), vendor, version, displayName, supportsAccessibility, stages, capabilities, paymentMethods,
+        String version = getAppVersion(context);
+        String apiVersion = FlowServiceApi.getApiVersion();
+        return new FlowServiceInfo(context.getPackageName(), vendor, version, apiVersion, displayName, supportsAccessibility, stages, capabilities, paymentMethods,
                 supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, requiresCardToken, supportedDataKeys, backgroundOnly, canAdjustAmounts, canPayAmounts);
+    }
+
+    private static String getAppVersion(Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0.0.0";
+        }
     }
 }
