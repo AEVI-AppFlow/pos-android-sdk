@@ -1,7 +1,6 @@
 package com.aevi.sdk.flow;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
@@ -16,16 +15,13 @@ import io.reactivex.functions.Function;
 
 public class FlowClientImpl extends ApiBase implements FlowClient {
 
-    private final Context context;
-
     FlowClientImpl(Context context) {
-        super(FlowBaseConfig.VERSION);
-        this.context = context;
+        super(FlowBaseConfig.VERSION, context);
     }
 
     @Override
     public Single<List<Device>> getDevices() {
-        final ObservableMessengerClient deviceMessenger = getClient(DEVICE_LIST_SERVICE_COMPONENT);
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(DEVICE_LIST_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
@@ -46,7 +42,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<FlowServices> getFlowServices() {
-        final ObservableMessengerClient flowInfoMessenger = getClient(FLOW_SERVICE_INFO_COMPONENT);
+        final ObservableMessengerClient flowInfoMessenger = getMessengerClient(FLOW_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return flowInfoMessenger
                 .sendMessage(appMessage.toJson())
@@ -71,13 +67,9 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
                 });
     }
 
-    protected ObservableMessengerClient getClient(ComponentName componentName) {
-        return new ObservableMessengerClient(context, componentName);
-    }
-
     @Override
     public Single<Response> processRequest(Request request) {
-        return Single.error(new UnsupportedOperationException("Not yet implemented"));
+        return sendGenericRequest(request);
     }
 
     @Override

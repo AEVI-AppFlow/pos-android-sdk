@@ -43,7 +43,11 @@ public class Request extends BaseModel {
      * @param requestData The data for the request
      */
     public Request(String requestType, AdditionalData requestData) {
-        super(UUID.randomUUID().toString());
+        this(UUID.randomUUID().toString(), requestType, requestData);
+    }
+
+    private Request(String id, String requestType, AdditionalData requestData) {
+        super(id);
         this.requestType = requestType;
         this.requestData = requestData;
     }
@@ -135,5 +139,12 @@ public class Request extends BaseModel {
 
     public static Request fromJson(String json) {
         return JsonConverter.deserialize(json, Request.class);
+    }
+
+    /**
+     * For internal use.
+     */
+    public static Request fromExternalId(String id, String requestType, AdditionalData requestData) {
+        return new Request(id, requestType, requestData);
     }
 }

@@ -2,6 +2,7 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.mock;
 public class ApiTestBase extends ApiBase {
 
     protected ApiTestBase(String version) {
-        super(version);
+        super(version, mock(Context.class));
     }
 
     protected void setupMockBoundMessengerService() {

@@ -19,6 +19,7 @@ import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowApplication;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
@@ -28,7 +29,7 @@ public class ApiBaseTest {
     class TestApiBase extends ApiBase {
 
         public TestApiBase(String propsFile) {
-            super(propsFile);
+            super(propsFile, mock(Context.class));
         }
 
         @Override

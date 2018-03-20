@@ -46,12 +46,12 @@ public class SplitRequest extends BaseModel {
     }
 
     /**
-     * Convenience method to get the current transaction.
+     * Convenience method to get the last completed transaction.
      *
-     * @return The current (or last completed) {@link Transaction}
+     * @return The last completed {@link Transaction} or null if there are none
      */
     @Nullable
-    public Transaction getActiveTransaction() {
+    public Transaction getLastTransaction() {
         if (transactions.isEmpty()) {
             return null;
         }

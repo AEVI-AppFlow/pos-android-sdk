@@ -1,12 +1,11 @@
 package com.aevi.sdk.flow.model;
 
 
-import com.aevi.sdk.flow.model.AdditionalData;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,6 +84,14 @@ public class AdditionalDataTest {
     }
 
     @Test
+    public void canGetDefaultValue() throws Exception {
+        assertThat(additionalData.getValue("hello")).isNull();
+        assertThat(additionalData.getValue("hello", "default")).isEqualTo("default");
+        assertThat(additionalData.getValue("hello", String.class)).isNull();
+        assertThat(additionalData.getValue("hello", String.class, "default")).isEqualTo("default");
+    }
+
+    @Test
     public void canGetOptionOfComplexType() throws IOException {
         Customer customer = new Customer("123");
         additionalData.addData("customer", customer);
@@ -134,5 +141,26 @@ public class AdditionalDataTest {
         assertThat(additionalData.getValue("one", String[].class)).isEqualTo(new String[]{"12"});
         assertThat(additionalData.getValue("two", String[].class)).isEqualTo(new String[]{"1", "2"});
         assertThat(additionalData.getValue("three", String[].class)).isEqualTo(new String[]{"hello", "bye"});
+    }
+
+    @Test
+    public void canGetAllValuesOfType() throws Exception {
+        additionalData.addData("one", 1);
+        additionalData.addData("two", 2);
+        additionalData.addData("three", "hello");
+
+        Map<String, Integer> dataOfType = additionalData.getDataOfType(Integer.class);
+        assertThat(dataOfType).hasSize(2).containsValues(1, 2);
+    }
+
+    @Test
+    public void canGetValuesOfSuperType() throws Exception {
+        additionalData.addData("int", 1);
+        additionalData.addData("long", 2L);
+        additionalData.addData("double", 2.01);
+        additionalData.addData("float", 2.01f);
+        additionalData.addData("three", "hello");
+        Map<String, Number> dataOfType = additionalData.getDataOfType(Number.class);
+        assertThat(dataOfType).hasSize(4).containsKeys("int", "long", "double", "float");
     }
 }
