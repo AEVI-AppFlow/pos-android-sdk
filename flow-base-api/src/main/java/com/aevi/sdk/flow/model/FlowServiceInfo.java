@@ -1,6 +1,7 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class FlowServiceInfo extends BaseServiceInfo {
      * @return True if the flow service operates in the given stage, false otherwise
      */
     public boolean containsStage(String stage) {
-        return stages.length > 0 && Arrays.asList(stages).contains(stage);
+        return stages.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(stages, stage);
     }
 
     /**
@@ -75,7 +76,7 @@ public class FlowServiceInfo extends BaseServiceInfo {
      * @return True if the flow service provides the given capability, false otherwise
      */
     public boolean providesCapability(String capability) {
-        return capabilities.length > 0 && Arrays.asList(capabilities).contains(capability);
+        return capabilities.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(capabilities, capability);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.sdk.flow.util.ComparisonUtil;
+
 import java.util.*;
 
 /**
@@ -101,7 +103,7 @@ public class FlowServices {
      * @return True if at least one flow service support it, false otherwise
      */
     public boolean isDataKeySupported(String dataKey) {
-        return getAllSupportedDataKeys().contains(dataKey);
+        return ComparisonUtil.stringCollectionContainsIgnoreCase(getAllSupportedDataKeys(), dataKey);
     }
 
     /**

@@ -45,7 +45,7 @@ public class PaymentClientImplTest {
         initMocks(this);
         paymentClient = new PaymentClientImpl(RuntimeEnvironment.application) {
             @Override
-            protected ObservableMessengerClient getNewMessengerClient(ComponentName componentName) {
+            protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
                 return messengerClient;
             }
         };
@@ -102,27 +102,6 @@ public class PaymentClientImplTest {
                 .withCardToken(token).build();
 
         paymentClient.initiatePayment(payment, "456", "789");
-    }
-
-    @Test
-    public void generateCardTokenShouldSendCorrectMessage() throws Exception {
-        paymentClient.generateCardToken().test();
-
-        AppMessage sentAppMessage = callSendAndCaptureMessage();
-        Request sentTokenise = Request.fromJson(sentAppMessage.getMessageData());
-        assertThat(sentTokenise).isNotNull();
-        assertThat(sentTokenise.getId()).isNotNull();
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void generateCardTokenShouldPassPaymentServiceIdCorrectly() throws Exception {
-        paymentClient.generateCardToken("123").test();
-
-        AppMessage sentAppMessage = callSendAndCaptureMessage();
-        Request sentTokenise = Request.fromJson(sentAppMessage.getMessageData());
-        assertThat(sentTokenise.getTargetAppId()).isEqualTo("123");
-        verify(messengerClient).closeConnection();
     }
 
     @Test

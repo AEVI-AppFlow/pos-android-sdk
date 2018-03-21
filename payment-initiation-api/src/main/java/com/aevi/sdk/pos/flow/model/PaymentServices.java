@@ -1,6 +1,8 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import com.aevi.sdk.flow.util.ComparisonUtil;
+
 import java.util.*;
 
 /**
@@ -31,7 +33,7 @@ public class PaymentServices {
      * @return True if at least one payment service support it, false otherwise
      */
     public boolean isCurrencySupported(String currency) {
-        return getAllSupportedCurrencies().contains(currency);
+        return ComparisonUtil.stringCollectionContainsIgnoreCase(getAllSupportedCurrencies(), currency);
     }
 
     /**
@@ -54,7 +56,7 @@ public class PaymentServices {
      * @return True if at least one payment service support it, false otherwise
      */
     public boolean isRequestTypeSupported(String requestType) {
-        return getAllSupportedRequestTypes().contains(requestType);
+        return ComparisonUtil.stringCollectionContainsIgnoreCase(getAllSupportedRequestTypes(), requestType);
     }
 
     /**
@@ -77,7 +79,7 @@ public class PaymentServices {
      * @return True if at least one payment service support it, false otherwise
      */
     public boolean isTransactionTypeSupported(String transactionType) {
-        return getAllSupportedTransactionTypes().contains(transactionType);
+        return ComparisonUtil.stringCollectionContainsIgnoreCase(getAllSupportedTransactionTypes(), transactionType);
     }
 
     /**
@@ -113,7 +115,7 @@ public class PaymentServices {
      * @return True if at least one payment service support it, false otherwise
      */
     public boolean isDataKeySupported(String dataKey) {
-        return getAllSupportedDataKeys().contains(dataKey);
+        return ComparisonUtil.stringCollectionContainsIgnoreCase(getAllSupportedDataKeys(), dataKey);
     }
 
     /**

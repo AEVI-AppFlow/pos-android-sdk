@@ -1,6 +1,8 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.sdk.flow.util.ComparisonUtil;
+
 import java.util.Arrays;
 
 import io.reactivex.annotations.NonNull;
@@ -116,7 +118,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsPaymentMethod(String paymentMethod) {
-        return paymentMethods.length > 0 && Arrays.asList(paymentMethods).contains(paymentMethod);
+        return paymentMethods.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(paymentMethods, paymentMethod);
     }
 
     /**
@@ -138,7 +140,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsCurrency(String currency) {
-        return supportedCurrencies.length > 0 && Arrays.asList(supportedCurrencies).contains(currency);
+        return supportedCurrencies.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedCurrencies, currency);
     }
 
     /**
@@ -160,7 +162,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsRequestType(String requestType) {
-        return supportedRequestTypes.length > 0 && Arrays.asList(supportedRequestTypes).contains(requestType);
+        return supportedRequestTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedRequestTypes, requestType);
     }
 
     /**
@@ -184,7 +186,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsTransactionType(String transactionType) {
-        return supportedTransactionTypes.length > 0 && Arrays.asList(supportedTransactionTypes).contains(transactionType);
+        return supportedTransactionTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedTransactionTypes, transactionType);
     }
 
     /**
@@ -211,7 +213,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsDataKey(String dataKey) {
-        return supportedDataKeys.length > 0 && Arrays.asList(supportedDataKeys).contains(dataKey);
+        return supportedDataKeys.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedDataKeys, dataKey);
     }
 
     @Override
@@ -267,4 +269,6 @@ public abstract class BaseServiceInfo extends BaseModel {
         result = 31 * result + Arrays.hashCode(supportedDataKeys);
         return result;
     }
+
+
 }

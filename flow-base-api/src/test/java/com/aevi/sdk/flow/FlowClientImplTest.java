@@ -42,7 +42,7 @@ public class FlowClientImplTest {
         initMocks(this);
         flowClient = new FlowClientImpl(RuntimeEnvironment.application) {
             @Override
-            protected ObservableMessengerClient getClient(ComponentName componentName) {
+            protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
                 return messengerClient;
             }
         };

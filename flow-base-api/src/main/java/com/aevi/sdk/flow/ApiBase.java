@@ -8,9 +8,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 
-import com.aevi.sdk.flow.model.InternalData;
+import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.sdk.flow.model.*;
 
 import java.util.List;
+
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
 
 public abstract class ApiBase {
 
@@ -22,13 +27,39 @@ public abstract class ApiBase {
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.RequestStatusService");
 
     private final InternalData internalData;
+    protected final Context context;
 
-    protected ApiBase(String apiVersion) {
+    protected ApiBase(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
+        this.context = context;
     }
 
     protected InternalData getInternalData() {
         return internalData;
+    }
+
+    protected Single<Response> sendGenericRequest(Request request) {
+        final ObservableMessengerClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
+        return requestMessenger
+                .sendMessage(appMessage.toJson())
+                .singleOrError()
+                .map(new Function<String, Response>() {
+                    @Override
+                    public Response apply(String json) throws Exception {
+                        return Response.fromJson(json);
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        requestMessenger.closeConnection();
+                    }
+                });
+    }
+
+    protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
+        return new ObservableMessengerClient(context, componentName);
     }
 
     protected static void startFps(Context context) {

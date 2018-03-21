@@ -1,7 +1,6 @@
 package com.aevi.sdk.pos.flow;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,25 +16,22 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
-import static com.aevi.sdk.flow.constants.FinancialRequestTypes.*;
+import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
-    private final Context context;
-
     PaymentClientImpl(Context context) {
-        super(PaymentInitiationConfig.VERSION);
-        this.context = context;
+        super(PaymentInitiationConfig.VERSION, context);
         startFps(context);
         Log.i(TAG, "PaymentClient initialised");
     }
 
     @Override
     public Single<PaymentServices> getPaymentServices() {
-        final ObservableMessengerClient paymentInfoMessenger = getNewMessengerClient(PAYMENT_SERVICE_INFO_COMPONENT);
+        final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(PAYMENT_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
@@ -73,7 +69,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
             checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
         }
 
-        final ObservableMessengerClient transactionMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        final ObservableMessengerClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         AdditionalData paymentData = new AdditionalData();
         paymentData.addData(PAYMENT, payment);
@@ -87,7 +83,8 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                 .map(new Function<String, PaymentResponse>() {
                     @Override
                     public PaymentResponse apply(String json) throws Exception {
-                        return PaymentResponse.fromJson(json);
+                        Response response = Response.fromJson(json);
+                        return response.getResponseData().getValue(PAYMENT, PaymentResponse.class);
                     }
                 })
                 .doFinally(new Action() {
@@ -99,36 +96,8 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
     }
 
     @Override
-    public Single<TokenResponse> generateCardToken() {
-        return generateCardToken(null);
-    }
-
-    @Override
-    public Single<TokenResponse> generateCardToken(String paymentServiceId) {
-        final ObservableMessengerClient tokenizeMessenger = getNewMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-        final Request request = new Request(TOKENISATION);
-        request.setTargetAppId(paymentServiceId);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
-        return tokenizeMessenger
-                .sendMessage(appMessage.toJson())
-                .singleOrError()
-                .map(new Function<String, TokenResponse>() {
-                    @Override
-                    public TokenResponse apply(String json) throws Exception {
-                        Response response = Response.fromJson(json);
-                        if (response.wasSuccessful()) {
-                            return response.getResponseData().getValue(TOKENISATION, TokenResponse.class);
-                        }
-
-                        return new TokenResponse(null);
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        tokenizeMessenger.closeConnection();
-                    }
-                });
+    public Single<Response> processFinancialRequest(Request request) {
+        return sendGenericRequest(request);
     }
 
     @Override
@@ -138,7 +107,7 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
 
     @Override
     public Observable<RequestStatus> subscribeToStatusUpdates(String paymentId) {
-        final ObservableMessengerClient requestStatusMessenger = getNewMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
+        final ObservableMessengerClient requestStatusMessenger = getMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
         RequestStatus requestStatus = new RequestStatus(paymentId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestStatus.toJson(), getInternalData());
         return requestStatusMessenger
@@ -157,7 +126,4 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                 });
     }
 
-    protected ObservableMessengerClient getNewMessengerClient(ComponentName componentName) {
-        return new ObservableMessengerClient(context, componentName);
-    }
 }

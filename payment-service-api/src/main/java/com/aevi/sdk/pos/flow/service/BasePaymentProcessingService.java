@@ -7,10 +7,7 @@ import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 
 /**
- * This abstract service should be extended to provide a payment service implementation
- *
- * The {@code initiatePayment(String, REQUEST)} method should be implemented in the parent class and should perform the job of completing the
- * transaction or responding with an error.
+ * This abstract service should be extended to provide the core, mandatory payment service implementation to handle payment requests.
  *
  * The implementing class should be added as a service in the <code>AndroidManifest.xml</code> of your application and should also provide some meta-data information.
  *
