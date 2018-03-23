@@ -23,5 +23,6 @@ public interface AdditionalDataKeys {
     String DATA_KEY_SPLIT_TXN = "splitTxn"; // true if part of a split, false or not set otherwise
     String DATA_KEY_NUM_SPLITS = "numSplits"; // The number of splits in total
 
+    String LEGACY_POST_AUTH_TIPPING = "postAuthTipping";
     String LEGACY_PRINT_DATA = "legacyPrintData";
 }
