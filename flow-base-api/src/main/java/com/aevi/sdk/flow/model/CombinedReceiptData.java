@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A utility class specifically to deal with combined receipt printing data that may be passed from an application that
- * uses the AEVI V2 simple payment API i.e. request classes that extend the class com.aevi.payment.AeviRequest.
+ * A utility class specifically to deal with combined receipt printing data that may be passed beteeen applications.
+ *
+ * This class helps with legacy support for the AEVI V2 simple payment API i.e. request classes that extend the class com.aevi.payment.AeviRequest.
  */
-public class LegacyPrintData {
+public class CombinedReceiptData {
 
     public static final String POSITION_BASKET = "BASKET";
     public static final String POSITION_HEADER = "HEADER";
@@ -22,38 +23,40 @@ public class LegacyPrintData {
     public static final String PAYMENT_STATUS_SUCCESS = "SUCCESS";
     public static final String PAYMENT_STATUS_FAILURE = "FAILURE";
 
-    private List<LegacyPayload> payloadList = new ArrayList<>();
+    private List<ReceiptPayload> payloadList = new ArrayList<>();
 
-    public void addPayload(LegacyPayload payload) {
+    public void addPayload(ReceiptPayload payload) {
         payloadList.add(payload);
     }
 
     /**
      * Returns all the payloads that were setup in the original AeviRequest send via the V2 simple payment API
      *
-     * @return List of {@link LegacyPayload} objects
+     * @return List of {@link ReceiptPayload} objects
      */
-    public List<LegacyPayload> getPayloadList() {
+    public List<ReceiptPayload> getPayloadList() {
         return payloadList;
     }
 
     /**
      * Each print payload from the V2 SDK is mapped to a single instance of this class
      *
-     * The position, receiptType and paymentStatus are mapped directly from there corresponding V2 com.aevi.payment.AeviRequest equivalents
+     * The position, receiptType and paymentStatus can be used to determine which receipt to use the printData for and where the data corresponds to
+     *
+     * These are mapped directly from there corresponding V2 com.aevi.payment.AeviRequest equivalents for assistance with legacy support
      */
-    public static class LegacyPayload {
+    public static class ReceiptPayload {
 
         private String position;
         private String receiptType;
         private String paymentStatus;
-        private String printPayload;
+        private String printData;
 
-        public LegacyPayload(String position, String receiptType, String paymentStatus, String printPayload) {
+        public ReceiptPayload(String position, String receiptType, String paymentStatus, String printData) {
             this.receiptType = receiptType;
             this.paymentStatus = paymentStatus;
             this.position = position;
-            this.printPayload = printPayload;
+            this.printData = printData;
         }
 
         /**
@@ -80,8 +83,8 @@ public class LegacyPrintData {
         /**
          * @return The print payload in JSON format use the AEVI print-api to deserialize
          */
-        public String getPrintPayload() {
-            return printPayload;
+        public String getPrintData() {
+            return printData;
         }
     }
 }
