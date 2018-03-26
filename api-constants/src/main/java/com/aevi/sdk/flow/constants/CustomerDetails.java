@@ -8,5 +8,10 @@ public interface CustomerDetails {
     String MIDDLE_NAMES = "middleNames";
     String PHONE = "phone";
     String EMAIL = "email";
+    String ADDRESS = "address";
+    String POSTCODE = "postcode";
+    String CITY = "city";
+    String STATE = "state";
+    String COUNTRY = "country";
 
 }

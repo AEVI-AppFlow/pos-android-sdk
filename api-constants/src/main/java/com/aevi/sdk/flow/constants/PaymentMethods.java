@@ -9,4 +9,9 @@ public interface PaymentMethods {
     String REWARD = "reward";
     String BANK_TRANSFER = "bankTransfer";
     String CHEQUE = "cheque";
+    String EBT = "ebt";
+    String GIFT = "gift";
+    String PAYPAL = "paypal";
+    String AMAZON_PAY = "amazonPay";
+    String CRYPTOCOIN = "cryptocoin";
 }
