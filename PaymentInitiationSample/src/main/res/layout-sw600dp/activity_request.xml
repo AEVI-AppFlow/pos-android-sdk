@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.aevi.payment.api.sample.ui.RequestInitiationActivity">
+    tools:context=".ui.RequestInitiationActivity">
 
     <TextView
         android:id="@+id/title"
@@ -21,7 +21,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="com.aevi.payment.api.sample.ui.fragment.GenericRequestFragment"
+            android:name="com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.GenericRequestFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="@dimen/margin_large"
-    tools:context="com.aevi.sdk.payment.service.sample.ui.SelectPaymentCardActivity">
+    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.SelectPaymentCardActivity">
 
     <LinearLayout
         android:layout_width="0dp"

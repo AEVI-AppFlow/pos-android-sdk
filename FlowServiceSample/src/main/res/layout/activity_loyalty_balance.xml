@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.LoyaltyBalanceActivity">
+    tools:context="com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity">
 
     <fragment
         android:id="@+id/fragment_request_details"

@@ -18,6 +18,7 @@ allprojects {
 
     project.ext {
         apiVersion = rootProject.version
+        sampleVersionCode = 1
     }
 
     repositories {

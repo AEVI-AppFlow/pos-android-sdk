@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/settings_fragment"
-        android:name="com.aevi.sdk.payment.service.sample.settings.SettingsFragment"
+        android:name="com.aevi.sdk.pos.flow.paymentservicesample.settings.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin_large"
-    tools:context="com.aevi.sdk.payment.service.sample.ui.SelectTokenActivity">
+    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.SelectTokenActivity">
 
     <TextView
         android:id="@+id/description"

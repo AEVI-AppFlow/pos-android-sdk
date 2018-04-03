@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.aevi.sdk.payment.service.sample.ui.ResponseBuilderActivity">
+    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.ResponseBuilderActivity">
 
     <LinearLayout
         android:layout_width="0dp"

@@ -23,6 +23,10 @@ ext {
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0-SNAPSHOT"
 
+    androidBuildVersion = "27.0.3"
+    projectTargetSdkVersion = 26
+    projectMinSdkVersion = 21
+
     apiDependencies = [
             androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",

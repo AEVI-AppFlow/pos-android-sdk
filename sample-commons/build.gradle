@@ -1,18 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-
-
+    compileSdkVersion projectTargetSdkVersion
+    buildToolsVersion "${androidBuildVersion}"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        minSdkVersion projectMinSdkVersion
+        targetSdkVersion projectTargetSdkVersion
+        versionCode sampleVersionCode
+        versionName "${apiVersion}"
     }
 
     buildTypes {
@@ -32,17 +28,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation(sampleDependencies.support) { force = true }
+    implementation(sampleDependencies.appCompat) { force = true }
+    implementation(sampleDependencies.recyclerView) { force = true }
+    implementation(sampleDependencies.cardView) { force = true }
+    implementation(sampleDependencies.design) { force = true }
+
     implementation project(':payment-initiation-api')
     implementation project(':payment-service-api')
     implementation project(':flow-service-api')
     implementation project(':api-constants')
     implementation sampleDependencies.aeviUiLibrary
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
-
-
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:0.5'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
 }

@@ -11,7 +11,7 @@ public class CardBuilderTest {
     public void canConstructCard() throws Exception {
         com.aevi.sdk.pos.flow.model.Card card = new com.aevi.sdk.pos.flow.model.CardBuilder()
                 .withMaskedPan("1234 XXXX XXXX 5678")
-                .withExpiryDate("12/20")
+                .withExpiryDate("1220")
                 .withCardholderName("Mr T")
                 .withCardToken(new com.aevi.sdk.flow.model.Token("abcdefgh12345678", "card", "blaha"))
                 .withAdditionalData("blaha", "bluhu")
@@ -19,7 +19,7 @@ public class CardBuilderTest {
         card.getCardToken().setSourceAppId("123");
 
         assertThat(card.getMaskedPan()).isEqualTo("1234 XXXX XXXX 5678");
-        assertThat(card.getExpiryDate()).isEqualTo("12/20");
+        assertThat(card.getExpiryDate()).isEqualTo("1220");
         assertThat(card.getCardholderName()).isEqualTo("Mr T");
         assertThat(card.getCardToken().getValue()).isEqualTo("abcdefgh12345678");
         assertThat(card.getCardToken().getSource()).isEqualTo("card");

@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/settings_fragment"
-        android:name="com.aevi.flowservicesample.settings.SettingsFragment"
+        android:name="com.aevi.sdk.pos.flow.flowservicesample.settings.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
