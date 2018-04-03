@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="card_schemes">
+        <item>VISA</item>
+        <item>MASTERCARD</item>
+        <item>AMEX</item>
+    </string-array>
+
+    <string-array name="payment_methods">
+        <item>card</item>
+        <item>cash</item>
+        <item>bitcoin</item>
+    </string-array>
+
+    <string-array name="supported_currencies">
+        <item>GBP</item>
+        <item>EUR</item>
+        <item>USD</item>
+    </string-array>
+
+    <string-array name="request_types">
+        <item>@string/type_payment</item>
+        <item>@string/type_reversal</item>
+        <item>@string/type_tokenisation</item>
+        <item>@string/type_response_redelivery</item>
+    </string-array>
+
+    <string-array name="transaction_types">
+        <item>@string/type_sale</item>
+        <item>@string/type_refund</item>
+    </string-array>
+
+</resources>

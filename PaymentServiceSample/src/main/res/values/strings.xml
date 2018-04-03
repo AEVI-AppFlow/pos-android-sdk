@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">PaymentServiceSample</string>
+    <string name="choose_a_card_scheme">Select a card scheme</string>
+    <string name="include_token">Include card token</string>
+    <string name="include_cardholder_name">Include card holder name</string>
+    <string name="include_emv_details">Include EMV details</string>
+    <string name="no_card">Decline</string>
+    <string name="with_card">Approve with card</string>
+    <string name="decline">Decline</string>
+    <string name="approve">Approve</string>
+    <string name="include_card_details">Include card details</string>
+    <string name="no_token">Decline</string>
+    <string name="with_token">Approve with token</string>
+    <string name="select_processed_amounts">Select processed amounts</string>
+    <string name="select_payment_method_used">Select payment method used</string>
+
+    <string name="type_payment">payment</string>
+    <string name="type_reversal">reversal</string>
+    <string name="type_sale">sale</string>
+    <string name="type_refund">refund</string>
+    <string name="type_tokenisation">tokenisation</string>
+    <string name="type_response_redelivery">responseRedelivery</string>
+
+    <string name="pref_default_currency">Default currency</string>
+    <string name="pref_currencies">Select currencies</string>
+    <string name="pref_request_types">Select request types</string>
+    <string name="pref_transaction_types">Select transaction types</string>
+    <string name="pref_currencies_message">Choose currencies to be supported by this payment app</string>
+    <string name="pref_supports_read_card">Support separate read card step</string>
+    <string name="pref_can_tokenize">Can tokenize</string>
+    <string name="send_response">Send response</string>
+    <string name="view_request_data">View request</string>
+    <string name="card_payment_stage">Payment stage: PAYMENT_CARD_READING</string>
+    <string name="defaults_to_requested_amounts">(Defaults to requested amounts)</string>
+    <string name="pss_txn_processing">Payment Service Sample - Transaction processing step</string>
+    <string name="pss_card_reading">Payment Service Sample - Payment card reading step</string>
+    <string name="pss_select_token">Payment Service Sample - Select token</string>
+    <string name="sample_settings">Payment Service Sample Settings</string>
+    <string name="pref_supports_read_card_key">pref_supports_read_card</string>
+
+</resources>
