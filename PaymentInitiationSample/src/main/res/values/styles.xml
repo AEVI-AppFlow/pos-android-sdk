@@ -4,16 +4,19 @@
     </style>
 
     <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">-->
-    <!--<item name="colorAccent">@color/colorAccent</item>-->
-    <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-    <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-    <!--</style>-->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DialogTitle" parent="BaseDialogTitle">
+        <item name="android:background">@color/colorAccent</item>
+    </style>
 
 </resources>

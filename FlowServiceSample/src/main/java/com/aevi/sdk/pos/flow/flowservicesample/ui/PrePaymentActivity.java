@@ -8,13 +8,13 @@ import android.widget.TextView;
 
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.AmountsModifier;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -86,6 +86,8 @@ public class PrePaymentActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
         startActivity(intent);
     }
 

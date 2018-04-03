@@ -124,6 +124,7 @@
     <string name="initiate_request">Initiate request</string>
     <string name="choose_a_request_type">Choose request type</string>
     <string name="generic_result">Request processed</string>
+    <string name="or">or</string>
 
     <array name="payment_service_labels">
         <item>@string/service_label_id</item>

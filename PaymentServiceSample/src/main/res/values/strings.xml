@@ -37,5 +37,7 @@
     <string name="pss_select_token">Payment Service Sample - Select token</string>
     <string name="sample_settings">Payment Service Sample Settings</string>
     <string name="pref_supports_read_card_key">pref_supports_read_card</string>
+    <string name="pref_transaction_types_key">pref_transaction_types</string>
+    <string name="pref_request_types_key">pref_request_types</string>
 
 </resources>

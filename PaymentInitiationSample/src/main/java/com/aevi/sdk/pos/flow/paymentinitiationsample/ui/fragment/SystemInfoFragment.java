@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.SystemInfo;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemInfoAdapter;
 
 import butterknife.BindView;

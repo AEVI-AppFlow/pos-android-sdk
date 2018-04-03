@@ -116,7 +116,11 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     @Override
     public void showSplitRequest(SplitRequest splitRequest) {
         reset();
-        addPaymentOverview(splitRequest.getSourcePayment());
+        List<Pair<String, String>> summaryInfo = new ArrayList<>();
+        summaryInfo.add(getStringPair(R.string.payment_id, splitRequest.getSourcePayment().getId()));
+        summaryInfo.add(getStringPair(R.string.transaction_type, splitRequest.getSourcePayment().getTransactionType()));
+        addAmountInfo(summaryInfo, splitRequest.getSourcePayment().getAmounts(), null);
+        adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, summaryInfo));
 
         int count = 1;
         for (Transaction transaction : splitRequest.getTransactions()) {
@@ -317,19 +321,22 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
 
     private RecyclerViewSection createAmountsSection(Amounts amounts, String paymentMethod, int... sectionTitle) {
         List<Pair<String, String>> amountInfo = new ArrayList<>();
-        amountInfo.add(getStringPair(R.string.currency, amounts.getCurrency()));
-        if (paymentMethod != null) {
-            amountInfo.add(getStringPair(R.string.payment_method, paymentMethod));
-        }
-        amountInfo.add(getStringPair(R.string.total_amount, formatAmount(amounts.getCurrency(), amounts.getTotalAmountValue())));
-        amountInfo.add(getStringPair(R.string.base_amount, formatAmount(amounts.getCurrency(), amounts.getBaseAmountValue())));
-
-        for (String amountIdentifier : amounts.getAdditionalAmounts().keySet()) {
-            amountInfo.add(getStringPair(amountIdentifier, formatAmount(amounts.getCurrency(), amounts.getAdditionalAmountValue(amountIdentifier))));
-        }
-
+        addAmountInfo(amountInfo, amounts, paymentMethod);
         int sectionTitleRes = sectionTitle.length > 0 ? sectionTitle[0] : R.string.amount_details;
         return new RecyclerViewSection(getActivity(), sectionTitleRes, amountInfo);
+    }
+
+    private void addAmountInfo(List<Pair<String, String>> infoList, Amounts amounts, String paymentMethod) {
+        infoList.add(getStringPair(R.string.currency, amounts.getCurrency()));
+        if (paymentMethod != null) {
+            infoList.add(getStringPair(R.string.payment_method, paymentMethod));
+        }
+        infoList.add(getStringPair(R.string.total_amount, formatAmount(amounts.getCurrency(), amounts.getTotalAmountValue())));
+        infoList.add(getStringPair(R.string.base_amount, formatAmount(amounts.getCurrency(), amounts.getBaseAmountValue())));
+
+        for (String amountIdentifier : amounts.getAdditionalAmounts().keySet()) {
+            infoList.add(getStringPair(amountIdentifier, formatAmount(amounts.getCurrency(), amounts.getAdditionalAmountValue(amountIdentifier))));
+        }
     }
 
     private RecyclerViewSection createCardSection(Card card) {

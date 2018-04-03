@@ -60,6 +60,8 @@ public class PreFlowActivity extends AppCompatActivity {
     public void onShowRequest() {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, Payment.class.getName());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "Payment data");
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, payment.toJson());
         startActivity(intent);
     }

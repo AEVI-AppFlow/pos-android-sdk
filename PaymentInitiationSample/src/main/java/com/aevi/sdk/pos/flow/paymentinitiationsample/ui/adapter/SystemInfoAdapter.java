@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.SystemInfo;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemInfo;
 
 public class SystemInfoAdapter extends BaseServiceInfoAdapter<SystemInfo> {
 

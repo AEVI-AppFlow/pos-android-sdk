@@ -51,6 +51,7 @@
         </service>
         <service
             android:name=".service.PostPaymentService"
+            android:enabled="false"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.aevi.sdk.pos.flow.action.POST_PAYMENT_SERVICE"/>

@@ -58,6 +58,8 @@ public class SelectPaymentCardActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
         startActivity(intent);
     }
 

@@ -21,9 +21,6 @@
 
     <string-array name="transaction_types">
         <item>Sale</item>
-        <item>Refund</item>
-        <item>Pre-authorisation</item>
-        <item>Completion</item>
     </string-array>
 
     <string-array name="amounts">

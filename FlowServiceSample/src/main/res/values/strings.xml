@@ -44,4 +44,6 @@
     <string name="prev_paid_for_items">Previously paid for items (total value</string>
     <string name="or">or</string>
     <string name="process_split">Process split</string>
+    <string name="prev_txn_declined">Previous split transaction was declined! Please try again.</string>
+    <string name="bypass_split">bypass split</string>
 </resources>

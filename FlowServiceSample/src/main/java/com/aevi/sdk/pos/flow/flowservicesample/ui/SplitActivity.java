@@ -1,6 +1,7 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,10 +10,10 @@ import android.widget.TextView;
 
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
@@ -54,6 +55,9 @@ public class SplitActivity extends AppCompatActivity {
     @BindView(R.id.or_text)
     TextView orText;
 
+    @BindView(R.id.send_response)
+    Button sendResponseButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,13 @@ public class SplitActivity extends AppCompatActivity {
     }
 
     private void setupSplit() {
+        // As a split app, you must take into account declined transactions
+        if (lastTransactionFailed()) {
+            prevSplitInfo.setVisibility(View.VISIBLE);
+            prevSplitInfo.setText(R.string.prev_txn_declined);
+            prevSplitInfo.setTextColor(Color.RED);
+        }
+
         if (splitBasketHelper.isFirstSplit()) {
             if (splitRequest.getSourcePayment().getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
                 infoMessage.setText(R.string.choose_split_type);
@@ -76,19 +87,30 @@ public class SplitActivity extends AppCompatActivity {
                 splitBasketButton.setEnabled(false);
             }
         } else {
+            String prevInfoText;
             String lastSplitType = splitRequest.getLastTransaction().getAdditionalData().getStringValue(SplitDataKeys.DATA_KEY_SPLIT_TYPE);
-            prevSplitInfo.setVisibility(View.VISIBLE);
             orText.setVisibility(View.GONE);
+
             if (lastSplitType.equals(SplitDataKeys.SPLIT_TYPE_BASKET)) {
                 splitAmountsButton.setVisibility(View.GONE);
                 splitBasketButton.setText(R.string.add_remaining_basket_items);
-                prevSplitInfo.setText(getPaidForBasketItems());
-            } else if (lastSplitType.equals(SPLIT_TYPE_AMOUNTS)) {
+                prevInfoText = getPaidForBasketItems();
+            } else {
                 splitBasketButton.setVisibility(View.GONE);
                 splitAmountsButton.setText(R.string.add_remaining_amounts);
-                prevSplitInfo.setText(getString(R.string.previously_paid_amount, getPreviousAmountTotalFormatted()));
+                prevInfoText = getString(R.string.previously_paid_amount, getPreviousAmountTotalFormatted());
+            }
+
+            if (!lastTransactionFailed()) {
+                prevSplitInfo.setVisibility(View.VISIBLE);
+                prevSplitInfo.setText(prevInfoText);
             }
         }
+    }
+
+    private boolean lastTransactionFailed() {
+        return splitRequest.hasPreviousTransactions() && !splitRequest.getLastTransaction().hasProcessedRequestedAmounts() &&
+                splitRequest.getLastTransaction().hasDeclinedResponses();
     }
 
     private String getPreviousAmountTotalFormatted() {
@@ -124,28 +146,15 @@ public class SplitActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, SplitRequest.class.getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, splitRequest.toJson());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "SplitRequest");
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
         startActivity(intent);
-    }
-
-    private void handlePreviousTransactionsState() {
-
-        // If the last transaction didn't approve the requested amounts
-        if (!splitRequest.getLastTransaction().hasProcessedRequestedAmounts()) {
-            // TODO gotta be sure it was all declined and not partially fulfilled!
-            // Show info about declined and why - and retry options
-        }
-
-        String splitType = splitRequest.getLastTransaction().getAdditionalData().getStringValue(SplitDataKeys.DATA_KEY_SPLIT_TYPE);
-        if (splitType.equals(SplitDataKeys.SPLIT_TYPE_BASKET)) {
-
-        } else if (splitType.equals(SPLIT_TYPE_AMOUNTS)) {
-
-        }
     }
 
     private void disableSplitButtons() {
         splitAmountsButton.setEnabled(false);
         splitBasketButton.setEnabled(false);
+        sendResponseButton.setText(R.string.process_split);
     }
 
     @OnClick(R.id.split_basket)

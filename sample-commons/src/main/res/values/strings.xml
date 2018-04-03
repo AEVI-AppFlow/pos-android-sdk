@@ -74,5 +74,7 @@
     <string name="failed">FAILURE</string>
     <string name="response_model_overview">Response model data</string>
     <string name="general_data">General data</string>
+    <string name="model_overview">Model overview</string>
+    <string name="payment_id">Payment id</string>
 
 </resources>

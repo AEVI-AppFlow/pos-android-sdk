@@ -9,9 +9,9 @@ import android.widget.Switch;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
-import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
@@ -82,6 +82,8 @@ public class PaymentResponseBuilderActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
         startActivity(intent);
     }
 

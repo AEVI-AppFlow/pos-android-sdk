@@ -1,4 +1,4 @@
-package com.aevi.sdk.pos.flow.paymentinitiationsample;
+package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 
 public class ApiFunction {

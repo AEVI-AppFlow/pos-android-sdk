@@ -52,8 +52,16 @@
                 style="@style/CheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/margin_horizontal"
                 android:text="@string/add_basket"/>
+
+            <TextView
+                android:id="@+id/or_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/or"
+                android:textSize="20sp"/>
 
             <com.aevi.ui.library.recycler.DropDownSpinner
                 android:id="@+id/amounts_spinner"

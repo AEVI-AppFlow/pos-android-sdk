@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    </style>
-
     <style name="Popup" parent="@style/Base.Theme.AppCompat.Light.Dialog.MinWidth">
     </style>
 
@@ -23,16 +16,15 @@
         <item name="android:textColor">@color/defaultButtonText</item>
     </style>
 
-    <style name="DialogTitle" parent="Base.TextAppearance.AppCompat.Large">
+    <style name="BaseDialogTitle" parent="Base.TextAppearance.AppCompat.Large">
         <item name="android:textColor">@color/colorTitleText</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:background">@color/colorAccent</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">@dimen/margin_horizontal</item>
         <item name="android:paddingRight">@dimen/margin_horizontal</item>
     </style>
 
-    <style name="DialogTitleError" parent="@style/DialogTitle">
+    <style name="DialogTitleError" parent="@style/BaseDialogTitle">
         <item name="android:background">@color/colorErrorAccent</item>
     </style>
 

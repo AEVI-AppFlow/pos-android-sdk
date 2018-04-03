@@ -32,7 +32,7 @@ public class SplitBasketHelper {
     }
 
     public boolean isFirstSplit() {
-        return !splitRequest.hasPreviousTransactions();
+        return !splitRequest.hasPreviousTransactions() || splitRequest.getProcessedAmounts().getTotalAmountValue() == 0;
     }
 
     public Basket getPaidItems() {

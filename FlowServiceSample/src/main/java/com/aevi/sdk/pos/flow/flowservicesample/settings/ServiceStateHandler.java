@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
-import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.flowservicesample.FlowServiceInfoProvider;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.flowservicesample.service.*;
 import com.aevi.sdk.pos.flow.model.PaymentStage;
 
@@ -28,16 +28,16 @@ public class ServiceStateHandler {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (paymentStage) {
             case PRE_FLOW:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_preflow), false);
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_preflow), context.getResources().getBoolean(R.bool.pre_flow_default));
             case SPLIT:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_split), false);
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_split), context.getResources().getBoolean(R.bool.split_default));
             case PRE_TRANSACTION:
             case POST_CARD_READING:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_prepayment), false);
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_prepayment), context.getResources().getBoolean(R.bool.pre_payment_default));
             case POST_TRANSACTION:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_postpayment), false);
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_postpayment), context.getResources().getBoolean(R.bool.post_payment_default));
             case POST_FLOW:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_postflow), false);
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_postflow), context.getResources().getBoolean(R.bool.post_flow_default));
             default:
                 return false;
         }

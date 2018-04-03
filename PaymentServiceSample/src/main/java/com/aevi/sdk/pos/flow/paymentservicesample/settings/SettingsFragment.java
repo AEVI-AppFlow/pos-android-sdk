@@ -51,6 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Preference pref = getPreferenceScreen().findPreference(key);
             setSummary(pref);
         }
+        PaymentServiceInfoProvider.notifyServiceInfoChange(getActivity());
     }
 
     private void setSummary(Preference pref) {
@@ -68,7 +69,5 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         ComponentName componentName = new ComponentName(context.getPackageName(), PaymentCardReadingService.class.getName());
         int enableDisableFlag = enable ? COMPONENT_ENABLED_STATE_ENABLED : COMPONENT_ENABLED_STATE_DISABLED;
         packageManager.setComponentEnabledSetting(componentName, enableDisableFlag, DONT_KILL_APP);
-
-        PaymentServiceInfoProvider.notifyServiceInfoChange(context);
     }
 }

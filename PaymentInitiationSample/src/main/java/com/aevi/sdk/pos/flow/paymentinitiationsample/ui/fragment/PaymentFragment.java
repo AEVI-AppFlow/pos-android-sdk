@@ -15,7 +15,7 @@ import com.aevi.sdk.pos.flow.model.Basket;
 import com.aevi.sdk.pos.flow.model.BasketItem;
 import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.SampleContext;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;

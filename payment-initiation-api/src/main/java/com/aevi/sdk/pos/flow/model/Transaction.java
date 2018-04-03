@@ -12,7 +12,7 @@ import java.util.UUID;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
-import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.APPROVED;
+import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
 
 /**
  * Represents a transaction for a single customer (aka split).
@@ -133,6 +133,20 @@ public class Transaction extends BaseModel {
      */
     public boolean hasResponses() {
         return transactionResponses.size() > 0;
+    }
+
+    /**
+     * Check whether there were any declined responses.
+     *
+     * @return True if there were declined responses, false otherwise
+     */
+    public boolean hasDeclinedResponses() {
+        for (TransactionResponse transactionResponse : transactionResponses) {
+            if (transactionResponse.getOutcome() == DECLINED) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

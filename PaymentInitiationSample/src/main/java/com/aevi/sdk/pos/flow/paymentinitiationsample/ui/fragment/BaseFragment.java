@@ -3,7 +3,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.aevi.sdk.pos.flow.paymentinitiationsample.SampleContext;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.ui.library.BaseObservableFragment;
 
 abstract class BaseFragment extends BaseObservableFragment {

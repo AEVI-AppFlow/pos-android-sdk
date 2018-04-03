@@ -3,6 +3,7 @@ package com.aevi.sdk.pos.flow.sample.ui;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
@@ -13,20 +14,36 @@ public class ModelDetailsActivity extends AppCompatActivity {
 
     public static final String KEY_MODEL_DATA = "modelData";
     public static final String KEY_MODEL_TYPE = "modelType";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_TITLE_BG = "titleBgColor";
 
     private ModelDisplay modelDisplay;
+    private boolean hideFragmentTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_model_details);
+        String title = getIntent().getStringExtra(KEY_TITLE);
+        int titleBg = getIntent().getIntExtra(KEY_TITLE_BG, 0);
+        TextView titleView = findViewById(R.id.title);
+        if (title != null) {
+            titleView.setText(title);
+            hideFragmentTitle = true;
+        }
+        if (titleBg != 0) {
+            titleView.setBackgroundColor(titleBg);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (hideFragmentTitle) {
+            modelDisplay.showTitle(false);
+        }
 
         String modelType = getIntent().getStringExtra(KEY_MODEL_TYPE);
         String data = getIntent().getStringExtra(KEY_MODEL_DATA);
