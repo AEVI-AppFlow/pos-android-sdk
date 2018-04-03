@@ -46,13 +46,17 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * This can be used to update the amount values and/or the currency used in the request for this transaction.
+     * This can be used to add or update the amount values and/or the currency used in the request for this transaction.
      *
-     * Please use {@link AmountsModifier} to augment the request amounts correctly.
+     * Please use {@link AmountsModifier} (construct with amounts from request) to augment the request amounts correctly.
+     *
+     * Note that only split applications are allowed to modify the base amount. For all other cases, such as adding a fee, charity contribution, etc
+     * {@link AmountsModifier#setAdditionalAmount(String, long)} should be used where the identifier can be "surcharge" or "charity", etc.
      *
      * This can be combined with setting amounts paid as long as the paid amount does not exceed the updated requested amount.
      *
-     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     * Changing request amounts is only allowed in {@link PaymentStage#PRE_FLOW}, {@link PaymentStage#PRE_TRANSACTION}
+     * and {@link PaymentStage#POST_CARD_READING} stages.
      *
      * @param modifiedRequestAmounts The updated amounts
      */
@@ -81,7 +85,10 @@ public class FlowResponse implements Sendable {
      *
      * Optional reference data can be set via {@link #setPaymentReferences(AdditionalData)}
      *
-     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     * Paying off amounts will only have an impact if set during {@link PaymentStage#PRE_TRANSACTION} and {@link PaymentStage#POST_CARD_READING}.
+     *
+     * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
+     * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
@@ -97,15 +104,37 @@ public class FlowResponse implements Sendable {
     }
 
     /**
+     * Convenience wrapper for adding additional request data.
+     *
      * This can be used to set arbitrary data to be passed on in the request to down-stream flow apps and/or payment apps.
      *
-     * This will overwrite any existing options with the same key.
+     * This will overwrite any existing data with the same key.
      *
      * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
      *
-     * @param requestAdditionalData Options to set in the request.
+     * See {@link AdditionalData#addData(String, Object[])} for more info.
+     *
+     * @param key    The key to use for this data
+     * @param values An array of values for this data
+     * @param <T>    The type of object this data is an array of
      */
-    public void setRequestAdditionalData(AdditionalData requestAdditionalData) {
+    public <T> void addAdditionalRequestData(String key, T... values) {
+        if (requestAdditionalData == null) {
+            requestAdditionalData = new AdditionalData();
+        }
+        requestAdditionalData.addData(key, values);
+    }
+
+    /**
+     * This can be used to set arbitrary data to be passed on in the request to down-stream flow apps and/or payment apps.
+     *
+     * This will overwrite any existing data with the same key.
+     *
+     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     *
+     * @param requestAdditionalData Additional data to set in the request.
+     */
+    public void setAdditionalRequestData(AdditionalData requestAdditionalData) {
         this.requestAdditionalData = requestAdditionalData;
     }
 
@@ -118,8 +147,8 @@ public class FlowResponse implements Sendable {
      *
      * If used together with {@link #setAmountsPaid(Amounts, String)}, this will be set in the transaction response.
      *
-     * If set by a post-transaction application, these will be copied into the existing transaction response references. Note that overwriting
-     * existing values will NOT be allowed in this case.
+     * Only relevant for {@link PaymentStage#POST_TRANSACTION} where these will be copied into the existing transaction response references.
+     * Note that overwriting existing values will NOT be allowed in this case.
      *
      * @param paymentReferences The references via Options
      */
@@ -151,10 +180,10 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * Request that the current transaction should be cancelled. Note that depending on the transaction stage and state,
-     * this request may not be respected.
+     * Request that the current transaction should be cancelled.
      *
-     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     * Note that there is no guarantee that this request is fulfilled. The current transaction stage, state and acquirer/merchant configuration
+     * determines whether such a request is allowed at any given point during a transaction.
      *
      * @param cancelTransaction True if transaction should be cancelled.
      */
@@ -180,7 +209,8 @@ public class FlowResponse implements Sendable {
     }
 
     private void checkAmountsPaidLessEqualUpdatedAmounts() {
-        checkArgument(amountsPaid.getBaseAmountValue() <= updatedRequestAmounts.getBaseAmountValue(), "Amounts paid can not be > than updated amounts");
+        checkArgument(amountsPaid.getBaseAmountValue() <= updatedRequestAmounts.getBaseAmountValue(),
+                "Amounts paid can not be > than updated amounts");
     }
 
     private void checkCurrencyMatch() {
@@ -190,20 +220,34 @@ public class FlowResponse implements Sendable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         FlowResponse that = (FlowResponse) o;
 
-        if (enableSplit != that.enableSplit) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (updatedRequestAmounts != null ? !updatedRequestAmounts.equals(that.updatedRequestAmounts) : that.updatedRequestAmounts != null)
+        if (enableSplit != that.enableSplit) {
             return false;
-        if (requestAdditionalData != null ? !requestAdditionalData.equals(that.requestAdditionalData) : that.requestAdditionalData != null)
+        }
+        if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
-        if (amountsPaid != null ? !amountsPaid.equals(that.amountsPaid) : that.amountsPaid != null) return false;
-        if (amountsPaidPaymentMethod != null ? !amountsPaidPaymentMethod.equals(that.amountsPaidPaymentMethod) : that.amountsPaidPaymentMethod != null)
+        }
+        if (updatedRequestAmounts != null ? !updatedRequestAmounts.equals(that.updatedRequestAmounts) : that.updatedRequestAmounts != null) {
             return false;
+        }
+        if (requestAdditionalData != null ? !requestAdditionalData.equals(that.requestAdditionalData) : that.requestAdditionalData != null) {
+            return false;
+        }
+        if (amountsPaid != null ? !amountsPaid.equals(that.amountsPaid) : that.amountsPaid != null) {
+            return false;
+        }
+        if (amountsPaidPaymentMethod != null ? !amountsPaidPaymentMethod.equals(that.amountsPaidPaymentMethod) :
+                that.amountsPaidPaymentMethod != null) {
+            return false;
+        }
         return paymentReferences != null ? paymentReferences.equals(that.paymentReferences) : that.paymentReferences == null;
     }
 

@@ -7,8 +7,13 @@ import com.google.gson.stream.MalformedJsonException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.aevi.sdk.flow.constants.AdditionalDataKeys.*;
-import static com.aevi.sdk.flow.constants.AdditionalDataValues.*;
+import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_ENTRY_METHODS;
+import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_NETWORKS;
+import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_INSERT;
+import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_SWIPE;
+import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_AMEX;
+import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_DINERS;
+import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_GIFT;
 import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,20 +45,20 @@ public class PaymentTest {
 
     @Test
     public void canSetCardEntryMethods() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, DATA_KEY_CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
+        setupArrayOfOptions(defaultPayment, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
 
         Payment result = toFromJson(defaultPayment);
 
-        assertArrayOfOptions(result, DATA_KEY_CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
+        assertArrayOfOptions(result, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
     }
 
     @Test
     public void canSetCardNetworks() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, DATA_KEY_CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
+        setupArrayOfOptions(defaultPayment, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
 
         Payment result = toFromJson(defaultPayment);
 
-        assertArrayOfOptions(result, DATA_KEY_CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
+        assertArrayOfOptions(result, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
     }
 
     @Test(expected = JsonParseException.class)

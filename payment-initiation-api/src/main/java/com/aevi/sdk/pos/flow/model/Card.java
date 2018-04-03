@@ -63,11 +63,11 @@ public class Card implements Jsonable {
     }
 
     /**
-     * Get the expiry date of the card presented in the format YYYYMMDD.
+     * Get the expiry date of the card presented in the format YYMM (such as 2006 for June 2020).
      *
      * Can be null.
      *
-     * @return The expiry date of the card presented in the format YYYYMMDD
+     * @return The expiry date of the card presented in the format YYMM
      */
     @Nullable
     public String getExpiryDate() {
@@ -89,11 +89,22 @@ public class Card implements Jsonable {
     /**
      * Get any additional data available for this card.
      *
+     * See documentation for reference data.
+     *
      * @return An {@link AdditionalData} object with additional data
      */
     @NonNull
     public AdditionalData getAdditionalData() {
         return additionalData;
+    }
+
+    /**
+     * Check whether this object contains any card data.
+     *
+     * @return True if empty, false if contains data
+     */
+    public boolean isEmpty() {
+        return maskedPan == null && cardholderName == null && cardToken == null && expiryDate == null && additionalData.isEmpty();
     }
 
     @Override

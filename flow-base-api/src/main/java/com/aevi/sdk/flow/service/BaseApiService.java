@@ -180,12 +180,21 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
         }, new Consumer<Throwable>() {
             @Override
             public void accept(@NonNull Throwable throwable) throws Exception {
-                if (throwable instanceof MessageException) {
-                    MessageException me = (MessageException) throwable;
-                    sendErrorMessageToClient(clientMessageId, me.getCode(), me.getMessage());
-                }
+                handleActivityException(clientMessageId, throwable);
             }
         });
+    }
+
+    /**
+     * Can be overriden to handle when the activity responds with an error / exception.
+     */
+    protected void handleActivityException(String clientMessageId, Throwable throwable) {
+        if (throwable instanceof MessageException) {
+            MessageException me = (MessageException) throwable;
+            sendErrorMessageToClient(clientMessageId, me.getCode(), me.getMessage());
+        } else {
+            sendErrorMessageAndFinish(clientMessageId, throwable.getMessage());
+        }
     }
 
     protected void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId, final REQUEST request) {

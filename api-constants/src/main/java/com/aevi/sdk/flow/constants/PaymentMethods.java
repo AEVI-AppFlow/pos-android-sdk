@@ -7,6 +7,7 @@ public interface PaymentMethods {
     String CASH = "cash";
     String LOYALTY_POINTS = "points";
     String REWARD = "reward";
+    String GIFT_CARD = "giftCard";
     String BANK_TRANSFER = "bankTransfer";
     String CHEQUE = "cheque";
     String EBT = "ebt";

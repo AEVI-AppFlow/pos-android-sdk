@@ -1,6 +1,6 @@
 package com.aevi.sdk.flow.model;
 
-import com.aevi.sdk.flow.constants.CustomerDetails;
+import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
@@ -66,6 +66,21 @@ public class Customer extends BaseModel {
     }
 
     /**
+     * Convenience wrapper for adding additional customer data.
+     *
+     * This can be used to set arbitrary data to be passed on in the request to down-stream flow apps and/or payment apps.
+     *
+     * See {@link AdditionalData#addData(String, Object[])} for more info.
+     *
+     * @param key    The key to use for this data
+     * @param values An array of values for this data
+     * @param <T>    The type of object this data is an array of
+     */
+    public <T> void addCustomerDetails(String key, T... values) {
+        customerDetails.addData(key, values);
+    }
+
+    /**
      * Get the optional customer details, such as phone number, address, etc.
      *
      * @return The Options representing customer details. May be empty.
@@ -73,6 +88,15 @@ public class Customer extends BaseModel {
     @NonNull
     public AdditionalData getCustomerDetails() {
         return customerDetails;
+    }
+
+    /**
+     * Add a customer token.
+     *
+     * @param token Token to add
+     */
+    public void addToken(Token token) {
+        tokens.add(token);
     }
 
     /**
@@ -134,9 +158,9 @@ public class Customer extends BaseModel {
      * @param customer Customer instance
      */
     public static void setFullNameFromCustomerDetails(Customer customer) {
-        String firstName = customer.getCustomerDetails().getValue(CustomerDetails.FIRST_NAME, String.class);
-        String surname = customer.getCustomerDetails().getValue(CustomerDetails.SURNAME, String.class);
-        String[] middleNames = customer.getCustomerDetails().getValue(CustomerDetails.MIDDLE_NAMES, String[].class);
+        String firstName = customer.getCustomerDetails().getValue(CustomerDataKeys.FIRST_NAME, String.class);
+        String surname = customer.getCustomerDetails().getValue(CustomerDataKeys.SURNAME, String.class);
+        String[] middleNames = customer.getCustomerDetails().getValue(CustomerDataKeys.MIDDLE_NAMES, String[].class);
 
         customer.setFullName(constructFullName(firstName, middleNames, surname));
     }
@@ -196,16 +220,16 @@ public class Customer extends BaseModel {
         Customer customer = new Customer(id);
         customer.setFullName(fullName);
         AdditionalData customerDetails = customer.getCustomerDetails();
-        customerDetails.addData(CustomerDetails.FIRST_NAME, names[0]);
+        customerDetails.addData(CustomerDataKeys.FIRST_NAME, names[0]);
 
         if (names.length > 1) {
-            customerDetails.addData(CustomerDetails.SURNAME, names[names.length - 1]);
+            customerDetails.addData(CustomerDataKeys.SURNAME, names[names.length - 1]);
         }
 
         if (names.length > 2) {
             String[] middleNames = new String[names.length - 2];
             System.arraycopy(names, 1, middleNames, 0, middleNames.length);
-            customerDetails.addData(CustomerDetails.MIDDLE_NAMES, middleNames);
+            customerDetails.addData(CustomerDataKeys.MIDDLE_NAMES, middleNames);
         }
 
         customer.getTokens().addAll(Arrays.asList(tokens));
