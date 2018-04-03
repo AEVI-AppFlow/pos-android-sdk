@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/initiate_payment_padding"
+        android:paddingRight="@dimen/initiate_payment_padding"
+        android:paddingTop="@dimen/initiate_payment_padding">
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_a_transaction_type"/>
+
+        <com.aevi.ui.library.recycler.DropDownSpinner
+            android:id="@+id/transaction_type_spinner"
+            style="@style/DropDownSpinner"
+            android:entries="@array/transaction_types"/>
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/choose_a_currency"/>
+
+        <com.aevi.ui.library.recycler.DropDownSpinner
+            android:id="@+id/currency_spinner"
+            style="@style/DropDownSpinner"
+            android:entries="@array/transaction_types"/>
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/add_basket_or_configure_manual_amounts"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/add_basket"
+                style="@style/CheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_horizontal"
+                android:text="@string/add_basket"/>
+
+            <com.aevi.ui.library.recycler.DropDownSpinner
+                android:id="@+id/amounts_spinner"
+                style="@style/DropDownSpinner"
+                android:entries="@array/amounts"/>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/additional_settings"/>
+
+        <CheckBox
+            android:id="@+id/add_customer"
+            style="@style/CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/add_customer"/>
+
+        <CheckBox
+            android:id="@+id/add_card_token"
+            style="@style/CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/add_card_token"/>
+
+        <CheckBox
+            android:id="@+id/enable_split"
+            style="@style/CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/enable_split"/>
+
+        <Button
+            android:id="@+id/send"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/initiate_payment"/>
+
+    </LinearLayout>
+
+</ScrollView>

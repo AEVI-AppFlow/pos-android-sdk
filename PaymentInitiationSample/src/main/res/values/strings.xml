@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">Payment Initiation Sample</string>
+
+    <string name="transaction_type">Transaction type</string>
+    <string name="request_type">Request type</string>
+    <string name="overall_status">All transactions approved</string>
+    <string name="outcome">Outcome</string>
+    <string name="outcome_message">Outcome message</string>
+    <string name="failure_reason">Failure reason</string>
+    <string name="payment_app_used">Payment service used</string>
+    <string name="num_transactions">Number of transactions</string>
+
+    <array name="payment_response_labels">
+        <item>@string/transaction_type</item>
+        <item>@string/overall_status</item>
+        <item>@string/num_transactions</item>
+        <item>@string/outcome</item>
+        <item>@string/failure_reason</item>
+    </array>
+
+    <array name="generic_response_labels">
+        <item>@string/request_type</item>
+        <item>@string/outcome</item>
+        <item>@string/outcome_message</item>
+    </array>
+
+    <string name="transaction_id">Transaction id</string>
+    <string name="transaction_status">Transaction status</string>
+    <string name="response_code">Response code</string>
+    <string name="amount_charged">Amount charged</string>
+    <string name="payment_type">Payment method</string>
+    <string name="card_used">Card used</string>
+    <string name="card_used_value">%1$s %2$s %3$s</string>
+
+    <string name="customer">Customer</string>
+
+    <string name="transaction_type_sale">Sale</string>
+    <string name="transaction_type_refund">Refund</string>
+    <string name="transaction_type_reversal">Reversal</string>
+    <string name="transaction_type_preauthorisation">Pre-authorisation</string>
+    <string name="transaction_type_preauthcompletion">Completion</string>
+
+    <string name="close">Close</string>
+    <string name="transactions_performed">Transactions performed</string>
+    <string name="payment_result">Payment completed</string>
+    <string name="payment_error_result">Payment error</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+
+    <string name="check_split">Split</string>
+    <string name="total">Total</string>
+
+
+    <string name="title_status">%1$s &#8212; Status: %2$s &#8212; Failure: %3$s</string>
+    <string name="title_customer">%1$s</string>
+
+    <string name="no_customer_name">No customer used</string>
+
+    <string name="record_title">Transaction record</string>
+
+    <string name="title_select_payment_service">Select a payment service</string>
+    <string name="title_select_flow_service">Select a flow service</string>
+    <string name="title_select_device">Connected devices</string>
+
+    <string name="remove">Remove choice</string>
+    <string name="pay">PAY</string>
+
+    <string name="choose_api_function">Choose API function</string>
+    <string name="na">N/A</string>
+
+    <string name="no_devices_found">No connected devices were found</string>
+    <string name="no_flow_services_found">No flow services were found</string>
+    <string name="no_payment_services_found">No payment services were found</string>
+
+    <string name="service_label_id">Id</string>
+    <string name="service_label_vendor">Vendor</string>
+    <string name="service_label_app_version">Application Version</string>
+    <string name="service_label_api_version">API Version</string>
+    <string name="service_label_payment_methods">Payment methods</string>
+    <string name="service_label_request_types">Request types</string>
+    <string name="service_label_currencies">Currencies</string>
+    <string name="service_label_transaction_types">Transaction types</string>
+    <string name="service_label_accessible_mode">Accessibility mode supported</string>
+    <string name="service_label_supported_data_keys">Supported data keys</string>
+
+    <string name="ps_label_terminal_id">Terminal Id</string>
+    <string name="ps_label_merchant_ids">Merchant Ids</string>
+    <string name="ps_label_default_currency">Default currency</string>
+    <string name="ps_label_manual_entry">Allows manual entry</string>
+    <string name="ps_label_operating_mode">Operating mode</string>
+    <string name="ps_label_print_receipts">Will print receipts</string>
+    <string name="ps_label_card_reading">Supports flow card reading</string>
+
+    <string name="fs_label_stages">Flow stages</string>
+    <string name="fs_label_capabilities">Capabilities</string>
+    <string name="fs_label_background_only">Background only</string>
+    <string name="fs_label_req_card_token">Requires card token</string>
+    <string name="fs_label_can_adjust_amounts">Can adjust amounts</string>
+    <string name="fs_label_can_pay_amounts">Can pay amounts</string>
+    <string name="initiate_payment">Initiate payment</string>
+    <string name="process_request">Process request</string>
+    <string name="choose_a_transaction_type">Choose a transaction type</string>
+    <string name="choose_a_currency">Choose a currency</string>
+    <string name="add_basket_or_configure_manual_amounts">Add basket or configure manual amounts</string>
+    <string name="add_basket">Add basket</string>
+    <string name="additional_settings">Additional settings</string>
+    <string name="add_customer">Add customer</string>
+    <string name="add_card_token">Add card token</string>
+    <string name="enable_split">Enable split</string>
+
+    <string name="system_info_label_api_version">Payment Initiation API version</string>
+    <string name="system_info_label_fps_version">Flow Processing Service version</string>
+    <string name="system_info_label_num_flow_services">Number of flow services</string>
+    <string name="system_info_label_num_payment_services">Number of payment services</string>
+    <string name="system_info_label_num_devices">Number of connected devices</string>
+    <string name="system_info_label_all_fs_capabilities">All flow service capabilities</string>
+    <string name="system_info_label_all_request_types">All supported request types</string>
+    <string name="system_info_label_all_transaction_types">All supported transaction types</string>
+    <string name="system_info_label_all_currencies">All supported currencies</string>
+    <string name="system_info_label_all_payment_methods">All supported payment methods</string>
+    <string name="system_info_label_all_data_keys">All supported data keys</string>
+    <string name="system_overview">System overview</string>
+    <string name="initiate_request">Initiate request</string>
+    <string name="choose_a_request_type">Choose request type</string>
+    <string name="generic_result">Request processed</string>
+
+    <array name="payment_service_labels">
+        <item>@string/service_label_id</item>
+        <item>@string/service_label_vendor</item>
+        <item>@string/service_label_app_version</item>
+        <item>@string/service_label_api_version</item>
+        <item>@string/ps_label_terminal_id</item>
+        <item>@string/ps_label_merchant_ids</item>
+        <item>@string/service_label_payment_methods</item>
+        <item>@string/ps_label_default_currency</item>
+        <item>@string/service_label_currencies</item>
+        <item>@string/service_label_request_types</item>
+        <item>@string/service_label_transaction_types</item>
+        <item>@string/ps_label_manual_entry</item>
+        <item>@string/ps_label_operating_mode</item>
+        <item>@string/service_label_accessible_mode</item>
+        <item>@string/ps_label_print_receipts</item>
+        <item>@string/ps_label_card_reading</item>
+        <item>@string/service_label_supported_data_keys</item>
+    </array>
+
+    <array name="flow_service_labels">
+        <item>@string/service_label_id</item>
+        <item>@string/service_label_vendor</item>
+        <item>@string/service_label_app_version</item>
+        <item>@string/service_label_api_version</item>
+        <item>@string/fs_label_stages</item>
+        <item>@string/fs_label_capabilities</item>
+        <item>@string/service_label_request_types</item>
+        <item>@string/service_label_accessible_mode</item>
+        <item>@string/fs_label_can_adjust_amounts</item>
+        <item>@string/fs_label_can_pay_amounts</item>
+        <item>@string/service_label_currencies</item>
+        <item>@string/service_label_supported_data_keys</item>
+        <item>@string/fs_label_background_only</item>
+    </array>
+
+    <array name="system_info_labels">
+        <item>@string/system_info_label_api_version</item>
+        <item>@string/system_info_label_fps_version</item>
+        <item>@string/system_info_label_num_flow_services</item>
+        <item>@string/system_info_label_num_payment_services</item>
+        <item>@string/system_info_label_num_devices</item>
+        <item>@string/system_info_label_all_fs_capabilities</item>
+        <item>@string/system_info_label_all_request_types</item>
+        <item>@string/system_info_label_all_transaction_types</item>
+        <item>@string/system_info_label_all_currencies</item>
+        <item>@string/system_info_label_all_payment_methods</item>
+        <item>@string/system_info_label_all_data_keys</item>
+    </array>
+</resources>
