@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_preflow"
+        android:title="@string/pre_flow"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_split"
+        android:tag=""
+        android:title="@string/split"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_prepayment"
+        android:title="@string/pre_payment"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_postpayment"
+        android:title="@string/post_payment"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_postflow"
+        android:title="@string/post_flow"/>
+
+</PreferenceScreen>

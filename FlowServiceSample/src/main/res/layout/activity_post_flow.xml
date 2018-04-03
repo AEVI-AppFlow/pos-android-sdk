@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aevi.flowservicesample.ui.PostFlowActivity">
+
+    <Button
+        android:id="@+id/send_response"
+        style="@style/DefaultButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/finish"/>
+
+    <fragment
+        android:id="@+id/fragment_request_details"
+        android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/send_response"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/margin_large"
+        android:tag="request"/>
+
+</RelativeLayout>

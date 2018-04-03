@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        applicationId "com.aevi.flowservicesample"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation(sampleDependencies.support) { force = true }
+    implementation(sampleDependencies.appCompat) { force = true }
+    implementation(sampleDependencies.recyclerView) { force = true }
+    implementation(sampleDependencies.cardView) { force = true }
+    implementation(sampleDependencies.design) { force = true }
+
+    implementation apiDependencies.archLifecycle
+    implementation apiDependencies.archLifecycleJava8
+    implementation apiDependencies.rxJava
+    implementation sampleDependencies.aeviUiLibrary
+
+    implementation project(':flow-service-api')
+    implementation project(':api-constants')
+    implementation project(':sample-commons')
+
+    implementation sampleDependencies.butterKnife
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    annotationProcessor sampleAptDependencies.butterKnife
+
+}
