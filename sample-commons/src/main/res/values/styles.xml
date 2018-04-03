@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Popup" parent="@style/Base.Theme.AppCompat.Light.Dialog.MinWidth">
+    </style>
+
+    <style name="Header" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="DefaultButton" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:padding">12dp</item>
+        <item name="android:background">@drawable/default_button</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:textColor">@color/defaultButtonText</item>
+    </style>
+
+    <style name="DialogTitle" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/colorTitleText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/margin_horizontal</item>
+        <item name="android:paddingRight">@dimen/margin_horizontal</item>
+    </style>
+
+    <style name="DialogTitleError" parent="@style/DialogTitle">
+        <item name="android:background">@color/colorErrorAccent</item>
+    </style>
+
+    <style name="DropDownSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:layout_width">@dimen/spinner_width</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@drawable/spinner_bg</item>
+        <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
+        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:popupElevation">@dimen/spinner_elevation</item>
+        <item name="android:stateListAnimator">@drawable/spinner_sla</item>
+    </style>
+
+    <style name="CheckBox" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textSize">20sp</item>
+    </style>
+</resources>

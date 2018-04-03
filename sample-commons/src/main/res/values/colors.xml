@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorErrorAccent">#ef5350</color>
+    <color name="colorSuccessAccent">#4b9b63</color>
+    <color name="colorTitleText">#ffffff</color>
+
+    <color name="iconColorLight">#ffcccccc</color>
+
+    <color name="defaultButtonText">#ffffff</color>
+    <color name="defaultButtonBackground">#4b9b63</color>
+    <color name="defaultButtonBackgroundDark">#3f8f50</color>
+    <color name="defaultButtonBackgroundDisabled">#dddddd</color>
+
+    <color name="colorResultStripeOdd">#eeeeee</color>
+    <color name="colorResultStripeEven">#ffffff</color>
+
+    <color name="colorTxnResponseStripeOdd">#eeeeee</color>
+    <color name="colorTxnResponseStripeEven">#ffcccccc</color>
+</resources>

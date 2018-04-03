@@ -16,6 +16,13 @@ ext {
     archLifecycleVersion = '1.0.3'
     archLifecycleJava8Version = '1.1.0'
 
+    butterKnifeVersion = '8.8.1'
+    recyclerViewVersion = '27.0.2'
+    supportLibrary = '27.0.2'
+    designLibrary = '27.0.2'
+    constraintLayoutVersion = '1.0.2'
+    aeviUiLibraryVersion = "1.2.0-SNAPSHOT"
+
     apiDependencies = [
             androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
@@ -24,6 +31,22 @@ ext {
             archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
             archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
             jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion"
+    ]
+
+    sampleDependencies = [
+            aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
+            butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
+            support          : "com.android.support:support-v4:$supportLibrary",
+            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
+            cardView         : "com.android.support:cardview-v7:$supportLibrary",
+            appCompat        : "com.android.support:appcompat-v7:$supportLibrary",
+            supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
+            design           : "com.android.support:design:$designLibrary",
+            constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+    ]
+
+    sampleAptDependencies = [
+            butterKnife: "com.jakewharton:butterknife-compiler:$butterKnifeVersion",
     ]
 
     testDependencies = [
