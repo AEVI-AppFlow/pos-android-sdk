@@ -7,6 +7,6 @@ public class NoOpModel implements Jsonable {
 
     @Override
     public String toJson() {
-        return null;
+        return "{}";
     }
 }

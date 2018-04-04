@@ -64,6 +64,21 @@ public class Basket implements Jsonable {
     }
 
     /**
+     * Copy over all items from the provided basket to this basket.
+     *
+     * This will increase the count of existing items appropriately.
+     *
+     * @param otherBasket The basket to copy items from
+     */
+    public void addItems(Basket otherBasket) {
+        if (otherBasket != null) {
+            for (BasketItem displayItem : otherBasket.displayItems) {
+                addItemMerge(displayItem);
+            }
+        }
+    }
+
+    /**
      * Check whether the basket already has an item with the provided label.
      *
      * @param label The label to match against
@@ -131,7 +146,7 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Removes items of the given type from the basket upto the item count. If the number of displayItems requested to be removed is greater than
+     * Removes items of the given type from the basket up to the item count. If the number of displayItems requested to be removed is greater than
      * the current count for this line item in the basket then all items are removed and the count is set to 0.
      *
      * @param item   The item to remove including potentially a count of greater than one
@@ -154,12 +169,43 @@ public class Basket implements Jsonable {
     }
 
     /**
+     * Remove items that exist in the provided basket from this basket.
+     *
+     * @param otherBasket The basket with items to remove from this basket
+     * @param retain      If set to true the line item will be retained even if, after removal, the count is equal to 0
+     */
+    public void removeItems(Basket otherBasket, boolean retain) {
+        if (otherBasket != null) {
+            for (BasketItem displayItem : otherBasket.displayItems) {
+                removeItems(displayItem, retain);
+            }
+        }
+    }
+
+    /**
      * Get the number of unique items in the basket.
+     *
+     * See {@link #getTotalNumberOfItems()} for retrieving the total number of items.
      *
      * @return The number of unique items in the basket
      */
     public int getNumberOfUniqueItems() {
         return displayItems.size();
+    }
+
+    /**
+     * Get the total number of items, taking into account the count of each individual item.
+     *
+     * See {@link #getNumberOfUniqueItems()} for retrieving the number of unique items.
+     *
+     * @return The total number of items
+     */
+    public int getTotalNumberOfItems() {
+        int count = 0;
+        for (BasketItem displayItem : displayItems) {
+            count += displayItem.getCount();
+        }
+        return count;
     }
 
     /**

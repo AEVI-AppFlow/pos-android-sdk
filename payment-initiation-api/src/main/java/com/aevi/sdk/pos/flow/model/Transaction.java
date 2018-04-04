@@ -12,6 +12,8 @@ import java.util.UUID;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
+import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
+
 /**
  * Represents a transaction for a single customer (aka split).
  *
@@ -90,7 +92,9 @@ public class Transaction extends BaseModel {
     public Amounts getRemainingAmounts() {
         Amounts remaining = new Amounts(requestedAmounts);
         for (TransactionResponse transactionResponse : transactionResponses) {
-            remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed());
+            if (transactionResponse.getOutcome() == APPROVED && transactionResponse.getAmountsProcessed() != null) {
+                remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed());
+            }
         }
         return remaining;
     }
@@ -106,7 +110,9 @@ public class Transaction extends BaseModel {
     public Amounts getProcessedAmounts() {
         Amounts processed = new Amounts(0, requestedAmounts.getCurrency());
         for (TransactionResponse transactionResponse : transactionResponses) {
-            processed = Amounts.addAmounts(processed, transactionResponse.getAmountsProcessed());
+            if (transactionResponse.getOutcome() == APPROVED && transactionResponse.getAmountsProcessed() != null) {
+                processed = Amounts.addAmounts(processed, transactionResponse.getAmountsProcessed());
+            }
         }
         return processed;
     }
@@ -130,6 +136,20 @@ public class Transaction extends BaseModel {
     }
 
     /**
+     * Check whether there were any declined responses.
+     *
+     * @return True if there were declined responses, false otherwise
+     */
+    public boolean hasDeclinedResponses() {
+        for (TransactionResponse transactionResponse : transactionResponses) {
+            if (transactionResponse.getOutcome() == DECLINED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get the list of transaction responses for this transaction.
      *
      * A transaction will have one response for each application that has paid the full or a portion of the requested amounts.
@@ -146,7 +166,7 @@ public class Transaction extends BaseModel {
     /**
      * Get the last transaction response, if any.
      *
-     * @return The last transaction, if one is available.
+     * @return The last transaction response, if one is available.
      */
     @Nullable
     public TransactionResponse getLastResponse() {
@@ -197,15 +217,27 @@ public class Transaction extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Transaction that = (Transaction) o;
 
-        if (requestedAmounts != null ? !requestedAmounts.equals(that.requestedAmounts) : that.requestedAmounts != null) return false;
-        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) return false;
-        if (transactionResponses != null ? !transactionResponses.equals(that.transactionResponses) : that.transactionResponses != null) return false;
+        if (requestedAmounts != null ? !requestedAmounts.equals(that.requestedAmounts) : that.requestedAmounts != null) {
+            return false;
+        }
+        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) {
+            return false;
+        }
+        if (transactionResponses != null ? !transactionResponses.equals(that.transactionResponses) : that.transactionResponses != null) {
+            return false;
+        }
         return executedFlowApps != null ? executedFlowApps.equals(that.executedFlowApps) : that.executedFlowApps == null;
     }
 

@@ -307,6 +307,28 @@ public class AdditionalData implements Jsonable {
         return null;
     }
 
+    /**
+     * Convenience method to retrieve a string based value.
+     *
+     * @param key          The data key
+     * @param defaultValue Optional var-args for setting a default value to pass back if key does not exist
+     * @return The value associated with the key if it exists. If not, uses default value if provided, or null.
+     */
+    public String getStringValue(String key, String... defaultValue) {
+        return getValue(key, String.class, defaultValue);
+    }
+
+    /**
+     * Convenience method to retrieve an integer based value.
+     *
+     * @param key          The data key
+     * @param defaultValue Optional var-args for setting a default value to pass back if key does not exist
+     * @return The value associated with the key if it exists. If not, uses default value if provided, or null.
+     */
+    public int getIntegerValue(String key, Integer... defaultValue) {
+        return getValue(key, Integer.class, defaultValue);
+    }
+
     private <T> T getValueByType(Class<T> desiredType, Object value) {
         try {
             return desiredType.cast(value);

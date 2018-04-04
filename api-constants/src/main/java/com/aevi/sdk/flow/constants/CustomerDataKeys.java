@@ -1,7 +1,7 @@
 package com.aevi.sdk.flow.constants;
 
 
-public interface CustomerDetails {
+public interface CustomerDataKeys {
 
     String FIRST_NAME = "firstName";
     String SURNAME = "surname";

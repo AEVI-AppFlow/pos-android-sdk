@@ -79,6 +79,21 @@ public class Amounts implements Jsonable {
     }
 
     /**
+     * Add an additional amount as a fraction of the base amount.
+     *
+     * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount value.
+     *
+     * @param identifier The string identifier for the amount
+     * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
+     */
+    public void addAdditionalAmountAsBaseFraction(String identifier, float fraction) {
+        if (fraction < 0.0f || fraction > 1.0f) {
+            throw new IllegalArgumentException("Fraction must be between 0.0 and 1.0");
+        }
+        addAdditionalAmount(identifier, (long) (baseAmount * fraction));
+    }
+
+    /**
      * Get the currency for these amounts.
      *
      * @return The ISO-4217 currency code
@@ -204,15 +219,27 @@ public class Amounts implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Amounts amounts = (Amounts) o;
 
-        if (baseAmount != amounts.baseAmount) return false;
-        if (Double.compare(amounts.currencyExchangeRate, currencyExchangeRate) != 0) return false;
-        if (additionalAmounts != null ? !additionalAmounts.equals(amounts.additionalAmounts) : amounts.additionalAmounts != null) return false;
-        if (currency != null ? !currency.equals(amounts.currency) : amounts.currency != null) return false;
+        if (baseAmount != amounts.baseAmount) {
+            return false;
+        }
+        if (Double.compare(amounts.currencyExchangeRate, currencyExchangeRate) != 0) {
+            return false;
+        }
+        if (additionalAmounts != null ? !additionalAmounts.equals(amounts.additionalAmounts) : amounts.additionalAmounts != null) {
+            return false;
+        }
+        if (currency != null ? !currency.equals(amounts.currency) : amounts.currency != null) {
+            return false;
+        }
         return originalCurrency != null ? originalCurrency.equals(amounts.originalCurrency) : amounts.originalCurrency == null;
     }
 

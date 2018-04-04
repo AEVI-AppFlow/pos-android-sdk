@@ -40,6 +40,27 @@ public class AmountsTest {
         assertThat(result.getAdditionalAmountValue("harry")).isEqualTo(120L);
     }
 
+    @Test
+    public void checkCanAddPercentageAmounts() throws Exception {
+        Amounts amounts = new Amounts(1000L, "GBP");
+        amounts.addAdditionalAmountAsBaseFraction("charity", 0.5f);
+
+        assertThat(amounts.getAdditionalAmountValue("charity")).isEqualTo(500L);
+        assertThat(amounts.getTotalAmountValue()).isEqualTo(1500L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkCantUseNegativePercentage() throws Exception {
+        Amounts amounts = new Amounts(1000L, "GBP");
+        amounts.addAdditionalAmountAsBaseFraction("charity", -0.5f);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkCantAddMoreThan100Percent() throws Exception {
+        Amounts amounts = new Amounts(1000L, "GBP");
+        amounts.addAdditionalAmountAsBaseFraction("charity", 1.5f);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void checkCantAddAmountsDifferentCurrency() throws Exception {
         Amounts.addAmounts(new Amounts(10L, "GBP"), new Amounts(10L, "USD"));

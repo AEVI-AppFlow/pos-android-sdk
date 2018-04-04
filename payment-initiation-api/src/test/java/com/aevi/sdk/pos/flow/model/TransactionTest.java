@@ -1,10 +1,12 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+@Ignore
 public class TransactionTest {
 
     private Transaction transaction;

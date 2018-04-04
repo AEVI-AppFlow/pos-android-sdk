@@ -31,7 +31,7 @@ public class CardBuilder {
      * @param maskedPan The PAN masked according to PCI DSS standards.
      * @return This builder
      */
-    public CardBuilder withPan(String maskedPan) {
+    public CardBuilder withMaskedPan(String maskedPan) {
         this.maskedPan = maskedPan;
         return this;
     }
@@ -48,12 +48,15 @@ public class CardBuilder {
     }
 
     /**
-     * Set the card expiry date in the format YYYYMMDD.
+     * Set the card expiry date in the format YYMM (such as 2006 for June 2020).
      *
-     * @param expiryDate The expiry date in the format YYYYMMDD.
+     * @param expiryDate The expiry date in the format YYMM.
      * @return This builder
      */
     public CardBuilder withExpiryDate(String expiryDate) {
+        if (expiryDate != null && expiryDate.length() != 4) {
+            throw new IllegalArgumentException("Expiry date must be in format YYMM");
+        }
         this.expiryDate = expiryDate;
         return this;
     }

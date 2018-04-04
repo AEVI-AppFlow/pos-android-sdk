@@ -1,7 +1,11 @@
 package com.aevi.sdk.flow.constants;
 
 
-public interface CardDataConstants {
+public interface CardDataKeys {
+
+    String CARD_ENTRY_METHODS = "cardEntryMethods"; // insert, tap, swipe, manual
+    String CARD_NETWORKS = "cardNetworks"; // VISA, AMEX, MAESTRO, etc
+    String ACCOUNT_TYPES = "accountTypes"; // credit, debit, etc
 
     String NETWORK = "network";
     String ENTRY_METHOD = "entryMethod";

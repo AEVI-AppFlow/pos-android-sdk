@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="request_types_readable">
+        <item>Generate token</item>
+        <item>Reverse transaction</item>
+        <item>Show loyalty balance</item>
+        <item>Deliver cash receipt</item>
+        <item>Redeliver receipt</item>
+        <item>Redeliver response</item>
+    </string-array>
+
+    <string-array name="request_types_api">
+        <item>tokenisation</item>
+        <item>reversal</item>
+        <item>showLoyaltyPointsBalance</item>
+        <item>cashReceiptDelivery</item>
+        <item>receiptRedelivery</item>
+        <item>responseRedelivery</item>
+    </string-array>
+
+    <string-array name="transaction_types">
+        <item>Sale</item>
+    </string-array>
+
+    <string-array name="amounts">
+        <item>10.00</item>
+        <item>10.00, tip: 5.00</item>
+        <item>10.00, cashback: 5.00</item>
+        <item>10.00, tip: 5.00, cashback: 2.50</item>
+    </string-array>
+
+</resources>

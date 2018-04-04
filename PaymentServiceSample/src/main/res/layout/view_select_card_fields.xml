@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/show_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="@string/view_request_data"
+        android:textColor="@android:color/holo_blue_dark"/>
+
+    <Switch
+        android:id="@+id/approve_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:checked="true"
+        android:text="@string/approve"
+        android:textSize="20sp"/>
+
+    <TextView
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/choose_a_card_scheme"/>
+
+    <com.aevi.ui.library.recycler.DropDownSpinner
+        android:id="@+id/card_scheme_spinner"
+        style="@style/DropDownSpinner"
+        android:entries="@array/card_schemes"/>
+
+    <CheckBox
+        android:id="@+id/include_token"
+        style="@style/CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/include_token"/>
+
+    <CheckBox
+        android:id="@+id/include_cardholder_name"
+        style="@style/CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/include_cardholder_name"/>
+
+    <CheckBox
+        android:id="@+id/include_emv_details"
+        style="@style/CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/include_emv_details"/>
+
+    <Button
+        android:id="@+id/send_response"
+        style="@style/DefaultButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
+        android:text="@string/send_response"/>
+</merge>

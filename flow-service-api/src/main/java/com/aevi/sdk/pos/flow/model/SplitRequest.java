@@ -46,6 +46,15 @@ public class SplitRequest extends BaseModel {
     }
 
     /**
+     * Checks whether there are any previously completed transactions.
+     *
+     * @return True if there are previous transactions, false otherwise
+     */
+    public boolean hasPreviousTransactions() {
+        return !transactions.isEmpty();
+    }
+
+    /**
      * Convenience method to get the last completed transaction.
      *
      * @return The last completed {@link Transaction} or null if there are none

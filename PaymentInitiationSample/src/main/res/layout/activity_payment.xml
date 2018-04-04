@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.RequestInitiationActivity">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/DialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"/>
+
+    <fragment
+        android:id="@+id/fragment_payment"
+        android:name="com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.PaymentFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="payment"/>
+
+</LinearLayout>
