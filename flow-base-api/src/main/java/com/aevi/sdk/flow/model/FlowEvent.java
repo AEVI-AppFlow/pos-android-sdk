@@ -1,7 +1,7 @@
 package com.aevi.sdk.flow.model;
 
 
-public class Event {
+public class FlowEvent {
 
     public static final String EVENT_DEVICE_ADDED = "deviceAdded";
     public static final String EVENT_DEVICE_REMOVED = "deviceRemoved";
@@ -13,7 +13,7 @@ public class Event {
     private final String type;
     private final String data;
 
-    public Event(String type, String data) {
+    public FlowEvent(String type, String data) {
         this.type = type;
         this.data = data;
     }
