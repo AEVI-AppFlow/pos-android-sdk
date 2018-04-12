@@ -19,12 +19,12 @@ import io.reactivex.functions.Function;
 
 public abstract class ApiBase {
 
-    protected static final String PAYMENT_CONTROL_SERVICE_PACKAGE = "com.aevi.payment.pcs";
-    protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.FlowProcessingService");
-    protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.PaymentServiceInfoProvider");
-    protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.FlowServiceInfoProvider");
-    protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.ConnectedDevicesProvider");
-    protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(PAYMENT_CONTROL_SERVICE_PACKAGE, "com.aevi.payment.pcs.RequestStatusService");
+    protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
+    protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, "com.aevi.sdk.fps.FlowProcessingService");
+    protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, "com.aevi.sdk.fps.PaymentServiceInfoProvider");
+    protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, "com.aevi.sdk.fps.FlowServiceInfoProvider");
+    protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, "com.aevi.sdk.fps.ConnectedDevicesProvider");
+    protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, "com.aevi.sdk.fps.RequestStatusService");
 
     private final InternalData internalData;
     protected final Context context;
@@ -87,7 +87,7 @@ public abstract class ApiBase {
 
     public static String getProcessingServiceVersion(Context context) {
         try {
-            return context.getPackageManager().getPackageInfo(PAYMENT_CONTROL_SERVICE_PACKAGE, 0).versionName;
+            return context.getPackageManager().getPackageInfo(FLOW_PROCESSING_SERVICE, 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             return "0.0.0";
         }
