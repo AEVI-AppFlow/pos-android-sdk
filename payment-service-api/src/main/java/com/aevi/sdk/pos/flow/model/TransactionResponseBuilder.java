@@ -3,11 +3,13 @@ package com.aevi.sdk.pos.flow.model;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.AdditionalData;
 
-import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+import static com.aevi.sdk.flow.util.Preconditions.*;
 import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome;
 
 /**
  * Builder to create a {@link TransactionResponse} instance.
+ *
+ * At a minimum, the transaction outcome must be set via one of the {@link #approve()} or {@link #decline(String)} calls.
  */
 public final class TransactionResponseBuilder {
 
@@ -30,6 +32,50 @@ public final class TransactionResponseBuilder {
     }
 
     /**
+     * Set the transaction as approved with no processed amounts (for scenarios where no amounts were charged/processed).
+     *
+     * For cases where amounts were processed, see {@link #approve(Amounts, String...)}.
+     *
+     * @return This builder
+     */
+    public TransactionResponseBuilder approve() {
+        this.outcome = Outcome.APPROVED;
+        return this;
+    }
+
+    /**
+     * Set the transaction as approved with processed amount details and optionally specify the payment method used (defaults to "card").
+     *
+     * For cases where no amounts were processed, see {@link #approve()}.
+     *
+     * @return This builder
+     */
+    public TransactionResponseBuilder approve(Amounts processedAmounts, String... paymentMethod) {
+        this.outcome = Outcome.APPROVED;
+        checkNotNull(processedAmounts, "Processed amounts must be set");
+        this.amounts = processedAmounts;
+        if (paymentMethod.length > 0) {
+            this.paymentMethod = paymentMethod[0];
+        }
+        return this;
+    }
+
+    /**
+     * Set the transaction as declined and provide a decline message detailing the reason for it.
+     *
+     * Note that it is also advisable that a response code is set where possible via {@link #withResponseCode(String)}.
+     *
+     * @param declineMessage The message detailing why the transaction was declined
+     * @return This builder
+     */
+    public TransactionResponseBuilder decline(String declineMessage) {
+        this.outcome = Outcome.DECLINED;
+        checkNotNull(declineMessage, "Decline message must be set");
+        this.outcomeMessage = declineMessage;
+        return this;
+    }
+
+    /**
      * Set the card used for the transaction.
      *
      * @param card The card details
@@ -41,22 +87,9 @@ public final class TransactionResponseBuilder {
     }
 
     /**
-     * Set the outcome of this transaction.
-     *
-     * This field is mandatory.
-     *
-     * @param outcome The outcome.
-     * @return This builder
-     */
-    public TransactionResponseBuilder withOutcome(Outcome outcome) {
-        this.outcome = outcome;
-        return this;
-    }
-
-    /**
      * Set an outcome message to further clarify the reason for the outcome.
      *
-     * This is particularly useful where a payment may have been declined "offline" at any point in the payment flow.
+     * This is mandatory to set for declined outcomes via the {@link #decline(String)} call, but can optionally be set for approved scenarios too.
      *
      * This is not to be confused with {@link #withResponseCode(String)} below, which is tied to the payment backend system used.
      *
@@ -65,19 +98,6 @@ public final class TransactionResponseBuilder {
      */
     public TransactionResponseBuilder withOutcomeMessage(String outcomeMessage) {
         this.outcomeMessage = outcomeMessage;
-        return this;
-    }
-
-    /**
-     * Set the amounts processed for this transaction.
-     *
-     * Note that this is not necessarily equal to the requested amounts.
-     *
-     * @param amounts The processed amounts
-     * @return This builder
-     */
-    public TransactionResponseBuilder withAmountsProcessed(Amounts amounts) {
-        this.amounts = amounts;
         return this;
     }
 
@@ -94,19 +114,6 @@ public final class TransactionResponseBuilder {
      */
     public TransactionResponseBuilder withResponseCode(String responseCode) {
         this.responseCode = responseCode;
-        return this;
-    }
-
-    /**
-     * Set the payment method (such as card or cash) for this transaction.
-     *
-     * Defaults to "card".
-     *
-     * @param paymentMethod The payment method used.
-     * @return This builder
-     */
-    public TransactionResponseBuilder withPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
         return this;
     }
 

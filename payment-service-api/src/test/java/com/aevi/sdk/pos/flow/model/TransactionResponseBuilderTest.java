@@ -7,7 +7,7 @@ public class TransactionResponseBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentIfIdNotSet() throws Exception {
-        new TransactionResponseBuilder(null).withOutcome(TransactionResponse.Outcome.APPROVED).build();
+        new TransactionResponseBuilder(null).approve().build();
     }
 
     @Test(expected = IllegalArgumentException.class)
