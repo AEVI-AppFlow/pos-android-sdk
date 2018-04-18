@@ -73,7 +73,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
-    public Observable<Event> subscribeToEventStream() {
+    public Observable<FlowEvent> subscribeToEventStream() {
         return Observable.error(new UnsupportedOperationException("Not yet implemented"));
     }
 }

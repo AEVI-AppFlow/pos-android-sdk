@@ -17,4 +17,10 @@ public class CardTest {
         Card card = new Card("123456789XXXXXX", "Mr T", "0102", null, null);
         assertThat(card.getMaskedPan()).isEqualTo("123456789XXXXXX");
     }
+
+    @Test
+    public void shouldFormatExpiryDateCorrectly() throws Exception {
+        Card card = new Card("123456789XXXXXX", "Mr T", "2010", null, null);
+        assertThat(card.getFormattedExpiryDate("MM/yyyy")).isEqualTo("10/2020");
+    }
 }

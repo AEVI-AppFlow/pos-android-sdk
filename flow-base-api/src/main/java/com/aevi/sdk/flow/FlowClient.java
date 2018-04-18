@@ -54,7 +54,7 @@ public interface FlowClient {
      *
      * Examples are when devices, payment services or flow services have been added or removed.
      *
-     * @return A stream that will emit {@link Event} items
+     * @return A stream that will emit {@link FlowEvent} items
      */
-    Observable<Event> subscribeToEventStream();
+    Observable<FlowEvent> subscribeToEventStream();
 }

@@ -5,6 +5,10 @@ import com.aevi.sdk.flow.model.Token;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
@@ -72,6 +76,28 @@ public class Card implements Jsonable {
     @Nullable
     public String getExpiryDate() {
         return expiryDate;
+    }
+
+    /**
+     * Get the expiry date formatted as per the provided pattern.
+     *
+     * See Java SimpleDateFormat for pattern documentation.
+     *
+     * @param pattern The Java SimpleDateFormat pattern to format the expiry date as
+     * @return The formatted expiry date, or null if expiry date not set or pattern is invalid
+     */
+    @Nullable
+    public String getFormattedExpiryDate(String pattern) {
+        if (expiryDate == null || pattern == null) {
+            return null;
+        }
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyMM", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        try {
+            return outputFormat.format(inputFormat.parse(expiryDate));
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     /**

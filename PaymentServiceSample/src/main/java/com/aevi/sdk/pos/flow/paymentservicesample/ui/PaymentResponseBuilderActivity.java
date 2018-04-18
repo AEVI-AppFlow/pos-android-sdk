@@ -107,18 +107,15 @@ public class PaymentResponseBuilderActivity extends AppCompatActivity {
     private void buildTransactionResponse() {
         if (approveSwitch.isChecked()) {
             transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
-                    .withOutcome(TransactionResponse.Outcome.APPROVED)
+                    .approve(getProcessedAmounts(), (String) paymentMethodsSpinner.getSelectedItem())
                     .withOutcomeMessage("User approved manually")
                     .withResponseCode(APPROVED_RESP_CODE)
-                    .withPaymentMethod((String) paymentMethodsSpinner.getSelectedItem())
                     .withCard(getCard())
-                    .withAmountsProcessed(getProcessedAmounts())
                     .withReference(INTERNAL_ID_KEY, UUID.randomUUID().toString())
                     .build();
         } else {
             transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
-                    .withOutcome(TransactionResponse.Outcome.DECLINED)
-                    .withOutcomeMessage("Used declined manually")
+                    .decline("Used declined manually")
                     .withResponseCode(DECLINED_RESP_CODE)
                     .build();
         }
