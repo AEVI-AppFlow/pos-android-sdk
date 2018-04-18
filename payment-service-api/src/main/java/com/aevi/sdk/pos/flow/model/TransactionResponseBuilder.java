@@ -48,11 +48,13 @@ public final class TransactionResponseBuilder {
      *
      * For cases where no amounts were processed, see {@link #approve()}.
      *
+     * @param processedAmounts The processed amounts (may be zero, but must not be null)
+     * @param paymentMethod    Optional payment method used (defaults to "card")
      * @return This builder
      */
     public TransactionResponseBuilder approve(Amounts processedAmounts, String... paymentMethod) {
-        this.outcome = Outcome.APPROVED;
         checkNotNull(processedAmounts, "Processed amounts must be set");
+        this.outcome = Outcome.APPROVED;
         this.amounts = processedAmounts;
         if (paymentMethod.length > 0) {
             this.paymentMethod = paymentMethod[0];
@@ -69,8 +71,8 @@ public final class TransactionResponseBuilder {
      * @return This builder
      */
     public TransactionResponseBuilder decline(String declineMessage) {
-        this.outcome = Outcome.DECLINED;
         checkNotNull(declineMessage, "Decline message must be set");
+        this.outcome = Outcome.DECLINED;
         this.outcomeMessage = declineMessage;
         return this;
     }
