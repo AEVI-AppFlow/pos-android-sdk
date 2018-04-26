@@ -3,6 +3,7 @@ package com.aevi.sdk.pos.flow.model;
 import android.util.Log;
 
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
@@ -14,7 +15,7 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 /**
  * Request for an individual transaction to be processed by a payment app / service.
  */
-public class TransactionRequest extends BasePaymentModel {
+public class TransactionRequest extends BaseModel {
 
     private final String transactionType;
     private final Amounts amounts;
@@ -22,6 +23,8 @@ public class TransactionRequest extends BasePaymentModel {
     private final AdditionalData additionalData;
     private final Card card;
     private DeviceAudience deviceAudience;
+    private String targetPaymentAppComponent;
+    private String componentName;
 
     /**
      * Construct a new instance.
@@ -33,7 +36,8 @@ public class TransactionRequest extends BasePaymentModel {
      * @param additionalData  The additional data
      * @param card            The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String transactionType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData, Card card) {
+    public TransactionRequest(String id, String transactionType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData,
+                              Card card) {
         super(id);
         this.paymentStage = paymentStage;
         Log.i(TransactionRequest.class.getSimpleName(), "Created TransactionRequest with id: " + id);
@@ -127,6 +131,28 @@ public class TransactionRequest extends BasePaymentModel {
         return JsonConverter.deserialize(json, TransactionRequest.class);
     }
 
+    public String getTargetPaymentAppComponent() {
+        return targetPaymentAppComponent;
+    }
+
+    public void setTargetPaymentAppComponent(String targetPaymentAppComponent) {
+        if (targetPaymentAppComponent != null) {
+            this.targetPaymentAppComponent = targetPaymentAppComponent;
+        }
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public String getComponentNameValue() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+
     @Override
     public String toString() {
         return "TransactionRequest{" +
@@ -141,17 +167,33 @@ public class TransactionRequest extends BasePaymentModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         TransactionRequest that = (TransactionRequest) o;
 
-        if (transactionType != null ? !transactionType.equals(that.transactionType) : that.transactionType != null) return false;
-        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) return false;
-        if (paymentStage != that.paymentStage) return false;
-        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) return false;
-        if (card != null ? !card.equals(that.card) : that.card != null) return false;
+        if (transactionType != null ? !transactionType.equals(that.transactionType) : that.transactionType != null) {
+            return false;
+        }
+        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) {
+            return false;
+        }
+        if (paymentStage != that.paymentStage) {
+            return false;
+        }
+        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) {
+            return false;
+        }
+        if (card != null ? !card.equals(that.card) : that.card != null) {
+            return false;
+        }
         return deviceAudience == that.deviceAudience;
     }
 
