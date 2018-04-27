@@ -381,7 +381,19 @@ public class AdditionalData implements Jsonable {
 
     @Override
     public String toString() {
-        return data.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        for (String key : data.keySet()) {
+            if (stringBuilder.length() > 1) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(key);
+            stringBuilder.append("=\"");
+            stringBuilder.append(data.get(key).getValue().toString());
+            stringBuilder.append("\"");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 
     @Override
