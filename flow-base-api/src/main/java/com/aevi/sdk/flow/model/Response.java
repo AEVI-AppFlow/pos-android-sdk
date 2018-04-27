@@ -3,6 +3,8 @@ package com.aevi.sdk.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
+
 import io.reactivex.annotations.NonNull;
 
 /**
@@ -101,6 +103,34 @@ public class Response extends BaseModel {
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "originatingRequest=" + originatingRequest +
+                ", success=" + success +
+                ", outcomeMessage='" + outcomeMessage + '\'' +
+                ", responseData=" + responseData +
+                "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Response response = (Response) o;
+        return success == response.success &&
+                Objects.equals(originatingRequest, response.originatingRequest) &&
+                Objects.equals(outcomeMessage, response.outcomeMessage) &&
+                Objects.equals(responseData, response.responseData);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), originatingRequest, success, outcomeMessage, responseData);
     }
 
     public static Response fromJson(String json) {

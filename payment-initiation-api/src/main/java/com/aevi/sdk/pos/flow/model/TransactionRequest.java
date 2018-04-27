@@ -7,6 +7,8 @@ import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
@@ -162,50 +164,30 @@ public class TransactionRequest extends BaseModel {
                 ", additionalData=" + additionalData +
                 ", card=" + card +
                 ", deviceAudience=" + deviceAudience +
+                ", targetPaymentAppComponent='" + targetPaymentAppComponent + '\'' +
+                ", componentName='" + componentName + '\'' +
                 "} " + super.toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         TransactionRequest that = (TransactionRequest) o;
-
-        if (transactionType != null ? !transactionType.equals(that.transactionType) : that.transactionType != null) {
-            return false;
-        }
-        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) {
-            return false;
-        }
-        if (paymentStage != that.paymentStage) {
-            return false;
-        }
-        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) {
-            return false;
-        }
-        if (card != null ? !card.equals(that.card) : that.card != null) {
-            return false;
-        }
-        return deviceAudience == that.deviceAudience;
+        return Objects.equals(transactionType, that.transactionType) &&
+                Objects.equals(amounts, that.amounts) &&
+                paymentStage == that.paymentStage &&
+                Objects.equals(additionalData, that.additionalData) &&
+                Objects.equals(card, that.card) &&
+                deviceAudience == that.deviceAudience &&
+                Objects.equals(targetPaymentAppComponent, that.targetPaymentAppComponent) &&
+                Objects.equals(componentName, that.componentName);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (transactionType != null ? transactionType.hashCode() : 0);
-        result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
-        result = 31 * result + (paymentStage != null ? paymentStage.hashCode() : 0);
-        result = 31 * result + (additionalData != null ? additionalData.hashCode() : 0);
-        result = 31 * result + (card != null ? card.hashCode() : 0);
-        result = 31 * result + (deviceAudience != null ? deviceAudience.hashCode() : 0);
-        return result;
+
+        return Objects.hash(super.hashCode(), transactionType, amounts, paymentStage, additionalData, card, deviceAudience, targetPaymentAppComponent, componentName);
     }
 }

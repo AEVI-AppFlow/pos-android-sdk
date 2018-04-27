@@ -4,6 +4,7 @@ package com.aevi.sdk.flow.model;
 import com.aevi.sdk.flow.FlowClient;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import io.reactivex.annotations.NonNull;
@@ -135,6 +136,34 @@ public class Request extends BaseModel {
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "requestType='" + requestType + '\'' +
+                ", requestData=" + requestData +
+                ", deviceId='" + deviceId + '\'' +
+                ", targetAppId='" + targetAppId + '\'' +
+                "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Request request = (Request) o;
+        return Objects.equals(requestType, request.requestType) &&
+                Objects.equals(requestData, request.requestData) &&
+                Objects.equals(deviceId, request.deviceId) &&
+                Objects.equals(targetAppId, request.targetAppId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), requestType, requestData, deviceId, targetAppId);
     }
 
     public static Request fromJson(String json) {
