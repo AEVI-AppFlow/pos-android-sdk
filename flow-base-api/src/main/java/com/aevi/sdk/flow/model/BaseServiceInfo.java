@@ -5,7 +5,7 @@ import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.Arrays;
 
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.NonNull;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 

@@ -9,8 +9,8 @@ import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 

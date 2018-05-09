@@ -4,7 +4,7 @@ package com.aevi.sdk.pos.flow.model;
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.NonNull;
 
 /**
  * Transaction summary model provided to post-payment applications.

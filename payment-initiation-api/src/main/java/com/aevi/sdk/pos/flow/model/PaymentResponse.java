@@ -1,13 +1,13 @@
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Sendable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 /**
  * Response for a previously made {@link Payment}.

@@ -8,8 +8,8 @@ import com.aevi.util.json.JsonConverter;
 import java.util.List;
 import java.util.UUID;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SplitRequest extends BaseModel {
 

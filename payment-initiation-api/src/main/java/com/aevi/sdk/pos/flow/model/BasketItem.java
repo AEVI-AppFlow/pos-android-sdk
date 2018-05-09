@@ -1,7 +1,7 @@
 package com.aevi.sdk.pos.flow.model;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Represents a purchasable item with associated label, category and amount.

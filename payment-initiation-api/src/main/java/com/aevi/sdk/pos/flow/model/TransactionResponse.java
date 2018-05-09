@@ -1,12 +1,12 @@
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 /**
  * A transaction response representing the outcome of processing by a flow app or payment app.
