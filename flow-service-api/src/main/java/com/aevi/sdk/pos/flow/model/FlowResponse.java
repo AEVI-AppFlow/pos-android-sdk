@@ -118,7 +118,8 @@ public class FlowResponse implements Sendable {
      * @param values An array of values for this data
      * @param <T>    The type of object this data is an array of
      */
-    public <T> void addAdditionalRequestData(String key, T... values) {
+    @SafeVarargs
+    public final <T> void addAdditionalRequestData(String key, T... values) {
         if (requestAdditionalData == null) {
             requestAdditionalData = new AdditionalData();
         }

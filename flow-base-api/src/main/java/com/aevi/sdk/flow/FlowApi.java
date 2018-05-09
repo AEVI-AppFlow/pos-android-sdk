@@ -24,6 +24,7 @@ public final class FlowApi {
      *
      * If not installed, none of the API calls will function.
      *
+     * @param context Android context
      * @return True if API processing service is installed, false otherwise
      */
     public static boolean isProcessingServiceInstalled(Context context) {

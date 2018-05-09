@@ -188,6 +188,8 @@ public class Transaction extends BaseModel {
 
     /**
      * For internal use.
+     *
+     * @param transactionResponse Transaction response
      */
     public void addTransactionResponse(TransactionResponse transactionResponse) {
         this.transactionResponses.add(transactionResponse);
@@ -195,6 +197,8 @@ public class Transaction extends BaseModel {
 
     /**
      * For internal use
+     *
+     * @param executedFlowApp Flow app
      */
     public void addExecutedFlowApp(FlowAppInfo executedFlowApp) {
         executedFlowApps.add(executedFlowApp);
