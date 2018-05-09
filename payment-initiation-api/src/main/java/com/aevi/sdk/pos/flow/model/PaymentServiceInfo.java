@@ -5,8 +5,8 @@ import com.aevi.util.json.JsonConverter;
 
 import java.util.Arrays;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Represents the capabilities of a payment service.

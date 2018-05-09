@@ -17,7 +17,7 @@ import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.NonNull;
 import io.reactivex.functions.Consumer;
 
 import static android.content.Intent.*;

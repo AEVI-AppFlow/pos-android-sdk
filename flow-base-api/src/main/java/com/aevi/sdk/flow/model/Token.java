@@ -3,8 +3,8 @@ package com.aevi.sdk.flow.model;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Token that can be used to identify an entity, typically a customer.

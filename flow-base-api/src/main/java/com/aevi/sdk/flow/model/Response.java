@@ -5,7 +5,7 @@ import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
 
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.NonNull;
 
 /**
  * Response to a generic {@link Request} that contains the outcome and bespoke response data for that request type.

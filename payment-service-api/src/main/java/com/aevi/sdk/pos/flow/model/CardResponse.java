@@ -5,7 +5,7 @@ import com.aevi.util.json.JsonConverter;
 
 import java.util.UUID;
 
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.NonNull;
 
 /**
  * Contains card details and outcome from payment card reading.
