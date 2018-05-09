@@ -167,6 +167,8 @@ public class TransactionResponse extends BaseModel {
 
     /**
      * For internal use.
+     *
+     * @param paymentServiceId Payment service id
      */
     public void setPaymentServiceId(String paymentServiceId) {
         this.paymentServiceId = paymentServiceId;
@@ -174,6 +176,8 @@ public class TransactionResponse extends BaseModel {
 
     /**
      * For internal use.
+     *
+     * @return Component name
      */
     public String getComponentName() {
         return componentName;
@@ -181,6 +185,8 @@ public class TransactionResponse extends BaseModel {
 
     /**
      * For internal use.
+     *
+     * @param componentName Component name
      */
     public void setComponentName(String componentName) {
         this.componentName = componentName;

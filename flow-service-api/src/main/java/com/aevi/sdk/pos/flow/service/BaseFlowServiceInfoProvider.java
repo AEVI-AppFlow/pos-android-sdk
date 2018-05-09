@@ -28,6 +28,8 @@ public abstract class BaseFlowServiceInfoProvider extends BaseServiceInfoProvide
 
     /**
      * Notify the system that the configuration has changed.
+     *
+     * @param context The Android context
      */
     public static void notifyServiceInfoChange(Context context) {
         String pkg = "package:" + context.getPackageName();

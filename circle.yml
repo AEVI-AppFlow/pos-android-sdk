@@ -29,7 +29,7 @@ deployment:
     release:
         branch: /.*release.*/
         commands:
-            - ./gradlew javadoc alljavadoc build publishApiJarPublicationToQaRepository
+            - ./gradlew javadoc alljavadoc build publishApiJarPublicationToQaRepository publishJavadocsByVersion
     feature:
         branch: /.*feature.*/
         commands:
@@ -37,14 +37,13 @@ deployment:
     development:
         branch: develop
         commands:
-            - ./gradlew javadoc build publishApiJarPublicationToSnapshotRepository copyApiLibs
+            - ./gradlew javadoc build publishApiJarPublicationToSnapshotRepository copyApiLibs copyApks publishJavadocsByVersion
     production:
         branch: master
         commands:
-            - ./gradlew javadoc build publishApiJarPublicationToReleaseRepository
+            - ./gradlew javadoc build publishApiJarPublicationToReleaseRepository publishJavadocsByVersion publishJavadocsAsLatest
 
 general:
   artifacts:
     - "documentation/public"
-    - "build/libs"
-    - "build/docs/javadoc"
+    - "artifacts"

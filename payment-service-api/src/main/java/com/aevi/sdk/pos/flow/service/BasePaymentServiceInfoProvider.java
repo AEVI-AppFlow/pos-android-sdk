@@ -41,6 +41,8 @@ public abstract class BasePaymentServiceInfoProvider extends BaseServiceInfoProv
 
     /**
      * Notify the system that the configuration has changed.
+     *
+     * @param context Android context
      */
     public static void notifyServiceInfoChange(Context context) {
         String pkg = "package:" + context.getPackageName();

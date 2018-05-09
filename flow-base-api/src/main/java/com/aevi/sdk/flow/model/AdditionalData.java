@@ -133,6 +133,9 @@ public class AdditionalData implements Jsonable {
      * Will retrieve and afterwards remove the data.
      *
      * See {@link #getValue(String, Object...)}
+     *
+     * @param key The data key
+     * @return The data that was removed
      */
     @Nullable
     public Object getAndRemoveData(String key) {
@@ -144,7 +147,12 @@ public class AdditionalData implements Jsonable {
     /**
      * Will retrieve and afterwards remove the data.
      *
-     * See {@link #getValue(String, Class, T...)}
+     * See {@link #getValue(String, Class, Object[])}
+     *
+     * @param key         The data key
+     * @param desiredType The desired data type
+     * @param <T>         Type
+     * @return The data that was removed
      */
     @Nullable
     public <T> T getAndRemoveData(String key, Class<T> desiredType) {
@@ -221,6 +229,7 @@ public class AdditionalData implements Jsonable {
      * Get all data of a particular type returned as a Map.
      *
      * @param desiredType The type type to filter by
+     * @param <T>         Type
      * @return A map of key/value pairs of the type specified
      */
     @NonNull

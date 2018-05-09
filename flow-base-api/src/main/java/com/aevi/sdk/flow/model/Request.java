@@ -172,6 +172,11 @@ public class Request extends BaseModel {
 
     /**
      * For internal use.
+     *
+     * @param id          Id
+     * @param requestType Request type
+     * @param requestData Request data
+     * @return Request
      */
     public static Request fromExternalId(String id, String requestType, AdditionalData requestData) {
         return new Request(id, requestType, requestData);

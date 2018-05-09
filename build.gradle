@@ -62,10 +62,18 @@ task clean(type: Delete) {
 }
 
 task copyApiLibs(type: Copy) {
-    from 'payment-api/build/libs'
+    from 'payment-initiation-api/build/libs'
     from 'payment-service-api/build/libs'
     from 'flow-service-api/build/libs'
-    into 'build/libs'
+    into 'artifacts/libs'
+}
+
+task copyApks(type: Copy) {
+    from 'PaymentInitiationSample/build/outputs/apk/debug'
+    from 'PaymentServiceSample/build/outputs/apk/debug'
+    from 'FlowServiceSample/build/outputs/apk/debug'
+    exclude 'output.json'
+    into 'artifacts/samples'
 }
 
 apply from: 'dependencies.gradle'
@@ -89,5 +97,7 @@ configure(subprojects.findAll {
 task alljavadoc(type: Javadoc) {
     source exportedProjects.collect { project(it).sourceSets.main.allJava }
     classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
+    destinationDir = file('documentation/public/javadocs/merged')
 }
+
+apply from: 'dist.gradle'

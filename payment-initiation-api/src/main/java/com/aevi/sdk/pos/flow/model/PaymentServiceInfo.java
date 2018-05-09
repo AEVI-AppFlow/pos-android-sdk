@@ -125,6 +125,8 @@ public class PaymentServiceInfo extends BaseServiceInfo {
 
     /**
      * For internal use.
+     *
+     * @return Package name
      */
     public String getPackageName() {
         return packageName;

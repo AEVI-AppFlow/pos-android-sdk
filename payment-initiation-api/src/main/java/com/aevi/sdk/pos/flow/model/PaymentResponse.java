@@ -203,6 +203,8 @@ public class PaymentResponse implements Sendable {
 
     /**
      * For internal use.
+     *
+     * @param executedPreFlowApp Pre flow app
      */
     public void setExecutedPreFlowApp(FlowAppInfo executedPreFlowApp) {
         this.executedPreFlowApp = executedPreFlowApp;
@@ -220,6 +222,8 @@ public class PaymentResponse implements Sendable {
 
     /**
      * For internal use.
+     *
+     * @param executedPostFlowApp Post flow app
      */
     public void setExecutedPostFlowApp(FlowAppInfo executedPostFlowApp) {
         this.executedPostFlowApp = executedPostFlowApp;

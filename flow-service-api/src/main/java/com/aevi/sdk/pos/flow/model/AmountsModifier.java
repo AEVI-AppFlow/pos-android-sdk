@@ -29,7 +29,7 @@ public class AmountsModifier {
      * The provided exchange rate must be the rate for converting the existing currency into the updated currency.
      *
      * As an example - if the current currency is USD and the updated currency is GBP, the exchange rate passed in must
-     * be the USD -> GBP rate.
+     * be the USD to GBP rate.
      *
      * @param currency     The new ISO-4217 currency code
      * @param exchangeRate The exchange rate (from original currency to updated currency)

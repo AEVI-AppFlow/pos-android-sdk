@@ -50,6 +50,8 @@ public class Token implements Jsonable {
 
     /**
      * For internal use.
+     *
+     * @param sourceAppId App id
      */
     public void setSourceAppId(String sourceAppId) {
         this.sourceAppId = sourceAppId;
