@@ -5,9 +5,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.ApiBase;
-import com.aevi.sdk.flow.model.*;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.flow.FlowClientImpl;
+import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.AppMessageTypes;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.Token;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentServices;
+import com.aevi.sdk.pos.flow.model.RequestStatus;
 
 import java.util.List;
 
@@ -19,7 +28,7 @@ import io.reactivex.functions.Function;
 import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
-public class PaymentClientImpl extends ApiBase implements PaymentClient {
+public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
@@ -93,11 +102,6 @@ public class PaymentClientImpl extends ApiBase implements PaymentClient {
                         transactionMessenger.closeConnection();
                     }
                 });
-    }
-
-    @Override
-    public Single<Response> processFinancialRequest(Request request) {
-        return sendGenericRequest(request);
     }
 
     @Override

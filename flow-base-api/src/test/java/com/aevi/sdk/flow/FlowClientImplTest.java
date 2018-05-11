@@ -40,7 +40,7 @@ public class FlowClientImplTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        flowClient = new FlowClientImpl(RuntimeEnvironment.application) {
+        flowClient = new FlowClientImpl("1.0.0", RuntimeEnvironment.application) {
             @Override
             protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
                 return messengerClient;

@@ -74,7 +74,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             Intent intent = new Intent(getContext(), GenericResultActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            paymentClient.processFinancialRequest(request).subscribe(response -> {
+            paymentClient.processRequest(request).subscribe(response -> {
                 intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
                 getContext().startActivity(intent);
             }, throwable -> {

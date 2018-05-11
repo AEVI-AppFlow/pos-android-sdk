@@ -1,8 +1,7 @@
 package com.aevi.sdk.pos.flow;
 
 
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.PaymentServices;
@@ -16,7 +15,7 @@ import io.reactivex.Single;
  *
  * Please see {@link com.aevi.sdk.flow.FlowClient} for more general flow functions.
  */
-public interface PaymentClient {
+public interface PaymentClient extends FlowClient {
 
     /**
      * Query for all the installed payment services available on this and connected devices.
@@ -52,8 +51,6 @@ public interface PaymentClient {
      * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
      */
     Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId);
-
-    Single<Response> processFinancialRequest(Request request);
 
     /**
      * Get the current status of the payment previously initiated via {@link #initiatePayment(Payment)}.
