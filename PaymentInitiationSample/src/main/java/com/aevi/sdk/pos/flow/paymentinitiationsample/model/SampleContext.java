@@ -3,8 +3,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 import android.content.Context;
 
-import com.aevi.sdk.flow.FlowApi;
-import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
@@ -24,18 +22,12 @@ public class SampleContext {
         return INSTANCE;
     }
 
-    private final FlowClient flowClient;
     private final PaymentClient paymentClient;
 
     private PaymentResponse lastReceivedPaymentResponse;
 
     private SampleContext(Context context) {
-        this.flowClient = FlowApi.getFlowClient(context);
         this.paymentClient = PaymentApi.getPaymentClient(context);
-    }
-
-    public FlowClient getFlowClient() {
-        return flowClient;
     }
 
     public PaymentClient getPaymentClient() {

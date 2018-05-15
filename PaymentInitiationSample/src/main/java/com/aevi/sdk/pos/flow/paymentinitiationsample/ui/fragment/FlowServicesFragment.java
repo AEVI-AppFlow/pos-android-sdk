@@ -13,7 +13,7 @@ public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
     @Override
     protected void setupItems() {
         title.setText(R.string.title_select_flow_service);
-        getSampleContext().getFlowClient().getFlowServices()
+        getSampleContext().getPaymentClient().getFlowServices()
                 .subscribe(flowServices -> {
                     if (flowServices.getAllFlowServices().isEmpty()) {
                         showNoItemsAvailable(R.string.no_flow_services_found);

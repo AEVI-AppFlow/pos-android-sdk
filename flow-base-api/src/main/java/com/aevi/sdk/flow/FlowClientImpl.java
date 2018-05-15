@@ -4,7 +4,14 @@ package com.aevi.sdk.flow;
 import android.content.Context;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.AppMessageTypes;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.flow.model.FlowServices;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
 
 import java.util.List;
 
@@ -15,8 +22,8 @@ import io.reactivex.functions.Function;
 
 public class FlowClientImpl extends ApiBase implements FlowClient {
 
-    FlowClientImpl(Context context) {
-        super(FlowBaseConfig.VERSION, context);
+    protected FlowClientImpl(String apiVersion, Context context) {
+        super(apiVersion, context);
     }
 
     @Override

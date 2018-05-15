@@ -38,6 +38,6 @@ public final class FlowApi {
      * @return An instance of {@link FlowClient}
      */
     public static FlowClient getFlowClient(Context context) {
-        return new FlowClientImpl(context);
+        return new FlowClientImpl(FlowBaseConfig.VERSION, context);
     }
 }
