@@ -10,7 +10,7 @@ public class DevicesFragment extends BaseItemFragment<Device> {
     @Override
     protected void setupItems() {
         title.setText(R.string.title_select_device);
-        getSampleContext().getFlowClient().getDevices()
+        getSampleContext().getPaymentClient().getDevices()
                 .subscribe(devices -> {
                     if (devices.isEmpty()) {
                         showNoItemsAvailable(R.string.no_devices_found);

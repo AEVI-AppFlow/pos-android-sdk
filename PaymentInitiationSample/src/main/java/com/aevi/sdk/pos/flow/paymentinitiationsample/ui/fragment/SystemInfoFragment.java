@@ -4,7 +4,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
-import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemInfo;
@@ -34,9 +33,8 @@ public class SystemInfoFragment extends BaseFragment {
     }
 
     private Single<SystemInfo> createSystemInfo() {
-        FlowClient flowClient = getSampleContext().getFlowClient();
         PaymentClient paymentClient = getSampleContext().getPaymentClient();
-        return Single.zip(flowClient.getFlowServices(), paymentClient.getPaymentServices(), flowClient.getDevices(),
+        return Single.zip(paymentClient.getFlowServices(), paymentClient.getPaymentServices(), paymentClient.getDevices(),
                 (flowServices, paymentServices, devices) -> {
                     SystemInfo systemInfo = new SystemInfo();
                     systemInfo.setNumFlowServices(flowServices.getAllFlowServices().size());
