@@ -4,12 +4,14 @@
     <string name="pref_preflow">pref_supports_stage_preflow</string>
     <string name="pref_split">pref_supports_stage_split</string>
     <string name="pref_prepayment">pref_supports_stage_prepayment</string>
+    <string name="pref_postcard">pref_supports_stage_postcard</string>
     <string name="pref_postpayment">pref_supports_stage_postpayment</string>
     <string name="pref_postflow">pref_supports_stage_postflow</string>
     <string name="pre_flow">Pre flow</string>
     <string name="split">Split</string>
     <string name="pre_payment">Pre payment</string>
     <string name="post_payment">Post payment</string>
+    <string name="post_card">Post card reading</string>
     <string name="post_flow">Post flow</string>
     <string name="sample_settings">Flow Service Settings</string>
     <string name="view_request_data">View request</string>

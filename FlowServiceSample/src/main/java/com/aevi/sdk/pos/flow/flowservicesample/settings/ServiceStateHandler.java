@@ -32,8 +32,9 @@ public class ServiceStateHandler {
             case SPLIT:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_split), context.getResources().getBoolean(R.bool.split_default));
             case PRE_TRANSACTION:
-            case POST_CARD_READING:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_prepayment), context.getResources().getBoolean(R.bool.pre_payment_default));
+            case POST_CARD_READING:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_postcard), context.getResources().getBoolean(R.bool.postcard_default));
             case POST_TRANSACTION:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_postpayment), context.getResources().getBoolean(R.bool.post_payment_default));
             case POST_FLOW:
@@ -52,6 +53,8 @@ public class ServiceStateHandler {
             service = SplitService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_prepayment))) {
             service = PrePaymentService.class.getName();
+        } else if (preferenceKey.equals(context.getString(R.string.pref_postcard))) {
+            service = PostCardService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_postpayment))) {
             service = PostPaymentService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_postflow))) {
