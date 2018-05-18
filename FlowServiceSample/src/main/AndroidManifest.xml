@@ -38,16 +38,13 @@
             <intent-filter>
                 <action android:name="com.aevi.sdk.pos.flow.action.PRE_PAYMENT_SERVICE"/>
             </intent-filter>
-
-            <!-- Pre-payment consists of two separate, but similar stages. Pre-transaction happens before any potential card reading takes place, -->
-            <!-- and post-card-reading happens after that optional card reading step takes place when customer card details may be available. Apps would -->
-            <!-- typically choose to be in one or the other of these depending on the use case, but you can choose to be called for both stages. -->
-            <meta-data
-                android:name="pre-transaction"
-                android:value="false"/>
-            <meta-data
-                android:name="post-card-reading"
-                android:value="true"/>
+        </service>
+        <service
+            android:name=".service.PostCardService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.pos.flow.action.POST_CARD_SERVICE"/>
+            </intent-filter>
         </service>
         <service
             android:name=".service.PostPaymentService"
