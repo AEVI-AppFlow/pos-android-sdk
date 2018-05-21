@@ -158,7 +158,7 @@ public class PaymentResponse implements Sendable {
      * @return True if all transactions were approved, false if some were declined or had errors.
      */
     public boolean isAllTransactionsApproved() {
-        return allTransactionsApproved;
+        return !transactions.isEmpty() && allTransactionsApproved;
     }
 
     /**
