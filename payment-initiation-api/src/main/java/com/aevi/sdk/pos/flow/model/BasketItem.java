@@ -3,56 +3,45 @@ package com.aevi.sdk.pos.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Objects;
+
 /**
- * Represents a purchasable item with associated label, category and amount.
+ * Represents an immutable basket item with associated id, label, category, count and amount.
+ *
+ * Please create via {@link BasketItemBuilder}.
  */
 public class BasketItem {
 
-    private int count = 1;
+    private final String id;
     private final String label;
     private final String category;
     private final long amount;
+    private final int count;
 
     /**
-     * Create a new basket item with label and amount, but no category.
+     * Create a new basket item with label, category, amount and count.
      *
-     * @param label  The label of the item, such as "Red onion"
-     * @param amount The purchase amount for this (individual) item
-     */
-    public BasketItem(String label, long amount) {
-        this(1, label, null, amount);
-    }
-
-    /**
-     * Create a new basket item with label and amount and category.
-     *
-     * @param label    The label of the item, such as "Red onion"
+     * @param id       The identifier (SKU or similar) for this item
+     * @param label    The label of the item to show to merchants/customers, such as "Red onion"
      * @param category The category the item belongs to, such as "vegetables" or "dairy"
      * @param amount   The purchase amount for this (individual) item
-     */
-    public BasketItem(String label, String category, long amount) {
-        this(1, label, category, amount);
-    }
-
-    /**
-     * Create a new basket item with label, category and amount.
-     *
      * @param count    The number of this type of basket item (default is 1, below 0 will produce an exception)
-     * @param label    The label of the item, such as "Red onion"
-     * @param category The category the item belongs to, such as "vegetables" or "dairy"
-     * @param amount   The purchase amount for this (individual) item
      */
-    public BasketItem(int count, String label, String category, long amount) {
-        if (count < 0) {
-            throw new IllegalArgumentException("Basket item must have a count of zero or more");
-        }
-        if (label == null) {
-            throw new IllegalArgumentException("A basket item must have a label");
-        }
-        this.count = count;
+    BasketItem(String id, String label, String category, long amount, int count) {
+        this.id = id;
         this.label = label;
         this.category = category;
         this.amount = amount;
+        this.count = count;
+    }
+
+    /**
+     * Get the id of this item.
+     *
+     * @return The id of the item.
+     */
+    public String getId() {
+        return id;
     }
 
     /**
@@ -80,7 +69,6 @@ public class BasketItem {
      *
      * @return The cost (amount) for a single item of this type
      */
-    @NonNull
     public long getIndividualAmount() {
         return amount;
     }
@@ -90,7 +78,6 @@ public class BasketItem {
      *
      * @return The total cost (amount) for the items of this type.
      */
-    @NonNull
     public long getTotalAmount() {
         return amount * count;
     }
@@ -104,39 +91,11 @@ public class BasketItem {
         return count;
     }
 
-    /**
-     * Increments the number of items in this basketItem entry by one.
-     */
-    public void addOne() {
-        this.count++;
-    }
-
-    /**
-     * Decrements the number of items in this basketItem entry by one as long as the count is greater than zero.
-     *
-     * Otherwise this method has no effect.
-     */
-    public void removeOne() {
-        if (this.count > 0) {
-            this.count--;
-        }
-    }
-
-    /**
-     * Sets the new count for this basket item
-     *
-     * @param count A positive integer greater than or equal to 0
-     */
-    public void setCount(int count) {
-        if (count >= 0) {
-            this.count = count;
-        }
-    }
-
     @Override
     public String toString() {
         return "BasketItem{" +
-                "count=" + count +
+                "id='" + id + '\'' +
+                ", count=" + count +
                 ", label='" + label + '\'' +
                 ", category='" + category + '\'' +
                 ", amount=" + amount +
@@ -147,21 +106,16 @@ public class BasketItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BasketItem that = (BasketItem) o;
-
-        if (count != that.count) return false;
-        if (amount != that.amount) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        return category != null ? category.equals(that.category) : that.category == null;
+        return count == that.count &&
+                amount == that.amount &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(label, that.label) &&
+                Objects.equals(category, that.category);
     }
 
     @Override
     public int hashCode() {
-        int result = count;
-        result = 31 * result + (label != null ? label.hashCode() : 0);
-        result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (int) (amount ^ (amount >>> 32));
-        return result;
+        return Objects.hash(id, count, label, category, amount);
     }
 }

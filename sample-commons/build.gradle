@@ -25,6 +25,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -42,4 +46,8 @@ dependencies {
     implementation project(':api-constants')
     implementation sampleDependencies.aeviUiLibrary
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
+
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.assertJ
 }

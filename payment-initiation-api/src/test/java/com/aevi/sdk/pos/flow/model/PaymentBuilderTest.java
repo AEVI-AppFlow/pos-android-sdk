@@ -32,8 +32,7 @@ public class PaymentBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowBasketAndAmountsTotalMismatch() throws Exception {
-        Basket basket = new Basket();
-        basket.addItem(new BasketItem("an item", 900));
+        Basket basket = new Basket(new BasketItemBuilder().generateRandomId().withLabel("bla").withAmount(900).build());
         new PaymentBuilder()
                 .withTransactionType("sale")
                 .withAmounts(new Amounts(1000, "GBP"))
@@ -43,8 +42,7 @@ public class PaymentBuilderTest {
 
     @Test
     public void shouldBuildPaymentWithCorrectSetup() throws Exception {
-        Basket basket = new Basket();
-        basket.addItem(new BasketItem("an item", 1000));
+        Basket basket = new Basket(new BasketItemBuilder().generateRandomId().withLabel("bla").withAmount(1000).build());
         Payment payment = new PaymentBuilder()
                 .withTransactionType("sale")
                 .withAmounts(new Amounts(1000, "GBP"))

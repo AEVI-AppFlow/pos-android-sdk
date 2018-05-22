@@ -298,7 +298,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
         basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
         if (addItems) {
-            for (BasketItem basketItem : basket.getDisplayItems()) {
+            for (BasketItem basketItem : basket.getBasketItems()) {
                 String detail = basketItem.getLabel() + " (" + basketItem.getCount() + ") @ " + formatAmount(currency, basketItem.getIndividualAmount());
                 basketInfo.add(getStringPair(R.string.item, detail));
             }
