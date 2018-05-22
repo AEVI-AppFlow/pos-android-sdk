@@ -12,7 +12,7 @@ import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.Basket;
-import com.aevi.sdk.pos.flow.model.BasketItem;
+import com.aevi.sdk.pos.flow.model.BasketItemBuilder;
 import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
@@ -154,13 +154,12 @@ public class PaymentFragment extends BaseObservableFragment {
     }
 
     private Basket createBasket() {
-        Basket basket = new Basket();
-        // You can add single count items, with label, category and amount value
-        basket.addItem(new BasketItem("Flat White", "coffee", 250));
-        basket.addItem(new BasketItem("Water", "drinks", 150));
-        // You can also specify the count of the item like this
-        basket.addItem(new BasketItem(2, "Chocolate Cake", "cake", 450));
-        return basket;
+        return new Basket(
+                // You can add single count items, with label, category and amount value
+                new BasketItemBuilder().generateRandomId().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
+                new BasketItemBuilder().generateRandomId().withLabel("Water").withCategory("drinks").withAmount(150).build(),
+                // You can also specify the initial count of the item and provide your own id
+                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withCount(3).build());
     }
 
     @OnClick(R.id.send)

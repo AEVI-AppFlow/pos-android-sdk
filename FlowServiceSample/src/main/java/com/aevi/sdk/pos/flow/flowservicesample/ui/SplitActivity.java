@@ -14,6 +14,7 @@ import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
@@ -65,7 +66,10 @@ public class SplitActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         splitRequest = SplitRequest.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
-        splitBasketHelper = new SplitBasketHelper(splitRequest);
+        if (SplitBasketHelper.canSplitViaBasket(splitRequest)) {
+            splitBasketHelper = SplitBasketHelper.createFromSplitRequest(splitRequest, false);
+            splitBasketHelper.logBaskets();
+        }
         flowResponse = new FlowResponse();
 
         setupSplit();
@@ -79,8 +83,8 @@ public class SplitActivity extends AppCompatActivity {
             prevSplitInfo.setTextColor(Color.RED);
         }
 
-        if (splitBasketHelper.isFirstSplit()) {
-            if (splitRequest.getSourcePayment().getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
+        if (!splitRequest.hasPreviousTransactions()) {
+            if (SplitBasketHelper.canSplitViaBasket(splitRequest)) {
                 infoMessage.setText(R.string.choose_split_type);
             } else {
                 infoMessage.setText(R.string.only_amount_split_possible);
@@ -119,11 +123,13 @@ public class SplitActivity extends AppCompatActivity {
     }
 
     private String getPaidForBasketItems() {
-        Basket paidItems = splitBasketHelper.getPaidItems();
+        Basket paidItems = splitBasketHelper.getAllPaidItems();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getString(R.string.prev_paid_for_items)).append(" ").append(getPreviousAmountTotalFormatted()).append(")\n");
-        for (BasketItem basketItem : paidItems.getDisplayItems()) {
-            stringBuilder.append(basketItem.getLabel()).append("  (").append(basketItem.getCount()).append(")\n");
+        for (BasketItem basketItem : paidItems.getBasketItems()) {
+            stringBuilder.append(basketItem.getLabel()).append("  (").append(basketItem.getCount()).append(")").append(" @ ")
+                    .append(AmountFormatter.formatAmount(splitRequest.getSourcePayment().getAmounts().getCurrency(), basketItem.getIndividualAmount()))
+                    .append("\n");
         }
         return stringBuilder.toString();
     }
@@ -162,7 +168,7 @@ public class SplitActivity extends AppCompatActivity {
         disableSplitButtons();
 
         Basket nextSplitBasket;
-        if (splitBasketHelper.isFirstSplit()) {
+        if (!splitRequest.hasPreviousTransactions()) {
             nextSplitBasket = splitBasketInHalf();
         } else {
             nextSplitBasket = splitBasketHelper.getRemainingItems();
@@ -178,16 +184,17 @@ public class SplitActivity extends AppCompatActivity {
     }
 
     private Basket splitBasketInHalf() {
-        Basket basket = splitRequest.getSourcePayment().getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
+        Basket basket = splitBasketHelper.getSourceItems();
         int totalNumberOfItems = basket.getTotalNumberOfItems();
         int itemsForFirstSplit = totalNumberOfItems / 2;
 
-        for (int i = 0, count = 0; i < basket.getDisplayItems().size() && count < itemsForFirstSplit; i++) {
-            BasketItem item = basket.getDisplayItems().get(i);
+        // This will simply get half (rounded down) of the items for the first txn
+        for (int i = 0, count = 0; i < basket.getBasketItems().size() && count < itemsForFirstSplit; i++) {
+            BasketItem item = basket.getBasketItems().get(i);
             if (count + item.getCount() > itemsForFirstSplit) {
-                item.setCount(itemsForFirstSplit - count);
+                item = new BasketItemBuilder(item).withCount(itemsForFirstSplit - count).build();
             }
-            splitBasketHelper.addItemForNextSplit(item);
+            splitBasketHelper.transferItemsFromRemainingToNextSplit(item);
             count += item.getCount();
         }
         return splitBasketHelper.getNextSplitItems();

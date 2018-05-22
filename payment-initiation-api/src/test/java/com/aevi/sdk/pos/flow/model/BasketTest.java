@@ -1,177 +1,208 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import com.aevi.util.json.JsonConverter;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.UUID;
 
-import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_BASKET;
-import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasketTest {
 
-    private Payment defaultPayment;
+    private static final BasketItem defaultItemOne = new BasketItem(UUID.randomUUID().toString(), "LabelOne", null, 1000, 2);
+    private static final BasketItem defaultItemTwo = new BasketItem(UUID.randomUUID().toString(), "LabelTwo", null, 400, 1);
+    private Basket sourceBasket;
 
     @Before
     public void setUp() throws Exception {
-        defaultPayment = new PaymentBuilder().withAmounts(new Amounts(1000, "GBP")).withTransactionType(SALE).build();
+        sourceBasket = new Basket();
     }
 
     @Test
-    public void canDeserializeWithBasketOption() {
-        BasketItem item1 = new BasketItem("Walls Bangers", 1000);
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
-        BasketItem item3 = new BasketItem("VAT @20%", 280);
-        setupBasket(defaultPayment, item1, item2, item3);
+    public void canAddItems() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        String json = defaultPayment.toJson();
-        Payment result = Payment.fromJson(json);
+        assertThat(sourceBasket.getNumberOfUniqueItems()).isEqualTo(2);
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId())).isTrue();
+        assertThat(sourceBasket.hasItemWithId(defaultItemTwo.getId())).isTrue();
+    }
 
-        assertBasket(result, item1, item2, item3);
-        String json2 = result.toJson();
+    @Test
+    public void canMergeItemsWithSameId() throws Exception {
+        int singleItemCount = defaultItemOne.getCount();
+        sourceBasket.addItems(defaultItemOne);
+
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(singleItemCount);
+
+        sourceBasket.addItems(defaultItemOne);
+
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(singleItemCount * 2);
+    }
+
+    @Test
+    public void returnsListInRecentFirstOrder() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
+
+        assertThat(sourceBasket.getBasketItems()).containsExactly(defaultItemTwo, defaultItemOne);
+    }
+
+    @Test
+    public void listOrderIsRetainedAfterUpdatingCount() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
+
+        sourceBasket.incrementItemCount(defaultItemOne.getId(), 1);
+        sourceBasket.decrementItemCount(defaultItemOne.getId(), 1);
+
+        assertThat(sourceBasket.getBasketItems()).containsExactly(defaultItemTwo, defaultItemOne);
+    }
+
+    @Test
+    public void canHaveMultipleItemsSameLabel() throws Exception {
+        sourceBasket.addItems(defaultItemOne);
+        BasketItem anotherItem = new BasketItem("123", defaultItemOne.getLabel(), null, 500, 1);
+        sourceBasket.addItems(anotherItem);
+
+        assertThat(sourceBasket.getNumberOfUniqueItems()).isEqualTo(2);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getLabel()).isEqualTo(sourceBasket.getItemById(anotherItem.getId()).getLabel());
+    }
+
+    @Test
+    public void canSerialiseAndDeserialise() {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
+
+        String json = sourceBasket.toJson();
+        Basket deserialised = JsonConverter.deserialize(json, Basket.class);
+
+        assertThat(deserialised).isEqualTo(sourceBasket);
+        String json2 = deserialised.toJson();
         assertThat(json2).isEqualTo(json);
     }
 
     @Test
-    public void canAddBasketItems() {
-        BasketItem item1 = new BasketItem("Walls Bangers", 1000);
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
-        setupBasket(defaultPayment, item1, item2);
+    public void canSpecifyMinCountForHasItemWithId() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        String json = defaultPayment.toJson();
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId())).isTrue();
+        assertThat(sourceBasket.hasItemWithId(defaultItemTwo.getId())).isTrue();
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getCount())).isTrue();
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getCount() + 1)).isFalse();
+    }
 
-        assertThat(json).isNotNull();
-        assertThat(json).containsSequence(
-                "{\"data\":{\"basket\":{\"value\":{\"displayItems\":[" + "{\"count\":1,\"label\":\"Walls Bangers\",\"amount\":1000}," + "{\"count\":1,\"label\":\"Golden Delicious Apples\",\"amount\":400}" + "]},\"type\":\"com.aevi.sdk.pos.flow.model.Basket\"}");
+    @Test
+    public void canFindBasketItemById() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
+
+        BasketItem item = sourceBasket.getItemById(defaultItemOne.getId());
+        assertThat(item).isEqualTo(defaultItemOne);
     }
 
     @Test
     public void canFindBasketItemByLabel() {
-        Basket basket = setupDefaultBasket();
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        BasketItem result = basket.getItem("LabelOne");
-        assertThat(result).isNotNull();
-        assertThat(result.getIndividualAmount()).isEqualTo(1000);
+        BasketItem item = sourceBasket.getItemByLabel(defaultItemOne.getLabel());
+        assertThat(item).isEqualTo(defaultItemOne);
     }
 
     @Test
     public void canIncrementBasketItemCount() {
-        Basket basket = setupDefaultBasket();
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        BasketItem result = basket.getItem("LabelOne");
-        result.addOne();
-        BasketItem result2 = basket.getItem("LabelOne");
-        assertThat(result2.getCount()).isEqualTo(2);
+        int beforeCount = defaultItemOne.getCount();
+        sourceBasket.incrementItemCount(defaultItemOne.getId(), 1);
+
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(beforeCount + 1);
     }
 
     @Test
-    public void canSetAndDecrementBasketItemCount() {
-        Basket basket = setupDefaultBasket();
+    public void canDecrementBasketItemCount() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        BasketItem result = basket.getItem("LabelOne");
-        result.setCount(4);
-        result.removeOne();
-        BasketItem result2 = basket.getItem("LabelOne");
-        assertThat(result2.getCount()).isEqualTo(3);
+        int beforeCount = defaultItemOne.getCount();
+        sourceBasket.decrementItemCount(defaultItemOne.getId(), 1);
+
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(beforeCount - 1);
     }
 
     @Test
-    public void canAddOneOfTypeToBasket() {
-        Basket basket = setupDefaultBasket();
+    public void cantDecrementPastZeroAndItemRetainedAsZeroCount() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.addOneOf(new BasketItem("LabelOne", 1000));
+        sourceBasket.decrementItemCount(defaultItemTwo.getId(), 1, true);
 
-        assertThat(basket.getDisplayItems().size()).isEqualTo(2);
-        assertThat(basket.getItem("LabelOne")).isNotNull();
-        assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(2);
+        assertThat(sourceBasket.getItemById(defaultItemTwo.getId()).getCount()).isEqualTo(0);
     }
 
     @Test
-    public void canRemoveOneOfTypeFromBasketWithNoRetain() {
-        Basket basket = setupDefaultBasket();
+    public void itemIsRemovedAfterDecrementingToZeroIfRetainNotSet() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.removeOneOf(new BasketItem("LabelOne", 1000), false);
+        sourceBasket.decrementItemCount(defaultItemTwo.getId(), 1);
 
-        assertThat(basket.getDisplayItems().size()).isEqualTo(1);
-        assertThat(basket.getItem("LabelOne")).isNull();
+        assertThat(sourceBasket.hasItemWithId(defaultItemTwo.getId())).isFalse();
     }
 
     @Test
-    public void canRemoveOneOfTypeFromBasketWithWithRetain() {
-        Basket basket = setupDefaultBasket();
+    public void canSetBasketItemCount() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.removeOneOf(new BasketItem("LabelOne", 1000), true);
+        sourceBasket.setItemCount(defaultItemOne.getId(), 10);
 
-        assertThat(basket.getDisplayItems().size()).isEqualTo(2);
-        assertThat(basket.getItem("LabelOne")).isNotNull();
-        assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(0);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(10);
     }
 
     @Test
-    public void canAddItemsAndMerge() {
-        Basket basket = setupDefaultBasket();
+    public void canGetTotalNumberOfItems() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.addItemMerge(new BasketItem("LabelOne", 1000));
-        assertThat(basket.getDisplayItems().size()).isEqualTo(2);
-        assertThat(basket.getItem("LabelOne")).isNotNull();
-        assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(2);
+        assertThat(sourceBasket.getTotalNumberOfItems()).isEqualTo(defaultItemOne.getCount() + defaultItemTwo.getCount());
     }
 
     @Test
-    public void canRemoveMultipleItems() {
-        Basket basket = setupDefaultBasket();
-        basket.getItem("LabelOne").setCount(10);
+    public void canGetNumberOfUniqueItems() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.removeItems(new BasketItem(5, "LabelOne", null, 1000), true);
-        assertThat(basket.getDisplayItems().size()).isEqualTo(2);
-        assertThat(basket.getItem("LabelOne")).isNotNull();
-        assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(5);
+        assertThat(sourceBasket.getNumberOfUniqueItems()).isEqualTo(2);
     }
 
     @Test
-    public void cannotRemoveMoreThanAllItems() {
-        Basket basket = setupDefaultBasket();
-        basket.getItem("LabelOne").setCount(10);
+    public void canClearItems() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.removeItems(new BasketItem(25, "LabelOne", null, 1000), true);
-        assertThat(basket.getDisplayItems().size()).isEqualTo(2);
-        assertThat(basket.getItem("LabelOne")).isNotNull();
-        assertThat(basket.getItem("LabelOne").getCount()).isEqualTo(0);
+        sourceBasket.clearItems();
+
+        assertThat(sourceBasket.getTotalNumberOfItems()).isZero();
     }
 
     @Test
-    public void willRemoveIfZeroLeftAndRetainSetToFalse() {
-        Basket basket = setupDefaultBasket();
-        basket.getItem("LabelOne").setCount(10);
+    public void canRemoveItem() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        basket.removeItems(new BasketItem(25, "LabelOne", null, 1000), false);
-        assertThat(basket.getDisplayItems().size()).isEqualTo(1);
-        assertThat(basket.getItem("LabelOne")).isNull();
+        sourceBasket.removeItem(defaultItemOne.getId());
+
+        assertThat(sourceBasket.getTotalNumberOfItems()).isEqualTo(1);
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId())).isFalse();
     }
 
-    private Basket setupDefaultBasket() {
-        BasketItem item1 = new BasketItem("LabelOne", 1000);
-        BasketItem item2 = new BasketItem("Golden Delicious Apples", 400);
-        Basket basket = new Basket();
-        basket.addItems(item1, item2);
-        return basket;
+    @Test
+    public void canGetTotalBasketValue() throws Exception {
+        sourceBasket.addItems(defaultItemOne, defaultItemTwo);
+
+        assertThat(sourceBasket.getTotalBasketValue()).isEqualTo(defaultItemOne.getTotalAmount() + defaultItemTwo.getTotalAmount());
     }
 
-    private void assertBasket(Payment result, BasketItem... items) {
-        Basket basket = (Basket) result.getAdditionalData().getValue(DATA_KEY_BASKET);
-        assertThat(basket).isNotNull();
-        List<BasketItem> resultItems = basket.getDisplayItems();
-        assertThat(resultItems).isNotNull();
-        assertThat(resultItems.size()).isEqualTo(items.length);
-        assertThat(resultItems).containsExactly(items);
-    }
+    @Test
+    public void canGetItemsByCategory() throws Exception {
+        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1),
+                new BasketItem("456", "Fanta", "Drinks", 1000, 1),
+                new BasketItem("789", "Pork", "Meat", 1000, 1));
 
-    private void setupBasket(Payment payment, BasketItem... items) {
-        Basket basket = new Basket();
-        basket.addItems(items);
-        payment.getAdditionalData().addData(DATA_KEY_BASKET, basket);
+        List<BasketItem> drinks = sourceBasket.getBasketItemsByCategory("Drinks");
+        assertThat(drinks).hasSize(2).containsExactlyInAnyOrder(sourceBasket.getItemById("123"), sourceBasket.getItemById("456"));
     }
 
 

@@ -16,6 +16,7 @@ dependencies {
     implementation apiDependencies.rxMessenger
     implementation apiDependencies.jsonConverter
 
+    testImplementation project(':payment-service-api') // So we have access to certain builders
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
