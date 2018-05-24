@@ -4,13 +4,14 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 public class ApiFunction {
 
     public enum ApiMethod {
-        SYSTEM_INFO,
+        SYSTEM_OVERVIEW,
         DEVICES,
         FLOW_SERVICES,
         SUBSCRIBE_EVENTS,
         PAYMENT_SERVICES,
         GENERIC_REQUEST,
-        INITIATE_PAYMENT
+        INITIATE_PAYMENT,
+        SYSTEM_SETTINGS
     }
 
     private final ApiMethod apiMethod;

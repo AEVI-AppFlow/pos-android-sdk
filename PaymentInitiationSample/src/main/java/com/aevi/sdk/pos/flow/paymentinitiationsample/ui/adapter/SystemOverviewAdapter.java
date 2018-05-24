@@ -5,11 +5,11 @@ import android.content.Context;
 
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemInfo;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
 
-public class SystemInfoAdapter extends BaseServiceInfoAdapter<SystemInfo> {
+public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview> {
 
-    public SystemInfoAdapter(Context context, SystemInfo info) {
+    public SystemOverviewAdapter(Context context, SystemOverview info) {
         super(context, R.array.system_info_labels, info);
     }
 

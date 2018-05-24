@@ -18,6 +18,11 @@ public class PopupActivity extends AppCompatActivity {
     public static final String FRAGMENT_SERVICE_INFO = "fragment_service_info";
     public static final String FRAGMENT_DEVICES = "fragment_devices";
     public static final String FRAGMENT_SYSTEM_INFO = "fragment_system_info";
+    public static final String FRAGMENT_SYSTEM_SETTINGS = "fragment_system_settings";
+    public static final String FRAGMENT_SYSTEM_EVENTS = "fragment_system_events";
+    public static final String FRAGMENT_JSON = "fragment_json";
+
+    public static final String KEY_JSON = "json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +44,28 @@ public class PopupActivity extends AppCompatActivity {
             case FRAGMENT_DEVICES:
                 return new DevicesFragment();
             case FRAGMENT_SYSTEM_INFO:
-                return new SystemInfoFragment();
+                return new SystemOverviewFragment();
+            case FRAGMENT_SYSTEM_EVENTS:
+                return new SystemEventFragment();
+            case FRAGMENT_SYSTEM_SETTINGS:
+                return new SystemSettingsFragment();
+            case FRAGMENT_JSON:
+                String json = getIntent().getStringExtra(KEY_JSON);
+                return JsonDisplayFragment.create("", json);
             default:
                 return null;
         }
     }
 
-    public void showFragment(String fragKey, String adapter, String model) {
-        Fragment fragment;
-        switch (fragKey) {
-            case FRAGMENT_SERVICE_INFO:
-            default:
-                fragment = new ServiceInfoFragment(adapter, model);
-        }
+    public void showJsonFragment(String title, String json) {
+        transitionToFragment(JsonDisplayFragment.create(title, json));
+    }
 
+    public void showServiceInfoFragment(String adapter, String model) {
+        transitionToFragment(new ServiceInfoFragment(adapter, model));
+    }
+
+    private void transitionToFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.fragment_container, fragment)

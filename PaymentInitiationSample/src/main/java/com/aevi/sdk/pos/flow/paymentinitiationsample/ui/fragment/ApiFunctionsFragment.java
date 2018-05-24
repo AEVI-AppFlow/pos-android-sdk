@@ -2,10 +2,9 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.content.Intent;
-import android.widget.Toast;
 
-import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.ApiFunctionsAdapter;
@@ -24,7 +23,7 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
     @Override
     public void onItemSelected(ApiFunction apiFunction) {
         switch (apiFunction.getApiMethod()) {
-            case SYSTEM_INFO:
+            case SYSTEM_OVERVIEW:
                 showPopup(FRAGMENT_SYSTEM_INFO);
                 break;
             case DEVICES:
@@ -34,8 +33,10 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
                 showPopup(FRAGMENT_FLOW_SERVICES);
                 break;
             case SUBSCRIBE_EVENTS:
-                // TODO
-                Toast.makeText(getContext(), "Not yet implemented", Toast.LENGTH_SHORT).show();
+                showPopup(FRAGMENT_SYSTEM_EVENTS);
+                break;
+            case SYSTEM_SETTINGS:
+                showPopup(FRAGMENT_SYSTEM_SETTINGS);
                 break;
             case PAYMENT_SERVICES:
                 showPopup(FRAGMENT_PAYMENT_SERVICES);

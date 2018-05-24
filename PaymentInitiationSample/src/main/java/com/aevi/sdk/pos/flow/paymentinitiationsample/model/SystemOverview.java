@@ -4,7 +4,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class SystemInfo {
+public class SystemOverview {
 
     private int numFlowServices;
     private int numPaymentServices;
