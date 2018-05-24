@@ -20,7 +20,7 @@ public interface FlowClient {
      *
      * This should be queried each time a selection is required to ensure an up-to-date list.
      *
-     * You can subscribe to {@link #subscribeToEventStream()} for updates on changes to the available devices.
+     * You can subscribe to {@link #subscribeToSystemEvents()} for updates on changes to the available devices.
      *
      * @return Single emitting a list of {@link Device} objects containing basic device info
      */
@@ -33,7 +33,7 @@ public interface FlowClient {
      *
      * This should be queried each time an up-to-date list is required.
      *
-     * You can subscribe to {@link #subscribeToEventStream()} for updates on changes to the available flow services.
+     * You can subscribe to {@link #subscribeToSystemEvents()} for updates on changes to the available flow services.
      *
      * @return Single emitting a {@link FlowServices} model
      */
@@ -52,9 +52,19 @@ public interface FlowClient {
     /**
      * Subscribe to general system events.
      *
-     * Examples are when devices, payment services or flow services have been added or removed.
+     * Examples are when there are changed to devices, applications or system settings.
+     * See documentation for a comprehensive list.
      *
      * @return A stream that will emit {@link FlowEvent} items
      */
-    Observable<FlowEvent> subscribeToEventStream();
+    Observable<FlowEvent> subscribeToSystemEvents();
+
+    /**
+     * Query for the current system settings, such as timeouts, flow configs, etc.
+     *
+     * This will return {@link AdditionalData} populated with key/value pair data as per the documentation.
+     *
+     * @return A single emitting {@link AdditionalData} populated with key/value pair data as per the documentation
+     */
+    Single<AdditionalData> getSystemSettings();
 }

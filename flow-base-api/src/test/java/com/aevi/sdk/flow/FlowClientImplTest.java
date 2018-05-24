@@ -6,9 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.FlowServiceInfo;
-import com.aevi.sdk.flow.model.FlowServices;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
 
 import org.junit.Before;
@@ -70,6 +68,35 @@ public class FlowClientImplTest {
         testObserver.assertValueCount(1);
         assertThat(testObserver.values().get(0).getAllFlowServices()).hasSize(1);
         assertThat(testObserver.values().get(0).getAllFlowServices().get(0)).isEqualTo(serviceInfo);
+        verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void subscribeToSystemEventsShouldSendAndReceiveCorrectly() throws Exception {
+        AdditionalData additionalData = new AdditionalData();
+        additionalData.addData("test", "hello");
+        FlowEvent flowEvent = new FlowEvent("type", additionalData, "trigger");
+        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(flowEvent.toJson()));
+        TestObserver<FlowEvent> testObserver = flowClient.subscribeToSystemEvents().test();
+
+        AppMessage appMessage = callSendAndCaptureMessage();
+        assertThat(appMessage).isNotNull();
+        testObserver.assertValueCount(1);
+        assertThat(testObserver.values().get(0)).isEqualTo(flowEvent);
+        verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void getSystemSettingsShouldSendAndReceiveCorrectly() throws Exception {
+        AdditionalData additionalData = new AdditionalData();
+        additionalData.addData("test", "hello");
+        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(additionalData.toJson()));
+        TestObserver<AdditionalData> testObserver = flowClient.getSystemSettings().test();
+
+        AppMessage appMessage = callSendAndCaptureMessage();
+        assertThat(appMessage).isNotNull();
+        testObserver.assertValueCount(1);
+        assertThat(testObserver.values().get(0)).isEqualTo(additionalData);
         verify(messengerClient).closeConnection();
     }
 

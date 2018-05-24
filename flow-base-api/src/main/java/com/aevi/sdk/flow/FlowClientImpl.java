@@ -4,14 +4,7 @@ package com.aevi.sdk.flow;
 import android.content.Context;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.FlowEvent;
-import com.aevi.sdk.flow.model.FlowServiceInfo;
-import com.aevi.sdk.flow.model.FlowServices;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 
 import java.util.List;
 
@@ -80,7 +73,43 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
-    public Observable<FlowEvent> subscribeToEventStream() {
-        return Observable.error(new UnsupportedOperationException("Not yet implemented"));
+    public Observable<FlowEvent> subscribeToSystemEvents() {
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .map(new Function<String, FlowEvent>() {
+                    @Override
+                    public FlowEvent apply(String json) throws Exception {
+                        return FlowEvent.fromJson(json);
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
+                    }
+                });
+    }
+
+    @Override
+    public Single<AdditionalData> getSystemSettings() {
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_SETTINGS_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .singleOrError()
+                .map(new Function<String, AdditionalData>() {
+                    @Override
+                    public AdditionalData apply(String json) throws Exception {
+                        return AdditionalData.fromJson(json);
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
+                    }
+                });
     }
 }

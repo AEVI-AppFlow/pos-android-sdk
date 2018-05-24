@@ -4,7 +4,10 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
@@ -55,6 +58,12 @@ public class PaymentFragment extends BaseObservableFragment {
     @BindView(R.id.add_card_token)
     CheckBox addCardTokenBox;
 
+    @BindView(R.id.no_payment_services)
+    TextView noPaymentServices;
+
+    @BindView(R.id.send)
+    Button send;
+
     private PaymentBuilder paymentBuilder = new PaymentBuilder();
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
@@ -76,9 +85,25 @@ public class PaymentFragment extends BaseObservableFragment {
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         SampleContext.getInstance(getContext()).getPaymentClient().getPaymentServices()
                 .subscribe(paymentServices -> {
-                    allFieldsReady = true;
-                    dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
+                    if (paymentServices.getAllPaymentServices().size() > 0) {
+                        allFieldsReady = true;
+                        dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
+                    } else {
+                        handleNoPaymentServices();
+                    }
                 });
+    }
+
+    private void handleNoPaymentServices() {
+        noPaymentServices.setVisibility(View.VISIBLE);
+        transactionTypeSpinner.setEnabled(false);
+        currencySpinner.setEnabled(false);
+        addBasketBox.setEnabled(false);
+        amountSpinner.setEnabled(false);
+        addCustomerBox.setEnabled(false);
+        addCardTokenBox.setEnabled(false);
+        splitBox.setEnabled(false);
+        send.setEnabled(false);
     }
 
     @OnItemSelected({R.id.transaction_type_spinner, R.id.currency_spinner, R.id.amounts_spinner})

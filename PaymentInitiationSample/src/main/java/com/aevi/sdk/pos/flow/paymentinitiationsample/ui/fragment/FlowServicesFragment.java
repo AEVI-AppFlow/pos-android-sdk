@@ -6,8 +6,6 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdapter;
 
-import static com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity.FRAGMENT_SERVICE_INFO;
-
 public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
 
     @Override
@@ -28,6 +26,6 @@ public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
     @Override
     public void onItemSelected(FlowServiceInfo flowServiceInfo) {
         PopupActivity popupActivity = (PopupActivity) getActivity();
-        popupActivity.showFragment(FRAGMENT_SERVICE_INFO, ServiceInfoFragment.ADAPTER_FLOW_SERVICE_INFO, flowServiceInfo.toJson());
+        popupActivity.showServiceInfoFragment(ServiceInfoFragment.ADAPTER_FLOW_SERVICE_INFO, flowServiceInfo.toJson());
     }
 }

@@ -24,7 +24,7 @@ public interface PaymentClient extends FlowClient {
      *
      * This should be queried each time a selection is required to ensure up to date information.
      *
-     * You can subscribe to {@link com.aevi.sdk.flow.FlowClient#subscribeToEventStream()} for updates on changes to the available payment services.
+     * You can subscribe to {@link com.aevi.sdk.flow.FlowClient#subscribeToSystemEvents()} for updates on changes to the available payment services.
      *
      * @return Single emitting a {@link PaymentServices} object
      */

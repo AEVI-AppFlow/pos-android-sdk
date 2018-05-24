@@ -5,12 +5,23 @@
             android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="@dimen/initiate_payment_padding"
         android:paddingRight="@dimen/initiate_payment_padding"
         android:paddingTop="@dimen/initiate_payment_padding">
+
+        <TextView
+            android:id="@+id/no_payment_services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            android:visibility="gone"/>
 
         <TextView
             style="@style/Header"
