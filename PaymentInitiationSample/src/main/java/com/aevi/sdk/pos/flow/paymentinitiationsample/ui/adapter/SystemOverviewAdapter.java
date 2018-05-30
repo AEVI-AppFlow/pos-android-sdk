@@ -33,9 +33,6 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
             case R.string.system_info_label_num_payment_services:
                 value = String.valueOf(info.getNumPaymentServices());
                 break;
-            case R.string.system_info_label_all_fs_capabilities:
-                value = getArrayValue(info.getAllFlowServiceCapabilities());
-                break;
             case R.string.system_info_label_all_currencies:
                 value = getArrayValue(info.getAllCurrencies());
                 break;

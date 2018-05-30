@@ -11,7 +11,6 @@ public class SystemOverview {
     private int numDevices;
     private Collection<String> allPaymentMethods = new HashSet<>();
     private Collection<String> allCurrencies;
-    private Collection<String> allFlowServiceCapabilities;
     private Collection<String> allRequestTypes = new HashSet<>();
     private Collection<String> allTransactionTypes;
     private Collection<String> allDataKeys = new HashSet<>();
@@ -54,14 +53,6 @@ public class SystemOverview {
 
     public void setAllCurrencies(Collection<String> allCurrencies) {
         this.allCurrencies = allCurrencies;
-    }
-
-    public String[] getAllFlowServiceCapabilities() {
-        return allFlowServiceCapabilities.toArray(new String[allFlowServiceCapabilities.size()]);
-    }
-
-    public void setAllFlowServiceCapabilities(Collection<String> allFlowServiceCapabilities) {
-        this.allFlowServiceCapabilities = allFlowServiceCapabilities;
     }
 
     public String[] getAllRequestTypes() {

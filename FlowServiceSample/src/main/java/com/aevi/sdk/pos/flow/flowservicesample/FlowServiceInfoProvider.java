@@ -1,12 +1,12 @@
 package com.aevi.sdk.pos.flow.flowservicesample;
 
 
-import com.aevi.sdk.pos.flow.flowservicesample.service.GenericRequestService;
-import com.aevi.sdk.pos.flow.flowservicesample.settings.ServiceStateHandler;
 import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.flowservicesample.service.GenericRequestService;
+import com.aevi.sdk.pos.flow.flowservicesample.settings.ServiceStateHandler;
 import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.service.BaseFlowServiceInfoProvider;
@@ -23,8 +23,6 @@ public class FlowServiceInfoProvider extends BaseFlowServiceInfoProvider {
         return new FlowServiceInfoBuilder()
                 .withVendor("AEVI")
                 .withDisplayName("Flow Service Sample")
-                .withStages(getEnabledStages())
-                .withCapabilities("sample")
                 .withCanAdjustAmounts(true)
                 .withCanPayAmounts(true, PaymentMethods.LOYALTY_POINTS, PaymentMethods.GIFT_CARD, PaymentMethods.CASH)
                 .withSupportedTransactionTypes(TransactionTypes.SALE)

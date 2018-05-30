@@ -3,8 +3,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
 
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 import java.util.Arrays;
 
@@ -37,9 +37,6 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<FlowServiceIn
             case R.string.fs_label_stages:
                 value = getArrayValue(info.getStages());
                 break;
-            case R.string.fs_label_capabilities:
-                value = getArrayValue(info.getCapabilities());
-                break;
             case R.string.fs_label_can_adjust_amounts:
                 value = getYesNo(info.canAdjustAmounts());
                 break;
@@ -51,9 +48,6 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<FlowServiceIn
                 break;
             case R.string.service_label_supported_data_keys:
                 value = getArrayValue(info.getSupportedDataKeys());
-                break;
-            case R.string.fs_label_background_only:
-                value = getYesNo(info.isBackgroundOnly());
                 break;
             case R.string.service_label_request_types:
                 value = getArrayValue(info.getSupportedRequestTypes());

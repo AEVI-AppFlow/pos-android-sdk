@@ -2,8 +2,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
 
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 public class PaymentServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentServiceInfo> {
 
@@ -45,9 +45,6 @@ public class PaymentServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentSer
                 break;
             case R.string.ps_label_merchant_ids:
                 value = getArrayValue(info.getMerchantIds());
-                break;
-            case R.string.ps_label_operating_mode:
-                value = info.getOperatingMode();
                 break;
             case R.string.service_label_payment_methods:
                 value = getArrayValue(info.getPaymentMethods());

@@ -10,6 +10,8 @@ public interface AdditionalDataKeys {
     String DATA_KEY_TRANSACTION_ID = "transactionId";
     String DATA_KEY_TRANSACTION_RESPONSE = "transactionResponse";
 
+    String DATA_KEY_TRANSACTION_LANGUAGE = "transactionLanguage";
+
     String DATA_KEY_AMOUNT = "amount";
     String DATA_KEY_MERCHANT_ID = "merchantId";
     String DATA_KEY_ACCESSIBLE_MODE = "accessibleMode";

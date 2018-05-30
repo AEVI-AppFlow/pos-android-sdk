@@ -40,7 +40,6 @@ public class SystemOverviewFragment extends BaseFragment {
                     systemOverview.setNumFlowServices(flowServices.getAllFlowServices().size());
                     systemOverview.setNumPaymentServices(paymentServices.getAllPaymentServices().size());
                     systemOverview.setNumDevices(devices.size());
-                    systemOverview.setAllFlowServiceCapabilities(flowServices.getAllCapabilities());
                     systemOverview.setAllCurrencies(paymentServices.getAllSupportedCurrencies());
                     systemOverview.addPaymentMethods(flowServices.getAllSupportedPaymentMethods());
                     systemOverview.addPaymentMethods(paymentServices.getAllSupportedPaymentMethods());

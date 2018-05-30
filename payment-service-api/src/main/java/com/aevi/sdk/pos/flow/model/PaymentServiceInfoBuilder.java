@@ -23,7 +23,6 @@ public final class PaymentServiceInfoBuilder {
     private String[] supportedRequestTypes;
     private String[] supportedTransactionTypes;
     private boolean supportManualEntry;
-    private String operatingMode;
     private boolean hasAccessibilityMode;
     private boolean willPrintReceipts;
     private boolean supportsFlowCardReading;
@@ -158,19 +157,6 @@ public final class PaymentServiceInfoBuilder {
     }
 
     /**
-     * Flag indicating the operating mode of this payment service.
-     *
-     * See reference values in the documentation for possible values.
-     *
-     * @param operatingMode The operating mode of this payment service.
-     * @return This builder
-     */
-    public PaymentServiceInfoBuilder withOperatingMode(String operatingMode) {
-        this.operatingMode = operatingMode;
-        return this;
-    }
-
-    /**
      * Flag indicating whether or not this payment service supports accessibility mode.
      *
      * @param supportsAccessibilityMode True if this payment service supports accessibility mode
@@ -242,7 +228,7 @@ public final class PaymentServiceInfoBuilder {
         String apiVersion = PaymentServiceApi.getApiVersion();
         return new PaymentServiceInfo(createPaymentServiceId(packageName, terminalId),
                 packageName, vendor, appVersion, apiVersion, displayName, paymentMethods, supportedCurrencies, defaultCurrency, terminalId, merchantIds,
-                supportedRequestTypes, supportedTransactionTypes, supportManualEntry, operatingMode, hasAccessibilityMode, willPrintReceipts,
+                supportedRequestTypes, supportedTransactionTypes, supportManualEntry, hasAccessibilityMode, willPrintReceipts,
                 supportsFlowCardReading, supportedDataKeys);
     }
 

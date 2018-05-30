@@ -1,12 +1,12 @@
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.BaseServiceInfo;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Arrays;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Represents the capabilities of a payment service.
@@ -22,20 +22,18 @@ public class PaymentServiceInfo extends BaseServiceInfo {
     private final String terminalId;
     private final String[] merchantIds;
     private final boolean supportManualEntry;
-    private final String operatingMode;
     private final boolean willPrintReceipts;
     private final boolean supportsFlowCardReading;
 
     PaymentServiceInfo(String paymentServiceId, String packageName, String vendor, String version, String apiVersion, String displayName, String[] paymentMethods, String[] supportedCurrencies, String defaultCurrency,
                        String terminalId, String[] merchantIds, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean supportManualEntry,
-                       String operatingMode, boolean hasAccessibilityMode, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {
+                       boolean hasAccessibilityMode, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {
         super(paymentServiceId, vendor, version, apiVersion, displayName, hasAccessibilityMode, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
         this.packageName = packageName;
         this.defaultCurrency = defaultCurrency;
         this.terminalId = terminalId;
         this.merchantIds = merchantIds != null ? merchantIds : new String[0];
         this.supportManualEntry = supportManualEntry;
-        this.operatingMode = operatingMode;
         this.willPrintReceipts = willPrintReceipts;
         this.supportsFlowCardReading = supportsFlowCardReading;
     }
@@ -77,18 +75,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
      */
     public boolean supportManualEntry() {
         return supportManualEntry;
-    }
-
-    /**
-     * Returns the operating mode for this payment service, if any.
-     *
-     * See reference values in the documentation for possible values and what impact they have.
-     *
-     * @return the operating mode of the payment service.
-     */
-    @Nullable
-    public String getOperatingMode() {
-        return operatingMode;
     }
 
     /**
@@ -140,7 +126,6 @@ public class PaymentServiceInfo extends BaseServiceInfo {
                 ", terminalId='" + terminalId + '\'' +
                 ", merchantIds=" + Arrays.toString(merchantIds) +
                 ", supportManualEntry=" + supportManualEntry +
-                ", operatingMode='" + operatingMode + '\'' +
                 ", willPrintReceipts=" + willPrintReceipts +
                 ", supportsFlowCardReading=" + supportsFlowCardReading +
                 "} " + super.toString();
@@ -151,31 +136,21 @@ public class PaymentServiceInfo extends BaseServiceInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         PaymentServiceInfo that = (PaymentServiceInfo) o;
-
-        if (supportManualEntry != that.supportManualEntry) return false;
-        if (willPrintReceipts != that.willPrintReceipts) return false;
-        if (supportsFlowCardReading != that.supportsFlowCardReading) return false;
-        if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) return false;
-        if (defaultCurrency != null ? !defaultCurrency.equals(that.defaultCurrency) : that.defaultCurrency != null) return false;
-        if (terminalId != null ? !terminalId.equals(that.terminalId) : that.terminalId != null) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(merchantIds, that.merchantIds)) return false;
-        return operatingMode != null ? operatingMode.equals(that.operatingMode) : that.operatingMode == null;
+        return supportManualEntry == that.supportManualEntry &&
+                willPrintReceipts == that.willPrintReceipts &&
+                supportsFlowCardReading == that.supportsFlowCardReading &&
+                Objects.equals(packageName, that.packageName) &&
+                Objects.equals(defaultCurrency, that.defaultCurrency) &&
+                Objects.equals(terminalId, that.terminalId) &&
+                Arrays.equals(merchantIds, that.merchantIds);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
-        result = 31 * result + (defaultCurrency != null ? defaultCurrency.hashCode() : 0);
-        result = 31 * result + (terminalId != null ? terminalId.hashCode() : 0);
+
+        int result = Objects.hash(super.hashCode(), packageName, defaultCurrency, terminalId, supportManualEntry, willPrintReceipts, supportsFlowCardReading);
         result = 31 * result + Arrays.hashCode(merchantIds);
-        result = 31 * result + (supportManualEntry ? 1 : 0);
-        result = 31 * result + (operatingMode != null ? operatingMode.hashCode() : 0);
-        result = 31 * result + (willPrintReceipts ? 1 : 0);
-        result = 31 * result + (supportsFlowCardReading ? 1 : 0);
         return result;
     }
 }

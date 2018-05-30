@@ -88,13 +88,10 @@
     <string name="ps_label_merchant_ids">Merchant Ids</string>
     <string name="ps_label_default_currency">Default currency</string>
     <string name="ps_label_manual_entry">Allows manual entry</string>
-    <string name="ps_label_operating_mode">Operating mode</string>
     <string name="ps_label_print_receipts">Will print receipts</string>
     <string name="ps_label_card_reading">Supports flow card reading</string>
 
     <string name="fs_label_stages">Flow stages</string>
-    <string name="fs_label_capabilities">Capabilities</string>
-    <string name="fs_label_background_only">Background only</string>
     <string name="fs_label_req_card_token">Requires card token</string>
     <string name="fs_label_can_adjust_amounts">Can adjust amounts</string>
     <string name="fs_label_can_pay_amounts">Can pay amounts</string>
@@ -114,7 +111,6 @@
     <string name="system_info_label_num_flow_services">Number of flow services</string>
     <string name="system_info_label_num_payment_services">Number of payment services</string>
     <string name="system_info_label_num_devices">Number of connected devices</string>
-    <string name="system_info_label_all_fs_capabilities">All flow service capabilities</string>
     <string name="system_info_label_all_request_types">All supported request types</string>
     <string name="system_info_label_all_transaction_types">All supported transaction types</string>
     <string name="system_info_label_all_currencies">All supported currencies</string>
@@ -157,7 +153,6 @@
         <item>@string/service_label_request_types</item>
         <item>@string/service_label_transaction_types</item>
         <item>@string/ps_label_manual_entry</item>
-        <item>@string/ps_label_operating_mode</item>
         <item>@string/service_label_accessible_mode</item>
         <item>@string/ps_label_print_receipts</item>
         <item>@string/ps_label_card_reading</item>
@@ -170,14 +165,12 @@
         <item>@string/service_label_app_version</item>
         <item>@string/service_label_api_version</item>
         <item>@string/fs_label_stages</item>
-        <item>@string/fs_label_capabilities</item>
         <item>@string/service_label_request_types</item>
         <item>@string/service_label_accessible_mode</item>
         <item>@string/fs_label_can_adjust_amounts</item>
         <item>@string/fs_label_can_pay_amounts</item>
         <item>@string/service_label_currencies</item>
         <item>@string/service_label_supported_data_keys</item>
-        <item>@string/fs_label_background_only</item>
     </array>
 
     <array name="system_info_labels">
@@ -186,7 +179,6 @@
         <item>@string/system_info_label_num_flow_services</item>
         <item>@string/system_info_label_num_payment_services</item>
         <item>@string/system_info_label_num_devices</item>
-        <item>@string/system_info_label_all_fs_capabilities</item>
         <item>@string/system_info_label_all_request_types</item>
         <item>@string/system_info_label_all_transaction_types</item>
         <item>@string/system_info_label_all_currencies</item>

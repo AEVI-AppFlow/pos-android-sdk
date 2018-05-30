@@ -87,6 +87,12 @@
             android:noHistory="true">
         </activity>
         <activity
+            android:name=".ui.PostCardActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/fss_post_card"
+            android:noHistory="true">
+        </activity>
+        <activity
             android:name=".ui.PreFlowActivity"
             android:excludeFromRecents="true"
             android:label="@string/fss_pre_flow"

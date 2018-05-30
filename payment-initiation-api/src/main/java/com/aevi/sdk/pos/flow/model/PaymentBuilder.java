@@ -18,7 +18,7 @@ public class PaymentBuilder {
     private boolean splitEnabled;
     private Token cardToken;
     private AdditionalData additionalData = new AdditionalData();
-    private String source = RequestSource.AEVI_V3;
+    private String source = RequestSource.AEVI_POS_FLOW;
 
     public PaymentBuilder() {
     }

@@ -42,35 +42,6 @@ public class FlowServices {
     }
 
     /**
-     * Retrieve a consolidated set of all the capabilities provided by the flow services.
-     *
-     * @return A consolidated set of all the capabilities provided by the flow services
-     */
-    public Set<String> getAllCapabilities() {
-        Set<String> capabilities = new HashSet<>();
-        for (FlowServiceInfo flowServiceInfo : flowServiceInfoList) {
-            capabilities.addAll(Arrays.asList(flowServiceInfo.getCapabilities()));
-        }
-        return capabilities;
-    }
-
-    /**
-     * Retrieve a list of all the flow services that provides the given capability.
-     *
-     * @param capability The capability to match against
-     * @return A list of all flow services that provides the given capability
-     */
-    public List<FlowServiceInfo> getAllFlowServicesWithCapability(String capability) {
-        List<FlowServiceInfo> flowServices = new ArrayList<>();
-        for (FlowServiceInfo flowServiceInfo : flowServiceInfoList) {
-            if (flowServiceInfo.providesCapability(capability)) {
-                flowServices.add(flowServiceInfo);
-            }
-        }
-        return flowServices;
-    }
-
-    /**
      * Retrieve a consolidated set of all the supported request types across all the flow services.
      *
      * @return A consolidated set of all the supported request types across all the flow services
