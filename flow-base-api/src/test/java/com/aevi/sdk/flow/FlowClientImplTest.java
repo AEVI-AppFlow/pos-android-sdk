@@ -105,8 +105,6 @@ public class FlowClientImplTest {
         return new FlowServiceInfoBuilder()
                 .withVendor("Test")
                 .withDisplayName("Hello")
-                .withCapabilities("stuff")
-                .withStages("stage 1")
                 .withSupportedRequestTypes("tea making")
                 .build(context);
     }

@@ -50,18 +50,6 @@ public class FlowServicesTest {
     }
 
     @Test
-    public void shouldCollateCapabilitiesCorrectly() throws Exception {
-        assertThat(flowServices.getAllCapabilities()).hasSize(3).containsOnly("capOne", "capTwo", "capThree");
-    }
-
-    @Test
-    public void shouldFilterCapabilitiesCorrectly() throws Exception {
-        assertThat(flowServices.getAllFlowServicesWithCapability("capOne")).hasSize(1);
-        assertThat(flowServices.getAllFlowServicesWithCapability("capTwo")).hasSize(2);
-        assertThat(flowServices.getAllFlowServicesWithCapability("capThree")).hasSize(1);
-    }
-
-    @Test
     public void shouldCollatePaymentMethodsCorrectly() throws Exception {
         Set<String> allSupportedPaymentMethods = flowServices.getAllSupportedPaymentMethods();
         assertThat(allSupportedPaymentMethods).hasSize(3);
@@ -99,12 +87,12 @@ public class FlowServicesTest {
                 .withVendor("Test One")
                 .withDisplayName("Test One")
                 .withSupportedRequestTypes("one", "two")
-                .withStages("stage1", "stage2")
-                .withCapabilities("capOne", "capTwo")
                 .withCanPayAmounts(true, "pigeon", "horse")
                 .withSupportedDataKeys("dataOne", "dataTwo")
                 .withSupportedRequestTypes("reqOne", "reqTwo")
                 .build(context);
+
+        flowServiceInfoOne.setStages(new String[]{"stage1", "stage2"});
     }
 
     private void buildFlowServiceTwo() {
@@ -112,12 +100,12 @@ public class FlowServicesTest {
                 .withVendor("Test Two")
                 .withDisplayName("Test Two")
                 .withSupportedRequestTypes("two", "three")
-                .withStages("stage2", "stage3")
-                .withCapabilities("capTwo", "capThree")
                 .withCanPayAmounts(true, "pigeon", "yak")
                 .withSupportedDataKeys("dataTwo", "dataThree")
                 .withSupportsAccessibilityMode(true)
                 .withSupportedRequestTypes("reqTwo", "reqThree")
                 .build(context);
+
+        flowServiceInfoTwo.setStages(new String[]{"stage2", "stage3"});
     }
 }

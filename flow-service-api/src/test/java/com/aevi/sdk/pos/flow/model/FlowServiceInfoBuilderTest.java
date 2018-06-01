@@ -37,16 +37,6 @@ public class FlowServiceInfoBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentWhenCapabilitiesNotSet() throws Exception {
-        flowServiceInfoBuilder.withCapabilities((String[]) null).build(context);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentWhenStagesNotSet() throws Exception {
-        flowServiceInfoBuilder.withStages((String[]) null).build(context);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentWhenSupportedRequestTypesNotSet() throws Exception {
         flowServiceInfoBuilder.withSupportedRequestTypes((String[]) null).build(context);
     }
@@ -64,7 +54,6 @@ public class FlowServiceInfoBuilderTest {
                 .withCanPayAmounts(true, new String[]{"pigeon"})
                 .withCanAdjustAmounts(true)
                 .withSupportedCurrencies("GBP", "AUD")
-                .withBackgroundOnly(true)
                 .withRequiresCardToken(false)
                 .withSupportsAccessibilityMode(true)
                 .build(context);
@@ -72,8 +61,6 @@ public class FlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getVendor()).isEqualTo("Test");
         assertThat(serviceInfo.getServiceVersion()).isEqualTo("1.2.3");
         assertThat(serviceInfo.getDisplayName()).isEqualTo("Hello");
-        assertThat(serviceInfo.getCapabilities()).isEqualTo(new String[]{"stuff"});
-        assertThat(serviceInfo.getStages()).isEqualTo(new String[]{"stage 1"});
         assertThat(serviceInfo.getSupportedRequestTypes()).isEqualTo(new String[]{"tea making"});
         assertThat(serviceInfo.getSupportedTransactionTypes()).isEqualTo(new String[]{"banana"});
         assertThat(serviceInfo.canAdjustAmounts()).isEqualTo(true);
@@ -81,7 +68,6 @@ public class FlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getPaymentMethods()).isEqualTo(new String[]{"pigeon"});
         assertThat(serviceInfo.getSupportedCurrencies()).isEqualTo(new String[]{"GBP", "AUD"});
         assertThat(serviceInfo.supportsAccessibilityMode()).isEqualTo(true);
-        assertThat(serviceInfo.isBackgroundOnly()).isEqualTo(true);
         assertThat(serviceInfo.requiresCardToken()).isEqualTo(false);
     }
 
@@ -89,8 +75,6 @@ public class FlowServiceInfoBuilderTest {
         flowServiceInfoBuilder
                 .withVendor("Test")
                 .withDisplayName("Hello")
-                .withCapabilities("stuff")
-                .withStages("stage 1")
                 .withSupportedRequestTypes("tea making");
     }
 }

@@ -17,17 +17,13 @@ public class FlowServiceInfoBuilder {
 
     private String vendor;
     private String displayName;
-    private String[] stages;
-    private String[] capabilities;
     private boolean supportsAccessibility;
     private String[] paymentMethods;
     private String[] supportedCurrencies = new String[0];
-    // TODO Until we know how to manage request and transaction types, they will default to payment and sale here
     private String[] supportedRequestTypes = new String[]{FinancialRequestTypes.PAYMENT};
     private String[] supportedTransactionTypes = new String[]{TransactionTypes.SALE};
     private boolean requiresCardToken;
     private String[] supportedDataKeys;
-    private boolean backgroundOnly;
     private boolean canAdjustAmounts;
     private boolean canPayAmounts;
 
@@ -54,40 +50,6 @@ public class FlowServiceInfoBuilder {
      */
     public FlowServiceInfoBuilder withDisplayName(String displayName) {
         this.displayName = displayName;
-        return this;
-    }
-
-    /**
-     * Set what flow stages this service supports.
-     *
-     * Mandatory field.
-     *
-     * For POS flow, the possible stages are defined in the PaymentStage model and PaymentStage.XXX.name() should be used here.
-     *
-     * This would typically map to what intent actions your services are defined with in the manifest.
-     *
-     * @param stages The supported flow stages
-     * @return This builder
-     */
-    public FlowServiceInfoBuilder withStages(String... stages) {
-        this.stages = stages;
-        return this;
-    }
-
-    /**
-     * Set what capabilities this service provides.
-     *
-     * Mandatory field.
-     *
-     * This is to outline the functions of the services. Examples may be "loyalty", "currencyConversion", "split", etc.
-     *
-     * See reference values in the documentation for possible values.
-     *
-     * @param capabilities The set of capabilities
-     * @return This builder
-     */
-    public FlowServiceInfoBuilder withCapabilities(String... capabilities) {
-        this.capabilities = capabilities;
         return this;
     }
 
@@ -170,23 +132,6 @@ public class FlowServiceInfoBuilder {
     }
 
     /**
-     * Set whether this service operates in the background only - i.e does not launch any activities and handles the request in the service alone.
-     *
-     * This is typically useful for "post-payment/flow" applications that perform reporting/analytics/etc.
-     *
-     * If this flag is set, this service will be called but the system will not wait for a response.
-     *
-     * Defaults to false.
-     *
-     * @param backgroundOnly True if this service operates in the background, false otherwise.
-     * @return This builder
-     */
-    public FlowServiceInfoBuilder withBackgroundOnly(boolean backgroundOnly) {
-        this.backgroundOnly = backgroundOnly;
-        return this;
-    }
-
-    /**
      * Set whether this service can adjust the requested amounts for the current request.
      *
      * This is typically used to add a charge/fee, or for charity, or to split a request.
@@ -257,13 +202,11 @@ public class FlowServiceInfoBuilder {
     public FlowServiceInfo build(Context context) {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
-        checkNotEmpty(capabilities, "Capabilities must be set");
-        checkNotEmpty(stages, "Stages must be set");
         checkNotEmpty(supportedRequestTypes, "At least one request type must be supported");
         String version = getAppVersion(context);
         String apiVersion = FlowServiceApi.getApiVersion();
-        return new FlowServiceInfo(context.getPackageName(), vendor, version, apiVersion, displayName, supportsAccessibility, stages, capabilities, paymentMethods,
-                supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, requiresCardToken, supportedDataKeys, backgroundOnly, canAdjustAmounts, canPayAmounts);
+        return new FlowServiceInfo(context.getPackageName(), vendor, version, apiVersion, displayName, supportsAccessibility, paymentMethods,
+                supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, requiresCardToken, supportedDataKeys, canAdjustAmounts, canPayAmounts);
     }
 
     private static String getAppVersion(Context context) {

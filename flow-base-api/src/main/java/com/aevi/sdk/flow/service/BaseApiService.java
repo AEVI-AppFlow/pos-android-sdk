@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.MessageException;
@@ -12,15 +13,16 @@ import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.android.rxmessenger.service.AbstractMessengerService;
 import com.aevi.sdk.flow.constants.ActivityEvents;
+import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import android.support.annotation.NonNull;
 import io.reactivex.functions.Consumer;
 
 import static android.content.Intent.*;
+import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.model.AppMessageTypes.*;
 import static com.aevi.sdk.flow.model.MessageErrors.*;
 
@@ -105,6 +107,22 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
     }
 
     /**
+     * Send notification that this service will process in the background and won't send back any response.
+     *
+     * Note that you should NOT show any UI after calling this, nor call any of the "finish...Response" methods.
+     *
+     * This is typically useful for post-transaction / post-flow services that processes the transaction information with no need
+     * to show any user interface or augment the transaction.
+     *
+     * @param clientMessageId The client message id
+     */
+    protected void notifyBackgroundProcessing(String clientMessageId) {
+        Log.d(TAG, "notifyBackgroundProcessing");
+        internalData.addAdditionalData(InternalDataKeys.BACKGROUND_PROCESSING, "true");
+        sendAppMessageAndEndStream(clientMessageId, EMPTY_DATA);
+    }
+
+    /**
      * Finish without passing any response back.
      *
      * This is the preferred approach for any case where no response data was generated.
@@ -113,9 +131,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      */
     protected void finishWithNoResponse(String clientMessageId) {
         Log.d(TAG, "finishWithNoResponse");
-        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, internalData);
-        sendMessageToClient(clientMessageId, appMessage.toJson());
-        sendEndStreamMessageToClient(clientMessageId);
+        sendAppMessageAndEndStream(clientMessageId, EMPTY_DATA);
     }
 
     /**
@@ -126,7 +142,11 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      */
     protected void finishWithResponse(String clientMessageId, RESPONSE response) {
         Log.d(TAG, "finishWithResponse");
-        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, response.toJson(), internalData);
+        sendAppMessageAndEndStream(clientMessageId, response.toJson());
+    }
+
+    private void sendAppMessageAndEndStream(String clientMessageId, String responseData) {
+        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, responseData, internalData);
         sendMessageToClient(clientMessageId, appMessage.toJson());
         sendEndStreamMessageToClient(clientMessageId);
     }

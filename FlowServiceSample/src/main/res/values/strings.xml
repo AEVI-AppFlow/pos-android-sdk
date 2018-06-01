@@ -48,4 +48,5 @@
     <string name="process_split">Process split</string>
     <string name="prev_txn_declined">Previous split transaction was declined! Please try again.</string>
     <string name="bypass_split">bypass split</string>
+    <string name="fss_post_card">Flow Service Sample - Post-card-reading</string>
 </resources>

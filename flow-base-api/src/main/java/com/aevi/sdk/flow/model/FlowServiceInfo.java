@@ -5,6 +5,7 @@ import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents the capabilities of a flow service.
@@ -15,24 +16,19 @@ import java.util.Arrays;
  */
 public class FlowServiceInfo extends BaseServiceInfo {
 
-    private final String[] stages;
-    private final String[] capabilities;
-    private final boolean backgroundOnly;
     private final boolean requiresCardToken;
     private final boolean canAdjustAmounts;
     private final boolean canPayAmounts;
+    private String[] stages;
 
     /**
      * Use flow-service-api FlowServiceInfoBuilder for construction.
      */
-    public FlowServiceInfo(String id, String vendor, String version, String apiVersion, String appName, boolean supportsAccessibility, String[] stages, String[] capabilities,
+    public FlowServiceInfo(String id, String vendor, String version, String apiVersion, String appName, boolean supportsAccessibility,
                            String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean requiresCardToken,
-                           String[] supportedDataKeys, boolean backgroundOnly, boolean canAdjustAmounts, boolean canPayAmounts) {
+                           String[] supportedDataKeys, boolean canAdjustAmounts, boolean canPayAmounts) {
         super(id, vendor, version, apiVersion, appName, supportsAccessibility, paymentMethods, supportedCurrencies, supportedRequestTypes, supportedTransactionTypes, supportedDataKeys);
-        this.stages = stages;
-        this.capabilities = capabilities;
         this.requiresCardToken = requiresCardToken;
-        this.backgroundOnly = backgroundOnly;
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
     }
@@ -56,36 +52,6 @@ public class FlowServiceInfo extends BaseServiceInfo {
      */
     public boolean containsStage(String stage) {
         return stages.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(stages, stage);
-    }
-
-    /**
-     * Get the capabilities of this service. Examples may be "loyalty", "currencyConversion", "split", etc.
-     *
-     * See reference values in the documentation for possible values.
-     *
-     * @return The set of capabilities this service offers
-     */
-    public String[] getCapabilities() {
-        return capabilities;
-    }
-
-    /**
-     * Check whether the flow services provides the given capability.
-     *
-     * @param capability The capability to check against
-     * @return True if the flow service provides the given capability, false otherwise
-     */
-    public boolean providesCapability(String capability) {
-        return capabilities.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(capabilities, capability);
-    }
-
-    /**
-     * Check whether this service operates solely in the background. If set, the service will not launch any user interface.
-     *
-     * @return True if background only, false otherwise
-     */
-    public boolean isBackgroundOnly() {
-        return backgroundOnly;
     }
 
     /**
@@ -119,6 +85,15 @@ public class FlowServiceInfo extends BaseServiceInfo {
         return canPayAmounts;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param stages Stages
+     */
+    public void setStages(String[] stages) {
+        this.stages = stages;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -132,8 +107,6 @@ public class FlowServiceInfo extends BaseServiceInfo {
     public String toString() {
         return "FlowServiceInfo{" +
                 "stages=" + Arrays.toString(stages) +
-                ", capabilities=" + Arrays.toString(capabilities) +
-                ", backgroundOnly=" + backgroundOnly +
                 ", requiresCardToken=" + requiresCardToken +
                 ", canAdjustAmounts=" + canAdjustAmounts +
                 ", canPayAmounts=" + canPayAmounts +
@@ -145,28 +118,18 @@ public class FlowServiceInfo extends BaseServiceInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         FlowServiceInfo that = (FlowServiceInfo) o;
-
-        if (backgroundOnly != that.backgroundOnly) return false;
-        if (requiresCardToken != that.requiresCardToken) return false;
-        if (canAdjustAmounts != that.canAdjustAmounts) return false;
-        if (canPayAmounts != that.canPayAmounts) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(stages, that.stages)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(capabilities, that.capabilities);
+        return requiresCardToken == that.requiresCardToken &&
+                canAdjustAmounts == that.canAdjustAmounts &&
+                canPayAmounts == that.canPayAmounts &&
+                Arrays.equals(stages, that.stages);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+
+        int result = Objects.hash(super.hashCode(), requiresCardToken, canAdjustAmounts, canPayAmounts);
         result = 31 * result + Arrays.hashCode(stages);
-        result = 31 * result + Arrays.hashCode(capabilities);
-        result = 31 * result + (backgroundOnly ? 1 : 0);
-        result = 31 * result + (requiresCardToken ? 1 : 0);
-        result = 31 * result + (canAdjustAmounts ? 1 : 0);
-        result = 31 * result + (canPayAmounts ? 1 : 0);
         return result;
     }
 }

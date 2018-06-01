@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A utility class specifically to deal with combined receipt printing data that may be passed beteeen applications.
+ * A utility class specifically to deal with combined receipt printing data that may be passed between applications.
  *
  * This class helps with legacy support for the AEVI V2 simple payment API i.e. request classes that extend the class com.aevi.payment.AeviRequest.
  */
