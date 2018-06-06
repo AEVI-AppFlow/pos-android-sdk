@@ -8,17 +8,23 @@ public class BasketItemBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionForNegativeCount() throws Exception {
-        new BasketItemBuilder().generateRandomId().withLabel("bla").withCount(-1).build();
+        new BasketItemBuilder().withLabel("bla").withCount(-1).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfIdIsNull() throws Exception {
-        new BasketItemBuilder().withCount(1).withLabel("bla").build();
+        new BasketItemBuilder().withId(null).withCount(1).withLabel("bla").build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfLabelNull() throws Exception {
-        new BasketItemBuilder().generateRandomId().withCount(1).build();
+        new BasketItemBuilder().withCount(1).build();
+    }
+
+    @Test
+    public void shouldInitialiseWithDefaultRandomId() throws Exception {
+        BasketItem basketItem = new BasketItemBuilder().withLabel("banana").build();
+        assertThat(basketItem.getId()).isNotEmpty();
     }
 
     @Test

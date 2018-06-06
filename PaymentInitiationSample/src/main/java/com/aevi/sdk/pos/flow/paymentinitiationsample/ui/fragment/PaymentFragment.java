@@ -181,8 +181,8 @@ public class PaymentFragment extends BaseObservableFragment {
     private Basket createBasket() {
         return new Basket(
                 // You can add single count items, with label, category and amount value
-                new BasketItemBuilder().generateRandomId().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
-                new BasketItemBuilder().generateRandomId().withLabel("Water").withCategory("drinks").withAmount(150).build(),
+                new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
+                new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                 // You can also specify the initial count of the item and provide your own id
                 new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withCount(3).build());
     }
