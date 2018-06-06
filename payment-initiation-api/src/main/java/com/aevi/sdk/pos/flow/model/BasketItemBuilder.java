@@ -13,7 +13,11 @@ public class BasketItemBuilder {
     private String category;
     private long amount;
 
+    /**
+     * Initialise the builder with a default random id.
+     */
     public BasketItemBuilder() {
+        generateRandomId();
     }
 
     /**
@@ -30,7 +34,9 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Generate a random id (UUID) for this item.
+     * Generate a new random id (UUID) for this item.
+     *
+     * Note that the builder is initialised with a random id, meaning this only has to be called to generate a new random id.
      *
      * @return This builder
      */
@@ -40,7 +46,7 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Set the id for this item.
+     * Set the id for this item, overriding the default generated random id.
      *
      * @param id The id
      * @return This builder
