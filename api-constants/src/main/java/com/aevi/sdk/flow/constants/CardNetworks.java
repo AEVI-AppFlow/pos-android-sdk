@@ -11,4 +11,5 @@ public interface CardNetworks {
     String CARD_NETWORK_UNION_PAY = "unionpay";
     String CARD_NETWORK_MAESTRO = "maestro";
     String CARD_NETWORK_GIFT = "gift";
+    String CARD_NETWORK_EBT = "ebt";
 }
