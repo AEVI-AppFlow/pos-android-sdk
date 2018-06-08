@@ -23,9 +23,9 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven { url 'https://maven.google.com' }
         jcenter()
         mavenCentral()
-        maven { url 'https://maven.google.com' }
         maven {
             url "s3://sdk-snapshots.aevi.com/maven2"
             credentials(AwsCredentials) {
