@@ -234,7 +234,7 @@ public final class PaymentServiceInfoBuilder {
 
     private static String createPaymentServiceId(String packageName, String terminalId) {
         String id = packageName + ":" + terminalId;
-        return Base64.encodeToString(id.getBytes(), Base64.DEFAULT);
+        return Base64.encodeToString(id.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE | Base64.NO_PADDING);
     }
 
     private static String getAppVersion(Context context) {
