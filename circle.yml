@@ -41,7 +41,7 @@ deployment:
     production:
         branch: master
         commands:
-            - ./gradlew javadoc build publishApiJarPublicationToReleaseRepository publishJavadocsByVersion publishJavadocsAsLatest
+            - ./gradlew javadoc build publishJavadocsByVersion publishJavadocsAsLatest bintrayUpload
 
 general:
   artifacts:
