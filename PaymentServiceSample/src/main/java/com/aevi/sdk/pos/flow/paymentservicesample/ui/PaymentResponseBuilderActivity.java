@@ -16,18 +16,16 @@ package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.DropDownHelper;
@@ -40,7 +38,7 @@ import java.util.UUID;
 
 import butterknife.*;
 
-public class PaymentResponseBuilderActivity extends AppCompatActivity {
+public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<TransactionResponse> {
 
     private static final String APPROVED_RESP_CODE = "00";
     private static final String DECLINED_RESP_CODE = "XX";
@@ -82,6 +80,7 @@ public class PaymentResponseBuilderActivity extends AppCompatActivity {
         processedAmountsSpinner.setSelection(2);
 
         dropDownHelper.setupDropDown(paymentMethodsSpinner, R.array.payment_methods);
+        registerForActivityEvents();
     }
 
     @Override
@@ -162,14 +161,9 @@ public class PaymentResponseBuilderActivity extends AppCompatActivity {
         return CardProducer.getDefaultCard();
     }
 
-    private void sendResponseAndFinish(TransactionResponse transactionResponse) {
-        try {
-            ObservableActivityHelper<TransactionResponse> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionResponse);
-            activityHelper.publishResponse(transactionResponse);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-        finish();
+    @Override
+    protected void sendResponseAndFinish(TransactionResponse response) {
+        super.sendResponseAndFinish(response);
+        InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionResponse);
     }
 }

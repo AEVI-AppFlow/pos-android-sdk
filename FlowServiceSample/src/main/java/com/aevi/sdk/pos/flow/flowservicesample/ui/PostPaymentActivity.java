@@ -15,21 +15,19 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.TransactionSummary;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PostPaymentActivity extends AppCompatActivity {
+public class PostPaymentActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private FlowResponse flowResponse;
 
@@ -39,6 +37,7 @@ public class PostPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_payment);
         ButterKnife.bind(this);
         flowResponse = new FlowResponse();
+        registerForActivityEvents();
     }
 
     @Override
@@ -60,13 +59,4 @@ public class PostPaymentActivity extends AppCompatActivity {
         sendResponseAndFinish(flowResponse);
     }
 
-    private void sendResponseAndFinish(FlowResponse flowResponse) {
-        try {
-            ObservableActivityHelper<FlowResponse> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            activityHelper.publishResponse(flowResponse);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-        finish();
-    }
 }

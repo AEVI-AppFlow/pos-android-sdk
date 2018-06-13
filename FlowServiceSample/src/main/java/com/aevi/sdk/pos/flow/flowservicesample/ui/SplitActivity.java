@@ -17,20 +17,18 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
+import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
@@ -48,7 +46,7 @@ import static com.aevi.sdk.flow.constants.SplitDataKeys.*;
  * In order to keep complexity down, this sample only allows splitting into two transactions.
  * The API itself supports splitting into any arbitrary number of transactions.
  */
-public class SplitActivity extends AppCompatActivity {
+public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private SplitRequest splitRequest;
     private SplitBasketHelper splitBasketHelper;
@@ -87,6 +85,7 @@ public class SplitActivity extends AppCompatActivity {
         flowResponse = new FlowResponse();
 
         setupSplit();
+        registerForActivityEvents();
     }
 
     private void setupSplit() {
@@ -244,15 +243,6 @@ public class SplitActivity extends AppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
-        // Lastly, as we were started via launchActivity() in the API, we pass back the response to the service in the manner below
-        try {
-            ObservableActivityHelper<FlowResponse> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            activityHelper.publishResponse(flowResponse);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-
-        // Always remember to finish the activity after sending the response!
-        finish();
+        sendResponseAndFinish(flowResponse);
     }
 }

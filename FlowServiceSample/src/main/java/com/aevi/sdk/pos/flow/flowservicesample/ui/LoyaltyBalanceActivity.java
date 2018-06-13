@@ -15,17 +15,15 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import java.util.Random;
@@ -33,7 +31,7 @@ import java.util.Random;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoyaltyBalanceActivity extends AppCompatActivity {
+public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response> {
 
     private Request request;
 
@@ -43,6 +41,7 @@ public class LoyaltyBalanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loyalty_balance);
         ButterKnife.bind(this);
         request = Request.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        registerForActivityEvents();
     }
 
     @Override
@@ -68,13 +67,4 @@ public class LoyaltyBalanceActivity extends AppCompatActivity {
         sendResponseAndFinish(new Response(request, true, "Loyalty balance presented"));
     }
 
-    private void sendResponseAndFinish(Response response) {
-        try {
-            ObservableActivityHelper<Response> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            activityHelper.publishResponse(response);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-        finish();
-    }
 }
