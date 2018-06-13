@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
     }
 }
 

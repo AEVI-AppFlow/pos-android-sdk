@@ -59,6 +59,24 @@ These samples can also be used to test the full POS Flow integration.
 If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
 In a similar manner, if you are developing a flow app or a payment app, you will want to use the PaymentInitiationSample to initiate payments.
 
+## Android studio
+
+The API and applications use gradle 4.8 for building. Due to a bug in this version building in Android Studio will cause the following
+error:
+
+```text
+Configuration on demand is not supported by the current version of the Android Gradle plugin since you are using Gradle version 4.6 or above. Suggestion: disable configuration on demand by setting org.gradle.configureondemand=false in your gradle.properties file or use a Gradle version less than 4.6.
+```
+
+In order to disable configuration on demand in Android Studio it must be configured in the settings for Android Studio not the
+`gradle.properties` file as described above. You can disable this setting by navigating to
+
+```text
+Settings - Build, Execution, Deployment - Compiler - Configure on demand
+```
+
+and deselecting the check box.
+
 ## Documentation
 
 * [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki)
