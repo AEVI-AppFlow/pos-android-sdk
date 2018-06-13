@@ -23,6 +23,14 @@ repositories {
 }
 ```
 
+These APIs require that your application is compiled with Java 8. Ensure that your application build.gradle `android` DSL contains the following.
+```
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+```
+
 And then for each project/module where you want to integrate with the APIs
 
 ### Payment Initiation API
