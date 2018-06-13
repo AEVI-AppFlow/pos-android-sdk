@@ -28,5 +28,6 @@ public interface ErrorConstants {
     String UNSUPPORTED_OPERATION = "unsupportedOperation";
     String INVALID_REQUEST = "invalidRequest";
     String UNEXPECTED_ERROR = "unexpectedError";
+    String CONFIG_ERROR = "configError";
 
 }
