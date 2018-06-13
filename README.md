@@ -1,7 +1,5 @@
 # AEVI POS Flow SDK
 
-**Disclaimer:** Note that this SDK is currently in **beta** and is subject to breaking API changes before the first release.
-
 The AEVI POS Flow SDK enables developers to build applications for all stages of the point of sale journey.
 
 Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further information.
@@ -9,7 +7,9 @@ Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further 
 ## Prerequisites
 
 In order to test the integration with POS Flow from your application, you will need the AEVI `Flow Processing Service` installed
-on your device. Please contact AEVI to discuss access to this application.
+on your device. Please ask your AEVI point of contact for access to this application.
+
+If you do not have a point of contact, please contact us at info@aevi.com.
 
 ## Integrate
 
@@ -35,17 +35,17 @@ And then for each project/module where you want to integrate with the APIs
 
 ### Payment Initiation API
 ```
-implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:1.0.0-beta9'
+implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:1.0.0'
 ```
 
 ### Flow Service API
 ```
-implementation 'com.aevi.sdk.pos.flow:flow-service-api:1.0.0-beta9'
+implementation 'com.aevi.sdk.pos.flow:flow-service-api:1.0.0'
 ```
 
 ### Payment Service API
 ```
-implementation 'com.aevi.sdk.pos.flow:payment-service-api:1.0.0-beta9'
+implementation 'com.aevi.sdk.pos.flow:payment-service-api:1.0.0'
 ```
 
 ## Sample usage
@@ -82,11 +82,11 @@ and deselecting the check box.
 * [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki)
 * [Javadocs](https://github.com/Aevi-UK/pos-flow-sdk/wiki/javadocs)
 
-# Bugs and Feedback
+## Bugs and Feedback
 
 For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/Aevi-UK/pos-flow-sdk/issues)
 
-# LICENSE
+## LICENSE
 
 Copyright 2018 AEVI International GmbH
 
