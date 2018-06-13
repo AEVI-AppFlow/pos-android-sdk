@@ -24,35 +24,37 @@ allprojects {
 
     repositories {
         mavenLocal()
-        maven { url 'https://maven.google.com' }
+        google()
         jcenter()
         mavenCentral()
-        maven {
-            url "s3://sdk-snapshots.aevi.com/maven2"
-            credentials(AwsCredentials) {
-                accessKey aws_accessid
-                secretKey aws_accesskey
-            }
-        }
-        maven {
-            url "s3://sdk-qa.aevi.com/maven2"
-            credentials(AwsCredentials) {
-                accessKey aws_accessid
-                secretKey aws_accesskey
-            }
-        }
-        maven {
-            url "s3://sdk-releases.aevi.com/maven2"
-            credentials(AwsCredentials) {
-                accessKey aws_accessid
-                secretKey aws_accesskey
-            }
-        }
         maven {
             url "http://dl.bintray.com/aevi/aevi-uk"
         }
         maven {
             url "http://sdk-public-artifacts.s3-website-eu-west-1.amazonaws.com/maven2"
+        }
+        if (project.hasProperty('aws_accessid')) {
+            maven {
+                url "s3://sdk-snapshots.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
+            maven {
+                url "s3://sdk-qa.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
+            maven {
+                url "s3://sdk-releases.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
         }
     }
 }
