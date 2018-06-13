@@ -16,18 +16,16 @@ package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.CardResponse;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.DropDownHelper;
@@ -35,7 +33,7 @@ import com.aevi.ui.library.recycler.DropDownSpinner;
 
 import butterknife.*;
 
-public class SelectPaymentCardActivity extends AppCompatActivity {
+public class SelectPaymentCardActivity extends BaseSampleAppCompatActivity<CardResponse> {
 
     @BindView(R.id.card_scheme_spinner)
     DropDownSpinner cardSchemeSpinner;
@@ -65,6 +63,7 @@ public class SelectPaymentCardActivity extends AppCompatActivity {
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         final DropDownHelper dropDownHelper = new DropDownHelper(this);
         dropDownHelper.setupDropDown(cardSchemeSpinner, R.array.card_schemes);
+        registerForActivityEvents();
     }
 
     @OnClick(R.id.show_request)
@@ -109,16 +108,6 @@ public class SelectPaymentCardActivity extends AppCompatActivity {
         } else {
             sendResponseAndFinish(new CardResponse(CardResponse.Result.DECLINED));
         }
-    }
-
-    private void sendResponseAndFinish(CardResponse cardResponse) {
-        try {
-            ObservableActivityHelper<CardResponse> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            activityHelper.publishResponse(cardResponse);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-        finish();
     }
 
     private void buildCard() {
