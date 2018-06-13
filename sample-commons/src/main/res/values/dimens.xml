@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_horizontal">16dp</dimen>
+    <dimen name="margin_large">40dp</dimen>
+    <dimen name="margin_vertical">16dp</dimen>
+    <dimen name="margin_vertical_small">4dp</dimen>
+    <dimen name="item_offset">6dp</dimen>
+
+    <dimen name="txn_response_offset">25dp</dimen>
+
+    <dimen name="button_text_size">22sp</dimen>
+    <dimen name="spinner_width">200dp</dimen>
+    <dimen name="spinner_elevation">3dp</dimen>
+</resources>

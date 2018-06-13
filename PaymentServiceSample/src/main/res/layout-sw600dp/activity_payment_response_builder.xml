@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_large"
+    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentResponseBuilderActivity">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/view_payment_response_fields"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment_request_details"
+        android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_large"
+        android:layout_weight="0.5"
+        android:tag="request"/>
+
+</LinearLayout>

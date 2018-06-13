@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.ResponseBuilderActivity">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <Switch
+            android:id="@+id/approve_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Approve"/>
+
+        <CheckBox
+            android:id="@+id/include_card"
+            style="@style/CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/include_card_details"/>
+
+        <com.aevi.ui.library.recycler.DropDownSpinner
+            android:id="@+id/processed_amounts_spinner"
+            style="@style/DropDownSpinner"/>
+
+        <com.aevi.ui.library.recycler.DropDownSpinner
+            android:id="@+id/payment_methods_spinner"
+            style="@style/DropDownSpinner"
+            android:entries="@array/payment_methods"/>
+
+        <Button
+            android:id="@+id/reply_declined"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/decline"/>
+
+        <Button
+            android:id="@+id/reply_approved"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/approve"/>
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment_request_details"
+        android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
+        android:layout_width="0dp"
+        android:layout_margin="@dimen/margin_large"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:tag="request"/>
+
+
+</LinearLayout>

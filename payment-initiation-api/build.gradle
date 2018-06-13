@@ -1,0 +1,46 @@
+apply plugin: 'java-library'
+
+group = 'com.aevi.sdk.pos.flow'
+version = "${apiVersion}"
+
+apply from: '../publish-repo.gradle'
+
+dependencies {
+    implementation project(':api-constants')
+    api project(':flow-base-api')
+
+    compileOnly apiDependencies.androidMockable
+    implementation apiDependencies.gson
+    api apiDependencies.rxJava
+    api apiDependencies.rxMessenger
+    api apiDependencies.jsonConverter
+    api apiDependencies.archLifecycle
+    api apiDependencies.archLifecycleJava8
+
+    testImplementation project(':payment-service-api') // So we have access to certain builders
+    testImplementation apiDependencies.androidMockable
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.assertJ
+    testImplementation testDependencies.robolectric
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    destinationDir = file("../documentation/public/javadocs/payment-initiation-api")
+    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
+    exclude "**/**ClientImpl**"
+    exclude "**/BasePaymentModel**"
+    title = "Payment Initiation API"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+buildConfig {
+    clsName = 'PaymentInitiationConfig'
+}
+
+apply from: '../jar-publisher.gradle'
+apply from: '../bintray.gradle'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.8"

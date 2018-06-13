@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion projectTargetSdkVersion
+    buildToolsVersion "${androidBuildVersion}"
+    defaultConfig {
+        applicationId 'com.aevi.sdk.pos.flow.paymentservicesample'
+        minSdkVersion projectMinSdkVersion
+        targetSdkVersion projectTargetSdkVersion
+        versionName "${apiVersion}"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation(sampleDependencies.support) { force = true }
+    implementation(sampleDependencies.appCompat) { force = true }
+    implementation(sampleDependencies.recyclerView) { force = true }
+    implementation(sampleDependencies.cardView) { force = true }
+    implementation(sampleDependencies.design) { force = true }
+    implementation apiDependencies.archLifecycle
+    implementation apiDependencies.archLifecycleJava8
+    implementation apiDependencies.rxJava
+    implementation sampleDependencies.aeviUiLibrary
+    implementation project(':payment-service-api')
+    implementation project(':api-constants')
+    implementation project(':sample-commons')
+    implementation sampleDependencies.butterKnife
+    annotationProcessor sampleAptDependencies.butterKnife
+}

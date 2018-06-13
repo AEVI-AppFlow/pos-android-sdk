@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.aevi.sdk.pos.flow.paymentservicesample">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppThemeActionBar">
+
+        <service
+            android:name=".service.PaymentProcessingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.pos.flow.action.PROCESS_PAYMENT"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="configuration-authority"
+                android:value="com.aevi.sdk.pa.sample.config"/>
+        </service>
+        <service
+            android:name=".service.PaymentCardReadingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.pos.flow.action.READ_PAYMENT_CARD"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.FinancialRequestService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.pos.flow.action.PROCESS_REQUEST"/>
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name=".PaymentServiceInfoProvider"
+            android:authorities="com.aevi.sdk.pa.sample.config"
+            android:exported="true"/>
+
+        <activity
+            android:name=".ui.PaymentResponseBuilderActivity"
+            android:label="@string/pss_txn_processing"/>
+
+        <activity
+            android:name=".ui.SelectPaymentCardActivity"
+            android:label="@string/pss_card_reading"/>
+
+        <activity
+            android:name=".ui.SelectTokenActivity"
+            android:label="@string/pss_select_token"/>
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/sample_settings"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

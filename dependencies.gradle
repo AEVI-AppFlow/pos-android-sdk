@@ -1,0 +1,65 @@
+ext {
+    gsonVersion = '2.8.0'
+    rxJavaVersion = '2.1.2'
+    printApiVersion = '1.0.1'
+    jsonConverterVersion = '1.0.1'
+
+    rxMessengerVersion = '3.0.1'
+
+    junitVersion = '4.12'
+    hamcrestVersion = '1.3'
+    mockitoVersion = '1.10.19'
+    assertJVersion = '2.7.0'
+    androidMockableVersion = '26'
+    robolectricVersion = '3.3.2'
+
+    archLifecycleVersion = '1.0.3'
+    archLifecycleJava8Version = '1.1.0'
+
+    butterKnifeVersion = '8.8.1'
+    recyclerViewVersion = '27.0.2'
+    supportLibrary = '27.0.2'
+    designLibrary = '27.0.2'
+    constraintLayoutVersion = '1.0.2'
+    aeviUiLibraryVersion = "1.2.0"
+
+    androidBuildVersion = "27.0.3"
+    projectTargetSdkVersion = 26
+    projectMinSdkVersion = 21
+
+    apiDependencies = [
+            androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
+            rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
+            rxMessenger       : "com.aevi.android:rxmessenger:$rxMessengerVersion",
+            gson              : "com.google.code.gson:gson:$gsonVersion",
+            archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
+            archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
+            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion"
+    ]
+
+    sampleDependencies = [
+            aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
+            butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
+            support          : "com.android.support:support-v4:$supportLibrary",
+            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
+            cardView         : "com.android.support:cardview-v7:$supportLibrary",
+            appCompat        : "com.android.support:appcompat-v7:$supportLibrary",
+            supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
+            design           : "com.android.support:design:$designLibrary",
+            constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+    ]
+
+    sampleAptDependencies = [
+            butterKnife: "com.jakewharton:butterknife-compiler:$butterKnifeVersion",
+    ]
+
+    testDependencies = [
+            junit       : "junit:junit:$junitVersion",
+            hamcrestCore: "org.hamcrest:hamcrest-core:$hamcrestVersion",
+            hamcrestInt : "org.hamcrest:hamcrest-integration:$hamcrestVersion",
+            hamcrestLib : "org.hamcrest:hamcrest-library:$hamcrestVersion",
+            mockito     : "org.mockito:mockito-core:$mockitoVersion",
+            assertJ     : "org.assertj:assertj-core:$assertJVersion",
+            robolectric : "org.robolectric:robolectric:$robolectricVersion"
+    ]
+}
