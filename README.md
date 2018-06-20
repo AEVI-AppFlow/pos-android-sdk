@@ -9,7 +9,7 @@ Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further 
 In order to test the integration with POS Flow from your application, you will need the AEVI `Flow Processing Service` installed
 on your device. Please ask your AEVI point of contact for access to this application.
 
-If you do not have a point of contact, please contact us at info@aevi.com.
+If you do not have a point of contact, please get in touch with us at info@aevi.com.
 
 ## Integrate
 
@@ -31,21 +31,21 @@ These APIs require that your application is compiled with Java 8. Ensure that yo
     }
 ```
 
-And then for each project/module where you want to integrate with the APIs
+And then for each project/module where you want to integrate with the APIs (replace <version> with latest release)
 
 ### Payment Initiation API
 ```
-implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:1.0.0'
+implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:<version>'
 ```
 
 ### Flow Service API
 ```
-implementation 'com.aevi.sdk.pos.flow:flow-service-api:1.0.0'
+implementation 'com.aevi.sdk.pos.flow:flow-service-api:<version>'
 ```
 
 ### Payment Service API
 ```
-implementation 'com.aevi.sdk.pos.flow:payment-service-api:1.0.0'
+implementation 'com.aevi.sdk.pos.flow:payment-service-api:<version>'
 ```
 
 ## Sample usage
@@ -59,9 +59,18 @@ These samples can also be used to test the full POS Flow integration.
 If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
 In a similar manner, if you are developing a flow app or a payment app, you will want to use the PaymentInitiationSample to initiate payments.
 
-## Android studio
+## Build Environment
 
-The API and applications use gradle 4.8 for building. Due to a bug in this version building in Android Studio will cause the following
+### Minimum versions
+
+The minimum versions for importing / building this API are
+- Gradle v4.4 (v4.8+ recommended)
+- Android Gradle Plugin v3.1.3
+- Android Studio v3.1.3
+
+### Known Issues
+
+The API and applications use Gradle v4.8 for building. Due to a bug in this version building in Android Studio (v3.1.3 at time of writing) will cause the following
 error:
 
 ```text
