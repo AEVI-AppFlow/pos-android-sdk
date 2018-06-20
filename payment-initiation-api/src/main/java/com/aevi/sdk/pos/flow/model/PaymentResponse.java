@@ -93,6 +93,11 @@ public class PaymentResponse implements Sendable {
     protected FlowAppInfo executedPreFlowApp;
     protected FlowAppInfo executedPostFlowApp;
 
+    // Default constructor for deserialisation
+    PaymentResponse() {
+        this(new Payment());
+    }
+
     protected PaymentResponse(Payment originatingPayment) {
         this.originatingPayment = originatingPayment;
         transactions = new CopyOnWriteArrayList<>();

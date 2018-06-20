@@ -14,11 +14,11 @@
 
 package com.aevi.sdk.flow.model;
 
-import com.aevi.util.json.JsonConverter;
-import com.aevi.util.json.Jsonable;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.aevi.util.json.JsonConverter;
+import com.aevi.util.json.Jsonable;
 
 /**
  * Token that can be used to identify an entity, typically a customer.
@@ -31,6 +31,11 @@ public class Token implements Jsonable {
     private final String source;
     private final String algorithm;
     private String sourceAppId;
+
+    // Default constructor for deserialisation
+    Token() {
+        this("", "", null);
+    }
 
     public Token(String value, String source, String algorithm) {
         this.value = value;

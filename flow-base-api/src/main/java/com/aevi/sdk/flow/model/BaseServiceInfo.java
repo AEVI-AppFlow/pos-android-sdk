@@ -15,11 +15,11 @@
 package com.aevi.sdk.flow.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.Arrays;
-
-import android.support.annotation.NonNull;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -39,8 +39,15 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final String[] supportedTransactionTypes;
     private final String[] supportedDataKeys;
 
+    // Default constructor for deserialisation
+    protected BaseServiceInfo() {
+        this("", "", "", "", "", false, null,
+                null, null, null, null);
+    }
+
     protected BaseServiceInfo(String id, String vendor, String serviceVersion, String apiVersion, String displayName, boolean hasAccessibilityMode,
-                              String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes, String[] supportedDataKeys) {
+                              String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes,
+                              String[] supportedDataKeys) {
         super(id);
         this.vendor = vendor;
         this.serviceVersion = serviceVersion;

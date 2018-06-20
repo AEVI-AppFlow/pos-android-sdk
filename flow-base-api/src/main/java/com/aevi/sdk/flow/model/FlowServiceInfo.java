@@ -35,6 +35,13 @@ public class FlowServiceInfo extends BaseServiceInfo {
     private final boolean canPayAmounts;
     private String[] stages;
 
+    // Default constructor for deserialisation
+    FlowServiceInfo() {
+        requiresCardToken = false;
+        canAdjustAmounts = false;
+        canPayAmounts = false;
+    }
+
     /**
      * Use flow-service-api FlowServiceInfoBuilder for construction.
      */

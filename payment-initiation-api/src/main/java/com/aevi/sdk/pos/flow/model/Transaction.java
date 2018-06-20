@@ -15,6 +15,9 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
@@ -22,9 +25,6 @@ import com.aevi.util.json.JsonConverter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
 
@@ -42,6 +42,11 @@ public class Transaction extends BaseModel {
     private final AdditionalData additionalData;
     private final List<TransactionResponse> transactionResponses;
     private final List<FlowAppInfo> executedFlowApps;
+
+    // Default constructor for deserialisation
+    Transaction() {
+        this(new Amounts());
+    }
 
     public Transaction(Amounts requestedAmounts) {
         this(requestedAmounts, new AdditionalData());

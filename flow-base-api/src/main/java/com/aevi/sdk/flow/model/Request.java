@@ -15,14 +15,14 @@
 package com.aevi.sdk.flow.model;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.FlowClient;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
 import java.util.UUID;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * Generic request that contains a request type and arbitrary data bespoke to each request type.
@@ -33,6 +33,11 @@ public class Request extends BaseModel {
     private final AdditionalData requestData;
     private String deviceId;
     private String targetAppId;
+
+    // Default constructor for deserialisation
+    Request() {
+        this("");
+    }
 
     /**
      * Initialise this request with a request type and empty data.

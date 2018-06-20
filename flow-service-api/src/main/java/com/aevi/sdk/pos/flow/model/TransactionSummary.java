@@ -15,10 +15,10 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
-
-import android.support.annotation.NonNull;
 
 /**
  * Transaction summary model provided to post-payment applications.
@@ -28,6 +28,13 @@ public class TransactionSummary extends Transaction {
     private final String transactionType;
     private final DeviceAudience deviceAudience;
     private final Card card;
+
+    // Default constructor for deserialisation
+    TransactionSummary() {
+        transactionType = "";
+        deviceAudience = DeviceAudience.MERCHANT;
+        card = null;
+    }
 
     public TransactionSummary(Transaction transaction, String transactionType, DeviceAudience deviceAudience, Card card) {
         super(transaction, transaction.getRequestedAmounts());

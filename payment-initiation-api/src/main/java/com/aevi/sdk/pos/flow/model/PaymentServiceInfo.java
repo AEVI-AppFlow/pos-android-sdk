@@ -39,6 +39,17 @@ public class PaymentServiceInfo extends BaseServiceInfo {
     private final boolean willPrintReceipts;
     private final boolean supportsFlowCardReading;
 
+    // Default constructor for deserialisation
+    PaymentServiceInfo() {
+        packageName = "";
+        defaultCurrency = "";
+        terminalId = "";
+        merchantIds = new String[0];
+        supportManualEntry = false;
+        willPrintReceipts = false;
+        supportsFlowCardReading = false;
+    }
+
     PaymentServiceInfo(String paymentServiceId, String packageName, String vendor, String version, String apiVersion, String displayName, String[] paymentMethods, String[] supportedCurrencies, String defaultCurrency,
                        String terminalId, String[] merchantIds, String[] supportedRequestTypes, String[] supportedTransactionTypes, boolean supportManualEntry,
                        boolean hasAccessibilityMode, boolean willPrintReceipts, boolean supportsFlowCardReading, String[] supportedDataKeys) {

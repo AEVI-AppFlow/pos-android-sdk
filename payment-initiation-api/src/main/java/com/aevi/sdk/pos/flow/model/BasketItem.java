@@ -32,6 +32,11 @@ public class BasketItem {
     private final long amount;
     private final int count;
 
+    // Default constructor for deserialisation
+    BasketItem() {
+        this("", "", null, 0, 0);
+    }
+
     /**
      * Create a new basket item with label, category, amount and count.
      *
