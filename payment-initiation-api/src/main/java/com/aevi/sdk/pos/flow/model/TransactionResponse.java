@@ -43,6 +43,11 @@ public class TransactionResponse extends BaseModel {
     private String paymentServiceId;
     private String componentName;
 
+    // Default constructor for deserialisation
+    TransactionResponse() {
+        this("", null, Outcome.DECLINED, "", null, null, new AdditionalData(), null);
+    }
+
     TransactionResponse(String id, Card card, Outcome outcome, String outcomeMessage, Amounts amounts, String responseCode,
                         AdditionalData references, String paymentMethod) {
         super(id);

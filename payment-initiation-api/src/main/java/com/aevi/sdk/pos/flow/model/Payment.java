@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -22,9 +24,6 @@ import com.aevi.sdk.flow.model.Token;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.UUID;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -42,6 +41,11 @@ public class Payment extends BaseModel {
     private final AdditionalData additionalData;
     private final boolean isExternalId;
     private final String source;
+
+    // Default constructor for deserialisation
+    Payment() {
+        this("", new Amounts(), false, null, null, "");
+    }
 
     /**
      * Internal constructor for use from the Builder.

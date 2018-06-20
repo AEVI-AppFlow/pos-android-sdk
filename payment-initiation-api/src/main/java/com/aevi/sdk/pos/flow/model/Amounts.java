@@ -36,6 +36,13 @@ public class Amounts implements Jsonable {
     private double currencyExchangeRate;
     private String originalCurrency;
 
+    // Default constructor for deserialisation
+    Amounts() {
+        baseAmount = 0;
+        additionalAmounts = new HashMap<>();
+        currency = "XXX";
+    }
+
     /**
      * Initialise with base amount and currency.
      *
