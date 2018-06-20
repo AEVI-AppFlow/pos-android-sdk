@@ -15,11 +15,11 @@
 package com.aevi.sdk.flow.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
-
-import android.support.annotation.NonNull;
 
 /**
  * Response to a generic {@link Request} that contains the outcome and bespoke response data for that request type.
@@ -30,6 +30,11 @@ public class Response extends BaseModel {
     private final boolean success;
     private final String outcomeMessage;
     private final AdditionalData responseData;
+
+    // Default constructor for deserialisation
+    Response() {
+        this(new Request(), false, null);
+    }
 
     /**
      * Initialise a response with the originating request and outcome details.

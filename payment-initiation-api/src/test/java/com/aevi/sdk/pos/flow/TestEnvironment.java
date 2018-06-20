@@ -1,8 +1,12 @@
 package com.aevi.sdk.pos.flow;
 
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.content.pm.*;
+
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.res.builder.RobolectricPackageManager;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,9 +15,11 @@ import java.nio.file.Paths;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.robolectric.Shadows.shadowOf;
 
 public class TestEnvironment {
 
+    private static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName("com.aevi.sdk.fps", "com.aevi.sdk.fps.FlowProcessingService");
     private static final String BASE_TEST_DIR = "src/test/resources/";
     private static final String VALID_RESPONSE = "valid_response.json";
     private static final String ERROR_RESPONSE = "error_response.json";
@@ -50,5 +56,25 @@ public class TestEnvironment {
         packageInfo.versionName = version;
         when(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(packageInfo);
         return context;
+    }
+
+    public static void pretendFpsIsInstalled() {
+        ComponentName componentName = FLOW_PROCESSING_SERVICE_COMPONENT;
+        RobolectricPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+
+        ResolveInfo resolveInfo = new ResolveInfo();
+        resolveInfo.isDefault = true;
+
+        ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.packageName = componentName.getPackageName();
+        ApplicationInfo applicationInfo = new ApplicationInfo();
+        applicationInfo.packageName = serviceInfo.packageName;
+        serviceInfo.applicationInfo = applicationInfo;
+
+        resolveInfo.serviceInfo = serviceInfo;
+
+        packageManager.addResolveInfoForIntent(intent, resolveInfo);
     }
 }

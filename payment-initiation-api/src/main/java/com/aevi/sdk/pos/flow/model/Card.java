@@ -14,6 +14,9 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.util.json.JsonConverter;
@@ -22,9 +25,6 @@ import com.aevi.util.json.Jsonable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * The card details representing the card presented during a transaction.
@@ -43,6 +43,11 @@ public class Card implements Jsonable {
 
     public static Card getEmptyCard() {
         return new Card(null, null, null, null, null);
+    }
+
+    // Default constructor for deserialisation
+    Card() {
+        this(null, null, null, null, new AdditionalData());
     }
 
     Card(String maskedPan, String cardholderName, String expiryDate, Token token, AdditionalData additionalData) {

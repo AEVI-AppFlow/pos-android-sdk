@@ -26,6 +26,7 @@ import org.robolectric.shadows.ShadowLog;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 
+import static com.aevi.sdk.pos.flow.TestEnvironment.pretendFpsIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -54,6 +55,7 @@ public class PaymentClientImplTest {
 
     @Test
     public void getPaymentServicesShouldSendAndReceiveDataCorrectly() throws Exception {
+        pretendFpsIsInstalled();
         PaymentServiceInfo testInfo = getPaymentServiceInfo();
         when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(testInfo.toJson()));
 
@@ -65,6 +67,12 @@ public class PaymentClientImplTest {
         assertThat(result.getAllPaymentServices()).hasSize(1);
         assertThat(result.getAllPaymentServices().get(0)).isEqualTo(testInfo);
         verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void getPaymentServicesShouldErrorIfNoFps() throws Exception {
+        TestObserver<PaymentServices> testObserver = paymentClient.getPaymentServices().test();
+        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 
     private PaymentServiceInfo getPaymentServiceInfo() throws PackageManager.NameNotFoundException {
@@ -83,6 +91,7 @@ public class PaymentClientImplTest {
 
     @Test
     public void initiatePaymentShouldSendPaymentViaRequestCorrectly() throws Exception {
+        pretendFpsIsInstalled();
         Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP")).build();
 
         paymentClient.initiatePayment(payment).test();
@@ -94,8 +103,16 @@ public class PaymentClientImplTest {
         verify(messengerClient).closeConnection();
     }
 
+
+    public void initiatePaymentShouldErrorIfNoFps() throws Exception {
+        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP")).build();
+        TestObserver<PaymentResponse> testObserver = paymentClient.initiatePayment(payment).test();
+        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentIfTokenAppIdAndPaymentServiceIdMismatch() throws Exception {
+        pretendFpsIsInstalled();
         Token token = new Token("123", "card");
         token.setSourceAppId("123");
         Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP"))
@@ -106,12 +123,19 @@ public class PaymentClientImplTest {
 
     @Test
     public void subscribeToStatusUpdatesShouldPropagateUpdatesCorrectly() throws Exception {
+        pretendFpsIsInstalled();
         paymentClient.subscribeToStatusUpdates("123").test();
 
         AppMessage sentAppMessage = callSendAndCaptureMessage();
         RequestStatus requestStatus = RequestStatus.fromJson(sentAppMessage.getMessageData());
         assertThat(requestStatus.getStatus()).isEqualTo("123");
         verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void subscribeToStatusUpdatesShouldErrorIfNoFps() throws Exception {
+        TestObserver<RequestStatus> testObserver = paymentClient.subscribeToStatusUpdates("").test();
+        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 
     private AppMessage callSendAndCaptureMessage() {

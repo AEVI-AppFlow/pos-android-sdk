@@ -14,15 +14,15 @@
 
 package com.aevi.sdk.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * Represents a paying customer with associated customer details and tokens.
@@ -32,6 +32,14 @@ public class Customer extends BaseModel {
     private String fullName;
     private AdditionalData customerDetails;
     private List<Token> tokens;
+
+    // Default constructor for deserialisation
+    Customer() {
+        super(null);
+        fullName = null;
+        customerDetails = new AdditionalData();
+        tokens = new ArrayList<>();
+    }
 
     /**
      * Create a new Customer instance with a unique id.

@@ -1,0 +1,131 @@
+version: 2
+
+reusable-steps:
+  - &restore_cache
+    restore_cache:
+      keys:
+      - v1-dependencies-{{ checksum "build.gradle" }}
+      # fallback to using the latest cache if no exact match is found
+      - v1-dependencies-
+  - &save_cache
+    save_cache:
+      paths:
+        - ~/.gradle
+        - ~/.android
+      key: v1-dependencies-{{ checksum "build.gradle" }}
+  - &setup_aws_cli
+    run:
+      name: Setup AWS CLI
+      command: sudo pip install awscli
+  - &gradle_props
+    run:
+      name: Write gradle.properties
+      command: /bin/bash writegradleprops.sh
+  - &download_android_deps
+    run:
+      name: Download Android Dependencies
+      command: ./gradlew androidDependencies
+
+  - &test
+    run:
+      name: Test
+      command: ./gradlew clean test
+  - &build
+    run:
+      name: Build and copy
+      command: ./gradlew javadoc build copyApiLibs
+  - &store
+    store_artifacts:
+      path: artifacts
+
+  - &publish_to_qa
+    run:
+      name: Publish to QA
+      command: ./gradlew javadoc alljavadoc build publishApiJarPublicationToQaRepository publishJavadocsByVersion
+  - &publish_to_snapshot
+    run:
+      name: Publish to Snapshot
+      command: ./gradlew javadoc build publishApiJarPublicationToSnapshotRepository copyApiLibs copyApks publishJavadocsByVersion
+  - &publish_to_release
+    run:
+      name: Publish to Release
+      command: ./gradlew javadoc build publishJavadocsByVersion publishJavadocsAsLatest bintrayUpload
+
+
+
+jobs:
+  build:
+    docker:
+      - image: circleci/android:api-26-alpha
+    working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *download_android_deps
+      - *save_cache
+      - *test
+      - *build
+      - *store
+
+  deploy-qa:
+    docker:
+      - image: circleci/android:api-26-alpha
+    working_directory: ~/repo
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *publish_to_qa
+
+  deploy-snapshot:
+    docker:
+      - image: circleci/android:api-26-alpha
+    working_directory: ~/repo
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *publish_to_snapshot
+
+  deploy-release:
+    docker:
+      - image: circleci/android:api-26-alpha
+    working_directory: ~/repo
+    steps:
+      - *setup_aws_cli
+      - checkout
+      - *gradle_props
+      - *restore_cache
+      - *publish_to_release
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-qa:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /.*release.*/
+      - deploy-snapshot:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
+      - deploy-release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
