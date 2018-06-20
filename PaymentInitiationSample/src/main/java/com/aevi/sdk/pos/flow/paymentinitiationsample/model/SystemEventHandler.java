@@ -14,8 +14,11 @@
 
 package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
+import android.util.Log;
+
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.pos.flow.PaymentClient;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemEventAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ public class SystemEventHandler {
     public void subscribeToEvents(PaymentClient paymentClient) {
         paymentClient.subscribeToSystemEvents().subscribe(flowEvent -> {
             receivedFlowEvents.add(flowEvent);
-        });
+        }, throwable -> Log.e(SystemEventAdapter.class.getSimpleName(), "Failed ot subscribe", throwable));
     }
 
     public List<FlowEvent> getReceivedFlowEvents() {

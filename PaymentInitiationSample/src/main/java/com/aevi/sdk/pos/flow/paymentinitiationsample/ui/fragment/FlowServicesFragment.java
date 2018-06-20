@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.widget.Toast;
+
 import com.aevi.sdk.flow.model.FlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
@@ -34,6 +36,11 @@ public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
                                 FlowServicesFragment.this, false);
                         items.setAdapter(adapter);
                     }
+                }, throwable -> {
+                    if (throwable instanceof IllegalStateException) {
+                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    }
+                    showNoItemsAvailable(R.string.no_flow_services_found);
                 });
     }
 

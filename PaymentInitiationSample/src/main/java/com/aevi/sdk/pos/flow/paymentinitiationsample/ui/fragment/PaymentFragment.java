@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
@@ -105,6 +106,11 @@ public class PaymentFragment extends BaseObservableFragment {
                     } else {
                         handleNoPaymentServices();
                     }
+                }, throwable -> {
+                    if (throwable instanceof IllegalStateException) {
+                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    }
+                    handleNoPaymentServices();
                 });
     }
 
@@ -214,8 +220,12 @@ public class PaymentFragment extends BaseObservableFragment {
         }, throwable -> {
             if (throwable instanceof MessageException) {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
-                getContext().startActivity(intent);
+            } else if (throwable instanceof IllegalStateException) {
+                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
+            } else {
+                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
             }
+            getContext().startActivity(intent);
         });
     }
 }
