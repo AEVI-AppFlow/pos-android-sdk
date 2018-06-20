@@ -17,6 +17,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -42,6 +43,12 @@ public class SystemOverviewFragment extends BaseFragment {
 
         createSystemInfo().subscribe(systemOverview -> {
             SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview);
+            infoItems.setAdapter(systemOverviewAdapter);
+        }, throwable -> {
+            if (throwable instanceof IllegalStateException) {
+                Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+            }
+            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), new SystemOverview());
             infoItems.setAdapter(systemOverviewAdapter);
         });
     }

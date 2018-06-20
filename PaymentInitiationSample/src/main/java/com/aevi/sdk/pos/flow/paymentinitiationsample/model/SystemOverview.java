@@ -15,6 +15,7 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -24,9 +25,9 @@ public class SystemOverview {
     private int numPaymentServices;
     private int numDevices;
     private Collection<String> allPaymentMethods = new HashSet<>();
-    private Collection<String> allCurrencies;
+    private Collection<String> allCurrencies = new ArrayList<>();
     private Collection<String> allRequestTypes = new HashSet<>();
-    private Collection<String> allTransactionTypes;
+    private Collection<String> allTransactionTypes = new ArrayList<>();
     private Collection<String> allDataKeys = new HashSet<>();
 
     public int getNumFlowServices() {

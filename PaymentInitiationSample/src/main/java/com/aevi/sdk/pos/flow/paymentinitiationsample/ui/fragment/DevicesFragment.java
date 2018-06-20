@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.widget.Toast;
+
 import com.aevi.sdk.flow.model.Device;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.DevicesAdapter;
@@ -32,6 +34,11 @@ public class DevicesFragment extends BaseItemFragment<Device> {
                         DevicesAdapter adapter = new DevicesAdapter(devices, DevicesFragment.this, false);
                         items.setAdapter(adapter);
                     }
+                }, throwable -> {
+                    if (throwable instanceof IllegalStateException) {
+                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    }
+                    showNoItemsAvailable(R.string.no_devices_found);
                 });
     }
 

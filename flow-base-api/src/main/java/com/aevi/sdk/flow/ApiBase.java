@@ -41,6 +41,7 @@ public abstract class ApiBase {
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
     protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
     protected static final ComponentName SYSTEM_SETTINGS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemSettingsService");
+    protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
 
     private final InternalData internalData;
     protected final Context context;
@@ -55,6 +56,9 @@ public abstract class ApiBase {
     }
 
     protected Single<Response> sendGenericRequest(Request request) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return requestMessenger

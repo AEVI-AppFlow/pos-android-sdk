@@ -18,9 +18,12 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 
+import static com.aevi.sdk.flow.TestHelper.pretendServiceIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -49,6 +52,7 @@ public class FlowClientImplTest {
 
     @Test
     public void getDevicesShouldSendCorrectMessage() throws Exception {
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
         flowClient.getDevices().test();
 
         AppMessage appMessage = callSendAndCaptureMessage();
@@ -57,7 +61,14 @@ public class FlowClientImplTest {
     }
 
     @Test
+    public void getDevicesShouldErrorIfNoFps() throws Exception {
+        TestObserver<List<Device>> testObserver = flowClient.getDevices().test();
+        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
+    }
+
+    @Test
     public void getFlowServicesShouldSendAndReceiveCorrectMessages() throws Exception {
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
         FlowServiceInfo serviceInfo = getFlowServiceInfo();
         when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(serviceInfo.toJson()));
         TestObserver<FlowServices> testObserver = flowClient.getFlowServices().test();
@@ -72,7 +83,14 @@ public class FlowClientImplTest {
     }
 
     @Test
+    public void getFlowServicesShouldErrorIfNoFps() throws Exception {
+        TestObserver<FlowServices> testObserver = flowClient.getFlowServices().test();
+        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
+    }
+
+    @Test
     public void subscribeToSystemEventsShouldSendAndReceiveCorrectly() throws Exception {
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
         AdditionalData additionalData = new AdditionalData();
         additionalData.addData("test", "hello");
         FlowEvent flowEvent = new FlowEvent("type", additionalData, "trigger");
@@ -87,7 +105,14 @@ public class FlowClientImplTest {
     }
 
     @Test
+    public void subscribeToSystemEventsShouldErrorIfNoFps() throws Exception {
+        TestObserver<FlowEvent> testObserver = flowClient.subscribeToSystemEvents().test();
+        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
+    }
+
+    @Test
     public void getSystemSettingsShouldSendAndReceiveCorrectly() throws Exception {
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
         AdditionalData additionalData = new AdditionalData();
         additionalData.addData("test", "hello");
         when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(additionalData.toJson()));
@@ -98,6 +123,12 @@ public class FlowClientImplTest {
         testObserver.assertValueCount(1);
         assertThat(testObserver.values().get(0)).isEqualTo(additionalData);
         verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void getSystemSettingsShouldErrorIfNoFps() throws Exception {
+        TestObserver<AdditionalData> testObserver = flowClient.getSystemSettings().test();
+        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
     }
 
     private FlowServiceInfo getFlowServiceInfo() throws PackageManager.NameNotFoundException {

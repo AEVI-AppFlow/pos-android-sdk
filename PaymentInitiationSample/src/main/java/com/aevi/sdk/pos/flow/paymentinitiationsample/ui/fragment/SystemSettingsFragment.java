@@ -68,7 +68,7 @@ public class SystemSettingsFragment extends BaseFragment {
             for (String requestType : flowConfigs.getKeys()) {
                 handleRequestType(requestType, flowConfigs);
             }
-        });
+        }, throwable -> settingsInfo.setText("Operation failed: " + throwable.getMessage()));
     }
 
     private void handleRequestType(String requestType, AdditionalData flowConfigs) {
