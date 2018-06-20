@@ -109,8 +109,10 @@ public class TransactionRequest extends BaseModel {
      * Get the stage the payment is at, which will determine what data is available and what response data can be set.
      *
      * @return The {@link PaymentStage}
+     * @deprecated This is no longer required and will be deleted in the next major API update
      */
     @NonNull
+    @Deprecated
     public PaymentStage getPaymentStage() {
         return paymentStage;
     }
