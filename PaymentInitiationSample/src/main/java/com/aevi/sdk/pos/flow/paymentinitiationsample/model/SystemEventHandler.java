@@ -30,7 +30,7 @@ public class SystemEventHandler {
     public void subscribeToEvents(PaymentClient paymentClient) {
         paymentClient.subscribeToSystemEvents().subscribe(flowEvent -> {
             receivedFlowEvents.add(flowEvent);
-        }, throwable -> Log.e(SystemEventAdapter.class.getSimpleName(), "Failed ot subscribe", throwable));
+        }, throwable -> Log.e(SystemEventAdapter.class.getSimpleName(), "Failed to subscribe", throwable));
     }
 
     public List<FlowEvent> getReceivedFlowEvents() {
