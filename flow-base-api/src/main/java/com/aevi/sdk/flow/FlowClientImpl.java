@@ -35,6 +35,9 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<List<Device>> getDevices() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient deviceMessenger = getMessengerClient(DEVICE_LIST_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
@@ -56,6 +59,9 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<FlowServices> getFlowServices() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient flowInfoMessenger = getMessengerClient(FLOW_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return flowInfoMessenger
@@ -88,6 +94,9 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Observable<FlowEvent> subscribeToSystemEvents() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Observable.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
@@ -108,6 +117,9 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     public Single<AdditionalData> getSystemSettings() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_SETTINGS_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger

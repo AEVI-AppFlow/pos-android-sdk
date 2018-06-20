@@ -20,17 +20,8 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.FlowClientImpl;
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
-import com.aevi.sdk.pos.flow.model.PaymentServices;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.pos.flow.model.*;
 
 import java.util.List;
 
@@ -54,6 +45,9 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     @Override
     public Single<PaymentServices> getPaymentServices() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(PAYMENT_SERVICE_INFO_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return paymentInfoMessenger
@@ -87,6 +81,9 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     @Override
     public Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
         Token cardToken = payment.getCardToken();
         if (paymentServiceId != null && cardToken != null) {
             checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
@@ -125,6 +122,9 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     @Override
     public Observable<RequestStatus> subscribeToStatusUpdates(String paymentId) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Observable.error(NO_FPS_EXCEPTION);
+        }
         final ObservableMessengerClient requestStatusMessenger = getMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
         RequestStatus requestStatus = new RequestStatus(paymentId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestStatus.toJson(), getInternalData());

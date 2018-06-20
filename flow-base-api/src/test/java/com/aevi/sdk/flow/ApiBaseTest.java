@@ -3,9 +3,6 @@ package com.aevi.sdk.flow;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.os.Build;
 
 import com.aevi.sdk.flow.model.InternalData;
@@ -15,12 +12,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowApplication;
 
+import static com.aevi.sdk.flow.TestHelper.pretendServiceIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.robolectric.Shadows.shadowOf;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
@@ -67,27 +63,8 @@ public class ApiBaseTest {
 
     @Test
     public void callIsProcessingServiceInstalledShouldReturnTrueIfPackageManagerThinksSo() throws Exception {
-        pretendFpsIsInstalled();
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
 
         assertThat(ApiBase.isProcessingServiceInstalled(RuntimeEnvironment.application)).isTrue();
-    }
-
-    private void pretendFpsIsInstalled() {
-        RobolectricPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
-        Intent intent = new Intent();
-        intent.setComponent(apiBase.getFpsComponent());
-
-        ResolveInfo resolveInfo = new ResolveInfo();
-        resolveInfo.isDefault = true;
-
-        ServiceInfo serviceInfo = new ServiceInfo();
-        serviceInfo.packageName = apiBase.getFpsComponent().getPackageName();
-        ApplicationInfo applicationInfo = new ApplicationInfo();
-        applicationInfo.packageName = serviceInfo.packageName;
-        serviceInfo.applicationInfo = applicationInfo;
-
-        resolveInfo.serviceInfo = serviceInfo;
-
-        packageManager.addResolveInfoForIntent(intent, resolveInfo);
     }
 }
