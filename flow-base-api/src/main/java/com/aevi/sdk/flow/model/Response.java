@@ -16,6 +16,7 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.aevi.util.json.JsonConverter;
 
@@ -26,14 +27,14 @@ import java.util.Objects;
  */
 public class Response extends BaseModel {
 
-    private final Request originatingRequest;
+    private Request originatingRequest;
     private final boolean success;
     private final String outcomeMessage;
     private final AdditionalData responseData;
 
     // Default constructor for deserialisation
     Response() {
-        this(new Request(), false, null);
+        this("N/A", false, null, new AdditionalData());
     }
 
     /**
@@ -58,8 +59,22 @@ public class Response extends BaseModel {
      * @param responseData   The bespoke response data
      */
     public Response(Request request, boolean success, String outcomeMessage, AdditionalData responseData) {
-        super(request.getId());
+        this(request.getId(), success, outcomeMessage, responseData);
         this.originatingRequest = request;
+    }
+
+    /**
+     * Initialise a response with the originating request id, outcome details and response data.
+     *
+     * See reference values in the documentation for possible values.
+     *
+     * @param requestId      The originating request id
+     * @param success        The success flag of the processing
+     * @param outcomeMessage The outcome message
+     * @param responseData   The bespoke response data
+     */
+    public Response(String requestId, boolean success, String outcomeMessage, AdditionalData responseData) {
+        super(requestId);
         this.success = success;
         this.outcomeMessage = outcomeMessage;
         this.responseData = responseData;
@@ -81,9 +96,9 @@ public class Response extends BaseModel {
     /**
      * Get the request that triggered this response.
      *
-     * @return The originating request
+     * @return The originating request, if set
      */
-    @NonNull
+    @Nullable
     public Request getOriginatingRequest() {
         return originatingRequest;
     }
@@ -119,6 +134,15 @@ public class Response extends BaseModel {
         return responseData;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param originatingRequest The originating request
+     */
+    public void setOriginatingRequest(Request originatingRequest) {
+        this.originatingRequest = originatingRequest;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -148,7 +172,6 @@ public class Response extends BaseModel {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), originatingRequest, success, outcomeMessage, responseData);
     }
 

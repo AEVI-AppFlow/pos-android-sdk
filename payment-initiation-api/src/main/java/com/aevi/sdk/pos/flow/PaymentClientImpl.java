@@ -80,7 +80,7 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
     }
 
     @Override
-    public Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId) {
+    public Single<PaymentResponse> initiatePayment(final Payment payment, String paymentServiceId, String deviceId) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
@@ -104,7 +104,9 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
                     @Override
                     public PaymentResponse apply(String json) throws Exception {
                         Response response = Response.fromJson(json);
-                        return response.getResponseData().getValue(PAYMENT, PaymentResponse.class);
+                        PaymentResponse paymentResponse = response.getResponseData().getValue(PAYMENT, PaymentResponse.class);
+                        paymentResponse.setOriginatingPayment(payment);
+                        return paymentResponse;
                     }
                 })
                 .doFinally(new Action() {

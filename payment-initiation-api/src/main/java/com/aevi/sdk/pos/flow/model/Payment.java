@@ -44,7 +44,14 @@ public class Payment extends BaseModel {
 
     // Default constructor for deserialisation
     Payment() {
-        this("", new Amounts(), false, null, null, "");
+        super("N/A");
+        this.isExternalId = false;
+        this.transactionType = "";
+        this.amounts = new Amounts();
+        this.splitEnabled = false;
+        this.cardToken = null;
+        this.additionalData = new AdditionalData();
+        this.source = "";
     }
 
     /**
