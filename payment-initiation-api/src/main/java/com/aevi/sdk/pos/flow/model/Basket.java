@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
@@ -28,7 +29,7 @@ import java.util.Objects;
 /**
  * Represents a basket consisting of one or multiple {@link BasketItem}.
  *
- * Basket items are added to the front of the basket list, effectively keeping a list that is sorted by most recent.
+ * Basket items are kept in a list sorted by most recently added first.
  *
  * Basket items are uniquely identified by an id, meaning it is possible that there is more than one item with the same label.
  * It is up to the client to manage this correctly.
@@ -57,7 +58,7 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Initialise a basket based on the provided basket items.
+     * Initialise a basket from the provided var-args items, maintaining the same order as they are specified in.
      *
      * @param basketItems The var-args list of basket items to initialise the basket with
      */
@@ -79,7 +80,7 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Add one or multiple basket items to the basket either as a new item or via merging with an existing one with the same id.
+     * Add one or multiple basket items to the *front* of the basket either as a new item or via merging with an existing one with the same id.
      *
      * If there is an existing item with the same id in the basket, then the item count of the two items will be added together and stored.
      *
@@ -328,6 +329,16 @@ public class Basket implements Jsonable {
     @Override
     public String toString() {
         return "Basket{" + "items=" + displayItems.size() + '}';
+    }
+
+    /**
+     * Helper function to log all the items in the basket to Android logcat.
+     */
+    public void logBasketEntries() {
+        Log.i("Basket", "Items in basket");
+        for (BasketItem displayItem : displayItems) {
+            Log.i("Basket", displayItem.toString());
+        }
     }
 
     @Override
