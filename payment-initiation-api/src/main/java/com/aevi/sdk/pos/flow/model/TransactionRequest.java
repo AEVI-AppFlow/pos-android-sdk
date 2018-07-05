@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
@@ -61,14 +60,13 @@ public class TransactionRequest extends BaseModel {
                               Card card) {
         super(id);
         this.paymentStage = paymentStage;
-        Log.i(TransactionRequest.class.getSimpleName(), "Created TransactionRequest with id: " + id);
-        checkArgument(id != null && !id.isEmpty(), "Id must be set");
-        checkArgument(transactionType != null, "Transaction type must be set");
         this.transactionType = transactionType;
         this.amounts = amounts;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.card = card != null ? card : Card.getEmptyCard();
         this.deviceAudience = DeviceAudience.MERCHANT;
+        checkArgument(id != null && !id.isEmpty(), "Id must be set");
+        checkArgument(transactionType != null, "Transaction type must be set");
     }
 
     /**

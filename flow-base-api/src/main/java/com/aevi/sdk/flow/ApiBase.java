@@ -55,7 +55,7 @@ public abstract class ApiBase {
         return internalData;
     }
 
-    protected Single<Response> sendGenericRequest(Request request) {
+    protected Single<Response> sendGenericRequest(final Request request) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
@@ -67,7 +67,9 @@ public abstract class ApiBase {
                 .map(new Function<String, Response>() {
                     @Override
                     public Response apply(String json) throws Exception {
-                        return Response.fromJson(json);
+                        Response response = Response.fromJson(json);
+                        response.setOriginatingRequest(request);
+                        return response;
                     }
                 })
                 .doFinally(new Action() {
