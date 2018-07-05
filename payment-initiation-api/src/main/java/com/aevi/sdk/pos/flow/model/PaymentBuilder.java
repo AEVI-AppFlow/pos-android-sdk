@@ -19,6 +19,7 @@ import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.RequestSource;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
+import com.aevi.sdk.pos.flow.PaymentClient;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -75,10 +76,10 @@ public class PaymentBuilder {
     }
 
     /**
-     * Enable split for this payment which means it may be broken up into multiple sub-payments.
+     * Enable split for this payment which means it *may* be broken up into multiple sub-payments.
      *
-     * If set, it is up to the acquirer environment if and how the payment is split into
-     * multiple transactions.
+     * It is up to the flow processing service configuration if split is allowed or not. Use {@link PaymentClient#getSystemSettings()} to check
+     * whether it is allowed. See documentation/samples for how to retrieve the value.
      *
      * If this is not called, it is still possible that split will be enabled during the payment flow.
      *
