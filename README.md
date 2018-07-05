@@ -11,6 +11,21 @@ on your device. Please ask your AEVI point of contact for access to this applica
 
 If you do not have a point of contact, please get in touch with us at info@aevi.com.
 
+## API Feature Support
+
+Some of the features provided by this API are dependent on them being allowed and enabled in the `Flow Processing Service`.
+
+Whether or not a feature is allowed is down to the acquirer and/or merchant configuration for POS Flow.
+You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call. See `PaymentInitiationSample` for examples.
+
+Here is a table outlining the features that are down to configuration.
+
+| Feature | System settings key |
+| ------- | ------------------- |
+| Multi-device | systemSettingsKeyMultiDeviceEnabled |
+| Split | systemSettingsKeySplitEnabled |
+| Currency change | systemSettingsKeyCurrencyChangeEnabled |
+
 ## Integrate
 
 In your root project `build.gradle` file, you'll need to include our public bintray repository in the repositories section.

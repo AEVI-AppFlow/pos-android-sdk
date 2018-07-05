@@ -28,7 +28,10 @@ import io.reactivex.Single;
 public interface FlowClient {
 
     /**
-     * Query for devices connected to the processing service.
+     * Query for devices connected to the processing service, if multi-device is enabled.
+     *
+     * It is up to the flow processing service configuration if multi-device is enabled or not. Use {@link FlowClient#getSystemSettings()} to check
+     * whether it is allowed. See documentation/samples for how to retrieve the value.
      *
      * Returns a single that emits a list of currently connected devices.
      *

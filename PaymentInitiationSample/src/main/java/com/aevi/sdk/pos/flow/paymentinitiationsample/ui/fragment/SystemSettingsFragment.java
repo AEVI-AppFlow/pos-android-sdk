@@ -55,6 +55,8 @@ public class SystemSettingsFragment extends BaseFragment {
         SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemInfoData -> {
             StringBuilder stringBuilder = new StringBuilder();
             addEnabledDisabled(systemInfoData, stringBuilder, R.string.multi_device, SYSTEM_SETTINGS_KEY_MULTI_DEVICE_ENABLED);
+            addEnabledDisabled(systemInfoData, stringBuilder, R.string.split_support, SYSTEM_SETTINGS_KEY_SPLIT_ENABLED);
+            addEnabledDisabled(systemInfoData, stringBuilder, R.string.currency_change, SYSTEM_SETTINGS_KEY_CURRENCY_CHANGE_ENABLED);
             addTimeout(systemInfoData, stringBuilder, R.string.split_response_timeout, SYSTEM_SETTINGS_KEY_SPLIT_RESPONSE_TIMEOUT_SECONDS);
             addTimeout(systemInfoData, stringBuilder, R.string.payment_response_timeout, SYSTEM_SETTINGS_KEY_PAYMENT_SERVICE_RESPONSE_TIMEOUT_SECONDS);
             addTimeout(systemInfoData, stringBuilder, R.string.flow_response_timeout, SYSTEM_SETTINGS_KEY_FLOW_SERVICE_RESPONSE_TIMEOUT_SECONDS);
@@ -73,16 +75,12 @@ public class SystemSettingsFragment extends BaseFragment {
 
     private void handleRequestType(String requestType, AdditionalData flowConfigs) {
         ViewGroup buttonLayout = (ViewGroup) LayoutInflater.from(getActivity()).inflate(R.layout.snippet_request_type_button, settingsContainer, false);
-        TextView requestTypeView = buttonLayout.findViewById(R.id.request_type);
-        requestTypeView.setText(requestType);
 
         AdditionalData requestConfig = flowConfigs.getValue(requestType, AdditionalData.class);
-        String requestStagesJson = requestConfig.getStringValue(SYSTEM_SETTINGS_KEY_REQUEST_STAGES_JSON);
         String flowConfigJson = requestConfig.getStringValue(SYSTEM_SETTINGS_KEY_FLOW_CONFIG_JSON);
 
-        Button requestStageJsonButton = buttonLayout.findViewById(R.id.request_stage_json);
-        requestStageJsonButton.setOnClickListener(view -> showJsonView(requestType, requestStagesJson));
         Button flowConfigJsonButton = buttonLayout.findViewById(R.id.flow_config_json);
+        flowConfigJsonButton.setText(requestType);
         flowConfigJsonButton.setOnClickListener(view -> showJsonView(requestType, flowConfigJson));
 
         settingsContainer.addView(buttonLayout);
