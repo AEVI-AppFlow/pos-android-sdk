@@ -22,15 +22,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aevi.sdk.flow.constants.SystemSettingsKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.config.FlowConfig;
+import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 
+import java.util.List;
+
 import butterknife.BindView;
 
-import static com.aevi.sdk.flow.constants.SystemSettingsKeys.*;
+import static com.aevi.sdk.flow.constants.SystemSettingsKeys.SYSTEM_SETTINGS_KEY_SPLIT_ENABLED;
 
 public class SystemSettingsFragment extends BaseFragment {
 
@@ -52,36 +55,35 @@ public class SystemSettingsFragment extends BaseFragment {
     }
 
     private void populateSystemSettings() {
-        SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemInfoData -> {
+        SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemSettings -> {
+            AdditionalData systemInfoData = systemSettings.getAdditionalSettings();
+            FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
-            addEnabledDisabled(systemInfoData, stringBuilder, R.string.multi_device, SYSTEM_SETTINGS_KEY_MULTI_DEVICE_ENABLED);
+            addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
             addEnabledDisabled(systemInfoData, stringBuilder, R.string.split_support, SYSTEM_SETTINGS_KEY_SPLIT_ENABLED);
-            addEnabledDisabled(systemInfoData, stringBuilder, R.string.currency_change, SYSTEM_SETTINGS_KEY_CURRENCY_CHANGE_ENABLED);
-            addTimeout(systemInfoData, stringBuilder, R.string.split_response_timeout, SYSTEM_SETTINGS_KEY_SPLIT_RESPONSE_TIMEOUT_SECONDS);
-            addTimeout(systemInfoData, stringBuilder, R.string.payment_response_timeout, SYSTEM_SETTINGS_KEY_PAYMENT_SERVICE_RESPONSE_TIMEOUT_SECONDS);
-            addTimeout(systemInfoData, stringBuilder, R.string.flow_response_timeout, SYSTEM_SETTINGS_KEY_FLOW_SERVICE_RESPONSE_TIMEOUT_SECONDS);
-            addTimeout(systemInfoData, stringBuilder, R.string.merchant_selection_timeout, SYSTEM_SETTINGS_KEY_MERCHANT_SELECTION_TIMEOUT_SECONDS);
-            addEnabledDisabled(systemInfoData, stringBuilder, R.string.abort_on_flow_app_error, SYSTEM_SETTINGS_KEY_ABORTS_ON_FLOW_SERVICE_ERROR);
-            addEnabledDisabled(systemInfoData, stringBuilder, R.string.abort_on_payment_app_error, SYSTEM_SETTINGS_KEY_ABORTS_ON_PAYMENT_SERVICE_ERROR);
+            addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
+            addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
+            addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());
+            addTimeout(stringBuilder, R.string.flow_response_timeout, fpsSettings.getFlowResponseTimeoutSeconds());
+            addTimeout(stringBuilder, R.string.merchant_selection_timeout, fpsSettings.getAppOrDeviceSelectionTimeoutSeconds());
+            addEnabledDisabled(stringBuilder, R.string.abort_on_flow_app_error, fpsSettings.shouldAbortOnFlowAppError());
+            addEnabledDisabled(stringBuilder, R.string.abort_on_payment_app_error, fpsSettings.shouldAbortOnPaymentAppError());
 
             settingsInfo.setText(stringBuilder.toString());
 
-            AdditionalData flowConfigs = systemInfoData.getValue(SystemSettingsKeys.SYSTEM_SETTINGS_KEY_FLOW_CONFIGS, AdditionalData.class);
-            for (String requestType : flowConfigs.getKeys()) {
-                handleRequestType(requestType, flowConfigs);
+            List<FlowConfig> flowConfigurations = systemSettings.getFlowConfigurations();
+            for (FlowConfig flowConfiguration : flowConfigurations) {
+                handleFlowConfig(flowConfiguration);
             }
         }, throwable -> settingsInfo.setText("Operation failed: " + throwable.getMessage()));
     }
 
-    private void handleRequestType(String requestType, AdditionalData flowConfigs) {
+    private void handleFlowConfig(FlowConfig flowConfig) {
         ViewGroup buttonLayout = (ViewGroup) LayoutInflater.from(getActivity()).inflate(R.layout.snippet_request_type_button, settingsContainer, false);
 
-        AdditionalData requestConfig = flowConfigs.getValue(requestType, AdditionalData.class);
-        String flowConfigJson = requestConfig.getStringValue(SYSTEM_SETTINGS_KEY_FLOW_CONFIG_JSON);
-
         Button flowConfigJsonButton = buttonLayout.findViewById(R.id.flow_config_json);
-        flowConfigJsonButton.setText(requestType);
-        flowConfigJsonButton.setOnClickListener(view -> showJsonView(requestType, flowConfigJson));
+        flowConfigJsonButton.setText(flowConfig.getType());
+        flowConfigJsonButton.setOnClickListener(view -> showJsonView(flowConfig.getType(), flowConfig.toJson()));
 
         settingsContainer.addView(buttonLayout);
     }
@@ -91,14 +93,19 @@ public class SystemSettingsFragment extends BaseFragment {
     }
 
     private void addEnabledDisabled(AdditionalData additionalData, StringBuilder stringBuilder, int resId, String key) {
+        addEnabledDisabled(stringBuilder, resId, additionalData.getValue(key, Boolean.class, false));
+    }
+
+    private void addEnabledDisabled(StringBuilder stringBuilder, int resId, boolean value) {
         stringBuilder.append(getString(resId));
-        stringBuilder.append(additionalData.getValue(key, Boolean.class, false) ? getString(R.string.enabled) : getString(R.string.disabled));
+        stringBuilder.append(value ? getString(R.string.enabled) : getString(R.string.disabled));
         stringBuilder.append("\n");
     }
 
-    private void addTimeout(AdditionalData additionalData, StringBuilder stringBuilder, int resId, String key) {
+
+    private void addTimeout(StringBuilder stringBuilder, int resId, long timeout) {
         stringBuilder.append(getString(resId));
-        stringBuilder.append(additionalData.getValue(key, Integer.class, 0));
+        stringBuilder.append(timeout);
         stringBuilder.append(getString(R.string.seconds));
         stringBuilder.append("\n");
     }

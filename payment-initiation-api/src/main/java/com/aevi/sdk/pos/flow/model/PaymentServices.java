@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import com.aevi.sdk.flow.util.ComparisonUtil;
+import com.aevi.sdk.pos.flow.PaymentClient;
 
 import java.util.*;
 
@@ -98,6 +99,8 @@ public class PaymentServices {
 
     /**
      * Retrieve a consolidated set of supported transaction types across all the payment services.
+     *
+     * Note that not all of these types may be allowed for use - see {@link PaymentClient#getSupportedTransactionTypes()} ()} for a filtered list.
      *
      * @return A consolidated set of supported transaction types across all the payment services
      */

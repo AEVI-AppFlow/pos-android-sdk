@@ -21,6 +21,8 @@ import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.PaymentServices;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -43,6 +45,16 @@ public interface PaymentClient extends FlowClient {
      * @return Single emitting a {@link PaymentServices} object
      */
     Single<PaymentServices> getPaymentServices();
+
+    /**
+     * Query for a list of all supported transaction types for use via {@link com.aevi.sdk.pos.flow.model.PaymentBuilder#withTransactionType(String)}.
+     *
+     * Unlike the transaction types returned via {@link PaymentServices#getAllSupportedTransactionTypes()} ()} which purely reflects what the services reports,
+     * this list will also take into account transaction types defined by the acquirer/merchant configuration.
+     *
+     * @return The list of supported transaction types
+     */
+    Single<List<String>> getSupportedTransactionTypes();
 
     /**
      * Initiate payment processing based on the provided {@link Payment}.

@@ -16,6 +16,7 @@ package com.aevi.sdk.flow;
 
 
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.config.SystemSettings;
 
 import java.util.List;
 
@@ -57,6 +58,16 @@ public interface FlowClient {
     Single<FlowServices> getFlowServices();
 
     /**
+     * Query for a list of all supported request types that can be used when creating a {@link Request}.
+     *
+     * Unlike the request types returned via {@link FlowServices#getAllSupportedRequestTypes()} which purely reflects what the services reports, this list
+     * will also take into account any restrictions or limitations imposed by the acquirer/merchant configuration.
+     *
+     * @return The list of supported request types
+     */
+    Single<List<String>> getSupportedRequestTypes();
+
+    /**
      * Initiate processing of the given {@link Request}.
      *
      * Returns a single that emits a {@link Response} after processing has completed.
@@ -79,9 +90,7 @@ public interface FlowClient {
     /**
      * Query for the current system settings, such as timeouts, flow configs, etc.
      *
-     * This will return {@link AdditionalData} populated with key/value pair data as per the documentation.
-     *
-     * @return A single emitting {@link AdditionalData} populated with key/value pair data as per the documentation
+     * @return A single emitting {@link SystemSettings}
      */
-    Single<AdditionalData> getSystemSettings();
+    Single<SystemSettings> getSystemSettings();
 }

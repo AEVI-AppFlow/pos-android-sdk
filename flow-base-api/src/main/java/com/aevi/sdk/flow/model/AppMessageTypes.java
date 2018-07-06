@@ -21,6 +21,12 @@ public interface AppMessageTypes {
 
     String REQUEST_MESSAGE = "request";
     String RESPONSE_MESSAGE = "response";
+    String SYSTEM_SETTINGS_REQUEST = "systemSettingsRequest";
+    String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
+    String PAYMENT_SERVICE_INFO_REQUEST = "paymentServiceInfoRequest";
+    String DEVICE_INFO_REQUEST = "deviceInfoRequest";
+    String SUPPORTED_REQUEST_TYPES_REQUEST = "supportedRequestTypesRequest";
+    String SUPPORTED_TRANSACTION_TYPES_REQUEST = "supportedTransactionTypesRequest";
     String FAILURE_MESSAGE = "failure";
     String FORCE_FINISH_MESSAGE = "forceFinish";
     String REQUEST_ACK_MESSAGE = "requestAck";

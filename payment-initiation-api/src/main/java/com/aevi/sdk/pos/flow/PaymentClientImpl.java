@@ -48,8 +48,8 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(PAYMENT_SERVICE_INFO_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_SERVICE_INFO_REQUEST, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, PaymentServiceInfo>() {
@@ -73,6 +73,23 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
                 });
     }
 
+    @Override
+    public Single<List<String>> getSupportedTransactionTypes() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.SUPPORTED_TRANSACTION_TYPES_REQUEST, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .toList()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
+                    }
+                });
+    }
 
     @Override
     public Single<PaymentResponse> initiatePayment(Payment payment) {

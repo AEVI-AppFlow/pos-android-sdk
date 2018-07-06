@@ -35,12 +35,9 @@ public abstract class ApiBase {
 
     protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
-    protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".PaymentServiceInfoProvider");
-    protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowServiceInfoProvider");
-    protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".ConnectedDevicesProvider");
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
     protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
-    protected static final ComponentName SYSTEM_SETTINGS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemSettingsService");
+    protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
     protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
 
     private final InternalData internalData;

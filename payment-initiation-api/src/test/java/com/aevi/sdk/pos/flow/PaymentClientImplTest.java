@@ -23,6 +23,9 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 
@@ -135,6 +138,26 @@ public class PaymentClientImplTest {
     @Test
     public void subscribeToStatusUpdatesShouldErrorIfNoFps() throws Exception {
         TestObserver<RequestStatus> testObserver = paymentClient.subscribeToStatusUpdates("").test();
+        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void getSupportedTransactionTypesShouldSendAndReceiveCorrectly() throws Exception {
+        pretendFpsIsInstalled();
+
+        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.fromArray("a", "b", "c"));
+        TestObserver<List<String>> testObserver = paymentClient.getSupportedTransactionTypes().test();
+
+        AppMessage appMessage = callSendAndCaptureMessage();
+        assertThat(appMessage).isNotNull();
+        testObserver.assertValueCount(1);
+        assertThat(testObserver.values().get(0)).isEqualTo(Arrays.asList("a", "b", "c"));
+        verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void getSupportedTransactionTypesShouldErrorIfNoFps() throws Exception {
+        TestObserver<List<String>> testObserver = paymentClient.getSupportedTransactionTypes().test();
         assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 
