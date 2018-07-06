@@ -17,8 +17,8 @@ package com.aevi.sdk.pos.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
-import com.aevi.util.json.Sendable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * This class contains convenience methods to get overall information for the transaction processing.
  */
-public class PaymentResponse implements Sendable {
+public class PaymentResponse extends BaseModel {
 
     /**
      * The outcome of a payment.
@@ -82,7 +82,7 @@ public class PaymentResponse implements Sendable {
         ERROR
     }
 
-    private final Payment originatingPayment;
+    private Payment originatingPayment;
 
     protected Outcome outcome;
     protected FailureReason failureReason;
@@ -95,13 +95,20 @@ public class PaymentResponse implements Sendable {
 
     // Default constructor for deserialisation
     PaymentResponse() {
-        this(new Payment());
+        super("N/A");
+        transactions = new CopyOnWriteArrayList<>();
+        totalAmountsProcessed = new Amounts();
     }
 
-    protected PaymentResponse(Payment originatingPayment) {
-        this.originatingPayment = originatingPayment;
+    protected PaymentResponse(Payment payment) {
+        this(payment.getId(), payment.getAmounts().getCurrency());
+        originatingPayment = payment;
+    }
+
+    protected PaymentResponse(String paymentId, String currency) {
+        super(paymentId);
         transactions = new CopyOnWriteArrayList<>();
-        totalAmountsProcessed = new Amounts(0, originatingPayment.getAmounts().getCurrency());
+        totalAmountsProcessed = new Amounts(0, currency);
     }
 
     /**
@@ -115,18 +122,12 @@ public class PaymentResponse implements Sendable {
         return transactions.size() > 1;
     }
 
-    @Override
-    @NonNull
-    public String getId() {
-        return originatingPayment.getId();
-    }
-
     /**
      * Get the initial {@link Payment} that this response is for.
      *
-     * @return The {@link Payment}
+     * @return The {@link Payment}, if set.
      */
-    @NonNull
+    @Nullable
     public Payment getOriginatingPayment() {
         return originatingPayment;
     }
@@ -246,6 +247,15 @@ public class PaymentResponse implements Sendable {
      */
     public void setExecutedPostFlowApp(FlowAppInfo executedPostFlowApp) {
         this.executedPostFlowApp = executedPostFlowApp;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param originatingPayment The originating payment
+     */
+    public void setOriginatingPayment(Payment originatingPayment) {
+        this.originatingPayment = originatingPayment;
     }
 
     @Override

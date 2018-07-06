@@ -16,6 +16,7 @@ package com.aevi.sdk.flow;
 
 
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.config.SystemSettings;
 
 import java.util.List;
 
@@ -28,7 +29,10 @@ import io.reactivex.Single;
 public interface FlowClient {
 
     /**
-     * Query for devices connected to the processing service.
+     * Query for devices connected to the processing service, if multi-device is enabled.
+     *
+     * It is up to the flow processing service configuration if multi-device is enabled or not. Use {@link FlowClient#getSystemSettings()} to check
+     * whether it is allowed. See documentation/samples for how to retrieve the value.
      *
      * Returns a single that emits a list of currently connected devices.
      *
@@ -54,6 +58,16 @@ public interface FlowClient {
     Single<FlowServices> getFlowServices();
 
     /**
+     * Query for a list of all supported request types that can be used when creating a {@link Request}.
+     *
+     * Unlike the request types returned via {@link FlowServices#getAllSupportedRequestTypes()} which purely reflects what the services reports, this list
+     * will also take into account any restrictions or limitations imposed by the acquirer/merchant configuration.
+     *
+     * @return The list of supported request types
+     */
+    Single<List<String>> getSupportedRequestTypes();
+
+    /**
      * Initiate processing of the given {@link Request}.
      *
      * Returns a single that emits a {@link Response} after processing has completed.
@@ -76,9 +90,7 @@ public interface FlowClient {
     /**
      * Query for the current system settings, such as timeouts, flow configs, etc.
      *
-     * This will return {@link AdditionalData} populated with key/value pair data as per the documentation.
-     *
-     * @return A single emitting {@link AdditionalData} populated with key/value pair data as per the documentation
+     * @return A single emitting {@link SystemSettings}
      */
-    Single<AdditionalData> getSystemSettings();
+    Single<SystemSettings> getSystemSettings();
 }

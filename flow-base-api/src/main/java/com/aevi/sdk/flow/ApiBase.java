@@ -35,12 +35,9 @@ public abstract class ApiBase {
 
     protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
-    protected static final ComponentName PAYMENT_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".PaymentServiceInfoProvider");
-    protected static final ComponentName FLOW_SERVICE_INFO_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowServiceInfoProvider");
-    protected static final ComponentName DEVICE_LIST_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".ConnectedDevicesProvider");
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
     protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
-    protected static final ComponentName SYSTEM_SETTINGS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemSettingsService");
+    protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
     protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
 
     private final InternalData internalData;
@@ -55,7 +52,7 @@ public abstract class ApiBase {
         return internalData;
     }
 
-    protected Single<Response> sendGenericRequest(Request request) {
+    protected Single<Response> sendGenericRequest(final Request request) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
@@ -67,7 +64,9 @@ public abstract class ApiBase {
                 .map(new Function<String, Response>() {
                     @Override
                     public Response apply(String json) throws Exception {
-                        return Response.fromJson(json);
+                        Response response = Response.fromJson(json);
+                        response.setOriginatingRequest(request);
+                        return response;
                     }
                 })
                 .doFinally(new Action() {

@@ -128,6 +128,8 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="multi_device">Multi-device is\u0020</string>
+    <string name="split_support">Split is\u0020</string>
+    <string name="currency_change">Currency change is\u0020</string>
     <string name="payment_response_timeout">Payment response timeout is\u0020</string>
     <string name="flow_response_timeout">Flow response timeout is\u0020</string>
     <string name="merchant_selection_timeout">Merchant selection timeout is\u0020</string>

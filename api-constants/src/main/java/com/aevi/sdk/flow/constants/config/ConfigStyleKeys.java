@@ -12,9 +12,21 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.constants;
+package com.aevi.sdk.flow.constants.config;
 
-public interface SystemSettingsKeys {
+/**
+ * Keys for FPS styling.
+ */
+public interface ConfigStyleKeys {
 
-    String SYSTEM_SETTINGS_KEY_SPLIT_ENABLED = "systemSettingsKeySplitEnabled";
+    String COLOR_PRIMARY = "colorPrimary";
+    String COLOR_PRIMARY_DARK = "colorPrimaryDark";
+    String COLOR_ACCENT = "colorAccent";
+    String COLOR_ALERT = "colorAlert";
+    String COLOR_MAIN_TEXT = "colorMainText";
+    String COLOR_TITLE_TEXT = "colorTitleText";
+
+    String DIALOG_STYLE = "dialogStyle";
+    String DIALOG_STYLE_POPUP = "popup";
+    String DIALOG_STYLE_FULLSCREEN = "fullscreen";
 }

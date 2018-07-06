@@ -12,9 +12,14 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.constants;
+package com.aevi.sdk.flow.constants.config;
 
-public interface SystemSettingsKeys {
+/**
+ * Keys for configuring FPS.
+ */
+public interface FlowConfigKeys {
 
-    String SYSTEM_SETTINGS_KEY_SPLIT_ENABLED = "systemSettingsKeySplitEnabled";
+    String FPS_CONFIG_KEY_FLOW_CONFIGS = "flowConfigs";
+    String FPS_CONFIG_KEY_STYLES = "styleConfig";
+    String FPS_CONFIG_KEY_SETTINGS = "fpsSettings";
 }

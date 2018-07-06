@@ -211,11 +211,6 @@ public class FlowResponse implements Sendable {
         return id;
     }
 
-    @Override
-    public String toJson() {
-        return JsonConverter.serialize(this);
-    }
-
     private void validateAmounts() {
         if (amountsPaid != null && updatedRequestAmounts != null) {
             checkCurrencyMatch();
@@ -276,5 +271,14 @@ public class FlowResponse implements Sendable {
         result = 31 * result + (paymentReferences != null ? paymentReferences.hashCode() : 0);
         result = 31 * result + (enableSplit ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toJson() {
+        return JsonConverter.serialize(this);
+    }
+
+    public static FlowResponse fromJson(String json) {
+        return JsonConverter.deserialize(json, FlowResponse.class);
     }
 }

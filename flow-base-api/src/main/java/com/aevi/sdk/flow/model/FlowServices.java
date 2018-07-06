@@ -15,6 +15,7 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.*;
@@ -57,6 +58,8 @@ public class FlowServices {
 
     /**
      * Retrieve a consolidated set of all the supported request types across all the flow services.
+     *
+     * Note that not all of these types may be allowed for use - see {@link FlowClient#getSupportedRequestTypes()} for a filtered list.
      *
      * @return A consolidated set of all the supported request types across all the flow services
      */
