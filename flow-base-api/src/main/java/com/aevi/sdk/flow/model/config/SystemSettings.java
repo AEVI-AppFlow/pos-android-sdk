@@ -14,6 +14,7 @@
 
 package com.aevi.sdk.flow.model.config;
 
+import com.aevi.sdk.flow.constants.SystemSettingsKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
@@ -21,6 +22,9 @@ import com.aevi.util.json.Jsonable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents the processing service (system) settings.
+ */
 public class SystemSettings implements Jsonable {
 
     private final List<FlowConfig> flowConfigurations;
@@ -43,6 +47,10 @@ public class SystemSettings implements Jsonable {
 
     public AdditionalData getAdditionalSettings() {
         return additionalSettings;
+    }
+
+    public boolean isSplitEnabled() {
+        return additionalSettings.getValue(SystemSettingsKeys.SYSTEM_SETTINGS_KEY_SPLIT_ENABLED, Boolean.class, false);
     }
 
     @Override

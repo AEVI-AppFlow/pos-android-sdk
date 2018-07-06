@@ -16,15 +16,17 @@ If you do not have a point of contact, please get in touch with us at info@aevi.
 Some of the features provided by this API are dependent on them being allowed and enabled in the `Flow Processing Service`.
 
 Whether or not a feature is allowed is down to the acquirer and/or merchant configuration for POS Flow.
-You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call. See `PaymentInitiationSample` for examples.
+You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call.
+
+See `SystemSettingsFragment` in `PaymentInitiationSample` for examples.
 
 Here is a table outlining the features that are down to configuration.
 
-| Feature | System settings key |
+| Feature | System settings |
 | ------- | ------------------- |
-| Multi-device | systemSettingsKeyMultiDeviceEnabled |
-| Split | systemSettingsKeySplitEnabled |
-| Currency change | systemSettingsKeyCurrencyChangeEnabled |
+| Multi-device | getFpsSettings().isMultiDevice() |
+| Split | isSplitEnabled() |
+| Currency change | getFpsSettings().isCurrencyChangeAllowed() |
 
 ## Integrate
 
