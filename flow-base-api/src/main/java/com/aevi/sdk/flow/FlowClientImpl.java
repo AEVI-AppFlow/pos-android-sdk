@@ -19,6 +19,7 @@ import android.content.Context;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.config.SystemSettings;
 
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(DEVICE_LIST_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.DEVICE_INFO_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, Device>() {
@@ -62,8 +63,8 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient flowInfoMessenger = getMessengerClient(FLOW_SERVICE_INFO_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        final ObservableMessengerClient flowInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.FLOW_SERVICE_INFO_REQUEST, getInternalData());
         return flowInfoMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, FlowServiceInfo>() {
@@ -83,6 +84,24 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
                     @Override
                     public void run() throws Exception {
                         flowInfoMessenger.closeConnection();
+                    }
+                });
+    }
+
+    @Override
+    public Single<List<String>> getSupportedRequestTypes() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.SUPPORTED_REQUEST_TYPES_REQUEST, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .toList()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
                     }
                 });
     }
@@ -116,19 +135,19 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
-    public Single<AdditionalData> getSystemSettings() {
+    public Single<SystemSettings> getSystemSettings() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_SETTINGS_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.SYSTEM_SETTINGS_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
-                .map(new Function<String, AdditionalData>() {
+                .map(new Function<String, SystemSettings>() {
                     @Override
-                    public AdditionalData apply(String json) throws Exception {
-                        return AdditionalData.fromJson(json);
+                    public SystemSettings apply(String json) throws Exception {
+                        return SystemSettings.fromJson(json);
                     }
                 })
                 .doFinally(new Action() {

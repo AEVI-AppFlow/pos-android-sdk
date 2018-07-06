@@ -7,6 +7,9 @@ import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.config.FlowConfig;
+import com.aevi.sdk.flow.model.config.FpsSettings;
+import com.aevi.sdk.flow.model.config.SystemSettings;
 import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
 
 import org.junit.Before;
@@ -18,6 +21,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -113,21 +118,40 @@ public class FlowClientImplTest {
     @Test
     public void getSystemSettingsShouldSendAndReceiveCorrectly() throws Exception {
         pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
-        AdditionalData additionalData = new AdditionalData();
-        additionalData.addData("test", "hello");
-        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(additionalData.toJson()));
-        TestObserver<AdditionalData> testObserver = flowClient.getSystemSettings().test();
+        SystemSettings systemSettings = new SystemSettings(new ArrayList<FlowConfig>(), new FpsSettings(), new AdditionalData());
+        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(systemSettings.toJson()));
+        TestObserver<SystemSettings> testObserver = flowClient.getSystemSettings().test();
 
         AppMessage appMessage = callSendAndCaptureMessage();
         assertThat(appMessage).isNotNull();
         testObserver.assertValueCount(1);
-        assertThat(testObserver.values().get(0)).isEqualTo(additionalData);
+        assertThat(testObserver.values().get(0)).isNotNull();
         verify(messengerClient).closeConnection();
     }
 
     @Test
     public void getSystemSettingsShouldErrorIfNoFps() throws Exception {
-        TestObserver<AdditionalData> testObserver = flowClient.getSystemSettings().test();
+        TestObserver<SystemSettings> testObserver = flowClient.getSystemSettings().test();
+        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
+    }
+
+    @Test
+    public void getSupportedRequestTypesShouldSendAndReceiveCorrectly() throws Exception {
+        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
+
+        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.fromArray("a", "b", "c"));
+        TestObserver<List<String>> testObserver = flowClient.getSupportedRequestTypes().test();
+
+        AppMessage appMessage = callSendAndCaptureMessage();
+        assertThat(appMessage).isNotNull();
+        testObserver.assertValueCount(1);
+        assertThat(testObserver.values().get(0)).isEqualTo(Arrays.asList("a", "b", "c"));
+        verify(messengerClient).closeConnection();
+    }
+
+    @Test
+    public void getSupportedRequestTypesShouldErrorIfNoFps() throws Exception {
+        TestObserver<List<String>> testObserver = flowClient.getSupportedRequestTypes().test();
         assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
     }
 
