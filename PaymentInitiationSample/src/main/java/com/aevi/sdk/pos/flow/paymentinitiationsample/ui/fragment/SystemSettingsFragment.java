@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -32,8 +31,6 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import java.util.List;
 
 import butterknife.BindView;
-
-import static com.aevi.sdk.flow.constants.SystemSettingsKeys.SYSTEM_SETTINGS_KEY_SPLIT_ENABLED;
 
 public class SystemSettingsFragment extends BaseFragment {
 
@@ -56,11 +53,10 @@ public class SystemSettingsFragment extends BaseFragment {
 
     private void populateSystemSettings() {
         SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemSettings -> {
-            AdditionalData systemInfoData = systemSettings.getAdditionalSettings();
             FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
             addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
-            addEnabledDisabled(systemInfoData, stringBuilder, R.string.split_support, SYSTEM_SETTINGS_KEY_SPLIT_ENABLED);
+            addEnabledDisabled(stringBuilder, R.string.split_support, systemSettings.isSplitEnabled());
             addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
             addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
             addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());
@@ -92,16 +88,11 @@ public class SystemSettingsFragment extends BaseFragment {
         ((PopupActivity) getActivity()).showJsonFragment(requestType, json);
     }
 
-    private void addEnabledDisabled(AdditionalData additionalData, StringBuilder stringBuilder, int resId, String key) {
-        addEnabledDisabled(stringBuilder, resId, additionalData.getValue(key, Boolean.class, false));
-    }
-
     private void addEnabledDisabled(StringBuilder stringBuilder, int resId, boolean value) {
         stringBuilder.append(getString(resId));
         stringBuilder.append(value ? getString(R.string.enabled) : getString(R.string.disabled));
         stringBuilder.append("\n");
     }
-
 
     private void addTimeout(StringBuilder stringBuilder, int resId, long timeout) {
         stringBuilder.append(getString(resId));
