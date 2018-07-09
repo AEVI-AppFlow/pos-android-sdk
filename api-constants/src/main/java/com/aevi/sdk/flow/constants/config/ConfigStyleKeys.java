@@ -27,6 +27,7 @@ public interface ConfigStyleKeys {
     String COLOR_TITLE_TEXT = "colorTitleText";
 
     String DIALOG_STYLE = "dialogStyle";
+    String DIALOG_STYLE_NONE = "none";
     String DIALOG_STYLE_POPUP = "popup";
     String DIALOG_STYLE_FULLSCREEN = "fullscreen";
 }
