@@ -34,6 +34,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    api sampleDependencies.posFlowConstants
+
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }
     implementation(sampleDependencies.recyclerView) { force = true }
@@ -43,7 +45,6 @@ dependencies {
     implementation project(':payment-initiation-api')
     implementation project(':payment-service-api')
     implementation project(':flow-service-api')
-    implementation project(':api-constants')
     implementation sampleDependencies.aeviUiLibrary
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
 

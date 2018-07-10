@@ -32,7 +32,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':payment-initiation-api')
-    implementation project(':api-constants')
     implementation project(':sample-commons')
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8

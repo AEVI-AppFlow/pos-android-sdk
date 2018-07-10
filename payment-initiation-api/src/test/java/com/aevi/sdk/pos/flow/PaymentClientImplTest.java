@@ -11,7 +11,14 @@ import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.Amounts;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentBuilder;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentServiceInfoBuilder;
+import com.aevi.sdk.pos.flow.model.PaymentServices;
+import com.aevi.sdk.pos.flow.model.RequestStatus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +38,9 @@ import io.reactivex.observers.TestObserver;
 
 import static com.aevi.sdk.pos.flow.TestEnvironment.pretendFpsIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)

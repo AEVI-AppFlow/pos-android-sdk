@@ -17,12 +17,11 @@ package com.aevi.sdk.pos.flow.model;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import com.aevi.sdk.flow.constants.FinancialRequestTypes;
-import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.FlowServiceInfo;
 import com.aevi.sdk.pos.flow.FlowServiceApi;
 
-import static com.aevi.sdk.flow.util.Preconditions.*;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Builder to construct {@link FlowServiceInfo} instances.
@@ -34,8 +33,8 @@ public class FlowServiceInfoBuilder {
     private boolean supportsAccessibility;
     private String[] paymentMethods;
     private String[] supportedCurrencies = new String[0];
-    private String[] supportedRequestTypes = new String[]{FinancialRequestTypes.PAYMENT};
-    private String[] supportedTransactionTypes = new String[]{TransactionTypes.SALE};
+    private String[] supportedRequestTypes = new String[0];
+    private String[] supportedTransactionTypes = new String[0];
     private boolean requiresCardToken;
     private String[] supportedDataKeys;
     private boolean canAdjustAmounts;

@@ -7,7 +7,6 @@ apply from: '../publish-repo.gradle'
 
 dependencies {
     api project(':payment-initiation-api')
-    implementation project(':api-constants')
     api project(':flow-base-api')
 
     compileOnly apiDependencies.androidMockable
@@ -21,6 +20,7 @@ dependencies {
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
+    testImplementation apiDependencies.posFlowConstants
 }
 
 javadoc {
