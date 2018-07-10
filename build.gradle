@@ -82,7 +82,6 @@ task copyApks(type: Copy) {
 apply from: 'dependencies.gradle'
 
 def exportedProjects = [
-        ":api-constants",
         ":flow-base-api",
         ":flow-service-api",
         ":payment-initiation-api",

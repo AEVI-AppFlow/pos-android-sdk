@@ -6,8 +6,6 @@ version = "${apiVersion}"
 apply from: '../publish-repo.gradle'
 
 dependencies {
-    implementation project(':api-constants')
-
     compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
@@ -15,6 +13,7 @@ dependencies {
     implementation apiDependencies.jsonConverter
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
+    implementation apiDependencies.posFlowConstants
 
     testImplementation project(":flow-service-api")
     testImplementation apiDependencies.androidMockable

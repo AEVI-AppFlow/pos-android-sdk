@@ -1,6 +1,5 @@
 package com.aevi.sdk.pos.flow.model;
 
-
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 
 import org.junit.Test;
