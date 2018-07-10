@@ -26,8 +26,6 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.android.rxmessenger.service.AbstractMessengerService;
-import com.aevi.sdk.flow.constants.ActivityEvents;
-import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.util.json.JsonConverter;
@@ -35,14 +33,18 @@ import com.aevi.util.json.Jsonable;
 
 import io.reactivex.functions.Consumer;
 
-import static android.content.Intent.*;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
+import static com.aevi.sdk.flow.model.ActivityEvents.FINISH;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.model.AppMessageTypes.*;
-import static com.aevi.sdk.flow.model.MessageErrors.*;
+import static com.aevi.sdk.flow.model.MessageErrors.ERROR_SERVICE_EXCEPTION;
+import static com.aevi.sdk.flow.model.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
 
 public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends Jsonable> extends AbstractMessengerService {
 
     public static final String ACTIVITY_REQUEST_KEY = "request";
+    public static final String BACKGROUND_PROCESSING = "backgroundProcessing";
 
     private final Class<REQUEST> requestClass;
     private final String TAG = getClass().getSimpleName(); // Use class name of implementing service
@@ -132,7 +134,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      */
     protected void notifyBackgroundProcessing(String clientMessageId) {
         Log.d(TAG, "notifyBackgroundProcessing");
-        internalData.addAdditionalData(InternalDataKeys.BACKGROUND_PROCESSING, "true");
+        internalData.addAdditionalData(BACKGROUND_PROCESSING, "true");
         sendAppMessageAndEndStream(clientMessageId, EMPTY_DATA);
     }
 
@@ -275,7 +277,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
     protected void finishLaunchedActivity(String clientMessageId) {
         try {
             ObservableActivityHelper<RESPONSE> helper = ObservableActivityHelper.getInstance(clientMessageId);
-            helper.sendEventToActivity(ActivityEvents.FINISH);
+            helper.sendEventToActivity(FINISH);
         } catch (NoSuchInstanceException e) {
             // Ignore
         }

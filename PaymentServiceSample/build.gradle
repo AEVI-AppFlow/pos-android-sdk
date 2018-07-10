@@ -38,7 +38,6 @@ dependencies {
     implementation apiDependencies.rxJava
     implementation sampleDependencies.aeviUiLibrary
     implementation project(':payment-service-api')
-    implementation project(':api-constants')
     implementation project(':sample-commons')
     implementation sampleDependencies.butterKnife
     annotationProcessor sampleAptDependencies.butterKnife

@@ -19,7 +19,7 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.constants.ActivityEvents;
+import com.aevi.sdk.flow.model.ActivityEvents;
 
 public class BaseSampleAppCompatActivity<T> extends AppCompatActivity {
 

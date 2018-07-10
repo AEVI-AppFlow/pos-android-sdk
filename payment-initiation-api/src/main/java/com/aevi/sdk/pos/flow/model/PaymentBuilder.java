@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
-import com.aevi.sdk.flow.constants.RequestSource;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -28,12 +27,14 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class PaymentBuilder {
 
+    public static final String AEVI_POS_FLOW = "AEVI POS Flow";
+
     private String type;
     private Amounts amounts;
     private boolean splitEnabled;
     private Token cardToken;
     private AdditionalData additionalData = new AdditionalData();
-    private String source = RequestSource.AEVI_POS_FLOW;
+    private String source = AEVI_POS_FLOW;
 
     public PaymentBuilder() {
     }

@@ -12,12 +12,10 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.constants;
+package com.aevi.sdk.flow.model;
 
 
-public interface RequestSource {
+public interface ActivityEvents {
 
-    String AEVI_V2 = "AEVI v2";
-    String AEVI_POS_FLOW = "AEVI POS Flow";
-
+    String FINISH = "finish";
 }
