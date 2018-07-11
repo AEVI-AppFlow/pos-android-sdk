@@ -65,6 +65,15 @@ implementation 'com.aevi.sdk.pos.flow:flow-service-api:<version>'
 implementation 'com.aevi.sdk.pos.flow:payment-service-api:<version>'
 ```
 
+### Constants
+
+POS Flow constants are now stored in a separate repo here [https://github.com/Aevi-UK/pos-flow-sdk-constants](https://github.com/Aevi-UK/pos-flow-sdk-constants)
+
+To include these in your project use
+```
+implementation `com.aevi.sdk.flow:api-constants:<version>'
+```
+
 ## Sample usage
 
 There are three code samples in this repository to illustrate the use of each API. Please see
