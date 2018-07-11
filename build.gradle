@@ -1,4 +1,4 @@
-version = "1.1.1"
+version = "1.1.2-SNAPSHOT"
 
 buildscript {
     repositories {
@@ -19,7 +19,7 @@ allprojects {
 
     project.ext {
         apiVersion = rootProject.version
-        sampleVersionCode = 4
+        sampleVersionCode = 5
     }
 
     repositories {

@@ -34,6 +34,7 @@ public class FpsSettings implements Jsonable {
     private boolean shouldAbortOnFlowAppError = false;
     private boolean shouldAbortOnCancelled = true;
     private boolean shouldAbortOnPaymentError = false;
+    private boolean allowAccessViaStatusBar = false;
 
     public boolean isMultiDevice() {
         return isMultiDevice;
@@ -77,6 +78,14 @@ public class FpsSettings implements Jsonable {
 
     public boolean shouldAbortOnPaymentAppError() {
         return shouldAbortOnPaymentError;
+    }
+
+    public boolean allowAccessViaStatusBar() {
+        return allowAccessViaStatusBar;
+    }
+
+    public void setAllowAccessViaStatusBar(boolean allowAccessViaStatusBar) {
+        this.allowAccessViaStatusBar = allowAccessViaStatusBar;
     }
 
     public boolean shouldAbortFlowOnCancelled() {
