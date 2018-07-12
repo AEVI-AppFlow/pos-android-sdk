@@ -20,8 +20,13 @@ import android.widget.CheckBox;
 import android.widget.Switch;
 
 import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.Amounts;
+import com.aevi.sdk.pos.flow.model.Card;
+import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
+import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
@@ -36,7 +41,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.*;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
+
+import static com.aevi.sdk.flow.constants.ReferenceKeys.MERCHANT_ID;
+import static com.aevi.sdk.flow.constants.ReferenceKeys.MERCHANT_NAME;
+import static com.aevi.sdk.flow.constants.ReferenceKeys.TERMINAL_ID;
+import static com.aevi.sdk.flow.constants.ReferenceKeys.TRANSACTION_DATE_TIME;
 
 public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<TransactionResponse> {
 
@@ -74,7 +88,8 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
         processedAmountsOptions.addAll(Arrays.asList(0L, totalAmount / 2L, totalAmount, (long) (totalAmount * 1.5)));
         List<String> formattedAmountOptions = new ArrayList<>();
         for (Long processedAmountsOption : processedAmountsOptions) {
-            formattedAmountOptions.add(formatAmount(processedAmountsOption) + " (" + (int) ((processedAmountsOption / (double) totalAmount) * 100) + "%)");
+            formattedAmountOptions
+                    .add(formatAmount(processedAmountsOption) + " (" + (int) ((processedAmountsOption / (double) totalAmount) * 100) + "%)");
         }
         dropDownHelper.setupDropDown(processedAmountsSpinner, formattedAmountOptions, false);
         processedAmountsSpinner.setSelection(2);
@@ -125,6 +140,10 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
                     .withResponseCode(APPROVED_RESP_CODE)
                     .withCard(getCard())
                     .withReference(INTERNAL_ID_KEY, UUID.randomUUID().toString())
+                    .withReference(MERCHANT_ID, IdProvider.getMerchantId())
+                    .withReference(MERCHANT_NAME, IdProvider.getMerchantName())
+                    .withReference(TERMINAL_ID, IdProvider.getTerminalId())
+                    .withReference(TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
                     .build();
         } else {
             transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
