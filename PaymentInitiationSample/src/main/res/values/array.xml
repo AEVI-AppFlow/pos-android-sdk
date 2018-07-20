@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="request_types_readable">
-        <item>Generate token</item>
-        <item>Reverse transaction</item>
-        <item>Show loyalty balance</item>
-        <item>Deliver cash receipt</item>
-        <item>Redeliver receipt</item>
-        <item>Redeliver response</item>
-    </string-array>
-
-    <string-array name="request_types_api">
+    <string-array name="request_types">
         <item>tokenisation</item>
         <item>reversal</item>
         <item>showLoyaltyPointsBalance</item>
@@ -20,7 +11,7 @@
     </string-array>
 
     <string-array name="transaction_types">
-        <item>Sale</item>
+        <item>sale</item>
     </string-array>
 
     <string-array name="amounts">

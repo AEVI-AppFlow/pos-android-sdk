@@ -70,12 +70,18 @@ public class GenericRequestFragment extends BaseObservableFragment {
         modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
-        dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types_readable);
+
+        SampleContext.getInstance(getActivity()).getPaymentClient().getSupportedRequestTypes()
+                .subscribe(requestTypes -> {
+                    requestTypes.remove(FinancialRequestTypes.PAYMENT); // Filter out "payment" here, as we handle that via PaymentFragment
+                    requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, requestTypes, false);
+                }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
     }
 
     @OnItemSelected(R.id.request_type_spinner)
     public void onRequestTypeSelection(int position) {
-        selectedApiRequestType = getContext().getResources().getStringArray(R.array.request_types_api)[position];
+        selectedApiRequestType = (String) requestTypeSpinner.getAdapter().getItem(position);
         this.request = createRequest();
         if (request != null && modelDisplay != null) {
             modelDisplay.showRequest(request);
@@ -129,6 +135,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 break;
             case SHOW_LOYALTY_POINTS_REQUEST:
                 request.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+                break;
+            default:
+                // No extra data required
                 break;
         }
         return request;

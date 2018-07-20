@@ -49,6 +49,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.Single;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -98,20 +99,27 @@ public class PaymentFragment extends BaseObservableFragment {
 
         dropDownHelper.setupDropDown(transactionTypeSpinner, R.array.transaction_types);
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
-        SampleContext.getInstance(getContext()).getPaymentClient().getPaymentServices()
-                .subscribe(paymentServices -> {
+        PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
+        Single.zip(paymentClient.getPaymentServices(), paymentClient.getSupportedTransactionTypes(),
+                (paymentServices, transactionTypes) -> {
                     if (paymentServices.getAllPaymentServices().size() > 0) {
                         allFieldsReady = true;
                         dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
+                        if (!transactionTypes.isEmpty()) {
+                            dropDownHelper.setupDropDown(transactionTypeSpinner, transactionTypes, false);
+                        }
                     } else {
                         handleNoPaymentServices();
                     }
-                }, throwable -> {
+                    return Single.never();
+                })
+                .doOnError(throwable -> {
                     if (throwable instanceof IllegalStateException) {
                         Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
                     }
                     handleNoPaymentServices();
-                });
+                })
+                .subscribe();
     }
 
     private void handleNoPaymentServices() {

@@ -18,7 +18,7 @@
         android:id="@+id/request_type_spinner"
         style="@style/DropDownSpinner"
         android:layout_width="300dp"
-        android:entries="@array/request_types_readable"/>
+        android:entries="@array/request_types"/>
 
     <Button
         android:id="@+id/send"
