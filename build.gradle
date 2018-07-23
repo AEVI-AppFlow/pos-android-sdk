@@ -33,6 +33,7 @@ allprojects {
         maven {
             url "http://sdk-public-artifacts.s3-website-eu-west-1.amazonaws.com/maven2"
         }
+        maven { url 'https://jitpack.io' }
         if (project.hasProperty('aws_accessid')) {
             maven {
                 url "s3://sdk-snapshots.aevi.com/maven2"

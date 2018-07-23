@@ -34,8 +34,8 @@ import com.aevi.sdk.pos.flow.model.BasketItemBuilder;
 import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
@@ -93,7 +93,7 @@ public class PaymentFragment extends BaseObservableFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
+        modelDisplay = ((PaymentInitiationActivity) getActivity()).getModelDisplay();
 
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
 

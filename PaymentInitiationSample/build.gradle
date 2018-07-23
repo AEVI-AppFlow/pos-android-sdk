@@ -37,7 +37,7 @@ dependencies {
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
     implementation sampleDependencies.aeviUiLibrary
-
+    implementation 'com.github.ATHBK:UltimateTabLayout:1.2.5'
 
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }

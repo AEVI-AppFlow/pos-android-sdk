@@ -12,7 +12,8 @@
         style="@style/DialogTitle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        android:text="@string/initiate_request"/>
 
     <fragment
         android:id="@+id/fragment"

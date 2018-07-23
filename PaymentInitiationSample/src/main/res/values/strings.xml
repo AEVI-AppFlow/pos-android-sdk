@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Payment Initiation Sample</string>
+    <string name="app_name">Payment Initiation</string>
 
     <string name="transaction_type">Transaction type</string>
     <string name="request_type">Request type</string>
@@ -99,7 +99,7 @@
     <string name="process_request">Process request</string>
     <string name="choose_a_transaction_type">Choose a transaction type</string>
     <string name="choose_a_currency">Choose a currency</string>
-    <string name="add_basket_or_configure_manual_amounts">Add basket or configure manual amounts</string>
+    <string name="add_basket_or_configure_manual_amounts">Add basket or select amounts</string>
     <string name="add_basket">Add basket</string>
     <string name="additional_settings">Additional settings</string>
     <string name="add_customer">Add customer</string>
@@ -141,6 +141,8 @@
     <string name="merchant_settings">Merchant settings</string>
     <string name="flow_configurations">Flow configurations</string>
     <string name="there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again">There are no payment services available on this device. Please install/enable one and try again.</string>
+    <string name="setup_model">Configure</string>
+    <string name="view_model">View</string>
 
     <array name="payment_service_labels">
         <item>@string/service_label_id</item>

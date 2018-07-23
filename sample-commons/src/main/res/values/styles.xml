@@ -29,9 +29,11 @@
     </style>
 
     <style name="DropDownSpinner" parent="Widget.AppCompat.Spinner">
-        <item name="android:layout_width">@dimen/spinner_width</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">@drawable/spinner_bg</item>
+        <item name="android:background">@drawable/item_background</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">30dp</item>
         <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
         <item name="android:popupBackground">@android:color/white</item>
         <item name="android:popupElevation">@dimen/spinner_elevation</item>
@@ -40,5 +42,12 @@
 
     <style name="CheckBox" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textSize">20sp</item>
+        <item name="android:background">@drawable/item_background</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableEnd">?android:attr/listChoiceIndicatorMultiple</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">30dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
     </style>
 </resources>
