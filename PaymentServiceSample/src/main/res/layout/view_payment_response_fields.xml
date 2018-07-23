@@ -55,17 +55,7 @@
     <CheckBox
         android:id="@+id/include_card"
         style="@style/CheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vertical"
         android:text="@string/include_card_details"/>
-
-    <Button
-        android:id="@+id/send_response"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/send_response"/>
 
 </merge>

@@ -26,12 +26,12 @@
         <activity
             android:name=".ui.PaymentResultActivity"
             android:label="@string/payment_result"
-            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth">
+            android:theme="@style/Popup">
         </activity>
         <activity
             android:name=".ui.GenericResultActivity"
             android:label="@string/payment_result"
-            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth">
+            android:theme="@style/Popup">
         </activity>
     </application>
 

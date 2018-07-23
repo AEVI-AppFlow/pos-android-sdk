@@ -23,9 +23,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.PaymentFragment;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment;
-import com.athbk.ultimatetablayout.IFTabAdapter;
 
-public class PaymentFragmentTabsAdapter extends FragmentPagerAdapter implements IFTabAdapter {
+public class PaymentFragmentTabsAdapter extends FragmentPagerAdapter {
 
     private String[] labels;
     private int[] resIds;
@@ -63,16 +62,6 @@ public class PaymentFragmentTabsAdapter extends FragmentPagerAdapter implements 
     @Override
     public int getCount() {
         return resIds.length;
-    }
-
-    @Override
-    public String getTitle(int i) {
-        return labels[i];
-    }
-
-    @Override
-    public int getIcon(int i) {
-        return 0;
     }
 
 }

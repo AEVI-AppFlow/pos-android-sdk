@@ -65,9 +65,6 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @BindView(R.id.prev_split_info)
     TextView prevSplitInfo;
 
-    @BindView(R.id.or_text)
-    TextView orText;
-
     @BindView(R.id.send_response)
     Button sendResponseButton;
 
@@ -106,7 +103,6 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         } else {
             String prevInfoText;
             String lastSplitType = splitRequest.getLastTransaction().getAdditionalData().getStringValue(SplitDataKeys.DATA_KEY_SPLIT_TYPE);
-            orText.setVisibility(View.GONE);
 
             if (lastSplitType.equals(SplitDataKeys.SPLIT_TYPE_BASKET)) {
                 splitAmountsButton.setVisibility(View.GONE);

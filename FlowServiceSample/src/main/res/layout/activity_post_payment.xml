@@ -9,19 +9,22 @@
     <Button
         android:id="@+id/send_response"
         style="@style/DefaultButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:text="@string/finish"/>
 
     <Button
         android:id="@+id/add_payment_references"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
         android:layout_above="@id/send_response"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:text="@string/add_payment_references"/>
 
     <fragment

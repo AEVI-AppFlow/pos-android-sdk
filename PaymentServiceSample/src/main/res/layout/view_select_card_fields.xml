@@ -36,32 +36,19 @@
     <CheckBox
         android:id="@+id/include_token"
         style="@style/CheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vertical"
         android:text="@string/include_token"/>
 
     <CheckBox
         android:id="@+id/include_cardholder_name"
         style="@style/CheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vertical"
         android:text="@string/include_cardholder_name"/>
 
     <CheckBox
         android:id="@+id/include_emv_details"
         style="@style/CheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vertical"
         android:text="@string/include_emv_details"/>
 
-    <Button
-        android:id="@+id/send_response"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/send_response"/>
 </merge>

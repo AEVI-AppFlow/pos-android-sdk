@@ -10,7 +10,7 @@
     <string name="approve">Approve</string>
     <string name="include_card_details">Include card details</string>
     <string name="no_token">Decline</string>
-    <string name="with_token">Approve with token</string>
+    <string name="with_token">Approve</string>
     <string name="select_processed_amounts">Select processed amounts</string>
     <string name="select_payment_method_used">Select payment method used</string>
 
@@ -32,9 +32,9 @@
     <string name="view_request_data">View request</string>
     <string name="card_payment_stage">Payment stage: PAYMENT_CARD_READING</string>
     <string name="defaults_to_requested_amounts">(Defaults to requested amounts)</string>
-    <string name="pss_txn_processing">Payment Service Sample - Transaction processing step</string>
-    <string name="pss_card_reading">Payment Service Sample - Payment card reading step</string>
-    <string name="pss_select_token">Payment Service Sample - Select token</string>
+    <string name="pss_txn_processing">Transaction processing</string>
+    <string name="pss_card_reading">Payment card reading</string>
+    <string name="pss_select_token">Select token</string>
     <string name="sample_settings">Payment Service Settings</string>
     <string name="pref_supports_read_card_key">pref_supports_read_card</string>
     <string name="pref_transaction_types_key">pref_transaction_types</string>

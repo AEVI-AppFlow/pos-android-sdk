@@ -52,6 +52,7 @@ public class PostPaymentActivity extends BaseSampleAppCompatActivity<FlowRespons
         AdditionalData paymentRefs = new AdditionalData();
         paymentRefs.addData("someReference", "addedByPostPaymentSample");
         flowResponse.setPaymentReferences(paymentRefs);
+        findViewById(R.id.add_payment_references).setEnabled(false);
     }
 
     @OnClick(R.id.send_response)

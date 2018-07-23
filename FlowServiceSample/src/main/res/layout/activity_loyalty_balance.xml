@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
     tools:context="com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity">
-
-    <fragment
-        android:id="@+id/fragment_request_details"
-        android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_large"
-        android:tag="request"/>
 
     <Button
         android:id="@+id/send_response"
         style="@style/DefaultButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:text="@string/finish"/>
 
-</LinearLayout>
+    <fragment
+        android:id="@+id/fragment_request_details"
+        android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/send_response"
+        android:layout_marginBottom="@dimen/margin_vertical"
+        android:layout_marginLeft="@dimen/margin_horizontal"
+        android:layout_marginRight="@dimen/margin_horizontal"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:tag="request"/>
+
+</RelativeLayout>

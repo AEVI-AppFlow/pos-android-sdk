@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="margin_horizontal">12dp</dimen>
-    <dimen name="margin_large">20dp</dimen>
-    <dimen name="margin_vertical">12dp</dimen>
+    <dimen name="margin_horizontal">16dp</dimen>
+    <dimen name="margin_large">40dp</dimen>
+    <dimen name="margin_vertical">16dp</dimen>
     <dimen name="margin_vertical_small">4dp</dimen>
     <dimen name="margin_vertical_items">6dp</dimen>
     <dimen name="item_offset">6dp</dimen>

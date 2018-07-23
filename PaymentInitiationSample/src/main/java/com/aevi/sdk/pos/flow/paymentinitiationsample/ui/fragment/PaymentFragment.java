@@ -224,7 +224,7 @@ public class PaymentFragment extends BaseObservableFragment {
         paymentClient.initiatePayment(paymentBuilder.build()).subscribe(response -> {
             SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
             intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-            getContext().startActivity(intent);
+            startActivity(intent);
         }, throwable -> {
             if (throwable instanceof MessageException) {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
@@ -233,7 +233,8 @@ public class PaymentFragment extends BaseObservableFragment {
             } else {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
             }
-            getContext().startActivity(intent);
+            startActivity(intent);
         });
     }
+
 }

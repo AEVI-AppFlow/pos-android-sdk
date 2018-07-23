@@ -22,16 +22,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.PaymentFragmentTabsAdapter;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-import com.athbk.ultimatetablayout.UltimateTabLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PaymentInitiationActivity extends AppCompatActivity {
-
-    @Nullable
-    @BindView(R.id.tabLayout)
-    UltimateTabLayout tabLayout;
 
     @Nullable
     @BindView(R.id.pager)
@@ -52,11 +47,10 @@ public class PaymentInitiationActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        if (tabLayout != null) {
+        if (pager != null) {
             PaymentFragmentTabsAdapter adapter = new PaymentFragmentTabsAdapter(this, getSupportFragmentManager());
             this.modelDisplay = adapter.getModelDetailsFragment();
             pager.setAdapter(adapter);
-            tabLayout.setViewPager(pager, adapter);
         } else {
             modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         }

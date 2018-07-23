@@ -19,5 +19,5 @@
 
     <color name="itemBackgroundColor">#ffffff</color>
     <color name="itemBackgroundStrokeColor">#9c9c9c</color>
-    <color name="itemBackgroundSelectedColor">#ffffdd</color>
+    <color name="itemBackgroundSelectedColor">#dddddd</color>
 </resources>

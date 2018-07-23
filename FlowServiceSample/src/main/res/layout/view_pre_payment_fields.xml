@@ -19,14 +19,13 @@
 
     <Button
         android:id="@+id/add_surcharge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
         android:text="@string/add_surcharge_fee"/>
 
     <Button
         android:id="@+id/add_charity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
+        android:layout_marginTop="@dimen/margin_vertical_items"
         android:text="@string/add_for_charity"/>
 
     <TextView
@@ -39,14 +38,13 @@
 
     <Button
         android:id="@+id/pay_with_points"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
         android:text="@string/pay_portion_with_loyalty_points"/>
 
     <Button
         android:id="@+id/pay_with_giftcard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
+        android:layout_marginTop="@dimen/margin_vertical_items"
         android:text="@string/pay_portion_with_gift_card"/>
 
     <TextView
@@ -59,16 +57,7 @@
 
     <Button
         android:id="@+id/add_customer_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ItemButton"
         android:text="@string/add_customer_data"/>
-
-    <Button
-        android:id="@+id/send_response"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/send_response"/>
 
 </merge>

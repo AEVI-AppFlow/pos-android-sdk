@@ -96,7 +96,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             paymentClient.processRequest(request).subscribe(response -> {
                 intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                getContext().startActivity(intent);
+                startActivity(intent);
             }, throwable -> {
                 Response response;
                 if (throwable instanceof MessageException) {
@@ -106,7 +106,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     response = new Response(request, false, throwable.getMessage());
                 }
                 intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                getContext().startActivity(intent);
+                startActivity(intent);
             });
         }
     }
@@ -120,7 +120,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             case FinancialRequestTypes.REVERSAL:
             case FinancialRequestTypes.RESPONSE_REDELIVERY:
                 if (lastResponse == null) {
-                    Toast.makeText(getContext(), "Please complete a successful payment before attempting a reversal", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
                 request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getId());
