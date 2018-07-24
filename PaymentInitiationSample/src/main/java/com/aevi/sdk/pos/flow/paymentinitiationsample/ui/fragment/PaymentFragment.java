@@ -28,10 +28,7 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.Basket;
-import com.aevi.sdk.pos.flow.model.BasketItemBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentBuilder;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -235,6 +232,10 @@ public class PaymentFragment extends BaseObservableFragment {
             }
             startActivity(intent);
         });
+    }
+
+    public Payment getPayment() {
+        return paymentBuilder.build();
     }
 
 }

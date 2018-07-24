@@ -15,8 +15,10 @@
 package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.Token;
@@ -35,6 +37,9 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
     @BindView(R.id.card_scheme_spinner)
     DropDownSpinner cardSchemeSpinner;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private Request request;
 
     @Override
@@ -44,6 +49,7 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
         ButterKnife.bind(this);
         request = Request.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.pss_select_token);
     }
 
     @OnClick(R.id.reply_with_token)
@@ -60,5 +66,42 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
         Response response = new Response(request, token != null, token != null ? "Sample token generated" : "Failed to generate sample token");
         response.addAdditionalData(AdditionalDataKeys.DATA_KEY_TOKEN, token);
         sendResponseAndFinish(response);
+    }
+
+    @Override
+    protected boolean showFlowStagesOption() {
+        return false;
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return FinancialRequestTypes.TOKENISATION;
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return Request.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return Response.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        Response response = new Response(request, true, "Sample token generated");
+        response.addAdditionalData(AdditionalDataKeys.DATA_KEY_TOKEN, CustomerProducer.CUSTOMER_TOKEN);
+        return response.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return request.toJson();
     }
 }

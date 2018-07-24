@@ -7,7 +7,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeActionBar">
+        android:theme="@style/AppThemeNoActionBar">
         <provider
             android:name=".FlowServiceInfoProvider"
             android:authorities="com.aevi.sdk.pos.flow.sample.provider"
@@ -34,7 +34,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.PrePaymentService"
+            android:name=".service.PreTransactionService"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -50,7 +50,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.PostPaymentService"
+            android:name=".service.PostTransactionService"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -81,7 +81,7 @@
             android:noHistory="true">
         </activity>
         <activity
-            android:name=".ui.PrePaymentActivity"
+            android:name=".ui.PreTransactionActivity"
             android:excludeFromRecents="true"
             android:label="@string/fss_pre_payment"
             android:noHistory="true">
@@ -99,7 +99,7 @@
             android:noHistory="true">
         </activity>
         <activity
-            android:name=".ui.PostPaymentActivity"
+            android:name=".ui.PostTransactionActivity"
             android:excludeFromRecents="true"
             android:label="@string/fss_post_payment"
             android:noHistory="true">
@@ -114,7 +114,8 @@
             android:name=".settings.SettingsActivity"
             android:excludeFromRecents="true"
             android:label="@string/sample_settings"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/AppThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

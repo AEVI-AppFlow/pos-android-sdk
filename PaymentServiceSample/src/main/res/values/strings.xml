@@ -39,5 +39,6 @@
     <string name="pref_supports_read_card_key">pref_supports_read_card</string>
     <string name="pref_transaction_types_key">pref_transaction_types</string>
     <string name="pref_request_types_key">pref_request_types</string>
+    <string name="tokenisation_overview">For tokenisation, a real payment app would typically read a payment card and generate a token from that. In this sample, we generate fake cards and tokens to avoid hardware dependencies. Please choose a card below.</string>
 
 </resources>

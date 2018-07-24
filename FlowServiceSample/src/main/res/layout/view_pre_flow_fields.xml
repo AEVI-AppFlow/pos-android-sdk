@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Button
-        android:id="@+id/show_request"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/view_request_data"
-        android:textColor="@android:color/holo_blue_dark"/>
-
     <TextView
         android:id="@+id/add_amounts_header"
         style="@style/Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="@string/add_amounts"/>
 
     <Button

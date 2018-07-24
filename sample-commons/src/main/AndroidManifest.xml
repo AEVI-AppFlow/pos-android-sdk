@@ -11,6 +11,13 @@
             android:theme="@style/Popup">
         </activity>
 
+        <activity
+            android:name=".ui.FlowStagesActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/Popup">
+        </activity>
+
     </application>
 
 

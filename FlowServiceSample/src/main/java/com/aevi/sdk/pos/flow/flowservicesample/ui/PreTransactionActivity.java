@@ -14,11 +14,34 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
+
+import butterknife.BindView;
+
 /**
  * Sample activity for pre-payment stage. See base class.
  *
  * This sample illustrates the data made available to the flow application at these stages,
  * and in what different ways a pre-payment flow app can augment the transaction.
  */
-public class PrePaymentActivity extends BasePreProcessingActivity {
+public class PreTransactionActivity extends BasePreProcessingActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupToolbar(toolbar, R.string.fss_pre_payment);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.PRE_TRANSACTION.name();
+    }
+
 }

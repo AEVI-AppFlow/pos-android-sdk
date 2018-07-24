@@ -4,22 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/show_request"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/view_request_data"
-        android:textColor="@android:color/holo_blue_dark"/>
-
     <Switch
         android:id="@+id/approve_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        style="@style/Switch"
         android:checked="true"
-        android:text="@string/approve"
-        android:textSize="20dp"/>
+        android:text="@string/approve"/>
 
     <TextView
         android:id="@+id/amounts_header"

@@ -20,4 +20,9 @@
     <color name="itemBackgroundColor">#ffffff</color>
     <color name="itemBackgroundStrokeColor">#9c9c9c</color>
     <color name="itemBackgroundSelectedColor">#dddddd</color>
+
+    <color name="flowStageBackgroundColor">#ffffff</color>
+    <color name="flowStageBackgroundStrokeColor">#9c9c9c</color>
+    <color name="flowStageBackgroundSelectedColor">#d6e5d6</color>
+    <color name="flowStageBackgroundDisabledColor">#f8f8f8</color>
 </resources>

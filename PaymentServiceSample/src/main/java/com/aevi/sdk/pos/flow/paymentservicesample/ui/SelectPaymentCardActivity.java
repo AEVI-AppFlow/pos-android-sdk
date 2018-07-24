@@ -14,19 +14,19 @@
 
 package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.CardResponse;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
@@ -50,6 +50,9 @@ public class SelectPaymentCardActivity extends BaseSampleAppCompatActivity<CardR
     @BindView(R.id.approve_switch)
     Switch approveSwitch;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private TransactionRequest transactionRequest;
     private Card card;
     private ModelDisplay modelDisplay;
@@ -61,19 +64,43 @@ public class SelectPaymentCardActivity extends BaseSampleAppCompatActivity<CardR
         ButterKnife.bind(this);
         transactionRequest = TransactionRequest.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
         final DropDownHelper dropDownHelper = new DropDownHelper(this);
         dropDownHelper.setupDropDown(cardSchemeSpinner, R.array.card_schemes);
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.pss_card_reading);
     }
 
-    @OnClick(R.id.show_request)
-    public void onShowRequest() {
-        Intent intent = new Intent(this, ModelDetailsActivity.class);
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
-        startActivity(intent);
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.PAYMENT_CARD_READING.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return TransactionRequest.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return CardResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return new CardResponse(card).toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return transactionRequest.toJson();
     }
 
     @OnItemSelected(R.id.card_scheme_spinner)

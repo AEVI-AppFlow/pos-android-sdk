@@ -1,50 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_large"
+    android:orientation="vertical"
     tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.SelectTokenActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
 
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="For tokenisation, a real payment app would typically read a payment card and generate a token from that. In this sample, we generate fake cards and tokens to avoid hardware dependencies. Please choose a card below."/>
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/tokenisation_overview"/>
 
     <TextView
         android:id="@+id/card_scheme_header"
         style="@style/Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/description"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:layout_marginTop="20dp"
         android:text="@string/choose_a_card_scheme"/>
 
     <com.aevi.ui.library.recycler.DropDownSpinner
         android:id="@+id/card_scheme_spinner"
         style="@style/DropDownSpinner"
-        android:layout_below="@id/card_scheme_header"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:entries="@array/card_schemes"/>
 
-    <Button
-        android:id="@+id/reply_no_token"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_scheme_spinner"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/no_token"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/reply_with_token"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/reply_no_token"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/reply_no_token"
-        android:text="@string/with_token"/>
+        <Button
+            android:id="@+id/reply_no_token"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_token"/>
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/reply_with_token"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="@string/with_token"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

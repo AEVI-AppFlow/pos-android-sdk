@@ -15,6 +15,7 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -28,12 +29,16 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import java.util.Random;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response> {
 
     private Request request;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response
         ButterKnife.bind(this);
         request = Request.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.fss_loyalty_balance);
     }
 
     @Override
@@ -67,4 +73,43 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response
         sendResponseAndFinish(new Response(request, true, "Loyalty balance presented"));
     }
 
+    @Override
+    protected boolean showFlowStagesOption() {
+        return false;
+    }
+
+    @Override
+    protected boolean showViewModelOption() {
+        return false;
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return "showLoyaltyPointsBalance";
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return Request.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return Response.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return null;
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return request.toJson();
+    }
 }

@@ -4,6 +4,14 @@
     <style name="Popup" parent="@style/Base.Theme.AppCompat.Light.Dialog.MinWidth">
     </style>
 
+    <style name="Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+
     <style name="Header" parent="Base.TextAppearance.AppCompat.Medium">
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">5dp</item>
@@ -14,6 +22,11 @@
         <item name="android:background">@drawable/default_button</item>
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textColor">@color/defaultButtonText</item>
+    </style>
+
+    <style name="DefaultButtonPadded" parent="DefaultButton">
+        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingRight">50dp</item>
     </style>
 
     <style name="BaseDialogTitle" parent="Base.TextAppearance.AppCompat.Large">
@@ -49,6 +62,31 @@
         <item name="android:paddingRight">30dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
+    </style>
+
+    <style name="Switch" parent="Base.Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:textSize">20sp</item>
+        <item name="android:background">@drawable/item_background</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">30dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+    </style>
+
+    <style name="FlowStage">
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@drawable/flow_stage_selector</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_width">@dimen/flow_stage_item_width</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
+    <style name="FlowStageArrow">
+        <item name="android:layout_width">3dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@color/iconColorLight</item>
     </style>
 
     <style name="ItemButton">

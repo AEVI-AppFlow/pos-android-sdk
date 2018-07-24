@@ -12,4 +12,18 @@
     <dimen name="button_text_size">22sp</dimen>
     <dimen name="spinner_width">200dp</dimen>
     <dimen name="spinner_elevation">3dp</dimen>
+
+    <dimen name="flow_stage_item_width">150dp</dimen>
+    <dimen name="flow_stage_arrow_width">2dp</dimen>
+    <dimen name="flow_stage_arrow_height">20dp</dimen>
+    <dimen name="flow_stage_first_offset">10dp</dimen>
+    <dimen name="flow_stage_second_offset">30dp</dimen>
+    <dimen name="flow_stage_third_offset">50dp</dimen>
+    <dimen name="flow_arrow_first_offset">50dp</dimen>
+    <dimen name="flow_arrow_second_offset">80dp</dimen>
+    <dimen name="flow_arrow_third_offset">110dp</dimen>
+    <dimen name="flow_stage_margin_right">10dp</dimen>
+
+    <dimen name="send_button_vert_margin">5dp</dimen>
+    <dimen name="send_button_shadow_depth">5dp</dimen>
 </resources>

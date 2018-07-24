@@ -14,9 +14,9 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,7 +29,6 @@ import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import butterknife.BindView;
@@ -68,6 +67,9 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @BindView(R.id.send_response)
     Button sendResponseButton;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,11 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
         setupSplit();
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.fss_split);
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
     }
 
     private void setupSplit() {
@@ -146,7 +153,6 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         updateModel();
     }
 
@@ -154,16 +160,6 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         if (modelDisplay != null) {
             modelDisplay.showFlowResponse(flowResponse);
         }
-    }
-
-    @OnClick(R.id.show_request)
-    public void onShowRequest() {
-        Intent intent = new Intent(this, ModelDetailsActivity.class);
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, SplitRequest.class.getName());
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, splitRequest.toJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "SplitRequest");
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
-        startActivity(intent);
     }
 
     private void disableSplitButtons() {
@@ -240,5 +236,35 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @OnClick(R.id.send_response)
     public void onSendResponse() {
         sendResponseAndFinish(flowResponse);
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.SPLIT.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return SplitRequest.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return FlowResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return flowResponse.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return splitRequest.toJson();
     }
 }

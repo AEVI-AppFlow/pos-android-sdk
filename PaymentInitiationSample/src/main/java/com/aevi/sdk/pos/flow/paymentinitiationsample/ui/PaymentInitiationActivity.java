@@ -15,44 +15,81 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.PaymentFragmentTabsAdapter;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.PaymentFragment;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PaymentInitiationActivity extends AppCompatActivity {
-
-    @Nullable
-    @BindView(R.id.pager)
-    ViewPager pager;
+public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<PaymentResponse> {
 
     private ModelDisplay modelDisplay;
+
+    private PaymentFragment paymentFragment;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         ButterKnife.bind(this);
-        setup();
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
+        paymentFragment = (PaymentFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_payment);
+        setupToolbar(toolbar, R.string.initiate_payment);
     }
 
     public ModelDisplay getModelDisplay() {
         return modelDisplay;
     }
 
-    private void setup() {
-        if (pager != null) {
-            PaymentFragmentTabsAdapter adapter = new PaymentFragmentTabsAdapter(this, getSupportFragmentManager());
-            this.modelDisplay = adapter.getModelDetailsFragment();
-            pager.setAdapter(adapter);
-        } else {
-            modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
-        }
+    @Override
+    protected boolean showViewRequestOption() {
+        return false;
+    }
+
+    @Override
+    protected boolean showViewModelOption() {
+        return !getResources().getBoolean(R.bool.dualPane);
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return "Payment initiation";
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return Payment.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return Payment.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return paymentFragment.getPayment().toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return null;
     }
 }

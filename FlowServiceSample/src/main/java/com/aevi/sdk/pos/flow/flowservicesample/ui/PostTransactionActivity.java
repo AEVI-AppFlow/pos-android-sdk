@@ -15,36 +15,49 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PostPaymentActivity extends BaseSampleAppCompatActivity<FlowResponse> {
+public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private FlowResponse flowResponse;
+    private TransactionSummary transactionSummary;
+    private ModelDisplay modelDisplay;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_payment);
+        setContentView(R.layout.activity_post_txn);
         ButterKnife.bind(this);
         flowResponse = new FlowResponse();
         registerForActivityEvents();
+        transactionSummary = TransactionSummary.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
+        setupToolbar(toolbar, R.string.fss_post_payment);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
-        modelDisplay.showTransactionSummary(TransactionSummary.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY)));
+        modelDisplay.showTransactionSummary(transactionSummary);
     }
 
     @OnClick(R.id.add_payment_references)
@@ -60,4 +73,38 @@ public class PostPaymentActivity extends BaseSampleAppCompatActivity<FlowRespons
         sendResponseAndFinish(flowResponse);
     }
 
+    @Override
+    protected boolean showViewRequestOption() {
+        return false;
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.POST_TRANSACTION.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return TransactionSummary.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return FlowResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return flowResponse.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return transactionSummary.toJson();
+    }
 }

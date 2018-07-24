@@ -23,6 +23,7 @@ import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.R;
+import com.aevi.util.json.JsonConverter;
 
 public class ModelDetailsActivity extends AppCompatActivity {
 
@@ -76,6 +77,12 @@ public class ModelDetailsActivity extends AppCompatActivity {
             modelDisplay.showResponse(Response.fromJson(data));
         } else if (modelType.equals(Request.class.getName())) {
             modelDisplay.showRequest(Request.fromJson(data));
+        } else if (modelType.equals(CardResponse.class.getName())) {
+            modelDisplay.showCardResponse(JsonConverter.deserialize(data, CardResponse.class));
+        } else if (modelType.equals(TransactionResponse.class.getName())) {
+            modelDisplay.showTransactionResponse(TransactionResponse.fromJson(data));
+        } else if (modelType.equals(FlowResponse.class.getName())) {
+            modelDisplay.showFlowResponse(FlowResponse.fromJson(data));
         } else {
             throw new IllegalArgumentException("Unknown type: " + modelType);
         }

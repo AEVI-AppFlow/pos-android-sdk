@@ -76,5 +76,20 @@
     <string name="general_data">General data</string>
     <string name="model_overview">Model overview</string>
     <string name="payment_id">Payment id</string>
+    <string name="help">Show help</string>
+    <string name="view_request">View request</string>
+    <string name="view_model">View model</string>
+    <string name="flow_stage">Flow stage</string>
+    <string name="flow_stages">Flow stages</string>
+    <string name="payment_initiation">Payment initiation</string>
+    <string name="pre_flow">Pre flow</string>
+    <string name="split">Split</string>
+    <string name="pre_transaction">Pre transaction</string>
+    <string name="payment_card_reading">Payment card reading</string>
+    <string name="post_card_reading">Post card reading</string>
+    <string name="transaction_processing">Transaction processing</string>
+    <string name="post_transaction">Post transaction</string>
+    <string name="post_flow">Post flow</string>
+    <string name="payment_response">Payment response</string>
 
 </resources>

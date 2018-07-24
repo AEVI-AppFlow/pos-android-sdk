@@ -9,8 +9,8 @@
     <string name="pref_postflow">pref_supports_stage_postflow</string>
     <string name="pre_flow">Pre flow</string>
     <string name="split">Split</string>
-    <string name="pre_payment">Pre payment</string>
-    <string name="post_payment">Post payment</string>
+    <string name="pre_payment">Pre transaction</string>
+    <string name="post_payment">Post transaction</string>
     <string name="post_card">Post card reading</string>
     <string name="post_flow">Post flow</string>
     <string name="sample_settings">Flow Service Settings</string>
@@ -28,9 +28,9 @@
     <string name="add_payment_references">Add payment references</string>
     <string name="add_tax">Add tax</string>
     <string name="fss_loyalty_balance">Loyalty Balance</string>
-    <string name="fss_pre_payment">Pre-payment</string>
+    <string name="fss_pre_payment">Pre-transaction</string>
     <string name="fss_pre_flow">Pre-flow</string>
-    <string name="fss_post_payment">Post-payment</string>
+    <string name="fss_post_payment">Post-transaction</string>
     <string name="fss_post_card">Post-card-reading</string>
     <string name="fss_post_flow">Post-flow</string>
     <string name="fss_split">Split</string>

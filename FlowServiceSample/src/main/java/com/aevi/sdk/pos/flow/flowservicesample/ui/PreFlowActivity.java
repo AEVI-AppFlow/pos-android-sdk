@@ -14,8 +14,8 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -28,11 +28,12 @@ import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.AmountsModifier;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -45,6 +46,9 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     private FlowResponse flowResponse;
     private ModelDisplay modelDisplay;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +58,16 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         payment = Payment.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
         flowResponse = new FlowResponse();
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.fss_pre_flow);
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         updateModel();
     }
 
@@ -69,14 +77,34 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         }
     }
 
-    @OnClick(R.id.show_request)
-    public void onShowRequest() {
-        Intent intent = new Intent(this, ModelDetailsActivity.class);
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, Payment.class.getName());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "Payment data");
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, payment.toJson());
-        startActivity(intent);
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.PRE_FLOW.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return Payment.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return FlowResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return flowResponse.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return payment.toJson();
     }
 
     @OnClick(R.id.add_tax)

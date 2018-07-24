@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <dimen name="margin_horizontal">16dp</dimen>
     <dimen name="margin_large">40dp</dimen>
@@ -12,4 +13,8 @@
     <dimen name="button_text_size">22sp</dimen>
     <dimen name="spinner_width">200dp</dimen>
     <dimen name="spinner_elevation">3dp</dimen>
+
+    <dimen name="flow_stage_item_width">300dp</dimen>
+    <dimen name="flow_stage_arrow_width">3dp</dimen>
+    <dimen name="flow_stage_arrow_height">30dp</dimen>
 </resources>

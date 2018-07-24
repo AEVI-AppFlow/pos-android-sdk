@@ -14,6 +14,14 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
+
+import butterknife.BindView;
+
 /**
  * Sample activity for post-card-reading stage. See base class.
  *
@@ -21,4 +29,18 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
  * and in what different ways a post-card-reading flow app can augment the transaction.
  */
 public class PostCardActivity extends BasePreProcessingActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupToolbar(toolbar, R.string.fss_post_card);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.POST_CARD_READING.name();
+    }
 }

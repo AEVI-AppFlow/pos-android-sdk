@@ -2,25 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:paddingBottom="5dp">
+                android:paddingBottom="@dimen/send_button_vert_margin">
 
-    <Button
-        android:id="@+id/send"
-        style="@style/DefaultButton"
+    <LinearLayout
+        android:id="@+id/send_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/initiate_payment_padding"
-        android:layout_marginRight="@dimen/initiate_payment_padding"
-        android:layout_marginTop="5dp"
-        android:text="@string/initiate_payment"/>
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_button_shadow_depth"
+            android:background="@drawable/shadow_gradient"/>
+
+        <Button
+            android:id="@+id/send"
+            style="@style/DefaultButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/initiate_payment_padding"
+            android:layout_marginRight="@dimen/initiate_payment_padding"
+            android:layout_marginTop="@dimen/send_button_vert_margin"
+            android:text="@string/initiate_payment"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/send">
+        android:layout_above="@id/send_wrapper">
 
         <LinearLayout
             android:id="@+id/container"
@@ -29,8 +40,7 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/margin_vertical"
             android:paddingLeft="@dimen/initiate_payment_padding"
-            android:paddingRight="@dimen/initiate_payment_padding"
-            android:paddingTop="@dimen/margin_vertical">
+            android:paddingRight="@dimen/initiate_payment_padding">
 
             <TextView
                 android:id="@+id/no_payment_services"
