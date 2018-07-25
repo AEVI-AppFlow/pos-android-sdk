@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.aevi.sdk.pos.flow.sample.R;
@@ -28,6 +29,7 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_help);
 
         TextView helpText = findViewById(R.id.text);
