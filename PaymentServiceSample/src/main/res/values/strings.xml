@@ -41,14 +41,11 @@
     <string name="pref_request_types_key">pref_request_types</string>
     <string name="tokenisation_overview">For tokenisation, a real payment app would typically read a payment card and generate a token from that. In this sample, we generate fake cards and tokens to avoid hardware dependencies. Please choose a card below.</string>
 
-    <string name="card_reading_help">Payment card reading is an optional stage for payment applications to support. If it is supported, customer would present their payment card at this point and the payment application would pass back card details like scheme, tokens, etc for flow applications to use for processing.\n\n
-        The following post-card-reading step is executed regardless of whether this stage was called, and whether or not a payment app returns card details.
+    <string name="card_reading_help">Payment card reading is an optional stage for payment applications to support. If it is supported, customer would present their payment card at this point and the payment application would pass back card details like scheme, tokens, etc for flow applications to use for processing.\n\nThe following post-card-reading step is executed regardless of whether this stage was called, and whether or not a payment app returns card details.
     </string>
-    <string name="txn_processing_help">Transaction processing is where the payment application typically will communicate with a bank host / gateway / server to charge the customer the amounts provided in the request.\n\n
-        At the end of this stage, the outcome of the transaction is known and it will determine how the rest of the flow is executed.
+    <string name="txn_processing_help">Transaction processing is where the payment application typically will communicate with a bank host / gateway / server to charge the customer the amounts provided in the request.\n\nAt the end of this stage, the outcome of the transaction is known and it will determine how the rest of the flow is executed.
     </string>
-    <string name="token_help">Tokenisation is the process where an application generates a token, typically based on a payment card presented by a customer.\n\n
-        This token can then be used to identify the customer, and possibly be used to charge the customer for further transactions without requiring the physical card being present.
+    <string name="token_help">Tokenisation is the process where an application generates a token, typically based on a payment card presented by a customer.\n\nThis token can then be used to identify the customer, and possibly be used to charge the customer for further transactions without requiring the physical card being present.
     </string>
 </resources>
 

@@ -26,5 +26,6 @@
 
     <dimen name="send_button_vert_margin">5dp</dimen>
     <dimen name="send_button_shadow_depth">5dp</dimen>
+    <dimen name="send_button_horiz_padding">12dp</dimen>
     <dimen name="help_text_size">16sp</dimen>
 </resources>

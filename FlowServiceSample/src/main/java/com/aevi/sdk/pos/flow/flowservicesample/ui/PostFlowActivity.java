@@ -35,6 +35,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
     Toolbar toolbar;
 
     private PaymentResponse paymentResponse;
+    private ModelDisplay modelDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +45,13 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
         registerForActivityEvents();
         setupToolbar(toolbar, R.string.fss_post_flow);
         paymentResponse = PaymentResponse.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        modelDisplay.showTitle(false);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         modelDisplay.showPaymentResponse(paymentResponse);
     }
 

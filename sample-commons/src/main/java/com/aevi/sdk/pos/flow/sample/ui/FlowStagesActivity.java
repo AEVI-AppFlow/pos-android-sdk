@@ -18,6 +18,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.aevi.sdk.pos.flow.model.PaymentStage;
@@ -77,13 +78,10 @@ public class FlowStagesActivity extends AppCompatActivity {
             if (stage.name.equals(currentStage)) {
                 setStageCurrent(stage.viewId);
                 postActive = true;
-            } else if (postActive) {
-                setStageUpcoming(stage.viewId);
-            } else {
+            } else if (!postActive) {
                 setStageExecuted(stage.viewId);
             }
         }
-
     }
 
     private void setStageExecuted(int stageId) {
@@ -92,18 +90,12 @@ public class FlowStagesActivity extends AppCompatActivity {
         textView.setEnabled(false);
     }
 
-    private void setStageBypassed(int stageId) {
-
-    }
-
     private void setStageCurrent(int stageId) {
         TextView textView = getView(stageId);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         textView.setSelected(true);
-    }
-
-    private void setStageUpcoming(int stageId) {
-
+        ScrollView scrollView = findViewById(R.id.scroll_view);
+        scrollView.post(() -> scrollView.scrollTo(0, textView.getTop()));
     }
 
     private TextView getView(int stageId) {

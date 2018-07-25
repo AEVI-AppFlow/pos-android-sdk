@@ -92,5 +92,9 @@
     <string name="post_flow">Post flow</string>
     <string name="payment_response">Payment response</string>
     <string name="what_is_this">What is this?</string>
+    <string name="icon_legend">Icon legend</string>
+    <string name="view_flow_stages">View flow stages</string>
+    <string name="view_incoming_request">View incoming request</string>
+    <string name="view_configured_data">View configured data</string>
 
 </resources>

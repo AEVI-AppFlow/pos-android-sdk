@@ -24,9 +24,14 @@
         <item name="android:textColor">@color/defaultButtonText</item>
     </style>
 
-    <style name="DefaultButtonPadded" parent="DefaultButton">
-        <item name="android:paddingLeft">50dp</item>
-        <item name="android:paddingRight">50dp</item>
+    <style name="DefaultButtonPadded" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingLeft">@dimen/send_button_horiz_padding</item>
+        <item name="android:paddingRight">@dimen/send_button_horiz_padding</item>
+        <item name="android:background">@drawable/default_button</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:textColor">@color/defaultButtonText</item>
     </style>
 
     <style name="BaseDialogTitle" parent="Base.TextAppearance.AppCompat.Large">
@@ -53,7 +58,7 @@
         <item name="android:stateListAnimator">@drawable/spinner_sla</item>
     </style>
 
-    <style name="CheckBox" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="CheckBox">
         <item name="android:textSize">20sp</item>
         <item name="android:background">@drawable/item_background</item>
         <item name="android:button">@null</item>
@@ -64,7 +69,7 @@
         <item name="android:layout_height">?attr/actionBarSize</item>
     </style>
 
-    <style name="Switch" parent="Base.Widget.AppCompat.CompoundButton.Switch">
+    <style name="Switch">
         <item name="android:textSize">20sp</item>
         <item name="android:background">@drawable/item_background</item>
         <item name="android:paddingLeft">20dp</item>

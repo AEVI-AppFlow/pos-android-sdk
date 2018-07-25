@@ -18,4 +18,6 @@
     <dimen name="flow_stage_arrow_width">3dp</dimen>
     <dimen name="flow_stage_arrow_height">30dp</dimen>
     <dimen name="help_text_size">18sp</dimen>
+    <dimen name="send_button_shadow_depth">0dp</dimen>
+    <dimen name="send_button_horiz_padding">50dp</dimen>
 </resources>
