@@ -107,6 +107,11 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         return payment.toJson();
     }
 
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.pre_flow_help);
+    }
+
     @OnClick(R.id.add_tax)
     public void onAddTax(View v) {
         int taxPercentage = getResources().getInteger(R.integer.tax_percentage);

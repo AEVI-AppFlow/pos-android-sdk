@@ -112,4 +112,9 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response
     protected String getRequestJson() {
         return request.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.loyalty_balance_help);
+    }
 }

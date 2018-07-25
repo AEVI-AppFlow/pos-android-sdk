@@ -95,8 +95,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             paymentClient.processRequest(request).subscribe(response -> {
-                intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                startActivity(intent);
+                if (isAdded()) {
+                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                    startActivity(intent);
+                }
             }, throwable -> {
                 Response response;
                 if (throwable instanceof MessageException) {
@@ -105,8 +107,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 } else {
                     response = new Response(request, false, throwable.getMessage());
                 }
-                intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                startActivity(intent);
+                if (isAdded()) {
+                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                    startActivity(intent);
+                }
             });
         }
     }

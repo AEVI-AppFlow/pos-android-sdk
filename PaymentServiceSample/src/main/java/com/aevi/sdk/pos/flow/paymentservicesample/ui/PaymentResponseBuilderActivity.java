@@ -200,4 +200,9 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
     protected String getRequestJson() {
         return transactionRequest.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.txn_processing_help);
+    }
 }

@@ -142,6 +142,10 @@
     <string name="flow_configurations">Flow configurations</string>
     <string name="there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again">There are no payment services available on this device. Please install/enable one and try again.</string>
     <string name="setup_model">Configure</string>
+    <string name="initiation_help">Payment initiation is typically handled by a POS application, where the merchant/operator inputs customer basket items and/or purchase amounts.\n\n
+        Once the payment is sent off via the PaymentClient, the processing service will map the transaction type to an appropriate flow and run through it, stage for stage.\n\n
+        In these samples, we mainly support the sale flow, which can be viewed by pressing the flow stages icon in the toolbar.
+    </string>
 
     <array name="payment_service_labels">
         <item>@string/service_label_id</item>

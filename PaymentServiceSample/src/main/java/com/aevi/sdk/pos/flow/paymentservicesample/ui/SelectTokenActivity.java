@@ -104,4 +104,9 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
     protected String getRequestJson() {
         return request.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.token_help);
+    }
 }

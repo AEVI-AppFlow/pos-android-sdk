@@ -107,4 +107,9 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
     protected String getRequestJson() {
         return transactionSummary.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.post_txn_help);
+    }
 }

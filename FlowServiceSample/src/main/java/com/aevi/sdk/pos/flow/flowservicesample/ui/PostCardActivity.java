@@ -43,4 +43,9 @@ public class PostCardActivity extends BasePreProcessingActivity {
     protected String getCurrentStage() {
         return PaymentStage.POST_CARD_READING.name();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.post_card_reading_help);
+    }
 }

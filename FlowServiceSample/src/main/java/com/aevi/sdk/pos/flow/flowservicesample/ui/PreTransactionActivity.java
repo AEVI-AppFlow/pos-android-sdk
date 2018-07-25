@@ -44,4 +44,9 @@ public class PreTransactionActivity extends BasePreProcessingActivity {
         return PaymentStage.PRE_TRANSACTION.name();
     }
 
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.pre_txn_help);
+    }
+
 }

@@ -77,38 +77,32 @@
         <activity
             android:name=".ui.SplitActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_split"
-            android:noHistory="true">
+            android:label="@string/fss_split">
         </activity>
         <activity
             android:name=".ui.PreTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_payment"
-            android:noHistory="true">
+            android:label="@string/fss_pre_payment">
         </activity>
         <activity
             android:name=".ui.PostCardActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_card"
-            android:noHistory="true">
+            android:label="@string/fss_post_card">
         </activity>
         <activity
             android:name=".ui.PreFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_flow"
-            android:noHistory="true">
+            android:label="@string/fss_pre_flow">
         </activity>
         <activity
             android:name=".ui.PostTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_payment"
-            android:noHistory="true">
+            android:label="@string/fss_post_payment">
         </activity>
         <activity
             android:name=".ui.PostFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_flow"
-            android:noHistory="true">
+            android:label="@string/fss_post_flow">
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
@@ -125,8 +119,7 @@
         <activity
             android:name=".ui.LoyaltyBalanceActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_loyalty_balance"
-            android:noHistory="true">
+            android:label="@string/fss_loyalty_balance">
         </activity>
     </application>
 

@@ -103,6 +103,11 @@ public class SelectPaymentCardActivity extends BaseSampleAppCompatActivity<CardR
         return transactionRequest.toJson();
     }
 
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.card_reading_help);
+    }
+
     @OnItemSelected(R.id.card_scheme_spinner)
     public void onCardSchemeChange() {
         updateModel();

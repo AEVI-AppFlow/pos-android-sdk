@@ -118,8 +118,13 @@ public abstract class BaseSampleAppCompatActivity<RESPONSE> extends AppCompatAct
 
     protected abstract String getRequestJson();
 
-    private void onShowHelpInfo() {
+    protected abstract String getHelpText();
 
+    private void onShowHelpInfo() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        intent.putExtra(HelpActivity.KEY_TEXT, getHelpText());
+        intent.putExtra(HelpActivity.KEY_TITLE_BG, getPrimaryColor());
+        startActivity(intent);
     }
 
     private void onShowFlowStages() {

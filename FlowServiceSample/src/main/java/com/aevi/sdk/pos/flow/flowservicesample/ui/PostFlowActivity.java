@@ -97,4 +97,9 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
     protected String getRequestJson() {
         return paymentResponse.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.post_flow_help);
+    }
 }

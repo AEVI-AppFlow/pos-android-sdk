@@ -267,4 +267,9 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     protected String getRequestJson() {
         return splitRequest.toJson();
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.split_help);
+    }
 }

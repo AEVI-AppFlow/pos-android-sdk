@@ -92,4 +92,9 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<Payme
     protected String getRequestJson() {
         return null;
     }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.initiation_help);
+    }
 }

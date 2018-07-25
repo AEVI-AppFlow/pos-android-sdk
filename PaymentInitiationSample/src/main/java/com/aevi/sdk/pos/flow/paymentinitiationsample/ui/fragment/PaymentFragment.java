@@ -220,8 +220,10 @@ public class PaymentFragment extends BaseObservableFragment {
                 Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         paymentClient.initiatePayment(paymentBuilder.build()).subscribe(response -> {
             SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-            intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-            startActivity(intent);
+            if (isAdded()) {
+                intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
+                startActivity(intent);
+            }
         }, throwable -> {
             if (throwable instanceof MessageException) {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
@@ -230,7 +232,9 @@ public class PaymentFragment extends BaseObservableFragment {
             } else {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
             }
-            startActivity(intent);
+            if (isAdded()) {
+                startActivity(intent);
+            }
         });
     }
 

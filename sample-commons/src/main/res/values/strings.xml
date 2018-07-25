@@ -91,5 +91,6 @@
     <string name="post_transaction">Post transaction</string>
     <string name="post_flow">Post flow</string>
     <string name="payment_response">Payment response</string>
+    <string name="what_is_this">What is this?</string>
 
 </resources>
