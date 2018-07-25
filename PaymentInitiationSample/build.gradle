@@ -38,7 +38,6 @@ dependencies {
     implementation apiDependencies.rxJava
     implementation sampleDependencies.aeviUiLibrary
 
-
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }
     implementation(sampleDependencies.recyclerView) { force = true }

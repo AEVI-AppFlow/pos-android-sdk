@@ -28,14 +28,11 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.Basket;
-import com.aevi.sdk.pos.flow.model.BasketItemBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentBuilder;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
@@ -49,6 +46,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.Single;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -92,26 +90,33 @@ public class PaymentFragment extends BaseObservableFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
+        modelDisplay = ((PaymentInitiationActivity) getActivity()).getModelDisplay();
 
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
 
         dropDownHelper.setupDropDown(transactionTypeSpinner, R.array.transaction_types);
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
-        SampleContext.getInstance(getContext()).getPaymentClient().getPaymentServices()
-                .subscribe(paymentServices -> {
+        PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
+        Single.zip(paymentClient.getPaymentServices(), paymentClient.getSupportedTransactionTypes(),
+                (paymentServices, transactionTypes) -> {
                     if (paymentServices.getAllPaymentServices().size() > 0) {
                         allFieldsReady = true;
                         dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
+                        if (!transactionTypes.isEmpty()) {
+                            dropDownHelper.setupDropDown(transactionTypeSpinner, transactionTypes, false);
+                        }
                     } else {
                         handleNoPaymentServices();
                     }
-                }, throwable -> {
+                    return Single.never();
+                })
+                .doOnError(throwable -> {
                     if (throwable instanceof IllegalStateException) {
                         Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
                     }
                     handleNoPaymentServices();
-                });
+                })
+                .subscribe();
     }
 
     private void handleNoPaymentServices() {
@@ -215,8 +220,10 @@ public class PaymentFragment extends BaseObservableFragment {
                 Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         paymentClient.initiatePayment(paymentBuilder.build()).subscribe(response -> {
             SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-            intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-            getContext().startActivity(intent);
+            if (isAdded()) {
+                intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
+                startActivity(intent);
+            }
         }, throwable -> {
             if (throwable instanceof MessageException) {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
@@ -225,7 +232,14 @@ public class PaymentFragment extends BaseObservableFragment {
             } else {
                 intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
             }
-            getContext().startActivity(intent);
+            if (isAdded()) {
+                startActivity(intent);
+            }
         });
     }
+
+    public Payment getPayment() {
+        return paymentBuilder.build();
+    }
+
 }

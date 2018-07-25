@@ -66,11 +66,11 @@ public class ServiceStateHandler {
         } else if (preferenceKey.equals(context.getString(R.string.pref_split))) {
             service = SplitService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_prepayment))) {
-            service = PrePaymentService.class.getName();
+            service = PreTransactionService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_postcard))) {
             service = PostCardService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_postpayment))) {
-            service = PostPaymentService.class.getName();
+            service = PostTransactionService.class.getName();
         } else if (preferenceKey.equals(context.getString(R.string.pref_postflow))) {
             service = PostFlowService.class.getName();
         }

@@ -15,18 +15,27 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.model.NoOpModel;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    private PaymentResponse paymentResponse;
+    private ModelDisplay modelDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +43,16 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
         setContentView(R.layout.activity_post_flow);
         ButterKnife.bind(this);
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.fss_post_flow);
+        paymentResponse = PaymentResponse.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        modelDisplay.showTitle(false);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
-        modelDisplay.showPaymentResponse(PaymentResponse.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY)));
+        modelDisplay.showPaymentResponse(paymentResponse);
     }
 
     @OnClick(R.id.send_response)
@@ -48,4 +60,48 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
         sendResponseAndFinish(new NoOpModel());
     }
 
+    @Override
+    protected boolean showViewModelOption() {
+        return false;
+    }
+
+    @Override
+    protected boolean showViewRequestOption() {
+        return false;
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.POST_FLOW.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return PaymentResponse.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return NoOpModel.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return null;
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return paymentResponse.toJson();
+    }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.post_flow_help);
+    }
 }

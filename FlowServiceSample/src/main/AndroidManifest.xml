@@ -7,7 +7,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeActionBar">
+        android:theme="@style/AppThemeNoActionBar">
         <provider
             android:name=".FlowServiceInfoProvider"
             android:authorities="com.aevi.sdk.pos.flow.sample.provider"
@@ -34,7 +34,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.PrePaymentService"
+            android:name=".service.PreTransactionService"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -50,7 +50,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.PostPaymentService"
+            android:name=".service.PostTransactionService"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -77,44 +77,39 @@
         <activity
             android:name=".ui.SplitActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_split"
-            android:noHistory="true">
+            android:label="@string/fss_split">
         </activity>
         <activity
-            android:name=".ui.PrePaymentActivity"
+            android:name=".ui.PreTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_payment"
-            android:noHistory="true">
+            android:label="@string/fss_pre_payment">
         </activity>
         <activity
             android:name=".ui.PostCardActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_card"
-            android:noHistory="true">
+            android:label="@string/fss_post_card">
         </activity>
         <activity
             android:name=".ui.PreFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_flow"
-            android:noHistory="true">
+            android:label="@string/fss_pre_flow">
         </activity>
         <activity
-            android:name=".ui.PostPaymentActivity"
+            android:name=".ui.PostTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_payment"
-            android:noHistory="true">
+            android:label="@string/fss_post_payment">
         </activity>
         <activity
             android:name=".ui.PostFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_flow"
-            android:noHistory="true">
+            android:label="@string/fss_post_flow">
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:excludeFromRecents="true"
             android:label="@string/sample_settings"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/AppThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -124,8 +119,7 @@
         <activity
             android:name=".ui.LoyaltyBalanceActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_loyalty_balance"
-            android:noHistory="true">
+            android:label="@string/fss_loyalty_balance">
         </activity>
     </application>
 
