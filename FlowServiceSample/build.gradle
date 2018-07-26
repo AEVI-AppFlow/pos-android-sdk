@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+apply from: "../artifacts.gradle"
+apply from: "../publish-repo.gradle"
+apply from: "../publish-repo-android.gradle"
+
+ext.applicationName = "FlowServiceSample"
+ext.artifactIdPrefix = "flow-service-sample"
+ext.artifactGroupId = "com.aevi.sdk.pos.flow"
+
 android {
     compileSdkVersion projectTargetSdkVersion
     buildToolsVersion "${androidBuildVersion}"
@@ -18,8 +26,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    productFlavors {
     }
     lintOptions {
         abortOnError false
