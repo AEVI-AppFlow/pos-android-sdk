@@ -4,6 +4,8 @@ The AEVI POS Flow SDK enables developers to build applications for all stages of
 
 Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further information.
 
+[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
+
 ## Prerequisites
 
 In order to test the integration with POS Flow from your application, you will need the AEVI `Flow Processing Service` installed

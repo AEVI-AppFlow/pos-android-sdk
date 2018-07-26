@@ -26,6 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_weight="1"
+                android:elevation="0dp"
                 android:text="@string/payment_error_result"/>
 
             <ImageButton

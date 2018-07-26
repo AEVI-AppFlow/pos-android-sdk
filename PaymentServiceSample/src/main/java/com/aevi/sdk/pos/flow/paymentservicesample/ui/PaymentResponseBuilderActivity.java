@@ -14,19 +14,19 @@
 
 package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
+import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.UUID;
 
 import butterknife.*;
+
+import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
 
 public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<TransactionResponse> {
 
@@ -57,6 +59,9 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
     @BindView(R.id.approve_switch)
     Switch approveSwitch;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private List<Long> processedAmountsOptions = new ArrayList<>();
     private TransactionRequest transactionRequest;
     private TransactionResponse transactionResponse;
@@ -74,30 +79,25 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
         processedAmountsOptions.addAll(Arrays.asList(0L, totalAmount / 2L, totalAmount, (long) (totalAmount * 1.5)));
         List<String> formattedAmountOptions = new ArrayList<>();
         for (Long processedAmountsOption : processedAmountsOptions) {
-            formattedAmountOptions.add(formatAmount(processedAmountsOption) + " (" + (int) ((processedAmountsOption / (double) totalAmount) * 100) + "%)");
+            formattedAmountOptions
+                    .add(formatAmount(processedAmountsOption) + " (" + (int) ((processedAmountsOption / (double) totalAmount) * 100) + "%)");
         }
         dropDownHelper.setupDropDown(processedAmountsSpinner, formattedAmountOptions, false);
         processedAmountsSpinner.setSelection(2);
 
         dropDownHelper.setupDropDown(paymentMethodsSpinner, R.array.payment_methods);
         registerForActivityEvents();
+        setupToolbar(toolbar, R.string.pss_txn_processing);
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         buildTransactionResponse();
-    }
-
-    @OnClick(R.id.show_request)
-    public void onShowRequest() {
-        Intent intent = new Intent(this, ModelDetailsActivity.class);
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
-        startActivity(intent);
     }
 
     public String formatAmount(long amount) {
@@ -125,6 +125,10 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
                     .withResponseCode(APPROVED_RESP_CODE)
                     .withCard(getCard())
                     .withReference(INTERNAL_ID_KEY, UUID.randomUUID().toString())
+                    .withReference(MERCHANT_ID, IdProvider.getMerchantId())
+                    .withReference(MERCHANT_NAME, IdProvider.getMerchantName())
+                    .withReference(TERMINAL_ID, IdProvider.getTerminalId())
+                    .withReference(TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
                     .build();
         } else {
             transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
@@ -165,5 +169,40 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
     protected void sendResponseAndFinish(TransactionResponse response) {
         super.sendResponseAndFinish(response);
         InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionResponse);
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected String getCurrentStage() {
+        return PaymentStage.TRANSACTION_PROCESSING.name();
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return TransactionRequest.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return TransactionResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return transactionResponse.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return transactionRequest.toJson();
+    }
+
+    @Override
+    protected String getHelpText() {
+        return getString(R.string.txn_processing_help);
     }
 }

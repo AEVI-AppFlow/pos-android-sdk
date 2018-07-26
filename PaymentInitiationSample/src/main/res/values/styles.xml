@@ -17,6 +17,7 @@
 
     <style name="DialogTitle" parent="BaseDialogTitle">
         <item name="android:background">@color/colorAccent</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
 </resources>

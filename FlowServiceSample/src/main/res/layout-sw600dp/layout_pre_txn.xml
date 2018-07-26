@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/margin_large"
-    tools:context="com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentResponseBuilderActivity">
+    android:padding="@dimen/margin_large">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -14,8 +13,7 @@
         android:layout_weight="0.5"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/view_payment_response_fields"/>
+        <include layout="@layout/view_pre_txn_fields"/>
 
     </LinearLayout>
 
@@ -24,7 +22,7 @@
         android:name="com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_large"
         android:layout_weight="0.5"
         android:tag="request"/>
 

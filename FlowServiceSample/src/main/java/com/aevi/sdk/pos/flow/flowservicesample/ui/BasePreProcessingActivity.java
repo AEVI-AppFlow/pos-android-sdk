@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -33,7 +32,6 @@ import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDetailsActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import java.util.List;
@@ -66,7 +64,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pre_payment);
+        setContentView(R.layout.activity_pre_txn);
         ButterKnife.bind(this);
 
         // SamplePrePaymentService uses the API launchActivity() method, which means the request will be available as per below
@@ -79,23 +77,16 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
         amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
         flowResponse = new FlowResponse();
         registerForActivityEvents();
+        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        if (modelDisplay != null) {
+            modelDisplay.showTitle(false);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         updateModel();
-    }
-
-    @OnClick(R.id.show_request)
-    public void onShowRequest() {
-        Intent intent = new Intent(this, ModelDetailsActivity.class);
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, TransactionRequest.class.getName());
-        intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, transactionRequest.toJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, "TransactionRequest");
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getResources().getColor(R.color.colorPrimary));
-        startActivity(intent);
     }
 
     private void updateModel() {
@@ -169,5 +160,30 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
         for (View payView : payViews) {
             payView.setEnabled(false);
         }
+    }
+
+    @Override
+    protected int getPrimaryColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    @Override
+    protected Class<?> getRequestClass() {
+        return TransactionRequest.class;
+    }
+
+    @Override
+    protected Class<?> getResponseClass() {
+        return FlowResponse.class;
+    }
+
+    @Override
+    protected String getModelJson() {
+        return flowResponse.toJson();
+    }
+
+    @Override
+    protected String getRequestJson() {
+        return transactionRequest.toJson();
     }
 }

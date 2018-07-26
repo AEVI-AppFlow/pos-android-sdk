@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:elevation="0dp"
             android:text="@string/generic_result"/>
 
         <ImageButton

@@ -1,0 +1,27 @@
+publishing {
+    publications {
+        android.applicationVariants.all { variant ->
+            if (variant.productFlavors) {
+                variant.productFlavors.each { flavor ->
+                    variant.outputs.each { output ->
+                        "${variant.name}"(MavenPublication) {
+                            groupId artifactGroupId
+                            version versionName
+                            artifactId "${artifactIdPrefix}-${output.baseName}"
+                            artifact("${project.buildDir}/outputs/apk/${applicationName}-${variant.versionName}.apk")
+                        }
+                    }
+                }
+            } else {
+                variant.outputs.each { output ->
+                    "${variant.name}"(MavenPublication) {
+                        groupId artifactGroupId
+                        version versionName
+                        artifactId "${artifactIdPrefix}-${output.baseName}"
+                        artifact("${project.buildDir}/outputs/apk/${applicationName}-${variant.versionName}.apk")
+                    }
+                }
+            }
+        }
+    }
+}

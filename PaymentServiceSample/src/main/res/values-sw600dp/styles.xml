@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="Popup" parent="@style/Base.Theme.AppCompat.Light.Dialog.FixedSize">
+    </style>
+
+</resources>

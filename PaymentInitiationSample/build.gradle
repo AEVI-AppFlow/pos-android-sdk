@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+apply from: "../artifacts.gradle"
+apply from: "../publish-repo.gradle"
+apply from: "../publish-repo-android.gradle"
+
+ext.applicationName = "PaymentInitiationSample"
+ext.artifactIdPrefix = "payment-initiation-sample"
+ext.artifactGroupId = "com.aevi.sdk.pos.flow"
+
 android {
     compileSdkVersion projectTargetSdkVersion
     buildToolsVersion "${androidBuildVersion}"
@@ -18,7 +26,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -37,7 +44,6 @@ dependencies {
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
     implementation sampleDependencies.aeviUiLibrary
-
 
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }

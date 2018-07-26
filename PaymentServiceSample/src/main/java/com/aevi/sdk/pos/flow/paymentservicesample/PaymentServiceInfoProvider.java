@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentServiceInfoBuilder;
+import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.service.BasePaymentServiceInfoProvider;
 
 import java.util.Set;
@@ -45,8 +46,8 @@ public class PaymentServiceInfoProvider extends BasePaymentServiceInfoProvider {
                 .withPaymentMethods(PaymentMethods.CARD)
                 .withSupportedCurrencies(SUPPORTED_CURRENCIES)
                 .withDefaultCurrency(SUPPORTED_CURRENCIES[0])
-                .withTerminalId("12345678")
-                .withMerchantIds("1234abcd")
+                .withTerminalId(IdProvider.getTerminalId())
+                .withMerchantIds(IdProvider.getMerchantId())
                 .withSupportedRequestTypes(supportedRequestTypes)
                 .withSupportedTransactionTypes(supportedTransactionTypes)
                 .withSupportManualEntry(false)

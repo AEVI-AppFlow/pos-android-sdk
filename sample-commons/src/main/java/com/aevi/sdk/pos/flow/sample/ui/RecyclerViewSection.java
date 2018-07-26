@@ -32,17 +32,19 @@ public class RecyclerViewSection extends StatelessSection {
     private final Context context;
     private final String title;
     private final List<Pair<String, String>> keyValueItems;
+    private final boolean firstHeader;
 
-    public RecyclerViewSection(Context context, int titleRes, List<Pair<String, String>> keyValueItems) {
-        this(context, context.getString(titleRes), keyValueItems);
+    public RecyclerViewSection(Context context, int titleRes, List<Pair<String, String>> keyValueItems, boolean firstHeader) {
+        this(context, context.getString(titleRes), keyValueItems, firstHeader);
     }
 
-    public RecyclerViewSection(Context context, String title, List<Pair<String, String>> keyValueItems) {
+    public RecyclerViewSection(Context context, String title, List<Pair<String, String>> keyValueItems, boolean firstHeader) {
         super(SectionParameters.builder().itemResourceId(R.layout.snippet_list_item)
                 .headerResourceId(R.layout.snippet_list_header).build());
         this.context = context;
         this.title = title;
         this.keyValueItems = keyValueItems;
+        this.firstHeader = firstHeader;
     }
 
     @Override
@@ -54,6 +56,9 @@ public class RecyclerViewSection extends StatelessSection {
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         SectionHeaderViewHolder sectionHeaderViewHolder = (SectionHeaderViewHolder) holder;
         sectionHeaderViewHolder.title.setText(title);
+        if (firstHeader) {
+            sectionHeaderViewHolder.itemView.setPadding(0, 0, 0, 0);
+        }
     }
 
     @Override

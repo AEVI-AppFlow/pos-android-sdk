@@ -70,12 +70,18 @@ public class GenericRequestFragment extends BaseObservableFragment {
         modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
-        dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types_readable);
+
+        SampleContext.getInstance(getActivity()).getPaymentClient().getSupportedRequestTypes()
+                .subscribe(requestTypes -> {
+                    requestTypes.remove(FinancialRequestTypes.PAYMENT); // Filter out "payment" here, as we handle that via PaymentFragment
+                    requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, requestTypes, false);
+                }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
     }
 
     @OnItemSelected(R.id.request_type_spinner)
     public void onRequestTypeSelection(int position) {
-        selectedApiRequestType = getContext().getResources().getStringArray(R.array.request_types_api)[position];
+        selectedApiRequestType = (String) requestTypeSpinner.getAdapter().getItem(position);
         this.request = createRequest();
         if (request != null && modelDisplay != null) {
             modelDisplay.showRequest(request);
@@ -89,8 +95,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             paymentClient.processRequest(request).subscribe(response -> {
-                intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                getContext().startActivity(intent);
+                if (isAdded()) {
+                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                    startActivity(intent);
+                }
             }, throwable -> {
                 Response response;
                 if (throwable instanceof MessageException) {
@@ -99,8 +107,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 } else {
                     response = new Response(request, false, throwable.getMessage());
                 }
-                intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                getContext().startActivity(intent);
+                if (isAdded()) {
+                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                    startActivity(intent);
+                }
             });
         }
     }
@@ -114,7 +124,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             case FinancialRequestTypes.REVERSAL:
             case FinancialRequestTypes.RESPONSE_REDELIVERY:
                 if (lastResponse == null) {
-                    Toast.makeText(getContext(), "Please complete a successful payment before attempting a reversal", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
                 request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getId());
@@ -129,6 +139,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 break;
             case SHOW_LOYALTY_POINTS_REQUEST:
                 request.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+                break;
+            default:
+                // No extra data required
                 break;
         }
         return request;

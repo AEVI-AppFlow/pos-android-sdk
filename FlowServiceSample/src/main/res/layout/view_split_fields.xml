@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Button
-        android:id="@+id/show_request"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/view_request_data"
-        android:textColor="@android:color/holo_blue_dark"/>
-
     <TextView
         android:id="@+id/split_header"
         style="@style/Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="@string/setup_split"/>
 
     <TextView
@@ -30,54 +21,16 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <Button
+        android:id="@+id/split_basket"
+        style="@style/ItemButton"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/split_basket_in_half"/>
 
-        <Button
-            android:id="@+id/split_basket"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/split_basket_in_half"/>
-
-        <TextView
-            android:id="@+id/or_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/or"
-            android:textSize="17sp"/>
-
-        <Button
-            android:id="@+id/split_amounts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/split_amounts_in_half"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancel_transaction"
-            style="@style/DefaultButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel_payment"/>
-
-        <Button
-            android:id="@+id/send_response"
-            style="@style/DefaultButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/bypass_split"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/split_amounts"
+        style="@style/ItemButton"
+        android:layout_marginTop="@dimen/margin_vertical_items"
+        android:text="@string/split_amounts_in_half"/>
 
 </merge>

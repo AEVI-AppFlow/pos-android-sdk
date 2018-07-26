@@ -19,6 +19,7 @@ import android.content.Intent;
 
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.ApiFunctionsAdapter;
@@ -57,12 +58,10 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
                 break;
             case GENERIC_REQUEST:
                 Intent requestIntent = new Intent(getContext(), RequestInitiationActivity.class);
-                requestIntent.putExtra(RequestInitiationActivity.KEY_FRAGMENT, RequestInitiationActivity.FRAGMENT_GENERIC_REQUEST);
                 startActivity(requestIntent);
                 break;
             case INITIATE_PAYMENT:
-                Intent paymentIntent = new Intent(getContext(), RequestInitiationActivity.class);
-                paymentIntent.putExtra(RequestInitiationActivity.KEY_FRAGMENT, RequestInitiationActivity.FRAGMENT_PAYMENT);
+                Intent paymentIntent = new Intent(getContext(), PaymentInitiationActivity.class);
                 startActivity(paymentIntent);
                 break;
         }

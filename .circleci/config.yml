@@ -49,7 +49,7 @@ reusable-steps:
   - &publish_to_release
     run:
       name: Publish to Release
-      command: ./gradlew javadoc build publishJavadocsByVersion publishJavadocsAsLatest bintrayUpload
+      command: ./gradlew javadoc build publishJavadocsByVersion publishJavadocsAsLatest bintrayUpload assembleRelease publishReleasePublicationToReleaseRepository
 
 
 
