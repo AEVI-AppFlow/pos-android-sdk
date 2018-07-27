@@ -124,6 +124,7 @@ jobs:
       - checkout
       - *gradle_props
       - *restore_cache
+      - *build
       - *publish_to_snapshot
 
   deploy-release:
@@ -133,6 +134,7 @@ jobs:
       - checkout
       - *gradle_props
       - *restore_cache
+      - *build
       - *publish_to_release
 
 workflows:
