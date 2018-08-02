@@ -1,10 +1,23 @@
 version: 2
 
+generic:
+  - &job_config
+    docker:
+      - image: circleci/android:api-27-alpha
+    working_directory: ~/repo
+    environment:
+      _JAVA_OPTIONS: "-Xms516m -Xmx1024m"
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false
+
+  - &attach_workspace
+    attach_workspace:
+      at: ~/
+
 reusable-steps:
   - &restore_cache
     restore_cache:
       keys:
-      - v1-dependencies-{{ checksum "build.gradle" }}
+      - v1-dependencies-{{ checksum "dependencies.gradle" }}
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
   - &save_cache
@@ -12,7 +25,7 @@ reusable-steps:
       paths:
         - ~/.gradle
         - ~/.android
-      key: v1-dependencies-{{ checksum "build.gradle" }}
+      key: v1-dependencies-{{ checksum "dependencies.gradle" }}
   - &setup_aws_cli
     run:
       name: Setup AWS CLI
@@ -33,34 +46,55 @@ reusable-steps:
   - &build
     run:
       name: Build and copy
-      command: ./gradlew javadoc build copyApiLibs
+      command: ./gradlew javadoc build jar copyApiLibs
   - &store
     store_artifacts:
-      path: artifacts
+      path: flow-base-api/build/libs
+
+    store_artifacts:
+      path: flow-service-api/build/libs
+
+    store_artifacts:
+      path: payment-initiation-api/build/libs
+
+    store_artifacts:
+      path: payment-service-api/build/libs
+
+    store_artifacts:
+      path: PaymentInitiationSample/build/outputs/apk
+
+    store_artifacts:
+      path: PaymentServiceSample/build/outputs/apk
+
+    store_artifacts:
+      path: FlowServiceSample/build/outputs/apk
+
+  - &persist
+    persist_to_workspace:
+      root: ~/
+      paths:
+        - repo
+        - .gradle
+        - .android
 
   - &publish_to_qa
     run:
       name: Publish to QA
-      command: ./gradlew javadoc alljavadoc build publishApiJarPublicationToQaRepository publishJavadocsByVersion
+      command: ./gradlew assembleRelease publishReleasePublicationToQaRepository
   - &publish_to_snapshot
     run:
       name: Publish to Snapshot
-      command: ./gradlew javadoc build publishApiJarPublicationToSnapshotRepository copyApiLibs copyApks publishJavadocsByVersion
+      command: ./gradlew javadoc jar publishApiJarPublicationToSnapshotRepository copyApiLibs publishJavadocsByVersion
   - &publish_to_release
     run:
       name: Publish to Release
-      command: ./gradlew javadoc build publishJavadocsByVersion publishJavadocsAsLatest bintrayUpload assembleRelease publishReleasePublicationToReleaseRepository
+      command: ./gradlew javadoc assembleRelease jar publishJavadocsByVersion publishJavadocsAsLatest publishReleasePublicationToReleaseRepository bintrayUpload
 
 
 
 jobs:
   build:
-    docker:
-      - image: circleci/android:api-26-alpha
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+    <<: *job_config
     steps:
       - *setup_aws_cli
       - checkout
@@ -71,38 +105,36 @@ jobs:
       - *test
       - *build
       - *store
+      - *persist
 
   deploy-qa:
-    docker:
-      - image: circleci/android:api-26-alpha
-    working_directory: ~/repo
+    <<: *job_config
     steps:
       - *setup_aws_cli
       - checkout
       - *gradle_props
       - *restore_cache
+      - *build
       - *publish_to_qa
 
   deploy-snapshot:
-    docker:
-      - image: circleci/android:api-26-alpha
-    working_directory: ~/repo
+    <<: *job_config
     steps:
       - *setup_aws_cli
       - checkout
       - *gradle_props
       - *restore_cache
+      - *build
       - *publish_to_snapshot
 
   deploy-release:
-    docker:
-      - image: circleci/android:api-26-alpha
-    working_directory: ~/repo
+    <<: *job_config
     steps:
       - *setup_aws_cli
       - checkout
       - *gradle_props
       - *restore_cache
+      - *build
       - *publish_to_release
 
 workflows:
