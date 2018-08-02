@@ -16,6 +16,7 @@ package com.aevi.sdk.flow;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
@@ -35,6 +36,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    @NonNull
     public Single<List<Device>> getDevices() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -59,6 +61,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    @NonNull
     public Single<FlowServices> getFlowServices() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -89,6 +92,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    @NonNull
     public Single<List<String>> getSupportedRequestTypes() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -107,11 +111,13 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    @NonNull
     public Single<Response> processRequest(Request request) {
         return sendGenericRequest(request);
     }
 
     @Override
+    @NonNull
     public Observable<FlowEvent> subscribeToSystemEvents() {
         if (!isProcessingServiceInstalled(context)) {
             return Observable.error(NO_FPS_EXCEPTION);
@@ -135,6 +141,7 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
     }
 
     @Override
+    @NonNull
     public Single<SystemSettings> getSystemSettings() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);

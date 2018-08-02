@@ -33,13 +33,11 @@ import com.aevi.util.json.Jsonable;
 
 import io.reactivex.functions.Consumer;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
+import static android.content.Intent.*;
 import static com.aevi.sdk.flow.model.ActivityEvents.FINISH;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.model.AppMessageTypes.*;
-import static com.aevi.sdk.flow.model.MessageErrors.ERROR_SERVICE_EXCEPTION;
-import static com.aevi.sdk.flow.model.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
+import static com.aevi.sdk.flow.model.MessageErrors.*;
 
 public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends Jsonable> extends AbstractMessengerService {
 
@@ -173,7 +171,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      * @param clientMessageId The client message id
      * @param request         The request to be processed
      */
-    protected abstract void processRequest(String clientMessageId, REQUEST request);
+    protected abstract void processRequest(@NonNull String clientMessageId, @NonNull REQUEST request);
 
     /**
      * Called when your application needs to abort what it is doing and finish any Activity that is running.
@@ -186,7 +184,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      *
      * @param clientMessageId The client message id
      */
-    protected abstract void finish(String clientMessageId);
+    protected abstract void finish(@NonNull String clientMessageId);
 
     /**
      * Helper to launch an activity with the request passed in.
@@ -253,7 +251,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      *
      * @param event
      */
-    protected void onActivityLifecycleEvent(Lifecycle.Event event) {
+    protected void onActivityLifecycleEvent(@NonNull Lifecycle.Event event) {
         // Default no-op
     }
 
