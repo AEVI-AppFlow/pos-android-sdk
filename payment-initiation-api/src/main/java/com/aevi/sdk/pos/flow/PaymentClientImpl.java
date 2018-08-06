@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
@@ -44,6 +45,7 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
     }
 
     @Override
+    @NonNull
     public Single<PaymentServices> getPaymentServices() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -74,6 +76,7 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
     }
 
     @Override
+    @NonNull
     public Single<List<String>> getSupportedTransactionTypes() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -92,11 +95,13 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
     }
 
     @Override
+    @NonNull
     public Single<PaymentResponse> initiatePayment(Payment payment) {
         return initiatePayment(payment, null, null);
     }
 
     @Override
+    @NonNull
     public Single<PaymentResponse> initiatePayment(final Payment payment, String paymentServiceId, String deviceId) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
@@ -135,11 +140,13 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
     }
 
     @Override
+    @NonNull
     public RequestStatus getCurrentPaymentStatus(String requestId) {
         return subscribeToStatusUpdates(requestId).blockingFirst();
     }
 
     @Override
+    @NonNull
     public Observable<RequestStatus> subscribeToStatusUpdates(String paymentId) {
         if (!isProcessingServiceInstalled(context)) {
             return Observable.error(NO_FPS_EXCEPTION);

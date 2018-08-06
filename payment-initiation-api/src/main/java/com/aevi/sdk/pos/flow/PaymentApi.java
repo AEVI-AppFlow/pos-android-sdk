@@ -15,6 +15,7 @@
 package com.aevi.sdk.pos.flow;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.ApiBase;
 
@@ -35,6 +36,7 @@ public final class PaymentApi {
      *
      * @return The API version
      */
+    @NonNull
     public static String getApiVersion() {
         return PaymentInitiationConfig.VERSION;
     }
@@ -57,6 +59,7 @@ public final class PaymentApi {
      * @param context The Android context
      * @return The processing service version (semver format)
      */
+    @NonNull
     public static String getProcessingServiceVersion(Context context) {
         return ApiBase.getProcessingServiceVersion(context);
     }
@@ -67,6 +70,7 @@ public final class PaymentApi {
      * @param context The Android context
      * @return An instance of {@link PaymentClient}
      */
+    @NonNull
     public static PaymentClient getPaymentClient(Context context) {
         return new PaymentClientImpl(context);
     }

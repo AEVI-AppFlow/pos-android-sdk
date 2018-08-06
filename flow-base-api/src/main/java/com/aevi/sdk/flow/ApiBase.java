@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
@@ -104,6 +105,7 @@ public abstract class ApiBase {
         return resolveInfo.size() == 1 && resolveInfo.get(0).serviceInfo != null;
     }
 
+    @NonNull
     public static String getProcessingServiceVersion(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(FLOW_PROCESSING_SERVICE, 0).versionName;

@@ -15,6 +15,8 @@
 package com.aevi.sdk.flow;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.model.config.SystemSettings;
 
@@ -42,6 +44,7 @@ public interface FlowClient {
      *
      * @return Single emitting a list of {@link Device} objects containing basic device info
      */
+    @NonNull
     Single<List<Device>> getDevices();
 
     /**
@@ -55,6 +58,7 @@ public interface FlowClient {
      *
      * @return Single emitting a {@link FlowServices} model
      */
+    @NonNull
     Single<FlowServices> getFlowServices();
 
     /**
@@ -65,6 +69,7 @@ public interface FlowClient {
      *
      * @return The list of supported request types
      */
+    @NonNull
     Single<List<String>> getSupportedRequestTypes();
 
     /**
@@ -75,6 +80,7 @@ public interface FlowClient {
      * @param request The request
      * @return Single emitting a {@link Response} model
      */
+    @NonNull
     Single<Response> processRequest(Request request);
 
     /**
@@ -85,6 +91,7 @@ public interface FlowClient {
      *
      * @return A stream that will emit {@link FlowEvent} items
      */
+    @NonNull
     Observable<FlowEvent> subscribeToSystemEvents();
 
     /**
@@ -92,5 +99,6 @@ public interface FlowClient {
      *
      * @return A single emitting {@link SystemSettings}
      */
+    @NonNull
     Single<SystemSettings> getSystemSettings();
 }
