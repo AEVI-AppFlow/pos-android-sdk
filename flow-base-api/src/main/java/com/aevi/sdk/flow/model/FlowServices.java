@@ -34,6 +34,9 @@ public class FlowServices {
     /**
      * Retrieve the full list of available flow services.
      *
+     * Note that this list is not filtered to take flow configurations into account, meaning that flow services in this list are not
+     * necessarily eligible to be called for any given request/transaction type.
+     *
      * @return The full list of available flow services
      */
     public List<FlowServiceInfo> getAllFlowServices() {

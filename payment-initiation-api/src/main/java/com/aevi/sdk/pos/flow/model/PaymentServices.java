@@ -35,6 +35,9 @@ public class PaymentServices {
     /**
      * Retrieve the full list of available payment services.
      *
+     * Note that this list is not filtered to take flow configurations into account, meaning that payment services in this list are not
+     * necessarily eligible to be called for any given request/transaction type.
+     *
      * @return The full list of available payment services
      */
     public List<PaymentServiceInfo> getAllPaymentServices() {
