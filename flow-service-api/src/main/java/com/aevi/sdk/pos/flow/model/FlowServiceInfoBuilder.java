@@ -20,8 +20,7 @@ import android.content.pm.PackageManager;
 import com.aevi.sdk.flow.model.FlowServiceInfo;
 import com.aevi.sdk.pos.flow.FlowServiceApi;
 
-import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
-import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
+import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Builder to construct {@link FlowServiceInfo} instances.
@@ -82,9 +81,9 @@ public class FlowServiceInfoBuilder {
     /**
      * Sets the request types supported by this flow service. These types could be unique to the service.
      *
-     * If none are set by the service, it will default to supporting payment requests (sale, refund, etc) only.
+     * Mandatory field.
      *
-     * ONLY set this if service can handle non-payment scenarios.
+     * These values determine for what types of requests your service will be called.
      *
      * See reference values in the documentation for possible values.
      *
@@ -99,11 +98,9 @@ public class FlowServiceInfoBuilder {
     /**
      * Sets the transaction types supported by this flow service for payment requests. These types could be unique to the service.
      *
-     * If none are set by the service, it will default to supporting "sale" only.
+     * These values determine for what type of transactions your service will be called.
      *
-     * ONLY set this if service can handle non-sale flows.
-     *
-     * See reference values in the documentation for possible values.
+     * See reference values in the documentation for all possible values.
      *
      * @param supportedTransactionTypes A list of string values indicating the transaction types this flow service can handle.
      * @return This builder
