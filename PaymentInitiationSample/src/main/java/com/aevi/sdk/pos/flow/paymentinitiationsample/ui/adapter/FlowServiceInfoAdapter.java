@@ -17,15 +17,15 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
 
-import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 import java.util.Arrays;
 
-public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<FlowServiceInfo> {
+public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowServiceInfo> {
 
-    public FlowServiceInfoAdapter(Context context, FlowServiceInfo flowServiceInfo) {
-        super(context, R.array.flow_service_labels, flowServiceInfo);
+    public FlowServiceInfoAdapter(Context context, PaymentFlowServiceInfo paymentFlowServiceInfo) {
+        super(context, R.array.flow_service_labels, paymentFlowServiceInfo);
     }
 
     @Override

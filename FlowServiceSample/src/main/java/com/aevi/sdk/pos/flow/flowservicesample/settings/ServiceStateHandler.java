@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
-import com.aevi.sdk.pos.flow.flowservicesample.FlowServiceInfoProvider;
+import com.aevi.sdk.pos.flow.flowservicesample.PaymentFlowServiceInfoProvider;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.flowservicesample.service.*;
 import com.aevi.sdk.pos.flow.model.PaymentStage;
@@ -35,7 +35,7 @@ public class ServiceStateHandler {
         int enableDisableFlag = enable ? COMPONENT_ENABLED_STATE_ENABLED : COMPONENT_ENABLED_STATE_DISABLED;
         packageManager.setComponentEnabledSetting(getComponentFromPreferenceKey(context, preferenceKey), enableDisableFlag, DONT_KILL_APP);
 
-        FlowServiceInfoProvider.notifyServiceInfoChange(context);
+        PaymentFlowServiceInfoProvider.notifyServiceInfoChange(context);
     }
 
     public static boolean isStageEnabled(Context context, PaymentStage paymentStage) {

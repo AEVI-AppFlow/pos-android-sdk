@@ -9,11 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoActionBar">
         <provider
-            android:name=".FlowServiceInfoProvider"
+            android:name=".PaymentFlowServiceInfoProvider"
             android:authorities="com.aevi.sdk.pos.flow.sample.provider"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.aevi.sdk.pos.flow.action.FlowServiceInfoProvider"/>
+                <action android:name="com.aevi.sdk.pos.flow.action.PaymentFlowServiceInfoProvider"/>
             </intent-filter>
         </provider>
 

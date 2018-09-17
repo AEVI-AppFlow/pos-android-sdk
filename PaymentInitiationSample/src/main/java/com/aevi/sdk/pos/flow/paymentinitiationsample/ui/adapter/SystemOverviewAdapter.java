@@ -18,6 +18,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 import android.content.Context;
 
 import com.aevi.sdk.pos.flow.PaymentApi;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
 
@@ -31,6 +32,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.label.setText(labels[position]);
         String value = "";
+        PaymentFlowServices paymentFlowServices = info.getPaymentFlowServices();
         switch (resIds[position]) {
             case R.string.system_info_label_api_version:
                 value = PaymentApi.getApiVersion();
@@ -39,28 +41,25 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
                 value = PaymentApi.getProcessingServiceVersion(context);
                 break;
             case R.string.system_info_label_num_flow_services:
-                value = String.valueOf(info.getNumFlowServices());
+                value = String.valueOf(paymentFlowServices.getNumberOfFlowServices());
                 break;
             case R.string.system_info_label_num_devices:
                 value = String.valueOf(info.getNumDevices());
                 break;
-            case R.string.system_info_label_num_payment_services:
-                value = String.valueOf(info.getNumPaymentServices());
-                break;
             case R.string.system_info_label_all_currencies:
-                value = getArrayValue(info.getAllCurrencies());
+                value = getSetValue(paymentFlowServices.getAllSupportedCurrencies());
                 break;
             case R.string.system_info_label_all_data_keys:
-                value = getArrayValue(info.getAllDataKeys());
+                value = getSetValue(paymentFlowServices.getAllSupportedDataKeys());
                 break;
             case R.string.system_info_label_all_payment_methods:
-                value = getArrayValue(info.getAllPaymentMethods());
+                value = getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
                 break;
             case R.string.system_info_label_all_request_types:
-                value = getArrayValue(info.getAllRequestTypes());
+                value = getSetValue(paymentFlowServices.getAllSupportedRequestTypes());
                 break;
             case R.string.system_info_label_all_transaction_types:
-                value = getArrayValue(info.getAllTransactionTypes());
+                value = getSetValue(paymentFlowServices.getAllSupportedTransactionTypes());
                 break;
         }
         holder.value.setText(value);

@@ -18,23 +18,23 @@ package com.aevi.sdk.pos.flow.flowservicesample;
 import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.constants.TransactionTypes;
-import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.flowservicesample.service.GenericRequestService;
 import com.aevi.sdk.pos.flow.flowservicesample.settings.ServiceStateHandler;
-import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.model.PaymentStage;
-import com.aevi.sdk.pos.flow.service.BaseFlowServiceInfoProvider;
+import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.aevi.sdk.pos.flow.model.PaymentStage.*;
 
-public class FlowServiceInfoProvider extends BaseFlowServiceInfoProvider {
+public class PaymentFlowServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 
     @Override
-    protected FlowServiceInfo getFlowServiceInfo() {
-        return new FlowServiceInfoBuilder()
+    protected PaymentFlowServiceInfo getPaymentFlowServiceInfo() {
+        return new PaymentFlowServiceInfoBuilder()
                 .withVendor("AEVI")
                 .withDisplayName("Flow Service Sample")
                 .withCanAdjustAmounts(true)

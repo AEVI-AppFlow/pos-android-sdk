@@ -55,19 +55,11 @@ public class SystemOverviewFragment extends BaseFragment {
 
     private Single<SystemOverview> createSystemInfo() {
         PaymentClient paymentClient = getSampleContext().getPaymentClient();
-        return Single.zip(paymentClient.getFlowServices(), paymentClient.getPaymentServices(), paymentClient.getDevices(), paymentClient.getSupportedRequestTypes(), paymentClient.getSupportedTransactionTypes(),
-                (flowServices, paymentServices, devices, supportedRequestTypes, supportedTransactionTypes) -> {
+        return Single.zip(paymentClient.getPaymentFlowServices(), paymentClient.getDevices(),
+                (paymentFlowServices, devices) -> {
                     SystemOverview systemOverview = new SystemOverview();
-                    systemOverview.setNumFlowServices(flowServices.getAllFlowServices().size());
-                    systemOverview.setNumPaymentServices(paymentServices.getAllPaymentServices().size());
+                    systemOverview.setPaymentFlowServices(paymentFlowServices);
                     systemOverview.setNumDevices(devices.size());
-                    systemOverview.setAllCurrencies(paymentServices.getAllSupportedCurrencies());
-                    systemOverview.addPaymentMethods(flowServices.getAllSupportedPaymentMethods());
-                    systemOverview.addPaymentMethods(paymentServices.getAllSupportedPaymentMethods());
-                    systemOverview.addDataKeys(flowServices.getAllSupportedDataKeys());
-                    systemOverview.addDataKeys(paymentServices.getAllSupportedDataKeys());
-                    systemOverview.addRequestTypes(supportedRequestTypes);
-                    systemOverview.setAllTransactionTypes(supportedTransactionTypes);
                     return systemOverview;
                 });
     }

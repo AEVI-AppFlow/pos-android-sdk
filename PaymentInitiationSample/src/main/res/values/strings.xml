@@ -109,7 +109,6 @@
     <string name="system_info_label_api_version">Payment Initiation API version</string>
     <string name="system_info_label_fps_version">Flow Processing Service version</string>
     <string name="system_info_label_num_flow_services">Number of flow services</string>
-    <string name="system_info_label_num_payment_services">Number of payment services</string>
     <string name="system_info_label_num_devices">Number of connected devices</string>
     <string name="system_info_label_all_request_types">All supported request types</string>
     <string name="system_info_label_all_transaction_types">All supported transaction types</string>
@@ -182,7 +181,6 @@
         <item>@string/system_info_label_api_version</item>
         <item>@string/system_info_label_fps_version</item>
         <item>@string/system_info_label_num_flow_services</item>
-        <item>@string/system_info_label_num_payment_services</item>
         <item>@string/system_info_label_num_devices</item>
         <item>@string/system_info_label_all_request_types</item>
         <item>@string/system_info_label_all_transaction_types</item>
