@@ -19,8 +19,9 @@ import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -36,11 +37,11 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final String apiVersion;
     private final String displayName;
     private final boolean hasAccessibilityMode;
-    private final String[] supportedRequestTypes;
-    private final String[] supportedDataKeys;
+    private final Set<String> supportedRequestTypes;
+    private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
     private boolean enabled;
-    private String[] stages;
+    private Set<String> stages;
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
@@ -49,8 +50,8 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     protected BaseServiceInfo(String id, String packageName, String vendor, String logicalDeviceId, String serviceVersion, String apiVersion,
-                              String displayName, boolean hasAccessibilityMode, String[] supportedRequestTypes,
-                              String[] supportedDataKeys, AdditionalData additionalInfo) {
+                              String displayName, boolean hasAccessibilityMode, Set<String> supportedRequestTypes,
+                              Set<String> supportedDataKeys, AdditionalData additionalInfo) {
         super(id);
         this.packageName = packageName;
         this.vendor = vendor;
@@ -59,8 +60,8 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
-        this.supportedRequestTypes = supportedRequestTypes != null ? supportedRequestTypes : new String[0];
-        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new String[0];
+        this.supportedRequestTypes = supportedRequestTypes != null ? supportedRequestTypes : new HashSet<String>();
+        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.enabled = true;
         checkArguments();
@@ -139,7 +140,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return array of request types supported by the service
      */
     @NonNull
-    public String[] getSupportedRequestTypes() {
+    public Set<String> getSupportedRequestTypes() {
         return supportedRequestTypes;
     }
 
@@ -150,7 +151,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsRequestType(String requestType) {
-        return supportedRequestTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedRequestTypes, requestType);
+        return supportedRequestTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedRequestTypes, requestType);
     }
 
     /**
@@ -160,7 +161,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      *
      * @return The set of stages the service operates in.
      */
-    public String[] getStages() {
+    public Set<String> getStages() {
         return stages;
     }
 
@@ -171,7 +172,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if the flow service operates in the given stage, false otherwise
      */
     public boolean containsStage(String stage) {
-        return stages.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(stages, stage);
+        return stages.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(stages, stage);
     }
 
     /**
@@ -187,7 +188,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return An array of supported AdditionalData keys
      */
     @NonNull
-    public String[] getSupportedDataKeys() {
+    public Set<String> getSupportedDataKeys() {
         return supportedDataKeys;
     }
 
@@ -198,7 +199,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsDataKey(String dataKey) {
-        return supportedDataKeys.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedDataKeys, dataKey);
+        return supportedDataKeys.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedDataKeys, dataKey);
     }
 
     /**
@@ -244,7 +245,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      *
      * @param stages Stages
      */
-    public void setStages(String[] stages) {
+    public void setStages(Set<String> stages) {
         this.stages = stages;
     }
 
@@ -261,19 +262,15 @@ public abstract class BaseServiceInfo extends BaseModel {
                 Objects.equals(serviceVersion, that.serviceVersion) &&
                 Objects.equals(apiVersion, that.apiVersion) &&
                 Objects.equals(displayName, that.displayName) &&
-                Arrays.equals(supportedRequestTypes, that.supportedRequestTypes) &&
-                Arrays.equals(supportedDataKeys, that.supportedDataKeys) &&
+                Objects.equals(supportedRequestTypes, that.supportedRequestTypes) &&
+                Objects.equals(supportedDataKeys, that.supportedDataKeys) &&
                 Objects.equals(additionalInfo, that.additionalInfo) &&
-                Arrays.equals(stages, that.stages);
+                Objects.equals(stages, that.stages);
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, additionalInfo);
-        result = 31 * result + Arrays.hashCode(supportedRequestTypes);
-        result = 31 * result + Arrays.hashCode(supportedDataKeys);
-        result = 31 * result + Arrays.hashCode(stages);
-        return result;
+        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedRequestTypes, supportedDataKeys, additionalInfo, stages);
     }
 }

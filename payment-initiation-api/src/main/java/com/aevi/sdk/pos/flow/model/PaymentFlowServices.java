@@ -18,7 +18,10 @@ import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Exposes payment and flow services information with helper methods to retrieve collated data across all services.
@@ -40,11 +43,11 @@ public class PaymentFlowServices implements Jsonable {
         supportedPaymentMethods = new HashSet<>();
         supportedDataKeys = new HashSet<>();
         for (PaymentFlowServiceInfo paymentFlowServiceInfo : paymentFlowServiceInfoList) {
-            supportedRequestTypes.addAll(Arrays.asList(paymentFlowServiceInfo.getSupportedRequestTypes()));
-            supportedTransactionTypes.addAll(Arrays.asList(paymentFlowServiceInfo.getSupportedTransactionTypes()));
-            supportedCurrencies.addAll(Arrays.asList(paymentFlowServiceInfo.getSupportedCurrencies()));
-            supportedPaymentMethods.addAll(Arrays.asList(paymentFlowServiceInfo.getPaymentMethods()));
-            supportedDataKeys.addAll(Arrays.asList(paymentFlowServiceInfo.getSupportedDataKeys()));
+            supportedRequestTypes.addAll(paymentFlowServiceInfo.getSupportedRequestTypes());
+            supportedTransactionTypes.addAll(paymentFlowServiceInfo.getSupportedTransactionTypes());
+            supportedCurrencies.addAll(paymentFlowServiceInfo.getSupportedCurrencies());
+            supportedPaymentMethods.addAll(paymentFlowServiceInfo.getPaymentMethods());
+            supportedDataKeys.addAll(paymentFlowServiceInfo.getSupportedDataKeys());
         }
     }
 

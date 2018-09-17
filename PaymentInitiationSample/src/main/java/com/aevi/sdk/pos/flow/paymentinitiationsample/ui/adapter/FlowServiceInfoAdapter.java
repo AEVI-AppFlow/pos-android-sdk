@@ -20,8 +20,6 @@ import android.content.Context;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
-import java.util.Arrays;
-
 public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowServiceInfo> {
 
     public FlowServiceInfoAdapter(Context context, PaymentFlowServiceInfo paymentFlowServiceInfo) {
@@ -49,7 +47,7 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
                 value = getYesNo(info.supportsAccessibilityMode());
                 break;
             case R.string.fs_label_stages:
-                value = getArrayValue(info.getStages());
+                value = getSetValue(info.getStages());
                 break;
             case R.string.fs_label_can_adjust_amounts:
                 value = getYesNo(info.canAdjustAmounts());
@@ -58,13 +56,13 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
                 value = getPayAmountsValue();
                 break;
             case R.string.service_label_currencies:
-                value = info.getSupportedCurrencies().length > 0 ? Arrays.toString(info.getSupportedCurrencies()) : "All currencies";
+                value = info.getSupportedCurrencies().size() > 0 ? getSetValue(info.getSupportedCurrencies()) : "All currencies";
                 break;
             case R.string.service_label_supported_data_keys:
-                value = getArrayValue(info.getSupportedDataKeys());
+                value = getSetValue(info.getSupportedDataKeys());
                 break;
             case R.string.service_label_request_types:
-                value = getArrayValue(info.getSupportedRequestTypes());
+                value = getSetValue(info.getSupportedRequestTypes());
                 break;
         }
         holder.value.setText(value);
@@ -72,7 +70,7 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
 
     private String getPayAmountsValue() {
         if (info.canPayAmounts()) {
-            return yes + ", via payment methods: " + Arrays.toString(info.getPaymentMethods());
+            return yes + ", via payment methods: " + getSetValue(info.getPaymentMethods());
         }
         return no;
     }

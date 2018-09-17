@@ -21,6 +21,10 @@ import com.aevi.sdk.flow.constants.ServiceInfoDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -33,11 +37,11 @@ public class PaymentFlowServiceInfoBuilder {
     private String displayName;
     private boolean supportsAccessibility;
     private String defaultCurrency;
-    private String[] paymentMethods;
-    private String[] supportedCurrencies = new String[0];
-    private String[] supportedRequestTypes = new String[0];
-    private String[] supportedTransactionTypes = new String[0];
-    private String[] supportedDataKeys;
+    private Set<String> paymentMethods = new HashSet<>();
+    private Set<String> supportedCurrencies = new HashSet<>();
+    private Set<String> supportedRequestTypes = new HashSet<>();
+    private Set<String> supportedTransactionTypes = new HashSet<>();
+    private Set<String> supportedDataKeys = new HashSet<>();
     private boolean canAdjustAmounts;
     private boolean canPayAmounts;
     private AdditionalData additionalInfo = new AdditionalData();
@@ -107,7 +111,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedRequestTypes(String... supportedRequestTypes) {
-        this.supportedRequestTypes = supportedRequestTypes;
+        this.supportedRequestTypes.addAll(Arrays.asList(supportedRequestTypes));
         return this;
     }
 
@@ -122,7 +126,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedTransactionTypes(String... supportedTransactionTypes) {
-        this.supportedTransactionTypes = supportedTransactionTypes;
+        this.supportedTransactionTypes.addAll(Arrays.asList(supportedTransactionTypes));
         return this;
     }
 
@@ -138,7 +142,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedDataKeys(String... supportedDataKeys) {
-        this.supportedDataKeys = supportedDataKeys;
+        this.supportedDataKeys.addAll(Arrays.asList(supportedDataKeys));
         return this;
     }
 
@@ -185,7 +189,7 @@ public class PaymentFlowServiceInfoBuilder {
             throw new IllegalArgumentException("If canPayAmounts flag is set, payment methods must be provided");
         }
         this.canPayAmounts = canPayAmounts;
-        this.paymentMethods = paymentMethods;
+        this.paymentMethods.addAll(Arrays.asList(paymentMethods));
         return this;
     }
 
@@ -213,7 +217,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedCurrencies(String... supportedCurrencies) {
-        this.supportedCurrencies = supportedCurrencies;
+        this.supportedCurrencies.addAll(Arrays.asList(supportedCurrencies));
         return this;
     }
 

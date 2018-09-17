@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.flow.util;
 
+import java.util.Collection;
+
 public final class Preconditions {
     private Preconditions() {
     }
@@ -52,6 +54,12 @@ public final class Preconditions {
 
     public static void checkNotEmpty(Object[] array, String message) {
         if (array == null || array.length == 0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void checkNotEmpty(Collection<?> collection, String message) {
+        if (collection == null || collection.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
     }

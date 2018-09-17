@@ -36,8 +36,9 @@ import com.aevi.sdk.flow.model.BaseServiceInfo;
 import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents the capabilities of a flow service.
@@ -51,32 +52,32 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     private final boolean canAdjustAmounts;
     private final boolean canPayAmounts;
     private final String defaultCurrency;
-    private final String[] supportedTransactionTypes;
-    private final String[] supportedCurrencies;
-    private final String[] paymentMethods;
+    private final Set<String> supportedTransactionTypes;
+    private final Set<String> supportedCurrencies;
+    private final Set<String> paymentMethods;
 
     // Default constructor for deserialisation
     PaymentFlowServiceInfo() {
         canAdjustAmounts = false;
         canPayAmounts = false;
         defaultCurrency = "";
-        supportedTransactionTypes = new String[0];
-        supportedCurrencies = new String[0];
-        paymentMethods = new String[0];
+        supportedTransactionTypes = new HashSet<>();
+        supportedCurrencies = new HashSet<>();
+        paymentMethods = new HashSet<>();
     }
 
     public PaymentFlowServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion, String displayName,
-                                  boolean hasAccessibilityMode, String[] supportedRequestTypes, String[] supportedDataKeys, String logicalDeviceId,
-                                  boolean canAdjustAmounts, boolean canPayAmounts, String defaultCurrency, String[] supportedTransactionTypes,
-                                  String[] supportedCurrencies, String[] paymentMethods, AdditionalData additionalInfo) {
+                                  boolean hasAccessibilityMode, Set<String> supportedRequestTypes, Set<String> supportedDataKeys, String logicalDeviceId,
+                                  boolean canAdjustAmounts, boolean canPayAmounts, String defaultCurrency, Set<String> supportedTransactionTypes,
+                                  Set<String> supportedCurrencies, Set<String> paymentMethods, AdditionalData additionalInfo) {
         super(id, packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedRequestTypes,
                 supportedDataKeys, additionalInfo);
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
         this.defaultCurrency = defaultCurrency;
-        this.paymentMethods = paymentMethods != null ? paymentMethods : new String[0];
-        this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new String[0];
-        this.supportedTransactionTypes = supportedTransactionTypes != null ? supportedTransactionTypes : new String[0];
+        this.paymentMethods = paymentMethods != null ? paymentMethods : new HashSet<String>();
+        this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new HashSet<String>();
+        this.supportedTransactionTypes = supportedTransactionTypes != null ? supportedTransactionTypes : new HashSet<String>();
     }
 
     /**
@@ -89,7 +90,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return An array of supported payment methods
      */
     @NonNull
-    public String[] getPaymentMethods() {
+    public Set<String> getPaymentMethods() {
         return paymentMethods;
     }
 
@@ -100,7 +101,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return True if supported, false otherwise
      */
     public boolean supportsPaymentMethod(String paymentMethod) {
-        return paymentMethods.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(paymentMethods, paymentMethod);
+        return paymentMethods.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(paymentMethods, paymentMethod);
     }
 
     /**
@@ -111,7 +112,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return An array of String objects indicating the 3-letter ISO 4217 currencies supported by the service.
      */
     @NonNull
-    public String[] getSupportedCurrencies() {
+    public Set<String> getSupportedCurrencies() {
         return supportedCurrencies;
     }
 
@@ -122,7 +123,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return True if supported, false otherwise
      */
     public boolean supportsCurrency(String currency) {
-        return supportedCurrencies.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedCurrencies, currency);
+        return supportedCurrencies.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedCurrencies, currency);
     }
 
     /**
@@ -155,7 +156,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return array of transaction types supported by the service.
      */
     @NonNull
-    public String[] getSupportedTransactionTypes() {
+    public Set<String> getSupportedTransactionTypes() {
         return supportedTransactionTypes;
     }
 
@@ -166,7 +167,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      * @return True if supported, false otherwise
      */
     public boolean supportsTransactionType(String transactionType) {
-        return supportedTransactionTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedTransactionTypes, transactionType);
+        return supportedTransactionTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedTransactionTypes, transactionType);
     }
 
     /**
@@ -197,18 +198,14 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         return canAdjustAmounts == that.canAdjustAmounts &&
                 canPayAmounts == that.canPayAmounts &&
                 Objects.equals(defaultCurrency, that.defaultCurrency) &&
-                Arrays.equals(supportedTransactionTypes, that.supportedTransactionTypes) &&
-                Arrays.equals(supportedCurrencies, that.supportedCurrencies) &&
-                Arrays.equals(paymentMethods, that.paymentMethods);
+                Objects.equals(supportedTransactionTypes, that.supportedTransactionTypes) &&
+                Objects.equals(supportedCurrencies, that.supportedCurrencies) &&
+                Objects.equals(paymentMethods, that.paymentMethods);
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(super.hashCode(), canAdjustAmounts, canPayAmounts, defaultCurrency);
-        result = 31 * result + Arrays.hashCode(supportedTransactionTypes);
-        result = 31 * result + Arrays.hashCode(supportedCurrencies);
-        result = 31 * result + Arrays.hashCode(paymentMethods);
-        return result;
+        return Objects.hash(super.hashCode(), canAdjustAmounts, canPayAmounts, defaultCurrency, supportedTransactionTypes, supportedCurrencies, paymentMethods);
     }
 }
