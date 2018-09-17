@@ -12,19 +12,28 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.model;
+package com.aevi.sdk.pos.flow;
+
+
+import android.support.annotation.NonNull;
 
 /**
- * Collection of message types used for communication between PCS and various apps.
+ * Provides general API information.
  */
-public interface AppMessageTypes {
+public final class PaymentFlowServiceApi {
 
-    String REQUEST_MESSAGE = "request";
-    String RESPONSE_MESSAGE = "response";
-    String SYSTEM_SETTINGS_REQUEST = "systemSettingsRequest";
-    String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
-    String DEVICE_INFO_REQUEST = "deviceInfoRequest";
-    String FAILURE_MESSAGE = "failure";
-    String FORCE_FINISH_MESSAGE = "forceFinish";
-    String REQUEST_ACK_MESSAGE = "requestAck";
+    private PaymentFlowServiceApi() {
+    }
+
+    /**
+     * Get the API version.
+     *
+     * The API versioning follows semver rules with major.minor.patch versions.
+     *
+     * @return The API version
+     */
+    @NonNull
+    public static String getApiVersion() {
+        return FlowServiceConfig.VERSION;
+    }
 }

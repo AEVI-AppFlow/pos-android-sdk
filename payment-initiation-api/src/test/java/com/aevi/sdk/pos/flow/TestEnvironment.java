@@ -77,4 +77,5 @@ public class TestEnvironment {
 
         packageManager.addResolveInfoForIntent(intent, resolveInfo);
     }
+
 }

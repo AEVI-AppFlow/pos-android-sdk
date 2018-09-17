@@ -1,48 +1,38 @@
 apply plugin: 'java-library'
 
-group = 'com.aevi.sdk.flow'
+group = 'com.aevi.sdk.pos.flow'
 version = "${apiVersion}"
 
 apply from: '../publish-repo.gradle'
 
 dependencies {
+    api project(':payment-initiation-api')
+    api project(':flow-base-api')
+
     compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
     implementation apiDependencies.jsonConverter
-    implementation apiDependencies.archLifecycle
-    implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.posFlowConstants
 
-    testImplementation project(':payment-flow-service-api')
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
-    testImplementation testDependencies.robolectric
+    testImplementation apiDependencies.posFlowConstants
 }
 
 javadoc {
     source = sourceSets.main.allJava
-    destinationDir = file("../documentation/public/javadocs/flow-api")
+    destinationDir = file("../documentation/public/javadocs/payment-flow-service-api")
     classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
-    exclude "**/**ClientImpl**"
-    exclude "**/util/**"
-    exclude "**/service/**"
-    exclude "**/ApiBase**"
-    exclude "**/AppMessage**"
-    exclude "**/AppMessageTypes**"
-    exclude "**/BaseModel**"
-    exclude "**/InternalData**"
-    exclude "**/NoOpModel**"
-    exclude "**/MessageErrors**"
-    title = "Flow API"
+    title = "Flow Service API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
 buildConfig {
-    clsName = 'FlowBaseConfig'
+    clsName = 'FlowServiceConfig'
 }
 
 apply from: '../jar-publisher.gradle'

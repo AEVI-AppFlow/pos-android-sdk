@@ -12,19 +12,22 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.model;
+package com.aevi.sdk.pos.flow.model;
+
+import com.aevi.sdk.flow.model.BaseIdNameEntity;
+import com.aevi.util.json.JsonConverter;
 
 /**
- * Collection of message types used for communication between PCS and various apps.
+ * Represents a merchant.
  */
-public interface AppMessageTypes {
+public class Merchant extends BaseIdNameEntity {
 
-    String REQUEST_MESSAGE = "request";
-    String RESPONSE_MESSAGE = "response";
-    String SYSTEM_SETTINGS_REQUEST = "systemSettingsRequest";
-    String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
-    String DEVICE_INFO_REQUEST = "deviceInfoRequest";
-    String FAILURE_MESSAGE = "failure";
-    String FORCE_FINISH_MESSAGE = "forceFinish";
-    String REQUEST_ACK_MESSAGE = "requestAck";
+    public Merchant(String id, String name) {
+        super(id, name);
+    }
+
+    @Override
+    public String toJson() {
+        return JsonConverter.serialize(this);
+    }
 }

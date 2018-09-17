@@ -12,19 +12,19 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.flow.model;
+package com.aevi.sdk.pos.flow.service;
+
+import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
+import com.aevi.sdk.pos.flow.model.FlowResponse;
+import com.aevi.sdk.pos.flow.model.TransactionRequest;
 
 /**
- * Collection of message types used for communication between PCS and various apps.
+ * Base class for post-card reading services.
  */
-public interface AppMessageTypes {
+public abstract class BasePostCardService extends BaseApiService<TransactionRequest, FlowResponse> {
 
-    String REQUEST_MESSAGE = "request";
-    String RESPONSE_MESSAGE = "response";
-    String SYSTEM_SETTINGS_REQUEST = "systemSettingsRequest";
-    String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
-    String DEVICE_INFO_REQUEST = "deviceInfoRequest";
-    String FAILURE_MESSAGE = "failure";
-    String FORCE_FINISH_MESSAGE = "forceFinish";
-    String REQUEST_ACK_MESSAGE = "requestAck";
+    public BasePostCardService() {
+        super(TransactionRequest.class, PaymentFlowServiceApi.getApiVersion());
+    }
 }

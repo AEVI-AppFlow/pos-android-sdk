@@ -17,7 +17,7 @@ dependencies {
     api apiDependencies.archLifecycleJava8
     implementation apiDependencies.posFlowConstants
 
-    testImplementation project(':payment-service-api') // So we have access to certain builders
+    testImplementation project(':payment-flow-service-api') // So we have access to certain builders
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito

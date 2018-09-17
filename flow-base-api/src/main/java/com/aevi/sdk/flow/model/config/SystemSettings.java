@@ -19,6 +19,7 @@ import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ public class SystemSettings implements Jsonable {
     public static final String SYSTEM_SETTINGS_KEY_SPLIT_ENABLED = "systemSettingsKeySplitEnabled";
 
     private final List<FlowConfig> flowConfigurations;
+    private final List<String> flowTypes;
     private final FpsSettings fpsSettings;
     private final AdditionalData additionalSettings;
 
@@ -37,10 +39,18 @@ public class SystemSettings implements Jsonable {
         this.flowConfigurations = flowConfigurations;
         this.fpsSettings = fpsSettings;
         this.additionalSettings = additionalSettings;
+        this.flowTypes = new ArrayList<>();
+        for (FlowConfig flowConfiguration : flowConfigurations) {
+            flowTypes.add(flowConfiguration.getType());
+        }
     }
 
     public List<FlowConfig> getFlowConfigurations() {
         return flowConfigurations;
+    }
+
+    public List<String> getFlowTypes() {
+        return flowTypes;
     }
 
     public FpsSettings getFpsSettings() {

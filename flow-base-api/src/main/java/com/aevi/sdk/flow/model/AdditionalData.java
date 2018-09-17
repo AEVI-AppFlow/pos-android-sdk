@@ -351,6 +351,17 @@ public class AdditionalData implements Jsonable {
         return getValue(key, Integer.class, defaultValue);
     }
 
+    /**
+     * Convenience method to retrieve a boolean based value.
+     *
+     * @param key          The data key
+     * @param defaultValue Optional var-args for setting a default value to pass back if key does not exist
+     * @return The value associated with the key if it exists. If not, uses default value if provided, or null.
+     */
+    public boolean getBooleanValue(String key, Boolean... defaultValue) {
+        return getValue(key, Boolean.class, defaultValue);
+    }
+
     private <T> T getValueByType(Class<T> desiredType, Object value) {
         try {
             return desiredType.cast(value);

@@ -43,8 +43,7 @@ dependencies {
     implementation(sampleDependencies.design) { force = true }
 
     implementation project(':payment-initiation-api')
-    implementation project(':payment-service-api')
-    implementation project(':flow-service-api')
+    implementation project(':payment-flow-service-api')
     implementation sampleDependencies.aeviUiLibrary
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
 
