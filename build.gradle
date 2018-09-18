@@ -66,8 +66,7 @@ task clean(type: Delete) {
 
 task copyApiLibs(type: Copy) {
     from 'payment-initiation-api/build/libs'
-    from 'payment-service-api/build/libs'
-    from 'flow-service-api/build/libs'
+    from 'payment-flow-service-api/build/libs'
     into 'artifacts/libs'
 }
 

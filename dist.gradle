@@ -1,8 +1,7 @@
 def javadocProjects = [
         ":flow-base-api",
-        ":flow-service-api",
         ":payment-initiation-api",
-        ":payment-service-api"
+        ":payment-flow-service-api"
 ]
 
 def combineProjects = [
