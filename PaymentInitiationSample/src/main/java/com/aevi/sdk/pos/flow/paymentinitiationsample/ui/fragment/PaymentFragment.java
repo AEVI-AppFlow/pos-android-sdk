@@ -97,13 +97,14 @@ public class PaymentFragment extends BaseObservableFragment {
         dropDownHelper.setupDropDown(transactionTypeSpinner, R.array.transaction_types);
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
-        Single.zip(paymentClient.getPaymentServices(), paymentClient.getSupportedTransactionTypes(),
-                (paymentServices, transactionTypes) -> {
-                    if (paymentServices.getAllPaymentServices().size() > 0) {
+        // TODO this isn't quite right - should get txn types based on flow types instead, and currencies need updating based on chosen txn type
+        Single.zip(paymentClient.getPaymentFlowServices(), paymentClient.getSystemSettings(),
+                (paymentFlowServices, systemSettings) -> {
+                    if (paymentFlowServices.getNumberOfFlowServices() > 0) {
                         allFieldsReady = true;
-                        dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
-                        if (!transactionTypes.isEmpty()) {
-                            dropDownHelper.setupDropDown(transactionTypeSpinner, transactionTypes, false);
+                        dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentFlowServices.getAllSupportedCurrencies()), false);
+                        if (!paymentFlowServices.getAllSupportedTransactionTypes().isEmpty()) {
+                            dropDownHelper.setupDropDown(transactionTypeSpinner, new ArrayList<>(paymentFlowServices.getAllSupportedTransactionTypes()), false);
                         }
                     } else {
                         handleNoPaymentServices();

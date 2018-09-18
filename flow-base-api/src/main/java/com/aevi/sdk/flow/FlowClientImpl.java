@@ -62,56 +62,6 @@ public class FlowClientImpl extends ApiBase implements FlowClient {
 
     @Override
     @NonNull
-    public Single<FlowServices> getFlowServices() {
-        if (!isProcessingServiceInstalled(context)) {
-            return Single.error(NO_FPS_EXCEPTION);
-        }
-        final ObservableMessengerClient flowInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.FLOW_SERVICE_INFO_REQUEST, getInternalData());
-        return flowInfoMessenger
-                .sendMessage(appMessage.toJson())
-                .map(new Function<String, FlowServiceInfo>() {
-                    @Override
-                    public FlowServiceInfo apply(String json) throws Exception {
-                        return FlowServiceInfo.fromJson(json);
-                    }
-                })
-                .toList()
-                .map(new Function<List<FlowServiceInfo>, FlowServices>() {
-                    @Override
-                    public FlowServices apply(List<FlowServiceInfo> flowServiceInfos) throws Exception {
-                        return new FlowServices(flowServiceInfos);
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        flowInfoMessenger.closeConnection();
-                    }
-                });
-    }
-
-    @Override
-    @NonNull
-    public Single<List<String>> getSupportedRequestTypes() {
-        if (!isProcessingServiceInstalled(context)) {
-            return Single.error(NO_FPS_EXCEPTION);
-        }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.SUPPORTED_REQUEST_TYPES_REQUEST, getInternalData());
-        return deviceMessenger
-                .sendMessage(appMessage.toJson())
-                .toList()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
-                    }
-                });
-    }
-
-    @Override
-    @NonNull
     public Single<Response> processRequest(Request request) {
         return sendGenericRequest(request);
     }

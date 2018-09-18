@@ -16,9 +16,6 @@
                 <action android:name="com.aevi.sdk.pos.flow.action.PROCESS_PAYMENT"/>
             </intent-filter>
 
-            <meta-data
-                android:name="configuration-authority"
-                android:value="com.aevi.sdk.pa.sample.config"/>
         </service>
         <service
             android:name=".service.PaymentCardReadingService"
@@ -38,7 +35,11 @@
         <provider
             android:name=".PaymentServiceInfoProvider"
             android:authorities="com.aevi.sdk.pa.sample.config"
-            android:exported="true"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.pos.flow.action.PaymentFlowServiceInfoProvider"/>
+            </intent-filter>
+        </provider>
 
         <activity
             android:name=".ui.PaymentResponseBuilderActivity"

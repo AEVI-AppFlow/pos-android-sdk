@@ -17,22 +17,22 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.widget.Toast;
 
-import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdapter;
 
-public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
+public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInfo> {
 
     @Override
     protected void setupItems() {
         title.setText(R.string.title_select_flow_service);
-        getSampleContext().getPaymentClient().getFlowServices()
-                .subscribe(flowServices -> {
-                    if (flowServices.getAllFlowServices().isEmpty()) {
+        getSampleContext().getPaymentClient().getPaymentFlowServices()
+                .subscribe(paymentFlowServices -> {
+                    if (paymentFlowServices.getNumberOfFlowServices() == 0) {
                         showNoItemsAvailable(R.string.no_flow_services_found);
                     } else {
-                        FlowServicesAdapter adapter = new FlowServicesAdapter(flowServices.getAllFlowServices(),
+                        FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getFlowServices(),
                                 FlowServicesFragment.this, false);
                         items.setAdapter(adapter);
                     }
@@ -45,8 +45,8 @@ public class FlowServicesFragment extends BaseItemFragment<FlowServiceInfo> {
     }
 
     @Override
-    public void onItemSelected(FlowServiceInfo flowServiceInfo) {
+    public void onItemSelected(PaymentFlowServiceInfo paymentFlowServiceInfo) {
         PopupActivity popupActivity = (PopupActivity) getActivity();
-        popupActivity.showServiceInfoFragment(ServiceInfoFragment.ADAPTER_FLOW_SERVICE_INFO, flowServiceInfo.toJson());
+        popupActivity.showServiceInfoFragment(ServiceInfoFragment.ADAPTER_FLOW_SERVICE_INFO, paymentFlowServiceInfo.toJson());
     }
 }

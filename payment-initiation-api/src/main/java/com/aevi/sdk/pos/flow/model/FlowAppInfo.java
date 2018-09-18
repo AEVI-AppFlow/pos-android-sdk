@@ -14,8 +14,6 @@
 
 package com.aevi.sdk.pos.flow.model;
 
-import com.aevi.sdk.pos.flow.PaymentClient;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class FlowAppInfo {
     /**
      * Create a new FlowAppInfo instance with augmented data information.
      *
-     * @param flowAppId     The flow application id (as per {@link com.aevi.sdk.flow.model.FlowServiceInfo})
+     * @param flowAppId     The flow application id (as per {@link PaymentFlowServiceInfo})
      * @param stage         The stage at which the flow app is called
      * @param augmentedData The list of augmented data
      */
@@ -52,9 +50,7 @@ public class FlowAppInfo {
     }
 
     /**
-     * Get the flow application id, as per {@link com.aevi.sdk.flow.model.FlowServiceInfo}.
-     *
-     * This can be used to look up further details about the flow application via {@link PaymentClient#getFlowServices()}.
+     * Get the flow application id, as per {@link PaymentFlowServiceInfo}.
      *
      * @return The flow application id
      */

@@ -1,7 +1,6 @@
-include ':flow-service-api',
+include ':payment-flow-service-api',
         ':flow-base-api',
         ':payment-initiation-api',
-        ':payment-service-api',
         ':sample-commons',
         ':PaymentInitiationSample',
         ':PaymentServiceSample',

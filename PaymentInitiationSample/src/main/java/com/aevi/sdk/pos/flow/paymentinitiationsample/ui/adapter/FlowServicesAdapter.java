@@ -18,14 +18,14 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 import android.view.View;
 
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.flow.model.FlowServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.ui.library.recycler.BaseTwoLineAdapter;
 
 import java.util.List;
 
-public class FlowServicesAdapter extends BaseTwoLineAdapter<FlowServiceInfo> {
+public class FlowServicesAdapter extends BaseTwoLineAdapter<PaymentFlowServiceInfo> {
 
-    public FlowServicesAdapter(List<FlowServiceInfo> items, OnItemSelectedListener listener, boolean withContextMenu) {
+    public FlowServicesAdapter(List<PaymentFlowServiceInfo> items, OnItemSelectedListener listener, boolean withContextMenu) {
         super(items, listener, withContextMenu);
     }
 
@@ -35,9 +35,9 @@ public class FlowServicesAdapter extends BaseTwoLineAdapter<FlowServiceInfo> {
     }
 
     @Override
-    protected void onBindViewHolderToObject(BaseTwoLineAdapter.ViewHolder holder, FlowServiceInfo flowServiceInfo, int i) {
-        holder.title.setText(flowServiceInfo.getDisplayName());
-        holder.subtitle.setText(flowServiceInfo.getVendor());
+    protected void onBindViewHolderToObject(BaseTwoLineAdapter.ViewHolder holder, PaymentFlowServiceInfo paymentFlowServiceInfo, int i) {
+        holder.title.setText(paymentFlowServiceInfo.getDisplayName());
+        holder.subtitle.setText(paymentFlowServiceInfo.getVendor());
         holder.subtitle.setVisibility(View.VISIBLE);
     }
 }

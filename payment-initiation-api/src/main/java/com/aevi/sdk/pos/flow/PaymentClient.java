@@ -19,11 +19,9 @@ import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.PaymentServices;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -36,29 +34,12 @@ import io.reactivex.Single;
 public interface PaymentClient extends FlowClient {
 
     /**
-     * Query for all the installed payment services available on this and connected devices.
+     * Retrieve a {@link PaymentFlowServices} that allows you to easily query for data and/or support across all the services.
      *
-     * Returns a single that emits a {@link PaymentServices} model wrapping the list of available payment services.
-     *
-     * This should be queried each time a selection is required to ensure up to date information.
-     *
-     * You can subscribe to {@link com.aevi.sdk.flow.FlowClient#subscribeToSystemEvents()} for updates on changes to the available payment services.
-     *
-     * @return Single emitting a {@link PaymentServices} object
+     * @return Single emitting a {@link PaymentFlowServices} object
      */
     @NonNull
-    Single<PaymentServices> getPaymentServices();
-
-    /**
-     * Query for a list of all supported transaction types for use via {@link com.aevi.sdk.pos.flow.model.PaymentBuilder#withTransactionType(String)}.
-     *
-     * Unlike the transaction types returned via {@link PaymentServices#getAllSupportedTransactionTypes()} ()} which purely reflects what the services reports,
-     * this list will also take into account transaction types defined by the acquirer/merchant configuration.
-     *
-     * @return The list of supported transaction types
-     */
-    @NonNull
-    Single<List<String>> getSupportedTransactionTypes();
+    Single<PaymentFlowServices> getPaymentFlowServices();
 
     /**
      * Initiate payment processing based on the provided {@link Payment}.

@@ -1,8 +1,6 @@
 package com.aevi.sdk.pos.flow;
 
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
@@ -11,14 +9,7 @@ import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.PaymentServiceInfo;
-import com.aevi.sdk.pos.flow.model.PaymentServiceInfoBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentServices;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,17 +21,12 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
-import java.util.Arrays;
-import java.util.List;
-
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 
 import static com.aevi.sdk.pos.flow.TestEnvironment.pretendFpsIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
@@ -63,42 +49,6 @@ public class PaymentClientImplTest {
             }
         };
         when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just("{}"));
-    }
-
-    @Test
-    public void getPaymentServicesShouldSendAndReceiveDataCorrectly() throws Exception {
-        pretendFpsIsInstalled();
-        PaymentServiceInfo testInfo = getPaymentServiceInfo();
-        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(testInfo.toJson()));
-
-        TestObserver<PaymentServices> testObserver = paymentClient.getPaymentServices().test();
-
-        AppMessage appMessage = callSendAndCaptureMessage();
-        assertThat(appMessage.getMessageData()).isEqualTo(AppMessage.EMPTY_DATA);
-        PaymentServices result = testObserver.values().get(0);
-        assertThat(result.getAllPaymentServices()).hasSize(1);
-        assertThat(result.getAllPaymentServices().get(0)).isEqualTo(testInfo);
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void getPaymentServicesShouldErrorIfNoFps() throws Exception {
-        TestObserver<PaymentServices> testObserver = paymentClient.getPaymentServices().test();
-        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
-    }
-
-    private PaymentServiceInfo getPaymentServiceInfo() throws PackageManager.NameNotFoundException {
-        Context context = TestEnvironment.mockContext("com.test", "1.2.3");
-        return new PaymentServiceInfoBuilder()
-                .withVendor("Test")
-                .withDisplayName("PA one")
-                .withTerminalId("1234")
-                .withMerchantIds("5678")
-                .withSupportedRequestTypes("hawk", "snail")
-                .withSupportedTransactionTypes("banana", "pear")
-                .withSupportedCurrencies("GBP", "AUD")
-                .withDefaultCurrency("GBP")
-                .build(context);
     }
 
     @Test
@@ -147,26 +97,6 @@ public class PaymentClientImplTest {
     @Test
     public void subscribeToStatusUpdatesShouldErrorIfNoFps() throws Exception {
         TestObserver<RequestStatus> testObserver = paymentClient.subscribeToStatusUpdates("").test();
-        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    public void getSupportedTransactionTypesShouldSendAndReceiveCorrectly() throws Exception {
-        pretendFpsIsInstalled();
-
-        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.fromArray("a", "b", "c"));
-        TestObserver<List<String>> testObserver = paymentClient.getSupportedTransactionTypes().test();
-
-        AppMessage appMessage = callSendAndCaptureMessage();
-        assertThat(appMessage).isNotNull();
-        testObserver.assertValueCount(1);
-        assertThat(testObserver.values().get(0)).isEqualTo(Arrays.asList("a", "b", "c"));
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void getSupportedTransactionTypesShouldErrorIfNoFps() throws Exception {
-        TestObserver<List<String>> testObserver = paymentClient.getSupportedTransactionTypes().test();
         assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 

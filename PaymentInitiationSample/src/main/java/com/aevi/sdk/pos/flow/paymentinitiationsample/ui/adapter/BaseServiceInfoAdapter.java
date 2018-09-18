@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +80,16 @@ public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<Bas
             return array[0];
         } else {
             return Arrays.toString(array);
+        }
+    }
+
+    protected String getSetValue(Set<String> collection) {
+        if (collection.isEmpty()) {
+            return context.getString(R.string.na);
+        } else if (collection.size() == 1) {
+            return collection.iterator().next();
+        } else {
+            return Arrays.toString(collection.toArray(new String[collection.size()]));
         }
     }
 

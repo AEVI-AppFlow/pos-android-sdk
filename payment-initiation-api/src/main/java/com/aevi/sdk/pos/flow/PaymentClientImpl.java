@@ -22,9 +22,10 @@ import android.util.Log;
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.FlowClientImpl;
 import com.aevi.sdk.flow.model.*;
-import com.aevi.sdk.pos.flow.model.*;
-
-import java.util.List;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.RequestStatus;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -46,50 +47,25 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     @Override
     @NonNull
-    public Single<PaymentServices> getPaymentServices() {
+    public Single<PaymentFlowServices> getPaymentFlowServices() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
         final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_SERVICE_INFO_REQUEST, getInternalData());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.FLOW_SERVICE_INFO_REQUEST, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, PaymentServiceInfo>() {
+                .map(new Function<String, PaymentFlowServices>() {
                     @Override
-                    public PaymentServiceInfo apply(String json) throws Exception {
-                        return PaymentServiceInfo.fromJson(json);
+                    public PaymentFlowServices apply(String json) throws Exception {
+                        return PaymentFlowServices.fromJson(json);
                     }
                 })
-                .toList()
-                .map(new Function<List<PaymentServiceInfo>, PaymentServices>() {
-                    @Override
-                    public PaymentServices apply(List<PaymentServiceInfo> paymentServiceInfoList) throws Exception {
-                        return new PaymentServices(paymentServiceInfoList);
-                    }
-                })
+                .singleOrError()
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
                         paymentInfoMessenger.closeConnection();
-                    }
-                });
-    }
-
-    @Override
-    @NonNull
-    public Single<List<String>> getSupportedTransactionTypes() {
-        if (!isProcessingServiceInstalled(context)) {
-            return Single.error(NO_FPS_EXCEPTION);
-        }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.SUPPORTED_TRANSACTION_TYPES_REQUEST, getInternalData());
-        return deviceMessenger
-                .sendMessage(appMessage.toJson())
-                .toList()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
                     }
                 });
     }

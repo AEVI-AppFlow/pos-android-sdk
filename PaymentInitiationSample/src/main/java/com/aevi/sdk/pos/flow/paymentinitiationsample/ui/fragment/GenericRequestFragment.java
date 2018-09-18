@@ -42,6 +42,9 @@ import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
@@ -71,11 +74,13 @@ public class GenericRequestFragment extends BaseObservableFragment {
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
 
-        SampleContext.getInstance(getActivity()).getPaymentClient().getSupportedRequestTypes()
-                .subscribe(requestTypes -> {
+        // TODO this isn't right - it needs to use the new "custom request types" concept once available
+        SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentFlowServices()
+                .subscribe(paymentFlowServices -> {
+                    Set<String> requestTypes = paymentFlowServices.getAllSupportedRequestTypes();
                     requestTypes.remove(FinancialRequestTypes.PAYMENT); // Filter out "payment" here, as we handle that via PaymentFragment
                     requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
-                    dropDownHelper.setupDropDown(requestTypeSpinner, requestTypes, false);
+                    dropDownHelper.setupDropDown(requestTypeSpinner, new ArrayList<>(requestTypes), false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
     }
 

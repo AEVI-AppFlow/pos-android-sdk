@@ -53,9 +53,6 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
             case SYSTEM_SETTINGS:
                 showPopup(FRAGMENT_SYSTEM_SETTINGS);
                 break;
-            case PAYMENT_SERVICES:
-                showPopup(FRAGMENT_PAYMENT_SERVICES);
-                break;
             case GENERIC_REQUEST:
                 Intent requestIntent = new Intent(getContext(), RequestInitiationActivity.class);
                 startActivity(requestIntent);

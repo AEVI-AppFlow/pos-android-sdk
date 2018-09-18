@@ -17,7 +17,10 @@ package com.aevi.sdk.flow;
 
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.config.SystemSettings;
 
 import java.util.List;
@@ -46,31 +49,6 @@ public interface FlowClient {
      */
     @NonNull
     Single<List<Device>> getDevices();
-
-    /**
-     * Query for installed flow services on this and connected devices.
-     *
-     * Returns a single that emits a {@link FlowServices} model containing the available flow services.
-     *
-     * This should be queried each time an up-to-date list is required.
-     *
-     * You can subscribe to {@link #subscribeToSystemEvents()} for updates on changes to the available flow services.
-     *
-     * @return Single emitting a {@link FlowServices} model
-     */
-    @NonNull
-    Single<FlowServices> getFlowServices();
-
-    /**
-     * Query for a list of all supported request types that can be used when creating a {@link Request}.
-     *
-     * Unlike the request types returned via {@link FlowServices#getAllSupportedRequestTypes()} which purely reflects what the services reports, this list
-     * will also take into account any restrictions or limitations imposed by the acquirer/merchant configuration.
-     *
-     * @return The list of supported request types
-     */
-    @NonNull
-    Single<List<String>> getSupportedRequestTypes();
 
     /**
      * Initiate processing of the given {@link Request}.

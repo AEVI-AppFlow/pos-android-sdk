@@ -6,11 +6,15 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.flow.model.config.SystemSettings;
-import com.aevi.sdk.pos.flow.model.FlowServiceInfoBuilder;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +26,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -72,28 +75,6 @@ public class FlowClientImplTest {
     }
 
     @Test
-    public void getFlowServicesShouldSendAndReceiveCorrectMessages() throws Exception {
-        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
-        FlowServiceInfo serviceInfo = getFlowServiceInfo();
-        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.just(serviceInfo.toJson()));
-        TestObserver<FlowServices> testObserver = flowClient.getFlowServices().test();
-
-        AppMessage appMessage = callSendAndCaptureMessage();
-
-        assertThat(appMessage).isNotNull();
-        testObserver.assertValueCount(1);
-        assertThat(testObserver.values().get(0).getAllFlowServices()).hasSize(1);
-        assertThat(testObserver.values().get(0).getAllFlowServices().get(0)).isEqualTo(serviceInfo);
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void getFlowServicesShouldErrorIfNoFps() throws Exception {
-        TestObserver<FlowServices> testObserver = flowClient.getFlowServices().test();
-        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
-    }
-
-    @Test
     public void subscribeToSystemEventsShouldSendAndReceiveCorrectly() throws Exception {
         pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
         AdditionalData additionalData = new AdditionalData();
@@ -135,29 +116,9 @@ public class FlowClientImplTest {
         assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
     }
 
-    @Test
-    public void getSupportedRequestTypesShouldSendAndReceiveCorrectly() throws Exception {
-        pretendServiceIsInstalled(ApiBase.FLOW_PROCESSING_SERVICE_COMPONENT);
-
-        when(messengerClient.sendMessage(anyString())).thenReturn(Observable.fromArray("a", "b", "c"));
-        TestObserver<List<String>> testObserver = flowClient.getSupportedRequestTypes().test();
-
-        AppMessage appMessage = callSendAndCaptureMessage();
-        assertThat(appMessage).isNotNull();
-        testObserver.assertValueCount(1);
-        assertThat(testObserver.values().get(0)).isEqualTo(Arrays.asList("a", "b", "c"));
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void getSupportedRequestTypesShouldErrorIfNoFps() throws Exception {
-        TestObserver<List<String>> testObserver = flowClient.getSupportedRequestTypes().test();
-        assertThat(testObserver.assertError(ApiBase.NO_FPS_EXCEPTION));
-    }
-
-    private FlowServiceInfo getFlowServiceInfo() throws PackageManager.NameNotFoundException {
+    private PaymentFlowServiceInfo getFlowServiceInfo() throws PackageManager.NameNotFoundException {
         Context context = ContextHelper.mockContext("com.test", "1.2.3");
-        return new FlowServiceInfoBuilder()
+        return new PaymentFlowServiceInfoBuilder()
                 .withVendor("Test")
                 .withDisplayName("Hello")
                 .withSupportedRequestTypes("tea making")

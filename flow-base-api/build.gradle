@@ -15,7 +15,7 @@ dependencies {
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.posFlowConstants
 
-    testImplementation project(":flow-service-api")
+    testImplementation project(':payment-flow-service-api')
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
