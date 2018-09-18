@@ -96,7 +96,7 @@ public class PaymentFlowServicesTest {
                 .withDefaultCurrency("GBP")
                 .build(context);
 
-        paymentFlowServiceInfoOne.setStages(new String[]{"stage1", "stage2"});
+        paymentFlowServiceInfoOne.setStages("stage1", "stage2");
     }
 
     private void buildFlowServiceTwo() {
@@ -112,6 +112,6 @@ public class PaymentFlowServicesTest {
                 .withDefaultCurrency("AUD")
                 .build(context);
 
-        paymentFlowServiceInfoTwo.setStages(new String[]{"stage2", "stage3"});
+        paymentFlowServiceInfoTwo.setStages("stage2", "stage3");
     }
 }

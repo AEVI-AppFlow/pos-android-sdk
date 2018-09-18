@@ -37,11 +37,11 @@ public class PaymentFlowServiceInfoBuilder {
     private String displayName;
     private boolean supportsAccessibility;
     private String defaultCurrency;
-    private Set<String> paymentMethods = new HashSet<>();
-    private Set<String> supportedCurrencies = new HashSet<>();
-    private Set<String> supportedRequestTypes = new HashSet<>();
-    private Set<String> supportedTransactionTypes = new HashSet<>();
-    private Set<String> supportedDataKeys = new HashSet<>();
+    private Set<String> paymentMethods;
+    private Set<String> supportedCurrencies;
+    private Set<String> supportedRequestTypes;
+    private Set<String> supportedTransactionTypes;
+    private Set<String> supportedDataKeys;
     private boolean canAdjustAmounts;
     private boolean canPayAmounts;
     private AdditionalData additionalInfo = new AdditionalData();
@@ -111,7 +111,9 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedRequestTypes(String... supportedRequestTypes) {
-        this.supportedRequestTypes.addAll(Arrays.asList(supportedRequestTypes));
+        if (supportedRequestTypes != null) {
+            this.supportedRequestTypes = new HashSet<>(Arrays.asList(supportedRequestTypes));
+        }
         return this;
     }
 
@@ -126,7 +128,9 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedTransactionTypes(String... supportedTransactionTypes) {
-        this.supportedTransactionTypes.addAll(Arrays.asList(supportedTransactionTypes));
+        if (supportedTransactionTypes != null) {
+            this.supportedTransactionTypes = new HashSet<>(Arrays.asList(supportedTransactionTypes));
+        }
         return this;
     }
 
@@ -142,7 +146,9 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedDataKeys(String... supportedDataKeys) {
-        this.supportedDataKeys.addAll(Arrays.asList(supportedDataKeys));
+        if (supportedDataKeys != null) {
+            this.supportedDataKeys = new HashSet<>(Arrays.asList(supportedDataKeys));
+        }
         return this;
     }
 
@@ -189,7 +195,7 @@ public class PaymentFlowServiceInfoBuilder {
             throw new IllegalArgumentException("If canPayAmounts flag is set, payment methods must be provided");
         }
         this.canPayAmounts = canPayAmounts;
-        this.paymentMethods.addAll(Arrays.asList(paymentMethods));
+        this.paymentMethods = new HashSet<>(Arrays.asList(paymentMethods));
         return this;
     }
 
@@ -217,7 +223,9 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedCurrencies(String... supportedCurrencies) {
-        this.supportedCurrencies.addAll(Arrays.asList(supportedCurrencies));
+        if (supportedCurrencies != null) {
+            this.supportedCurrencies = new HashSet<>(Arrays.asList(supportedCurrencies));
+        }
         return this;
     }
 

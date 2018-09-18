@@ -59,7 +59,6 @@ public class SampleContext {
         List<ApiFunction> apiFunctions = new ArrayList<>();
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.SYSTEM_OVERVIEW, "System overview", "Overview of devices, applications and capabilities "));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.FLOW_SERVICES, "List flow services", "Query the API for information about available flow services"));
-        apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.PAYMENT_SERVICES, "List payment services", "Query the API for information about available payment services"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.DEVICES, "List devices", "Query the API for a list of available devices"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.GENERIC_REQUEST, "Initiate a non-payment request", "Initiate a general financial request, such as reversal or tokenisation"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.INITIATE_PAYMENT, "Initiate a payment", "Choose between a wide range of options to initiate a specific payment"));

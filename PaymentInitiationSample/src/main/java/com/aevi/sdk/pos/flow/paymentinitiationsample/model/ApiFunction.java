@@ -22,7 +22,6 @@ public class ApiFunction {
         DEVICES,
         FLOW_SERVICES,
         SUBSCRIBE_EVENTS,
-        PAYMENT_SERVICES,
         GENERIC_REQUEST,
         INITIATE_PAYMENT,
         SYSTEM_SETTINGS

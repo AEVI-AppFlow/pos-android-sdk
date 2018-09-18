@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -247,6 +248,15 @@ public abstract class BaseServiceInfo extends BaseModel {
      */
     public void setStages(Set<String> stages) {
         this.stages = stages;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param stages Stages
+     */
+    public void setStages(String... stages) {
+        this.stages = new HashSet<>(Arrays.asList(stages));
     }
 
     @Override

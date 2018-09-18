@@ -38,7 +38,10 @@ public class PaymentFlowServiceInfoBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentWhenSupportedRequestTypesNotSet() throws Exception {
-        paymentFlowServiceInfoBuilder.withSupportedRequestTypes((String[]) null).build(context);
+        new PaymentFlowServiceInfoBuilder()
+                .withVendor("test")
+                .withDisplayName("test")
+                .withSupportedRequestTypes((String[]) null).build(context);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,12 +67,12 @@ public class PaymentFlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getVendor()).isEqualTo("Test");
         assertThat(serviceInfo.getServiceVersion()).isEqualTo("1.2.3");
         assertThat(serviceInfo.getDisplayName()).isEqualTo("Hello");
-        assertThat(serviceInfo.getSupportedRequestTypes()).containsExactly("tea making", "knitting");
-        assertThat(serviceInfo.getSupportedTransactionTypes()).containsExactly("banana", "apple");
+        assertThat(serviceInfo.getSupportedRequestTypes()).containsExactlyInAnyOrder("tea making", "knitting");
+        assertThat(serviceInfo.getSupportedTransactionTypes()).containsExactlyInAnyOrder("banana", "apple");
         assertThat(serviceInfo.canAdjustAmounts()).isEqualTo(true);
         assertThat(serviceInfo.canPayAmounts()).isEqualTo(true);
-        assertThat(serviceInfo.getPaymentMethods()).containsExactly("pigeon", "rock");
-        assertThat(serviceInfo.getSupportedCurrencies()).containsExactly("GBP", "AUD");
+        assertThat(serviceInfo.getPaymentMethods()).containsExactlyInAnyOrder("pigeon", "rock");
+        assertThat(serviceInfo.getSupportedCurrencies()).containsExactlyInAnyOrder("GBP", "AUD");
         assertThat(serviceInfo.getDefaultCurrency()).isEqualTo("GBP");
         assertThat(serviceInfo.getLogicalDeviceId()).isEqualTo("12345");
         assertThat(serviceInfo.supportsAccessibilityMode()).isEqualTo(true);
