@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/initiate_payment_padding"
-            android:layout_marginRight="@dimen/initiate_payment_padding"
             android:layout_marginTop="@dimen/send_button_vert_margin"
+            android:layout_marginRight="@dimen/initiate_payment_padding"
             android:text="@string/initiate_payment"/>
     </LinearLayout>
 
@@ -38,9 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/margin_vertical"
             android:paddingLeft="@dimen/initiate_payment_padding"
-            android:paddingRight="@dimen/initiate_payment_padding">
+            android:paddingRight="@dimen/initiate_payment_padding"
+            android:paddingBottom="@dimen/margin_vertical">
 
             <TextView
                 android:id="@+id/no_payment_services"
@@ -56,12 +56,11 @@
                 style="@style/Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/choose_a_transaction_type"/>
+                android:text="@string/choose_a_transaction_flow"/>
 
             <com.aevi.ui.library.recycler.DropDownSpinner
-                android:id="@+id/transaction_type_spinner"
-                style="@style/DropDownSpinner"
-                android:entries="@array/transaction_types"/>
+                android:id="@+id/flow_spinner"
+                style="@style/DropDownSpinner"/>
 
             <TextView
                 style="@style/Header"
@@ -72,8 +71,7 @@
 
             <com.aevi.ui.library.recycler.DropDownSpinner
                 android:id="@+id/currency_spinner"
-                style="@style/DropDownSpinner"
-                android:entries="@array/transaction_types"/>
+                style="@style/DropDownSpinner"/>
 
             <TextView
                 style="@style/Header"

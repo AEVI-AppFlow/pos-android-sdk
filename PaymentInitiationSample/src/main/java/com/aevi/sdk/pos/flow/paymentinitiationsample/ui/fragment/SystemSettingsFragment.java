@@ -56,7 +56,6 @@ public class SystemSettingsFragment extends BaseFragment {
             FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
             addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
-            addEnabledDisabled(stringBuilder, R.string.split_support, systemSettings.isSplitEnabled());
             addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
             addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
             addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());

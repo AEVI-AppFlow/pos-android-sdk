@@ -28,8 +28,6 @@ import java.util.Objects;
  */
 public class SystemSettings implements Jsonable {
 
-    public static final String SYSTEM_SETTINGS_KEY_SPLIT_ENABLED = "systemSettingsKeySplitEnabled";
-
     private final List<FlowConfig> flowConfigurations;
     private final List<String> flowTypes;
     private final FpsSettings fpsSettings;
@@ -59,10 +57,6 @@ public class SystemSettings implements Jsonable {
 
     public AdditionalData getAdditionalSettings() {
         return additionalSettings;
-    }
-
-    public boolean isSplitEnabled() {
-        return additionalSettings.getValue(SYSTEM_SETTINGS_KEY_SPLIT_ENABLED, Boolean.class, false);
     }
 
     @Override

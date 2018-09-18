@@ -14,14 +14,14 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Exposes payment and flow services information with helper methods to retrieve collated data across all services.
@@ -30,21 +30,18 @@ public class PaymentFlowServices implements Jsonable {
 
     private final List<PaymentFlowServiceInfo> paymentFlowServiceInfoList;
     private final Set<String> supportedRequestTypes;
-    private final Set<String> supportedTransactionTypes;
     private final Set<String> supportedCurrencies;
     private final Set<String> supportedPaymentMethods;
     private final Set<String> supportedDataKeys;
 
-    public PaymentFlowServices(List<PaymentFlowServiceInfo> paymentFlowServiceInfoList) {
-        this.paymentFlowServiceInfoList = Collections.unmodifiableList(paymentFlowServiceInfoList);
+    public PaymentFlowServices(Collection<PaymentFlowServiceInfo> paymentFlowServiceInfoList) {
+        this.paymentFlowServiceInfoList = new ArrayList<>(paymentFlowServiceInfoList);
         supportedRequestTypes = new HashSet<>();
-        supportedTransactionTypes = new HashSet<>();
         supportedCurrencies = new HashSet<>();
         supportedPaymentMethods = new HashSet<>();
         supportedDataKeys = new HashSet<>();
         for (PaymentFlowServiceInfo paymentFlowServiceInfo : paymentFlowServiceInfoList) {
-            supportedRequestTypes.addAll(paymentFlowServiceInfo.getSupportedRequestTypes());
-            supportedTransactionTypes.addAll(paymentFlowServiceInfo.getSupportedTransactionTypes());
+            supportedRequestTypes.addAll(paymentFlowServiceInfo.getCustomRequestTypes());
             supportedCurrencies.addAll(paymentFlowServiceInfo.getSupportedCurrencies());
             supportedPaymentMethods.addAll(paymentFlowServiceInfo.getPaymentMethods());
             supportedDataKeys.addAll(paymentFlowServiceInfo.getSupportedDataKeys());
@@ -65,46 +62,45 @@ public class PaymentFlowServices implements Jsonable {
      *
      * @return The list of flow services
      */
+    @NonNull
     public List<PaymentFlowServiceInfo> getFlowServices() {
         return paymentFlowServiceInfoList;
     }
 
     /**
-     * Check whether a particular request type is supported by at least one of the services.
+     * Get the flow service with the provided id.
      *
-     * @param requestType The request type to check if supported
+     * @param id The flow service id
+     * @return An instance of PaymentFlowServiceInfo if a match was found, or null otherwise
+     */
+    @Nullable
+    public PaymentFlowServiceInfo getFlowServiceFromId(String id) {
+        for (PaymentFlowServiceInfo serviceInfo : paymentFlowServiceInfoList) {
+            if (serviceInfo.getId().equals(id)) {
+                return serviceInfo;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check whether a particular custom request type is supported by at least one of the services.
+     *
+     * @param requestType The custom request type to check if supported
      * @return True if at least one service support it, false otherwise
      */
-    public boolean isRequestTypeSupported(String requestType) {
+    public boolean isCustomRequestTypeSupported(String requestType) {
         return ComparisonUtil.stringCollectionContainsIgnoreCase(supportedRequestTypes, requestType);
     }
 
     /**
-     * Retrieve a consolidated set of all the supported request types across all the services.
+     * Retrieve a consolidated set of all the custom request types across all the services.
      *
-     * @return A consolidated set of all the supported request types across all the services
+     * @return A consolidated set of all the custom request types across all the services
      */
-    public Set<String> getAllSupportedRequestTypes() {
+    @NonNull
+    public Set<String> getAllCustomRequestTypes() {
         return supportedRequestTypes;
-    }
-
-    /**
-     * Check whether a particular transaction type is supported by at least one of the services.
-     *
-     * @param transactionType The transaction type to check if supported
-     * @return True if at least one service support it, false otherwise
-     */
-    public boolean isTransactionTypeSupported(String transactionType) {
-        return ComparisonUtil.stringCollectionContainsIgnoreCase(supportedTransactionTypes, transactionType);
-    }
-
-    /**
-     * Retrieve a consolidated set of supported transaction types across all the services.
-     *
-     * @return A consolidated set of supported transaction types across all the services
-     */
-    public Set<String> getAllSupportedTransactionTypes() {
-        return supportedTransactionTypes;
     }
 
     /**
@@ -122,6 +118,7 @@ public class PaymentFlowServices implements Jsonable {
      *
      * @return A consolidated set of supported currencies across all the services
      */
+    @NonNull
     public Set<String> getAllSupportedCurrencies() {
         return supportedCurrencies;
     }
@@ -131,6 +128,7 @@ public class PaymentFlowServices implements Jsonable {
      *
      * @return A consolidated set of supported payment methods across all the services
      */
+    @NonNull
     public Set<String> getAllSupportedPaymentMethods() {
         return supportedPaymentMethods;
     }
@@ -150,6 +148,7 @@ public class PaymentFlowServices implements Jsonable {
      *
      * @return A consolidated set of supported data keys across all the services
      */
+    @NonNull
     public Set<String> getAllSupportedDataKeys() {
         return supportedDataKeys;
     }

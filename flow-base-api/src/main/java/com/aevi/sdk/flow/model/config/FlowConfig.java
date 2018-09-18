@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.flow.model.config;
 
+import android.text.TextUtils;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -24,18 +26,35 @@ import java.util.*;
  */
 public class FlowConfig implements Jsonable {
 
+    public static final String TYPE_GENERIC = "generic";
+    public static final String TYPE_GENERIC_ADHOC = "genericAdhoc";
+
+    private final String name;
     private final String type;
+    private final String description;
+    private final String appFilter;
     private final List<FlowStage> stages;
 
     private transient List<FlowStage> allStagesFlattened;
     private transient Map<String, FlowStage> allStagesMap;
 
     public FlowConfig() {
-        this("N/A", new ArrayList<FlowStage>());
+        this("N/A", "N/A", "N/A", null, new ArrayList<FlowStage>());
     }
 
-    public FlowConfig(String type, List<FlowStage> stages) {
-        this.type = type.toLowerCase();
+    public FlowConfig(String name, String type) {
+        this(name, type, "N/A", null, new ArrayList<FlowStage>());
+    }
+
+    public FlowConfig(String name, String type, List<FlowStage> stages) {
+        this(name, type, "N/A", null, stages);
+    }
+
+    public FlowConfig(String name, String type, String description, String appFilter, List<FlowStage> stages) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.appFilter = appFilter;
         this.stages = stages != null ? stages : new ArrayList<FlowStage>();
         parseStageHierarchy();
     }
@@ -46,8 +65,24 @@ public class FlowConfig implements Jsonable {
         getDeepStages(allStagesFlattened, allStagesMap, stages);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getType() {
-        return type.toLowerCase();
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean hasAppFilter() {
+        return !TextUtils.isEmpty(appFilter);
+    }
+
+    public String getAppFilter() {
+        return appFilter;
     }
 
     public List<FlowStage> getStages() {
@@ -158,7 +193,7 @@ public class FlowConfig implements Jsonable {
         stage = normaliseStageName(stage);
         FlowStage flowStage = getStage(stage);
         if (flowStage == null) {
-            flowStage = new FlowStage(stage, FlowAppType.MULTIPLE);
+            flowStage = new FlowStage(stage, AppExecutionType.MULTIPLE);
             flowStage.setFlowApps(flowApps);
             stages.add(flowStage);
             allStagesFlattened = null;

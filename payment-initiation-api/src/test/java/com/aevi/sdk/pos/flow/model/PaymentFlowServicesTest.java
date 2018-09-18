@@ -64,7 +64,7 @@ public class PaymentFlowServicesTest {
 
     @Test
     public void shouldCollateRequestTypesCorrectly() throws Exception {
-        Set<String> allSupportedRequestTypes = paymentFlowServices.getAllSupportedRequestTypes();
+        Set<String> allSupportedRequestTypes = paymentFlowServices.getAllCustomRequestTypes();
         assertThat(allSupportedRequestTypes).hasSize(3).containsOnly("reqOne", "reqTwo", "reqThree");
     }
 
@@ -88,10 +88,10 @@ public class PaymentFlowServicesTest {
         paymentFlowServiceInfoOne = new PaymentFlowServiceInfoBuilder()
                 .withVendor("Test One")
                 .withDisplayName("Test One")
-                .withSupportedRequestTypes("one", "two")
+                .withCustomRequestTypes("one", "two")
                 .withCanPayAmounts(true, "pigeon", "horse")
                 .withSupportedDataKeys("dataOne", "dataTwo")
-                .withSupportedRequestTypes("reqOne", "reqTwo")
+                .withCustomRequestTypes("reqOne", "reqTwo")
                 .withSupportedCurrencies("GBP", "AUD")
                 .withDefaultCurrency("GBP")
                 .build(context);
@@ -103,11 +103,11 @@ public class PaymentFlowServicesTest {
         paymentFlowServiceInfoTwo = new PaymentFlowServiceInfoBuilder()
                 .withVendor("Test Two")
                 .withDisplayName("Test Two")
-                .withSupportedRequestTypes("two", "three")
+                .withCustomRequestTypes("two", "three")
                 .withCanPayAmounts(true, "pigeon", "yak")
                 .withSupportedDataKeys("dataTwo", "dataThree")
                 .withSupportsAccessibilityMode(true)
-                .withSupportedRequestTypes("reqTwo", "reqThree")
+                .withCustomRequestTypes("reqTwo", "reqThree")
                 .withSupportedCurrencies("AUD", "USD")
                 .withDefaultCurrency("AUD")
                 .build(context);

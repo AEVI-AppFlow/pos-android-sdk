@@ -23,6 +23,7 @@ import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
@@ -34,40 +35,44 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class Payment extends BaseModel {
 
-    private final String transactionType;
+    private final String flowName;
     private final Amounts amounts;
     private final boolean splitEnabled;
     private final Token cardToken;
     private final AdditionalData additionalData;
     private final boolean isExternalId;
     private final String source;
+    private final String deviceId;
+    private String transactionType;
 
     // Default constructor for deserialisation
     Payment() {
         super("N/A");
+        this.flowName = "";
         this.isExternalId = false;
-        this.transactionType = "";
         this.amounts = new Amounts();
         this.splitEnabled = false;
         this.cardToken = null;
         this.additionalData = new AdditionalData();
         this.source = "";
+        this.deviceId = null;
     }
 
     /**
      * Internal constructor for use from the Builder.
      */
-    Payment(String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken,
-            AdditionalData additionalData, String source) {
+    Payment(String flowName, Amounts amounts, boolean splitEnabled, Token cardToken,
+            AdditionalData additionalData, String source, String deviceId) {
         super(UUID.randomUUID().toString());
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
+        this.flowName = flowName;
         this.isExternalId = false;
-        this.transactionType = transactionType;
         this.amounts = amounts;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.source = source;
+        this.deviceId = deviceId;
         validateArguments();
     }
 
@@ -76,23 +81,25 @@ public class Payment extends BaseModel {
      *
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
-    Payment(String id, String requestSource, String transactionType, Amounts amounts, boolean splitEnabled, Token cardToken, AdditionalData additionalData) {
+    Payment(String id, String requestSource, String flowName, Amounts amounts, boolean splitEnabled, Token cardToken,
+            AdditionalData additionalData, String deviceId) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
         this.source = requestSource;
         this.isExternalId = true;
-        this.transactionType = transactionType;
+        this.flowName = flowName;
         this.amounts = amounts;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
+        this.deviceId = deviceId;
         validateArguments();
     }
 
     private void validateArguments() {
         checkArgument(getId() != null, "Id cannot be null");
-        checkArgument(transactionType != null, "Type cannot be null");
-        checkArgument(amounts != null, "Amounts cannot be null");
+        checkArgument(flowName != null, "Flow name cannot be null");
+        checkArgument(amounts != null, "Amounts cannot be null (but can be zero)");
     }
 
     /**
@@ -106,13 +113,14 @@ public class Payment extends BaseModel {
     }
 
     /**
-     * Get the transaction type associated with this payment.
+     * Get the name of the flow to execute for this payment.
      *
-     * @return The transaction type
+     * See {@link PaymentFlowConfiguration} for retrieving possible values.
+     *
+     * @return The name of the flow to execute
      */
-    @NonNull
-    public String getTransactionType() {
-        return transactionType;
+    public String getFlowName() {
+        return flowName;
     }
 
     /**
@@ -173,17 +181,50 @@ public class Payment extends BaseModel {
         return source;
     }
 
+    /**
+     * Get the id of the device that should be used for customer interactions, if any.
+     *
+     * @return The device id to use for this payment (may be null)
+     */
+    @Nullable
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    /**
+     * Get the transaction type associated with this payment.
+     *
+     * The transaction type is derived from the chosen flow this payment will processed by.
+     *
+     * See documentation for the possible values.
+     *
+     * @return The transaction type
+     */
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param transactionType Transaction type
+     */
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
+
     @Override
     public String toString() {
         return "Payment{" +
-                ", transactionType='" + transactionType + '\'' +
+                "flowName='" + flowName + '\'' +
                 ", amounts=" + amounts +
                 ", splitEnabled=" + splitEnabled +
                 ", cardToken=" + cardToken +
                 ", additionalData=" + additionalData +
                 ", isExternalId=" + isExternalId +
                 ", source='" + source + '\'' +
-                '}';
+                ", deviceId='" + deviceId + '\'' +
+                "} " + super.toString();
     }
 
     @Override
@@ -191,29 +232,21 @@ public class Payment extends BaseModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         Payment payment = (Payment) o;
-
-        if (splitEnabled != payment.splitEnabled) return false;
-        if (isExternalId != payment.isExternalId) return false;
-        if (transactionType != null ? !transactionType.equals(payment.transactionType) : payment.transactionType != null) return false;
-        if (amounts != null ? !amounts.equals(payment.amounts) : payment.amounts != null) return false;
-        if (cardToken != null ? !cardToken.equals(payment.cardToken) : payment.cardToken != null) return false;
-        if (additionalData != null ? !additionalData.equals(payment.additionalData) : payment.additionalData != null) return false;
-        return source != null ? source.equals(payment.source) : payment.source == null;
+        return splitEnabled == payment.splitEnabled &&
+                isExternalId == payment.isExternalId &&
+                Objects.equals(flowName, payment.flowName) &&
+                Objects.equals(amounts, payment.amounts) &&
+                Objects.equals(cardToken, payment.cardToken) &&
+                Objects.equals(additionalData, payment.additionalData) &&
+                Objects.equals(source, payment.source) &&
+                Objects.equals(deviceId, payment.deviceId);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (transactionType != null ? transactionType.hashCode() : 0);
-        result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
-        result = 31 * result + (splitEnabled ? 1 : 0);
-        result = 31 * result + (cardToken != null ? cardToken.hashCode() : 0);
-        result = 31 * result + (additionalData != null ? additionalData.hashCode() : 0);
-        result = 31 * result + (isExternalId ? 1 : 0);
-        result = 31 * result + (source != null ? source.hashCode() : 0);
-        return result;
+
+        return Objects.hash(super.hashCode(), flowName, amounts, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId);
     }
 
     @Override

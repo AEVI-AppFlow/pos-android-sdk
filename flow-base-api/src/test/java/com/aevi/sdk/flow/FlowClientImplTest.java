@@ -121,7 +121,7 @@ public class FlowClientImplTest {
         return new PaymentFlowServiceInfoBuilder()
                 .withVendor("Test")
                 .withDisplayName("Hello")
-                .withSupportedRequestTypes("tea making")
+                .withCustomRequestTypes("tea making")
                 .build(context);
     }
 

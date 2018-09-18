@@ -36,9 +36,6 @@
     <string name="pss_card_reading">Payment card reading</string>
     <string name="pss_select_token">Select token</string>
     <string name="sample_settings">Payment Service Settings</string>
-    <string name="pref_supports_read_card_key">pref_supports_read_card</string>
-    <string name="pref_transaction_types_key">pref_transaction_types</string>
-    <string name="pref_request_types_key">pref_request_types</string>
     <string name="tokenisation_overview">For tokenisation, a real payment app would typically read a payment card and generate a token from that. In this sample, we generate fake cards and tokens to avoid hardware dependencies. Please choose a card below.</string>
 
     <string name="card_reading_help">Payment card reading is an optional stage for payment applications to support. If it is supported, customer would present their payment card at this point and the payment application would pass back card details like scheme, tokens, etc for flow applications to use for processing.\n\nThe following post-card-reading step is executed regardless of whether this stage was called, and whether or not a payment app returns card details.

@@ -38,7 +38,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final String apiVersion;
     private final String displayName;
     private final boolean hasAccessibilityMode;
-    private final Set<String> supportedRequestTypes;
+    private final Set<String> customRequestTypes;
     private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
     private boolean enabled;
@@ -51,7 +51,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     protected BaseServiceInfo(String id, String packageName, String vendor, String logicalDeviceId, String serviceVersion, String apiVersion,
-                              String displayName, boolean hasAccessibilityMode, Set<String> supportedRequestTypes,
+                              String displayName, boolean hasAccessibilityMode, Set<String> customRequestTypes,
                               Set<String> supportedDataKeys, AdditionalData additionalInfo) {
         super(id);
         this.packageName = packageName;
@@ -61,7 +61,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
-        this.supportedRequestTypes = supportedRequestTypes != null ? supportedRequestTypes : new HashSet<String>();
+        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.enabled = true;
@@ -141,8 +141,8 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return array of request types supported by the service
      */
     @NonNull
-    public Set<String> getSupportedRequestTypes() {
-        return supportedRequestTypes;
+    public Set<String> getCustomRequestTypes() {
+        return customRequestTypes;
     }
 
     /**
@@ -151,8 +151,8 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @param requestType The request type to check if supported
      * @return True if supported, false otherwise
      */
-    public boolean supportsRequestType(String requestType) {
-        return supportedRequestTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedRequestTypes, requestType);
+    public boolean supportsCustomRequestType(String requestType) {
+        return customRequestTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(customRequestTypes, requestType);
     }
 
     /**
@@ -272,7 +272,7 @@ public abstract class BaseServiceInfo extends BaseModel {
                 Objects.equals(serviceVersion, that.serviceVersion) &&
                 Objects.equals(apiVersion, that.apiVersion) &&
                 Objects.equals(displayName, that.displayName) &&
-                Objects.equals(supportedRequestTypes, that.supportedRequestTypes) &&
+                Objects.equals(customRequestTypes, that.customRequestTypes) &&
                 Objects.equals(supportedDataKeys, that.supportedDataKeys) &&
                 Objects.equals(additionalInfo, that.additionalInfo) &&
                 Objects.equals(stages, that.stages);
@@ -281,6 +281,6 @@ public abstract class BaseServiceInfo extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedRequestTypes, supportedDataKeys, additionalInfo, stages);
+        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, customRequestTypes, supportedDataKeys, additionalInfo, stages);
     }
 }

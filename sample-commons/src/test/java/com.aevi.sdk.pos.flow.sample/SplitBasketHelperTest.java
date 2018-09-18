@@ -26,7 +26,7 @@ public class SplitBasketHelperTest {
     private SplitBasketHelper splitBasketHelper;
 
     private void createSplitBasketHelper(boolean... retainZeroCountRemaining) {
-        Payment payment = paymentBuilder.withTransactionType(TransactionTypes.SALE)
+        Payment payment = paymentBuilder.withPaymentFlow(TransactionTypes.SALE)
                 .withAmounts(new Amounts(sourceBasket.getTotalBasketValue(), "GBP"))
                 .addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, sourceBasket).build();
         SplitRequest splitRequest = new SplitRequest(payment, transactions);
@@ -75,7 +75,7 @@ public class SplitBasketHelperTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldThrowUnsupportedExceptionIfNoBasket() throws Exception {
-        SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withTransactionType(TransactionTypes.SALE)
+        SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withPaymentFlow(TransactionTypes.SALE)
                 .withAmounts(new Amounts(1000, "GBP")).build(), transactions), false);
     }
 

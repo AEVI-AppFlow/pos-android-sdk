@@ -18,10 +18,7 @@ package com.aevi.sdk.pos.flow;
 import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.FlowClient;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.*;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -37,9 +34,19 @@ public interface PaymentClient extends FlowClient {
      * Retrieve a {@link PaymentFlowServices} that allows you to easily query for data and/or support across all the services.
      *
      * @return Single emitting a {@link PaymentFlowServices} object
+     * @deprecated TODO remove - should use getPaymentFlowConfiguration instead
      */
     @NonNull
+    @Deprecated
     Single<PaymentFlowServices> getPaymentFlowServices();
+
+    /**
+     * Retrieve a snapshot of the current payment flow configuration, which includes information about the defined flows and available flow services.
+     *
+     * @return Single emitting a {@link PaymentFlowConfiguration} instance
+     */
+    @NonNull
+    Single<PaymentFlowConfiguration> getPaymentFlowConfiguration();
 
     /**
      * Initiate payment processing based on the provided {@link Payment}.
@@ -51,19 +58,6 @@ public interface PaymentClient extends FlowClient {
      */
     @NonNull
     Single<PaymentResponse> initiatePayment(Payment payment);
-
-    /**
-     * Initiate payment processing based on the provided {@link Payment} and send it to the requested payment service and/or device
-     *
-     * In order to receive processing status updates for this payment, please subscribe via {@link #subscribeToStatusUpdates(String)}.
-     *
-     * @param payment          The payment to process
-     * @param paymentServiceId The id of the payment service that should be used to process the payment request
-     * @param deviceId         The id of the device that should be used to process the payment request
-     * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
-     */
-    @NonNull
-    Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId);
 
     /**
      * Get the current status of the payment previously initiated via {@link #initiatePayment(Payment)}.

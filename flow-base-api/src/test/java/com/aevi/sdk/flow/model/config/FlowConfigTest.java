@@ -17,12 +17,7 @@ public class FlowConfigTest {
 
     @Before
     public void setup() {
-        flowConfig = new FlowConfig("river", null);
-    }
-
-    @Test
-    public void canGetType() {
-        assertThat(flowConfig.getType()).isEqualTo("river");
+        flowConfig = new FlowConfig("blarp", "river", "yes", null, null);
     }
 
     @Test

@@ -7,13 +7,9 @@ import com.google.gson.stream.MalformedJsonException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_ENTRY_METHODS;
-import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_NETWORKS;
-import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_INSERT;
-import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_SWIPE;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_AMEX;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_DINERS;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_GIFT;
+import static com.aevi.sdk.flow.constants.CardDataKeys.*;
+import static com.aevi.sdk.flow.constants.CardEntryMethods.*;
+import static com.aevi.sdk.flow.constants.CardNetworks.*;
 import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,7 +70,7 @@ public class PaymentTest {
         assertThat(payment).isNotNull();
         assertThat(payment.getAmounts()).isEqualTo(new com.aevi.sdk.pos.flow.model.Amounts(amount, currency));
         assertThat(payment.getAmounts().getCurrency()).isEqualTo(currency);
-        assertThat(payment.getTransactionType()).isEqualTo(type);
+        assertThat(payment.getFlowName()).isEqualTo(type);
     }
 
     private void assertArrayOfOptions(Payment result, String key, String... types) {
@@ -89,6 +85,6 @@ public class PaymentTest {
     }
 
     private Payment getValidRequest(long amount, String currency, String type) {
-        return new PaymentBuilder().withTransactionType(type).withAmounts(new Amounts(amount, currency)).build();
+        return new PaymentBuilder().withPaymentFlow(type).withAmounts(new Amounts(amount, currency)).build();
     }
 }

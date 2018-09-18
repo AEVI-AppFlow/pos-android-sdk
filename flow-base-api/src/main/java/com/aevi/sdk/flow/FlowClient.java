@@ -76,7 +76,9 @@ public interface FlowClient {
      * Query for the current system settings, such as timeouts, flow configs, etc.
      *
      * @return A single emitting {@link SystemSettings}
+     * @deprecated TODO replace via PaymentFlowConfiguration - domain specific settings
      */
     @NonNull
+    @Deprecated
     Single<SystemSettings> getSystemSettings();
 }

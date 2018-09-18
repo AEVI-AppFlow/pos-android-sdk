@@ -88,7 +88,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addPaymentOverview(Payment payment) {
         List<Pair<String, String>> paymentInfo = new ArrayList<>();
         paymentInfo.add(getStringPair(R.string.id, payment.getId()));
-        paymentInfo.add(getStringPair(R.string.transaction_type, payment.getTransactionType()));
+        paymentInfo.add(getStringPair(R.string.flow_name, payment.getFlowName()));
+        if (payment.getTransactionType() != null) {
+            paymentInfo.add(getStringPair(R.string.transaction_type, payment.getTransactionType()));
+        }
         paymentInfo.add(getStringPair(R.string.split_enabled, payment.isSplitEnabled()));
 
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, paymentInfo, true));

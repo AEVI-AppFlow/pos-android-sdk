@@ -74,11 +74,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
 
-        // TODO this isn't right - it needs to use the new "custom request types" concept once available
-        SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentFlowServices()
-                .subscribe(paymentFlowServices -> {
-                    Set<String> requestTypes = paymentFlowServices.getAllSupportedRequestTypes();
-                    requestTypes.remove(FinancialRequestTypes.PAYMENT); // Filter out "payment" here, as we handle that via PaymentFragment
+        PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
+        paymentClient.getPaymentFlowConfiguration()
+                .subscribe(paymentFlowConfiguration -> {
+                    Set<String> requestTypes = paymentFlowConfiguration.getAllGenericRequestTypes();
                     requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
                     dropDownHelper.setupDropDown(requestTypeSpinner, new ArrayList<>(requestTypes), false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
