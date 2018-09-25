@@ -15,6 +15,7 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.pos.flow.model.Merchant;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
@@ -34,6 +35,7 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withVendor("AEVI")
                 .withDisplayName("Payment Service Sample")
                 .withCanPayAmounts(true, supportedPaymentMethods)
+                .withCustomRequestTypes(FinancialRequestTypes.RESPONSE_REDELIVERY)
                 .withSupportedTransactionTypes(supportedTransactionTypes)
                 .withSupportedCurrencies(supportedCurrencies)
                 .withDefaultCurrency(supportedCurrencies[0])
