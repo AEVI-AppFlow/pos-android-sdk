@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
@@ -52,7 +53,7 @@ public class SystemSettingsFragment extends BaseFragment {
     }
 
     private void populateSystemSettings() {
-        SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemSettings -> {
+        SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentSettings().subscribe(systemSettings -> {
             FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
             addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
@@ -66,7 +67,7 @@ public class SystemSettingsFragment extends BaseFragment {
 
             settingsInfo.setText(stringBuilder.toString());
 
-            List<FlowConfig> flowConfigurations = systemSettings.getFlowConfigurations();
+            List<FlowConfig> flowConfigurations = systemSettings.getFlowConfigs(RequestType.ALL);
             for (FlowConfig flowConfiguration : flowConfigurations) {
                 handleFlowConfig(flowConfiguration);
             }

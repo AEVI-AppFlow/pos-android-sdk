@@ -19,6 +19,7 @@ import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.PaymentClient;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -55,7 +56,7 @@ public class PaymentBuilder {
      *
      * The flow will determine what stages the payment goes through and what applications get called. Please see documentation for more details.
      *
-     * See {@link PaymentFlowConfiguration} for retrieving flow information.
+     * See {@link PaymentSettings} for retrieving flow information.
      *
      * @param flowName
      */

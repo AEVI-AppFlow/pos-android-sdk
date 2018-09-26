@@ -18,7 +18,6 @@ package com.aevi.sdk.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aevi.sdk.flow.FlowClient;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
@@ -29,7 +28,7 @@ import java.util.UUID;
  */
 public class Request extends BaseModel {
 
-    private final String requestType;
+    private final String requestType; // TODO maybe not quite the right name anymore?
     private final AdditionalData requestData;
     private String deviceId;
     private String targetAppId;
@@ -95,7 +94,7 @@ public class Request extends BaseModel {
     /**
      * Optionally set what device to use for interactions with the customer.
      *
-     * The available devices can be queried via {@link FlowClient#getDevices()}.
+     * See the relevant client interface for how to retrieve the list of available devices.
      *
      * Setting this means that all customer facing activities will be run on that device.
      *

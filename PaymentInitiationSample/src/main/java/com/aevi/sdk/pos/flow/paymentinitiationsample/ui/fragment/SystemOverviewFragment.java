@@ -55,10 +55,10 @@ public class SystemOverviewFragment extends BaseFragment {
 
     private Single<SystemOverview> createSystemInfo() {
         PaymentClient paymentClient = getSampleContext().getPaymentClient();
-        return Single.zip(paymentClient.getPaymentFlowServices(), paymentClient.getDevices(),
-                (paymentFlowServices, devices) -> {
+        return Single.zip(paymentClient.getPaymentSettings(), paymentClient.getDevices(),
+                (paymentSettings, devices) -> {
                     SystemOverview systemOverview = new SystemOverview();
-                    systemOverview.setPaymentFlowServices(paymentFlowServices);
+                    systemOverview.setPaymentFlowServices(paymentSettings.getPaymentFlowServices());
                     systemOverview.setNumDevices(devices.size());
                     return systemOverview;
                 });

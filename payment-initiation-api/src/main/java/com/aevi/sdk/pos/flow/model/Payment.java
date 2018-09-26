@@ -21,6 +21,7 @@ import android.util.Log;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Token;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
@@ -115,7 +116,7 @@ public class Payment extends BaseModel {
     /**
      * Get the name of the flow to execute for this payment.
      *
-     * See {@link PaymentFlowConfiguration} for retrieving possible values.
+     * See {@link PaymentSettings} for retrieving possible values.
      *
      * @return The name of the flow to execute
      */

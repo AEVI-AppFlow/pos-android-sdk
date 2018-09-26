@@ -17,36 +17,45 @@ package com.aevi.sdk.pos.flow;
 
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.FlowClient;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
- *
- * Please see {@link com.aevi.sdk.flow.FlowClient} for more general flow functions.
  */
-public interface PaymentClient extends FlowClient {
+public interface PaymentClient {
 
     /**
-     * Retrieve a {@link PaymentFlowServices} that allows you to easily query for data and/or support across all the services.
+     * Retrieve a snapshot of the current payment settings.
      *
-     * @return Single emitting a {@link PaymentFlowServices} object
-     * @deprecated TODO remove - should use getPaymentFlowConfiguration instead
+     * This includes system settings, flow configurations, information about flow services, etc.
+     *
+     * @return Single emitting a {@link PaymentSettings} instance
      */
     @NonNull
-    @Deprecated
-    Single<PaymentFlowServices> getPaymentFlowServices();
+    Single<PaymentSettings> getPaymentSettings();
 
     /**
-     * Retrieve a snapshot of the current payment flow configuration, which includes information about the defined flows and available flow services.
+     * Initiate processing of the given {@link Request}.
      *
-     * @return Single emitting a {@link PaymentFlowConfiguration} instance
+     * Returns a single that emits a {@link Response} after processing has completed.
+     *
+     * @param request The request
+     * @return Single emitting a {@link Response} model
      */
     @NonNull
-    Single<PaymentFlowConfiguration> getPaymentFlowConfiguration();
+    Single<Response> initiateRequest(Request request);
 
     /**
      * Initiate payment processing based on the provided {@link Payment}.
@@ -60,22 +69,40 @@ public interface PaymentClient extends FlowClient {
     Single<PaymentResponse> initiatePayment(Payment payment);
 
     /**
-     * Get the current status of the payment previously initiated via {@link #initiatePayment(Payment)}.
-     *
-     * Note that this is a synchronous, blocking call. Do not call this on the UI thread.
-     *
-     * @param paymentId The id of the payment get status for
-     * @return A {@link RequestStatus} object containing the current payment status of the payment processing
-     */
-    @NonNull
-    RequestStatus getCurrentPaymentStatus(String paymentId);
-
-    /**
      * Subscribe to receive status updates of a particular payment.
+     *
+     * To retrieve the latest/current status, call blockingFirst() on the returned object of this method.
      *
      * @param paymentId The id of the payment to listen to status updates for
      * @return Observable emitting a stream of {@link RequestStatus} objects indicating the status of the payment processing
      */
     @NonNull
     Observable<RequestStatus> subscribeToStatusUpdates(String paymentId);
+
+    /**
+     * Query for devices connected to the processing service, if multi-device is enabled.
+     *
+     * It is up to the flow processing service configuration if multi-device is enabled or not. See {@link PaymentSettings} for more details.
+     *
+     * Returns a single that emits a list of currently connected devices.
+     *
+     * This should be queried each time a selection is required to ensure an up-to-date list.
+     *
+     * You can subscribe to {@link #subscribeToSystemEvents()} for updates on changes to the available devices.
+     *
+     * @return Single emitting a list of {@link Device} objects containing basic device info
+     */
+    @NonNull
+    Single<List<Device>> getDevices();
+
+    /**
+     * Subscribe to general system events.
+     *
+     * Examples are when there are changed to devices, applications or system settings.
+     * See documentation for a comprehensive list.
+     *
+     * @return A stream that will emit {@link FlowEvent} items
+     */
+    @NonNull
+    Observable<FlowEvent> subscribeToSystemEvents();
 }

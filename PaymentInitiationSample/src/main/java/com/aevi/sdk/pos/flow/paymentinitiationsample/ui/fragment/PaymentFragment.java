@@ -29,6 +29,8 @@ import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -80,7 +82,7 @@ public class PaymentFragment extends BaseObservableFragment {
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
     private DropDownHelper dropDownHelper;
-    private PaymentFlowConfiguration paymentFlowConfiguration;
+    private PaymentSettings paymentSettings;
 
     @Override
     public int getLayoutResource() {
@@ -96,12 +98,12 @@ public class PaymentFragment extends BaseObservableFragment {
         dropDownHelper = new DropDownHelper(getActivity());
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
-        paymentClient.getPaymentFlowConfiguration().subscribe(paymentFlowConfiguration -> {
-            this.paymentFlowConfiguration = paymentFlowConfiguration;
+        paymentClient.getPaymentSettings().subscribe(paymentFlowConfiguration -> {
+            this.paymentSettings = paymentFlowConfiguration;
             if (paymentFlowConfiguration.getPaymentFlowServices().getNumberOfFlowServices() > 0) {
                 allFieldsReady = true;
                 dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentFlowConfiguration.getPaymentFlowServices().getAllSupportedCurrencies()), false);
-                dropDownHelper.setupDropDown(flowSpinner, paymentFlowConfiguration.getFlowNames(), false);
+                dropDownHelper.setupDropDown(flowSpinner, paymentFlowConfiguration.getFlowNames(RequestType.PAYMENT), false);
             } else {
                 handleNoPaymentServices();
             }
@@ -130,7 +132,7 @@ public class PaymentFragment extends BaseObservableFragment {
         if (allFieldsReady) {
             // This will trigger an update to all fields as per below
             String flowName = ((String) flowSpinner.getSelectedItem());
-            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentFlowConfiguration.getServicesForFlow(flowName).getAllSupportedCurrencies()), false);
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()), false);
         }
     }
 

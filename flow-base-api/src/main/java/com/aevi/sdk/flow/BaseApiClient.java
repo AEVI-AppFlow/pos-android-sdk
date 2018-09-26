@@ -28,11 +28,12 @@ import com.aevi.sdk.flow.model.*;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
-public abstract class ApiBase {
+public abstract class BaseApiClient {
 
     protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
@@ -44,7 +45,7 @@ public abstract class ApiBase {
     private final InternalData internalData;
     protected final Context context;
 
-    protected ApiBase(String apiVersion, Context context) {
+    protected BaseApiClient(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
         this.context = context;
     }
@@ -53,7 +54,8 @@ public abstract class ApiBase {
         return internalData;
     }
 
-    protected Single<Response> sendGenericRequest(final Request request) {
+    @NonNull
+    public Single<Response> initiateRequest(final Request request) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
@@ -74,6 +76,53 @@ public abstract class ApiBase {
                     @Override
                     public void run() throws Exception {
                         requestMessenger.closeConnection();
+                    }
+                });
+    }
+
+    @NonNull
+    public Single<List<Device>> getDevices() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Single.error(NO_FPS_EXCEPTION);
+        }
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.DEVICE_INFO_REQUEST, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .map(new Function<String, Device>() {
+                    @Override
+                    public Device apply(String json) throws Exception {
+                        return Device.fromJson(json);
+                    }
+                })
+                .toList()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
+                    }
+                });
+    }
+
+    @NonNull
+    public Observable<FlowEvent> subscribeToSystemEvents() {
+        if (!isProcessingServiceInstalled(context)) {
+            return Observable.error(NO_FPS_EXCEPTION);
+        }
+        final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .map(new Function<String, FlowEvent>() {
+                    @Override
+                    public FlowEvent apply(String json) throws Exception {
+                        return FlowEvent.fromJson(json);
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
                     }
                 });
     }

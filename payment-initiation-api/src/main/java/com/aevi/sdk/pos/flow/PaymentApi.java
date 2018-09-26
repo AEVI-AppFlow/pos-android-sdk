@@ -17,7 +17,7 @@ package com.aevi.sdk.pos.flow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.ApiBase;
+import com.aevi.sdk.flow.BaseApiClient;
 
 /**
  * Main entry point to obtain references to the payment related clients.
@@ -50,7 +50,7 @@ public final class PaymentApi {
      * @return True if API processing service is installed, false otherwise
      */
     public static boolean isProcessingServiceInstalled(Context context) {
-        return ApiBase.isProcessingServiceInstalled(context);
+        return BaseApiClient.isProcessingServiceInstalled(context);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class PaymentApi {
      */
     @NonNull
     public static String getProcessingServiceVersion(Context context) {
-        return ApiBase.getProcessingServiceVersion(context);
+        return BaseApiClient.getProcessingServiceVersion(context);
     }
 
     /**

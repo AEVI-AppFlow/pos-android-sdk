@@ -32,6 +32,7 @@ import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
@@ -42,8 +43,7 @@ import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -75,11 +75,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
         paymentClient = PaymentApi.getPaymentClient(getContext());
 
         PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
-        paymentClient.getPaymentFlowConfiguration()
+        paymentClient.getPaymentSettings()
                 .subscribe(paymentFlowConfiguration -> {
-                    Set<String> requestTypes = paymentFlowConfiguration.getAllGenericRequestTypes();
-                    requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
-                    dropDownHelper.setupDropDown(requestTypeSpinner, new ArrayList<>(requestTypes), false);
+                    List<String> genericFlows = paymentFlowConfiguration.getFlowNames(RequestType.GENERIC);
+                    genericFlows.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlows, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
     }
 
@@ -98,7 +98,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             Intent intent = new Intent(getContext(), GenericResultActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            paymentClient.processRequest(request).subscribe(response -> {
+            paymentClient.initiateRequest(request).subscribe(response -> {
                 if (isAdded()) {
                     intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
                     startActivity(intent);

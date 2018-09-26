@@ -21,7 +21,6 @@ public interface AppMessageTypes {
 
     String REQUEST_MESSAGE = "request";
     String RESPONSE_MESSAGE = "response";
-    String SYSTEM_SETTINGS_REQUEST = "systemSettingsRequest";
     String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
     String PAYMENT_FLOW_CONFIG_REQUEST = "paymentFlowConfigRequest";
     String DEVICE_INFO_REQUEST = "deviceInfoRequest";
