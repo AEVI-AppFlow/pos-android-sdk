@@ -24,12 +24,9 @@ import android.widget.TextView;
 
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
-import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
-
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -67,10 +64,7 @@ public class SystemSettingsFragment extends BaseFragment {
 
             settingsInfo.setText(stringBuilder.toString());
 
-            List<FlowConfig> flowConfigurations = systemSettings.getFlowConfigs(RequestType.ALL);
-            for (FlowConfig flowConfiguration : flowConfigurations) {
-                handleFlowConfig(flowConfiguration);
-            }
+            systemSettings.getFlowConfigurations().subscribe(this::handleFlowConfig);
         }, throwable -> settingsInfo.setText("Operation failed: " + throwable.getMessage()));
     }
 

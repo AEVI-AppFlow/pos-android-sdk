@@ -27,12 +27,13 @@ import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.constants.ReceiptKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
-import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
@@ -48,6 +49,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class GenericRequestFragment extends BaseObservableFragment {
 
@@ -76,11 +79,16 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
         PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
         paymentClient.getPaymentSettings()
-                .subscribe(paymentFlowConfiguration -> {
-                    List<String> genericFlows = paymentFlowConfiguration.getFlowNames(RequestType.GENERIC);
-                    genericFlows.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
-                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlows, false);
+                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings ->
+                        paymentSettings.getFlowConfigurations()
+                                .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_GENERIC))
+                                .map(FlowConfig::getType)
+                                .toList())
+                .subscribe(genericFlowTypes -> {
+                    genericFlowTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlowTypes, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
+
     }
 
     @OnItemSelected(R.id.request_type_spinner)

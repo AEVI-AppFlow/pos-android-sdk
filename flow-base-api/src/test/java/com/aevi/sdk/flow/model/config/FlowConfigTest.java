@@ -17,7 +17,7 @@ public class FlowConfigTest {
 
     @Before
     public void setup() {
-        flowConfig = new FlowConfig("blarp", "river", "yes", null, null);
+        flowConfig = new FlowConfig("blarp", "river", 1, 2, "yes", null, null);
     }
 
     @Test

@@ -26,11 +26,11 @@ import android.widget.Toast;
 
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
-import com.aevi.sdk.pos.flow.model.config.PaymentSettings.RequestType;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -43,11 +43,14 @@ import com.aevi.ui.library.recycler.DropDownSpinner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -98,21 +101,28 @@ public class PaymentFragment extends BaseObservableFragment {
         dropDownHelper = new DropDownHelper(getActivity());
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
-        paymentClient.getPaymentSettings().subscribe(paymentFlowConfiguration -> {
-            this.paymentSettings = paymentFlowConfiguration;
-            if (paymentFlowConfiguration.getPaymentFlowServices().getNumberOfFlowServices() > 0) {
-                allFieldsReady = true;
-                dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentFlowConfiguration.getPaymentFlowServices().getAllSupportedCurrencies()), false);
-                dropDownHelper.setupDropDown(flowSpinner, paymentFlowConfiguration.getFlowNames(RequestType.PAYMENT), false);
-            } else {
-                handleNoPaymentServices();
-            }
-        }, throwable -> {
-            if (throwable instanceof IllegalStateException) {
-                Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
-            }
-            handleNoPaymentServices();
-        });
+
+        paymentClient.getPaymentSettings()
+                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings -> {
+                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0) {
+                        throw new Exception("No services available");
+                    }
+                    this.paymentSettings = paymentSettings;
+                    return paymentSettings.getFlowConfigurations()
+                            .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_PAYMENT))
+                            .map(FlowConfig::getType)
+                            .toList();
+                })
+                .subscribe(paymentFlowTypes -> {
+                    allFieldsReady = true;
+                    dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()), false);
+                    dropDownHelper.setupDropDown(flowSpinner, paymentFlowTypes, false);
+                }, throwable -> {
+                    if (throwable instanceof IllegalStateException) {
+                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    }
+                    handleNoPaymentServices();
+                });
     }
 
     private void handleNoPaymentServices() {

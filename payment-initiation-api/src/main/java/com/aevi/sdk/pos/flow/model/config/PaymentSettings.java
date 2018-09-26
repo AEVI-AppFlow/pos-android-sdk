@@ -18,7 +18,6 @@ import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.config.*;
-import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.model.PaymentStage;
@@ -27,23 +26,17 @@ import com.aevi.util.json.Jsonable;
 
 import java.util.*;
 
+import io.reactivex.Observable;
 import io.reactivex.annotations.Nullable;
+import io.reactivex.functions.Predicate;
 
 /**
  * Represents all available payment settings, configurations and flow service information.
  */
 public class PaymentSettings implements Jsonable {
 
-    public enum RequestType {
-        GENERIC,
-        PAYMENT,
-        ALL
-    }
-
     private final List<FlowConfig> flowConfigurations;
     private final PaymentFlowServices allServices;
-    private final List<String> flowNames;
-    private final Set<String> flowTypes;
     private final FpsSettings fpsSettings;
     private final AdditionalData additionalSettings;
 
@@ -53,14 +46,6 @@ public class PaymentSettings implements Jsonable {
         this.allServices = paymentFlowServices;
         this.fpsSettings = fpsSettings;
         this.additionalSettings = additionalSettings;
-        List<String> flowNamesList = new ArrayList<>();
-        Set<String> flowTypeSet = new HashSet<>();
-        for (FlowConfig flowConfiguration : flowConfigurations) {
-            flowNamesList.add(flowConfiguration.getName());
-            flowTypeSet.add(flowConfiguration.getType());
-        }
-        this.flowNames = Collections.unmodifiableList(flowNamesList);
-        this.flowTypes = Collections.unmodifiableSet(flowTypeSet);
     }
 
     /**
@@ -98,57 +83,14 @@ public class PaymentSettings implements Jsonable {
     }
 
     /**
-     * Get the list of the names of all the defined flows for the provided request type.
+     * Returns a stream of flow configurations which can be used to easily apply filters or transform into other types.
      *
-     * If you are initiating a generic {@link com.aevi.sdk.flow.model.Request}, use {@link RequestType#GENERIC}.
+     * See documentation for examples.
      *
-     * If you are initiation a {@link Payment}, use {@link RequestType#PAYMENT}.
-     *
-     * If you want to view all available flow names, use {@link RequestType#ALL}.
-     *
-     * @param requestType The type of request to filter by
-     * @return The list of flow names
+     * @return An observable stream of {@link FlowConfig}
      */
-    @NonNull
-    public List<String> getFlowNames(RequestType requestType) {
-        switch (requestType) {
-            case GENERIC:
-                return getFlowNamesForType(FlowConfig.TYPE_GENERIC, FlowConfig.TYPE_GENERIC_ADHOC);
-            case PAYMENT:
-                List<String> paymentFlowNames = new ArrayList<>(flowNames);
-                paymentFlowNames.removeAll(getFlowNamesForType(FlowConfig.TYPE_GENERIC, FlowConfig.TYPE_GENERIC_ADHOC));
-                return paymentFlowNames;
-            case ALL:
-            default:
-                return flowNames;
-        }
-    }
-
-    /**
-     * Get the list of flow configurations for the provided request type.
-     *
-     * If you are initiating a generic {@link com.aevi.sdk.flow.model.Request}, use {@link RequestType#GENERIC}.
-     *
-     * If you are initiation a {@link Payment}, use {@link RequestType#PAYMENT}.
-     *
-     * If you want to view all available flow names, use {@link RequestType#ALL}.
-     *
-     * @param requestType The type of request to filter by
-     * @return The list of flow names
-     */
-    @NonNull
-    public List<FlowConfig> getFlowConfigs(RequestType requestType) {
-        switch (requestType) {
-            case GENERIC:
-                return getFlowConfigsForType(FlowConfig.TYPE_GENERIC, FlowConfig.TYPE_GENERIC_ADHOC);
-            case PAYMENT:
-                List<FlowConfig> paymentFlowConfigs = new ArrayList<>(flowConfigurations);
-                paymentFlowConfigs.removeAll(getFlowConfigsForType(FlowConfig.TYPE_GENERIC, FlowConfig.TYPE_GENERIC_ADHOC));
-                return paymentFlowConfigs;
-            case ALL:
-            default:
-                return flowConfigurations;
-        }
+    public Observable<FlowConfig> getFlowConfigurations() {
+        return Observable.fromIterable(flowConfigurations);
     }
 
     /**
@@ -159,18 +101,16 @@ public class PaymentSettings implements Jsonable {
      * @param type The flow type to check
      * @return True if there is at least one flow for this type, false otherwise
      */
-    public boolean isFlowTypeSupported(String type) {
-        return flowTypes.contains(type);
-    }
-
-    /**
-     * Get the set of flow types for all the defined flows.
-     *
-     * @return The list of flow types
-     */
-    @NonNull
-    public Set<String> getFlowTypes() {
-        return flowTypes;
+    public boolean isFlowTypeSupported(final String type) {
+        return getFlowConfigurations()
+                .filter(new Predicate<FlowConfig>() {
+                    @Override
+                    public boolean test(FlowConfig flowConfig) throws Exception {
+                        return flowConfig.getType().equals(type);
+                    }
+                })
+                .count()
+                .blockingGet() > 0;
     }
 
     /**
@@ -193,7 +133,7 @@ public class PaymentSettings implements Jsonable {
         }
 
         Set<PaymentFlowServiceInfo> paymentFlowServices = new HashSet<>();
-        for (FlowStage flowStage : flowConfig.getAllStages()) {
+        for (FlowStage flowStage : flowConfig.getStages(true)) {
             if (flowStage.getAppExecutionType() != AppExecutionType.NONE && !flowStage.getFlowApps().isEmpty()) {
                 for (FlowApp flowApp : flowStage.getFlowApps()) {
                     paymentFlowServices.add(allServices.getFlowServiceFromId(flowApp.getId()));
