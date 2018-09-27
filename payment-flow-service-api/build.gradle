@@ -23,14 +23,6 @@ dependencies {
     testImplementation apiDependencies.posFlowConstants
 }
 
-javadoc {
-    source = sourceSets.main.allJava
-    destinationDir = file("../documentation/public/javadocs/payment-flow-service-api")
-    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
-    title = "Flow Service API"
-    options.memberLevel = JavadocMemberLevel.PUBLIC
-}
-
 buildConfig {
     clsName = 'FlowServiceConfig'
 }

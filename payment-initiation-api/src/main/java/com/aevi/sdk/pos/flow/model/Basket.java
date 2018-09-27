@@ -236,7 +236,7 @@ public class Basket implements Jsonable {
      * The count must be zero or larger. Negative values are ignored.
      *
      * @param itemId   The item id
-     * @param newCount The new count for the basket item (must be >= 0)
+     * @param newCount The new count for the basket item (must be positive)
      * @return The item with the updated count or null if no item with id found
      */
     @Nullable
