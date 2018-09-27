@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import com.aevi.sdk.pos.flow.PaymentClient;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class AmountsModifier {
      * Change the currency associated with the amounts, provided that it is allowed.
      *
      * It is up to the flow processing service configuration if currency conversion is allowed or not.
-     * Use {@link com.aevi.sdk.flow.FlowClient#getSystemSettings()} to check whether it is allowed.
+     * Use {@link PaymentClient#getPaymentSettings()} ()} to check whether it is allowed.
      * See documentation/samples for how to retrieve the value.
      *
      * Note that this will update all the amount values based on the provided exchange rate.

@@ -58,7 +58,8 @@ public class PaymentBuilder {
      *
      * See {@link PaymentSettings} for retrieving flow information.
      *
-     * @param flowName
+     * @param flowName The name of the flow to use
+     * @return This builder
      */
     public PaymentBuilder withPaymentFlow(String flowName) {
         this.flowName = flowName;
@@ -81,11 +82,12 @@ public class PaymentBuilder {
     /**
      * Set split enabled for this payment which means it *may* be broken up into multiple sub-payments.
      *
-     * It is up to the flow processing service configuration if split is allowed or not. Use {@link PaymentClient#getSystemSettings()} to check
+     * It is up to the flow processing service configuration if split is allowed or not. Use {@link PaymentClient#getPaymentSettings()} to check
      * whether it is allowed. See documentation/samples for how to retrieve the value.
      *
      * If this is not called, it is still possible that split will be enabled during the payment flow.
      *
+     * @param enabled True to enable split, false to disable
      * @return This builder
      */
     public PaymentBuilder withSplitEnabled(boolean enabled) {

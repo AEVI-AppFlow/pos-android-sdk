@@ -21,8 +21,6 @@ import com.aevi.sdk.flow.BaseApiClient;
 
 /**
  * Main entry point to obtain references to the payment related clients.
- *
- * Please see {@link com.aevi.sdk.flow.FlowApi} for details on general flow functionality.
  */
 public final class PaymentApi {
 

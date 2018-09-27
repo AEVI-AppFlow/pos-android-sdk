@@ -82,6 +82,9 @@ public abstract class BaseServiceInfoProvider extends ContentProvider {
 
     /**
      * Notify the system that the configuration has changed.
+     *
+     * @param context               context
+     * @param configChangeBroadcast broadcast action
      */
     public static void notifyServiceInfoChange(Context context, String configChangeBroadcast) {
         String pkg = "package:" + context.getPackageName();
