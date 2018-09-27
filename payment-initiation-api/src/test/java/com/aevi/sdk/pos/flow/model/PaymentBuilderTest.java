@@ -12,7 +12,7 @@ public class PaymentBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentWhenAmountsNotSet() throws Exception {
-        new PaymentBuilder().withTransactionType("whatever").build();
+        new PaymentBuilder().withPaymentFlow("whatever").build();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -23,9 +23,9 @@ public class PaymentBuilderTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowCardTokenAndSplitSetTogether() throws Exception {
         new PaymentBuilder()
-                .withTransactionType("sale")
+                .withPaymentFlow("sale")
                 .withAmounts(new Amounts(1000, "GBP"))
-                .enableSplit()
+                .withSplitEnabled(true)
                 .withCardToken(new Token("123", "card"))
                 .build();
     }
@@ -34,7 +34,7 @@ public class PaymentBuilderTest {
     public void shouldNotAllowBasketAndAmountsTotalMismatch() throws Exception {
         Basket basket = new Basket(new BasketItemBuilder().generateRandomId().withLabel("bla").withAmount(900).build());
         new PaymentBuilder()
-                .withTransactionType("sale")
+                .withPaymentFlow("sale")
                 .withAmounts(new Amounts(1000, "GBP"))
                 .addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, basket)
                 .build();
@@ -44,13 +44,13 @@ public class PaymentBuilderTest {
     public void shouldBuildPaymentWithCorrectSetup() throws Exception {
         Basket basket = new Basket(new BasketItemBuilder().generateRandomId().withLabel("bla").withAmount(1000).build());
         Payment payment = new PaymentBuilder()
-                .withTransactionType("sale")
+                .withPaymentFlow("sale")
                 .withAmounts(new Amounts(1000, "GBP"))
                 .addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, basket)
-                .enableSplit()
+                .withSplitEnabled(true)
                 .build();
 
-        assertThat(payment.getTransactionType()).isEqualTo("sale");
+        assertThat(payment.getFlowName()).isEqualTo("sale");
         assertThat(payment.getAmounts()).isEqualTo(new Amounts(1000, "GBP"));
         assertThat(payment.isSplitEnabled()).isTrue();
         assertThat(payment.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET)).isNotNull();

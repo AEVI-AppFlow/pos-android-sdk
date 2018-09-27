@@ -7,6 +7,10 @@
         <item>AMEX</item>
     </string-array>
 
+    <string-array name="transaction_types">
+        <item>sale</item>
+    </string-array>
+
     <string-array name="payment_methods">
         <item>card</item>
         <item>cash</item>
@@ -17,17 +21,6 @@
         <item>GBP</item>
         <item>EUR</item>
         <item>USD</item>
-    </string-array>
-
-    <string-array name="request_types">
-        <item>@string/type_payment</item>
-        <item>@string/type_reversal</item>
-        <item>@string/type_tokenisation</item>
-        <item>@string/type_response_redelivery</item>
-    </string-array>
-
-    <string-array name="transaction_types">
-        <item>@string/type_sale</item>
     </string-array>
 
 </resources>

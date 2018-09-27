@@ -28,8 +28,6 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 
-import java.util.List;
-
 import butterknife.BindView;
 
 public class SystemSettingsFragment extends BaseFragment {
@@ -52,11 +50,10 @@ public class SystemSettingsFragment extends BaseFragment {
     }
 
     private void populateSystemSettings() {
-        SampleContext.getInstance(getActivity()).getPaymentClient().getSystemSettings().subscribe(systemSettings -> {
+        SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentSettings().subscribe(systemSettings -> {
             FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
             addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
-            addEnabledDisabled(stringBuilder, R.string.split_support, systemSettings.isSplitEnabled());
             addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
             addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
             addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());
@@ -67,10 +64,7 @@ public class SystemSettingsFragment extends BaseFragment {
 
             settingsInfo.setText(stringBuilder.toString());
 
-            List<FlowConfig> flowConfigurations = systemSettings.getFlowConfigurations();
-            for (FlowConfig flowConfiguration : flowConfigurations) {
-                handleFlowConfig(flowConfiguration);
-            }
+            systemSettings.getFlowConfigurations().subscribe(this::handleFlowConfig);
         }, throwable -> settingsInfo.setText("Operation failed: " + throwable.getMessage()));
     }
 

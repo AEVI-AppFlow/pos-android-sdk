@@ -5,10 +5,8 @@ import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.FinancialRequestTypes;
-import com.aevi.sdk.flow.constants.TransactionTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.model.*;
 
 import org.junit.Before;
@@ -54,7 +52,7 @@ public class PaymentClientImplTest {
     @Test
     public void initiatePaymentShouldSendPaymentViaRequestCorrectly() throws Exception {
         pretendFpsIsInstalled();
-        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP")).build();
+        Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
 
         paymentClient.initiatePayment(payment).test();
 
@@ -67,20 +65,9 @@ public class PaymentClientImplTest {
 
 
     public void initiatePaymentShouldErrorIfNoFps() throws Exception {
-        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP")).build();
+        Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
         TestObserver<PaymentResponse> testObserver = paymentClient.initiatePayment(payment).test();
         assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentIfTokenAppIdAndPaymentServiceIdMismatch() throws Exception {
-        pretendFpsIsInstalled();
-        Token token = new Token("123", "card");
-        token.setSourceAppId("123");
-        Payment payment = new PaymentBuilder().withTransactionType(TransactionTypes.SALE).withAmounts(new Amounts(1000, "GBP"))
-                .withCardToken(token).build();
-
-        paymentClient.initiatePayment(payment, "456", "789");
     }
 
     @Test

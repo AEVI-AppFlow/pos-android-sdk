@@ -26,9 +26,11 @@ import android.widget.Toast;
 
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -41,17 +43,19 @@ import com.aevi.ui.library.recycler.DropDownSpinner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class PaymentFragment extends BaseObservableFragment {
 
-    @BindView(R.id.transaction_type_spinner)
-    DropDownSpinner transactionTypeSpinner;
+    @BindView(R.id.flow_spinner)
+    DropDownSpinner flowSpinner;
 
     @BindView(R.id.currency_spinner)
     DropDownSpinner currencySpinner;
@@ -80,6 +84,8 @@ public class PaymentFragment extends BaseObservableFragment {
     private PaymentBuilder paymentBuilder = new PaymentBuilder();
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
+    private DropDownHelper dropDownHelper;
+    private PaymentSettings paymentSettings;
 
     @Override
     public int getLayoutResource() {
@@ -92,37 +98,36 @@ public class PaymentFragment extends BaseObservableFragment {
 
         modelDisplay = ((PaymentInitiationActivity) getActivity()).getModelDisplay();
 
-        final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
-
-        dropDownHelper.setupDropDown(transactionTypeSpinner, R.array.transaction_types);
+        dropDownHelper = new DropDownHelper(getActivity());
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
-        // TODO this isn't quite right - should get txn types based on flow types instead, and currencies need updating based on chosen txn type
-        Single.zip(paymentClient.getPaymentFlowServices(), paymentClient.getSystemSettings(),
-                (paymentFlowServices, systemSettings) -> {
-                    if (paymentFlowServices.getNumberOfFlowServices() > 0) {
-                        allFieldsReady = true;
-                        dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentFlowServices.getAllSupportedCurrencies()), false);
-                        if (!paymentFlowServices.getAllSupportedTransactionTypes().isEmpty()) {
-                            dropDownHelper.setupDropDown(transactionTypeSpinner, new ArrayList<>(paymentFlowServices.getAllSupportedTransactionTypes()), false);
-                        }
-                    } else {
-                        handleNoPaymentServices();
+
+        paymentClient.getPaymentSettings()
+                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings -> {
+                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0) {
+                        throw new Exception("No services available");
                     }
-                    return Single.never();
+                    this.paymentSettings = paymentSettings;
+                    return paymentSettings.getFlowConfigurations()
+                            .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_PAYMENT))
+                            .map(FlowConfig::getName)
+                            .toList();
                 })
-                .doOnError(throwable -> {
+                .subscribe(paymentFlowNames -> {
+                    allFieldsReady = true;
+                    dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()), false);
+                    dropDownHelper.setupDropDown(flowSpinner, paymentFlowNames, false);
+                }, throwable -> {
                     if (throwable instanceof IllegalStateException) {
                         Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
                     }
                     handleNoPaymentServices();
-                })
-                .subscribe();
+                });
     }
 
     private void handleNoPaymentServices() {
         noPaymentServices.setVisibility(View.VISIBLE);
-        transactionTypeSpinner.setEnabled(false);
+        flowSpinner.setEnabled(false);
         currencySpinner.setEnabled(false);
         addBasketBox.setEnabled(false);
         amountSpinner.setEnabled(false);
@@ -132,7 +137,16 @@ public class PaymentFragment extends BaseObservableFragment {
         send.setEnabled(false);
     }
 
-    @OnItemSelected({R.id.transaction_type_spinner, R.id.currency_spinner, R.id.amounts_spinner})
+    @OnItemSelected({R.id.flow_spinner})
+    public void onFlowSpinnerSelection() {
+        if (allFieldsReady) {
+            // This will trigger an update to all fields as per below
+            String flowName = ((String) flowSpinner.getSelectedItem());
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()), false);
+        }
+    }
+
+    @OnItemSelected({R.id.currency_spinner, R.id.amounts_spinner})
     public void onSpinnerSelection() {
         if (allFieldsReady) {
             readAllFields();
@@ -145,7 +159,8 @@ public class PaymentFragment extends BaseObservableFragment {
     }
 
     private void readAllFields() {
-        paymentBuilder.withTransactionType(((String) transactionTypeSpinner.getSelectedItem()).toLowerCase());
+        String flowName = ((String) flowSpinner.getSelectedItem());
+        paymentBuilder.withPaymentFlow(flowName);
         Amounts amounts;
         if (!addBasketBox.isChecked()) {
             amountSpinner.setEnabled(true);
@@ -159,13 +174,8 @@ public class PaymentFragment extends BaseObservableFragment {
         }
         paymentBuilder.withAmounts(amounts);
 
-        if (splitBox.isChecked()) {
-            paymentBuilder.enableSplit();
-            addCardTokenBox.setEnabled(false);
-        } else {
-            paymentBuilder.overrideSplit(false);
-            addCardTokenBox.setEnabled(true);
-        }
+        paymentBuilder.withSplitEnabled(splitBox.isChecked());
+        addCardTokenBox.setEnabled(!splitBox.isChecked());
 
         if (addCustomerBox.isChecked()) {
             paymentBuilder.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));

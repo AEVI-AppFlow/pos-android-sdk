@@ -15,52 +15,34 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.aevi.sdk.flow.constants.PaymentMethods;
-import com.aevi.sdk.flow.constants.ServiceInfoDataKeys;
+import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.pos.flow.model.Merchant;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
-import java.util.Set;
-
 public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
-
-    private static final String[] SUPPORTED_CURRENCIES = new String[]{"EUR", "GBP", "USD"};
 
     @Override
     protected PaymentFlowServiceInfo getPaymentFlowServiceInfo() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String[] supportedRequestTypes = getListValue(sharedPreferences, getContext().getString(R.string.pref_request_types_key),
-                getContext().getResources().getStringArray(R.array.request_types));
-        String[] supportedTransactionTypes = getListValue(sharedPreferences, getContext().getString(R.string.pref_transaction_types_key),
-                getContext().getResources().getStringArray(R.array.transaction_types));
+
+        String[] supportedTransactionTypes = getContext().getResources().getStringArray(R.array.transaction_types);
+        String[] supportedCurrencies = getContext().getResources().getStringArray(R.array.supported_currencies);
+        String[] supportedPaymentMethods = getContext().getResources().getStringArray(R.array.payment_methods);
 
         return new PaymentFlowServiceInfoBuilder()
                 .withVendor("AEVI")
                 .withDisplayName("Payment Service Sample")
-                .withCanPayAmounts(true, PaymentMethods.CARD)
-                .withSupportedCurrencies(SUPPORTED_CURRENCIES)
-                .withDefaultCurrency(SUPPORTED_CURRENCIES[0])
+                .withCanPayAmounts(true, supportedPaymentMethods)
+                .withCustomRequestTypes(FinancialRequestTypes.RESPONSE_REDELIVERY)
+                .withSupportedTransactionTypes(supportedTransactionTypes)
+                .withSupportedCurrencies(supportedCurrencies)
+                .withDefaultCurrency(supportedCurrencies[0])
                 .withLogicalDeviceId(IdProvider.getTerminalId())
                 .withMerchants(new Merchant(IdProvider.getMerchantId(), IdProvider.getMerchantName()))
-                .withSupportedRequestTypes(supportedRequestTypes)
-                .withSupportedTransactionTypes(supportedTransactionTypes)
                 .withManualEntrySupport(false)
                 .withSupportsAccessibilityMode(false)
-                .withAdditionalInfo(ServiceInfoDataKeys.PRINTS_RECEIPTS, false)
                 .build(getContext());
-    }
-
-    private String[] getListValue(SharedPreferences sharedPreferences, String prefKey, String[] defaults) {
-        Set<String> selectedValues = sharedPreferences.getStringSet(prefKey, null);
-        if (selectedValues != null) {
-            return selectedValues.toArray(new String[selectedValues.size()]);
-        }
-        return defaults;
     }
 }

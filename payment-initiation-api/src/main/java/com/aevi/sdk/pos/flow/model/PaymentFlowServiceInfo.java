@@ -81,13 +81,13 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     }
 
     /**
-     * Gets an array of payment methods supported by the service.
+     * Gets the set of payment methods supported by the service.
      *
      * See reference values in the documentation for possible values.
      *
      * May be empty.
      *
-     * @return An array of supported payment methods
+     * @return Set of supported payment methods
      */
     @NonNull
     public Set<String> getPaymentMethods() {
@@ -105,11 +105,11 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     }
 
     /**
-     * Gets an array of currency codes supported by the service.
+     * Gets the set of currency codes supported by the service.
      *
      * May be empty.
      *
-     * @return An array of String objects indicating the 3-letter ISO 4217 currencies supported by the service.
+     * @return Set of String objects indicating the 3-letter ISO 4217 currencies supported by the service.
      */
     @NonNull
     public Set<String> getSupportedCurrencies() {
@@ -147,13 +147,25 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     }
 
     /**
-     * Gets an array of transaction types supported by the service.
+     * Gets the default 3-letter ISO 4217 currency code of the service.
+     *
+     * @return The default currency of the service.
+     */
+
+    public String getDefaultCurrency() {
+        return defaultCurrency;
+    }
+
+    /**
+     * Gets a set of transaction types supported by the service.
+     *
+     * Note that this is only relevant for services that processes transactions in the {@link PaymentStage#TRANSACTION_PROCESSING} stage.
      *
      * May be empty.
      *
      * See reference values in the documentation for possible values.
      *
-     * @return array of transaction types supported by the service.
+     * @return Set of transaction types supported by the service.
      */
     @NonNull
     public Set<String> getSupportedTransactionTypes() {
@@ -168,16 +180,6 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      */
     public boolean supportsTransactionType(String transactionType) {
         return supportedTransactionTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedTransactionTypes, transactionType);
-    }
-
-    /**
-     * Gets the default 3-letter ISO 4217 currency code of the service.
-     *
-     * @return The default currency of the service.
-     */
-
-    public String getDefaultCurrency() {
-        return defaultCurrency;
     }
 
     @Override

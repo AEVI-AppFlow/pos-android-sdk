@@ -62,7 +62,7 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
                 value = getSetValue(info.getSupportedDataKeys());
                 break;
             case R.string.service_label_request_types:
-                value = getSetValue(info.getSupportedRequestTypes());
+                value = getSetValue(info.getCustomRequestTypes());
                 break;
         }
         holder.value.setText(value);

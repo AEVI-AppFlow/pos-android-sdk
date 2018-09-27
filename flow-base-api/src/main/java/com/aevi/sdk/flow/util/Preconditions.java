@@ -52,6 +52,12 @@ public final class Preconditions {
         }
     }
 
+    public static void checkNotEmpty(String str, String message) {
+        if (str == null || str.isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     public static void checkNotEmpty(Object[] array, String message) {
         if (array == null || array.length == 0) {
             throw new IllegalArgumentException(message);

@@ -20,12 +20,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.FlowClientImpl;
+import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -33,32 +33,31 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
 import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
-import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
-public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
+public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
     PaymentClientImpl(Context context) {
         super(PaymentInitiationConfig.VERSION, context);
         startFps(context);
-        Log.i(TAG, "PaymentClient initialised");
+        Log.i(TAG, "PaymentClient initialised from " + context.getPackageName());
     }
 
-    @Override
     @NonNull
-    public Single<PaymentFlowServices> getPaymentFlowServices() {
+    @Override
+    public Single<PaymentSettings> getPaymentSettings() {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
         final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.FLOW_SERVICE_INFO_REQUEST, getInternalData());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_FLOW_CONFIG_REQUEST, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, PaymentFlowServices>() {
+                .map(new Function<String, PaymentSettings>() {
                     @Override
-                    public PaymentFlowServices apply(String json) throws Exception {
-                        return PaymentFlowServices.fromJson(json);
+                    public PaymentSettings apply(String json) throws Exception {
+                        return PaymentSettings.fromJson(json);
                     }
                 })
                 .singleOrError()
@@ -72,29 +71,17 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
 
     @Override
     @NonNull
-    public Single<PaymentResponse> initiatePayment(Payment payment) {
-        return initiatePayment(payment, null, null);
-    }
-
-    @Override
-    @NonNull
-    public Single<PaymentResponse> initiatePayment(final Payment payment, String paymentServiceId, String deviceId) {
+    public Single<PaymentResponse> initiatePayment(final Payment payment) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        Token cardToken = payment.getCardToken();
-        if (paymentServiceId != null && cardToken != null) {
-            checkArgument(paymentServiceId.equals(cardToken.getSourceAppId()), "paymentServiceId can not be set to a different value than what is set in the Token");
-        }
-
         final ObservableMessengerClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         AdditionalData paymentData = new AdditionalData();
         paymentData.addData(PAYMENT, payment);
-        Request request = new Request(PAYMENT, paymentData);
-        request.setTargetAppId(paymentServiceId);
-        request.setDeviceId(deviceId);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
+        Request request = new Request(payment.getFlowName(), paymentData);
+        request.setDeviceId(payment.getDeviceId());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
@@ -113,12 +100,6 @@ public class PaymentClientImpl extends FlowClientImpl implements PaymentClient {
                         transactionMessenger.closeConnection();
                     }
                 });
-    }
-
-    @Override
-    @NonNull
-    public RequestStatus getCurrentPaymentStatus(String requestId) {
-        return subscribeToStatusUpdates(requestId).blockingFirst();
     }
 
     @Override

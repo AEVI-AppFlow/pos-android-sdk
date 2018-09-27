@@ -17,7 +17,7 @@ package com.aevi.sdk.flow.model.config;
 /**
  * Represents the selection strategy for flow apps in a particular flow stage.
  */
-public enum FlowAppType {
+public enum AppExecutionType {
     /**
      * Only a single application (the first, if there are multiple in the list) will be executed, without any operator interaction.
      */

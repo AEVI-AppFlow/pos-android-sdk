@@ -88,7 +88,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addPaymentOverview(Payment payment) {
         List<Pair<String, String>> paymentInfo = new ArrayList<>();
         paymentInfo.add(getStringPair(R.string.id, payment.getId()));
-        paymentInfo.add(getStringPair(R.string.transaction_type, payment.getTransactionType()));
+        paymentInfo.add(getStringPair(R.string.flow_name, payment.getFlowName()));
+        if (payment.getTransactionType() != null) {
+            paymentInfo.add(getStringPair(R.string.transaction_type, payment.getTransactionType()));
+        }
         paymentInfo.add(getStringPair(R.string.split_enabled, payment.isSplitEnabled()));
 
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, paymentInfo, true));
@@ -99,7 +102,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         reset();
         List<Pair<String, String>> requestInfo = new ArrayList<>();
         requestInfo.add(getStringPair(R.string.id, request.getId()));
-        requestInfo.add(getStringPair(R.string.request_type, request.getRequestType()));
+        requestInfo.add(getStringPair(R.string.request_flow, request.getRequestFlow()));
+        if (request.getRequestType() != null) {
+            requestInfo.add(getStringPair(R.string.request_type, request.getRequestType()));
+        }
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));
 
         addDataSections(request.getRequestData(), null);
@@ -234,7 +240,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showResponse(Response response) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
-        responseInfo.add(getStringPair(R.string.request_type, response.getOriginatingRequest().getRequestType()));
+        responseInfo.add(getStringPair(R.string.request_flow, response.getOriginatingRequest().getRequestFlow()));
+        if (response.getOriginatingRequest().getRequestType() != null) {
+            responseInfo.add(getStringPair(R.string.request_type, response.getOriginatingRequest().getRequestType()));
+        }
         int outcomeRes = response.wasSuccessful() ? R.string.success : R.string.failed;
         responseInfo.add(getStringPair(R.string.outcome, getString(outcomeRes)));
         responseInfo.add(getStringPair(R.string.outcome_message, response.getOutcomeMessage()));

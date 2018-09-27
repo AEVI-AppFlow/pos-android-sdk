@@ -53,18 +53,6 @@
             android:name=".ui.SelectTokenActivity"
             android:label="@string/pss_select_token"/>
 
-        <activity
-            android:name=".settings.SettingsActivity"
-            android:excludeFromRecents="true"
-            android:label="@string/sample_settings"
-            android:noHistory="true"
-            android:theme="@style/AppThemeActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
     </application>
 
 </manifest>

@@ -37,14 +37,6 @@ public class PaymentFlowServiceInfoBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentWhenSupportedRequestTypesNotSet() throws Exception {
-        new PaymentFlowServiceInfoBuilder()
-                .withVendor("test")
-                .withDisplayName("test")
-                .withSupportedRequestTypes((String[]) null).build(context);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentWhenPaymentMethodsNotSet() throws Exception {
         paymentFlowServiceInfoBuilder.withCanPayAmounts(true, (String[]) null);
     }
@@ -53,8 +45,7 @@ public class PaymentFlowServiceInfoBuilderTest {
     public void shouldBuildCorrectFlowServiceInfo() throws Exception {
         PaymentFlowServiceInfo serviceInfo = paymentFlowServiceInfoBuilder
                 .withSupportedDataKeys("key")
-                .withSupportedRequestTypes("tea making", "knitting")
-                .withSupportedTransactionTypes("banana", "apple")
+                .withCustomRequestTypes("tea making", "knitting")
                 .withCanPayAmounts(true, "pigeon", "rock")
                 .withCanAdjustAmounts(true)
                 .withSupportedCurrencies("GBP", "AUD")
@@ -67,8 +58,7 @@ public class PaymentFlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getVendor()).isEqualTo("Test");
         assertThat(serviceInfo.getServiceVersion()).isEqualTo("1.2.3");
         assertThat(serviceInfo.getDisplayName()).isEqualTo("Hello");
-        assertThat(serviceInfo.getSupportedRequestTypes()).containsExactlyInAnyOrder("tea making", "knitting");
-        assertThat(serviceInfo.getSupportedTransactionTypes()).containsExactlyInAnyOrder("banana", "apple");
+        assertThat(serviceInfo.getCustomRequestTypes()).containsExactlyInAnyOrder("tea making", "knitting");
         assertThat(serviceInfo.canAdjustAmounts()).isEqualTo(true);
         assertThat(serviceInfo.canPayAmounts()).isEqualTo(true);
         assertThat(serviceInfo.getPaymentMethods()).containsExactlyInAnyOrder("pigeon", "rock");
@@ -82,7 +72,6 @@ public class PaymentFlowServiceInfoBuilderTest {
     private void setAllMandatoryFields() {
         paymentFlowServiceInfoBuilder
                 .withVendor("Test")
-                .withDisplayName("Hello")
-                .withSupportedRequestTypes("tea making");
+                .withDisplayName("Hello");
     }
 }

@@ -2,7 +2,7 @@ ext {
     gsonVersion = '2.8.0'
     rxJavaVersion = '2.1.2'
     printApiVersion = '1.0.1'
-    jsonConverterVersion = '1.0.1'
+    jsonConverterVersion = '1.0.2'
 
     rxMessengerVersion = '3.0.1'
 
@@ -17,16 +17,16 @@ ext {
     archLifecycleJava8Version = '1.1.0'
 
     butterKnifeVersion = '8.8.1'
-    recyclerViewVersion = '27.0.2'
-    supportLibrary = '27.0.2'
-    designLibrary = '27.0.2'
+    recyclerViewVersion = '28.0.0'
+    supportLibrary = '28.0.0'
+    designLibrary = '28.0.0'
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
 
     posFlowSdkConstants = '2.0.0'
 
-    androidBuildVersion = "27.0.3"
-    projectTargetSdkVersion = 26
+    androidBuildVersion = "28.0.2"
+    projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
 
     apiDependencies = [

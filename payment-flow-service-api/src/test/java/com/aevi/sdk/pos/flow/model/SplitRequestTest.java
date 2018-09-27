@@ -21,7 +21,7 @@ public class SplitRequestTest {
 
     @Before
     public void setUp() throws Exception {
-        payment = new PaymentBuilder().withAmounts(new Amounts(TOTAL_AMOUNT, CURRENCY)).withTransactionType("sale").build();
+        payment = new PaymentBuilder().withAmounts(new Amounts(TOTAL_AMOUNT, CURRENCY)).withPaymentFlow("sale").build();
     }
 
     @Test

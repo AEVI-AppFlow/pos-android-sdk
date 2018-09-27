@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.aevi.sdk.flow.util.Preconditions.*;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Builder to construct {@link PaymentFlowServiceInfo} instances.
@@ -39,7 +39,7 @@ public class PaymentFlowServiceInfoBuilder {
     private String defaultCurrency;
     private Set<String> paymentMethods;
     private Set<String> supportedCurrencies;
-    private Set<String> supportedRequestTypes;
+    private Set<String> customRequestTypes;
     private Set<String> supportedTransactionTypes;
     private Set<String> supportedDataKeys;
     private boolean canAdjustAmounts;
@@ -99,28 +99,28 @@ public class PaymentFlowServiceInfoBuilder {
     }
 
     /**
-     * Sets the request types supported by this flow service. These types could be unique to the service.
+     * Define custom request types that this service can handle.
      *
-     * Mandatory field.
+     * A service can via an implementation of {@link com.aevi.sdk.flow.service.BaseRequestService} handle any custom request.
      *
-     * These values determine for what types of requests your service will be called.
+     * These custom requests are identified via their type, which is set in the {@link com.aevi.sdk.flow.model.Request} and routed to the
+     * service that has defined it as a supported custom type here.
      *
-     * See reference values in the documentation for possible values.
-     *
-     * @param supportedRequestTypes A list of string values indicating the request types this flow service can handle.
+     * @param customRequestTypes A list of string values representing custom request types
      * @return This builder
      */
-    public PaymentFlowServiceInfoBuilder withSupportedRequestTypes(String... supportedRequestTypes) {
-        if (supportedRequestTypes != null) {
-            this.supportedRequestTypes = new HashSet<>(Arrays.asList(supportedRequestTypes));
+    public PaymentFlowServiceInfoBuilder withCustomRequestTypes(String... customRequestTypes) {
+        if (customRequestTypes != null) {
+            this.customRequestTypes = new HashSet<>(Arrays.asList(customRequestTypes));
         }
         return this;
     }
 
     /**
-     * Sets the transaction types supported by this flow service for payment requests. These types could be unique to the service.
+     * Sets the transaction types supported by this flow service for processing payments.
      *
-     * These values determine for what type of transactions your service will be called.
+     * Note that this is only relevant for services that processes transactions in the {@link PaymentStage#TRANSACTION_PROCESSING} stage, i.e
+     * what is commonly referred to as payment applications.
      *
      * See reference values in the documentation for all possible values.
      *
@@ -128,12 +128,9 @@ public class PaymentFlowServiceInfoBuilder {
      * @return This builder
      */
     public PaymentFlowServiceInfoBuilder withSupportedTransactionTypes(String... supportedTransactionTypes) {
-        if (supportedTransactionTypes != null) {
-            this.supportedTransactionTypes = new HashSet<>(Arrays.asList(supportedTransactionTypes));
-        }
+        this.supportedTransactionTypes = new HashSet<>(Arrays.asList(supportedTransactionTypes));
         return this;
     }
-
 
     /**
      * Set which {@link com.aevi.sdk.flow.model.AdditionalData} keys this flow service supports / takes into account.
@@ -301,9 +298,8 @@ public class PaymentFlowServiceInfoBuilder {
         String apiVersion = PaymentFlowServiceApi.getApiVersion();
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
-        checkNotEmpty(supportedRequestTypes, "At least one request type must be supported");
         return new PaymentFlowServiceInfo(packageName, packageName, vendor, serviceVersion, apiVersion, displayName, supportsAccessibility,
-                supportedRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency, supportedTransactionTypes,
+                customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency, supportedTransactionTypes,
                 supportedCurrencies, paymentMethods, additionalInfo);
     }
 

@@ -27,11 +27,13 @@ import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.constants.ReceiptKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
@@ -42,12 +44,13 @@ import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class GenericRequestFragment extends BaseObservableFragment {
 
@@ -74,14 +77,18 @@ public class GenericRequestFragment extends BaseObservableFragment {
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
 
-        // TODO this isn't right - it needs to use the new "custom request types" concept once available
-        SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentFlowServices()
-                .subscribe(paymentFlowServices -> {
-                    Set<String> requestTypes = paymentFlowServices.getAllSupportedRequestTypes();
-                    requestTypes.remove(FinancialRequestTypes.PAYMENT); // Filter out "payment" here, as we handle that via PaymentFragment
-                    requestTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
-                    dropDownHelper.setupDropDown(requestTypeSpinner, new ArrayList<>(requestTypes), false);
+        PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
+        paymentClient.getPaymentSettings()
+                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings ->
+                        paymentSettings.getFlowConfigurations()
+                                .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_GENERIC))
+                                .map(FlowConfig::getName)
+                                .toList())
+                .subscribe(genericFlowNames -> {
+                    genericFlowNames.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlowNames, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
+
     }
 
     @OnItemSelected(R.id.request_type_spinner)
@@ -99,7 +106,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             Intent intent = new Intent(getContext(), GenericResultActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            paymentClient.processRequest(request).subscribe(response -> {
+            paymentClient.initiateRequest(request).subscribe(response -> {
                 if (isAdded()) {
                     intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
                     startActivity(intent);
@@ -128,11 +135,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
         switch (selectedApiRequestType) {
             case FinancialRequestTypes.REVERSAL:
             case FinancialRequestTypes.RESPONSE_REDELIVERY:
-                if (lastResponse == null) {
+                if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getId());
+                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getLastResponse().getId());
                 break;
             case FinancialRequestTypes.CASH_RECEIPT_DELIVERY:
                 Amounts cashAmounts = new Amounts(15000, "EUR");

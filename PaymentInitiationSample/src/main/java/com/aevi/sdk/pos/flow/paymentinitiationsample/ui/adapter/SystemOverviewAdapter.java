@@ -56,10 +56,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
                 value = getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
                 break;
             case R.string.system_info_label_all_request_types:
-                value = getSetValue(paymentFlowServices.getAllSupportedRequestTypes());
-                break;
-            case R.string.system_info_label_all_transaction_types:
-                value = getSetValue(paymentFlowServices.getAllSupportedTransactionTypes());
+                value = getSetValue(paymentFlowServices.getAllCustomRequestTypes());
                 break;
         }
         holder.value.setText(value);

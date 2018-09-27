@@ -24,23 +24,25 @@ import java.util.List;
  */
 public class FlowStage {
 
+    public static final String STAGE_GENERIC = "GENERIC";
+
     private final String name;
-    private final FlowAppType flowAppType;
+    private final AppExecutionType appExecutionType;
     private List<FlowApp> flowApps;
 
     private FlowConfig innerFlow;
 
     public FlowStage() {
-        this("", FlowAppType.NONE);
+        this("", AppExecutionType.NONE);
     }
 
-    public FlowStage(String name, FlowAppType flowAppType) {
-        this(name, flowAppType, null);
+    public FlowStage(String name, AppExecutionType appExecutionType) {
+        this(name, appExecutionType, null);
     }
 
-    public FlowStage(String name, FlowAppType flowAppType, List<FlowApp> flowApps) {
+    public FlowStage(String name, AppExecutionType appExecutionType, List<FlowApp> flowApps) {
         this.name = name;
-        this.flowAppType = flowAppType;
+        this.appExecutionType = appExecutionType;
         this.flowApps = flowApps != null ? flowApps : new ArrayList<FlowApp>();
     }
 
@@ -48,8 +50,8 @@ public class FlowStage {
         return name;
     }
 
-    public FlowAppType getFlowAppType() {
-        return flowAppType;
+    public AppExecutionType getAppExecutionType() {
+        return appExecutionType;
     }
 
     public boolean hasInnerFlow() {
