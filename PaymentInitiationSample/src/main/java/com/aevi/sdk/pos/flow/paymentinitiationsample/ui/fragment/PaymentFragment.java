@@ -110,13 +110,13 @@ public class PaymentFragment extends BaseObservableFragment {
                     this.paymentSettings = paymentSettings;
                     return paymentSettings.getFlowConfigurations()
                             .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_PAYMENT))
-                            .map(FlowConfig::getType)
+                            .map(FlowConfig::getName)
                             .toList();
                 })
-                .subscribe(paymentFlowTypes -> {
+                .subscribe(paymentFlowNames -> {
                     allFieldsReady = true;
                     dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()), false);
-                    dropDownHelper.setupDropDown(flowSpinner, paymentFlowTypes, false);
+                    dropDownHelper.setupDropDown(flowSpinner, paymentFlowNames, false);
                 }, throwable -> {
                     if (throwable instanceof IllegalStateException) {
                         Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();

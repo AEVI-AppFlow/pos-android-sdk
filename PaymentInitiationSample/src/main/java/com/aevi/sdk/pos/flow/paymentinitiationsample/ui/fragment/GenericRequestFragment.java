@@ -82,11 +82,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings ->
                         paymentSettings.getFlowConfigurations()
                                 .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_GENERIC))
-                                .map(FlowConfig::getType)
+                                .map(FlowConfig::getName)
                                 .toList())
-                .subscribe(genericFlowTypes -> {
-                    genericFlowTypes.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
-                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlowTypes, false);
+                .subscribe(genericFlowNames -> {
+                    genericFlowNames.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    dropDownHelper.setupDropDown(requestTypeSpinner, genericFlowNames, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestTypeSpinner, R.array.request_types));
 
     }

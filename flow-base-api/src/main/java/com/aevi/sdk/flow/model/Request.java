@@ -28,8 +28,9 @@ import java.util.UUID;
  */
 public class Request extends BaseModel {
 
-    private final String requestType; // TODO maybe not quite the right name anymore?
+    private final String requestFlow;
     private final AdditionalData requestData;
+    private String requestType;
     private String deviceId;
     private String targetAppId;
 
@@ -39,40 +40,52 @@ public class Request extends BaseModel {
     }
 
     /**
-     * Initialise this request with a request type and empty data.
+     * Initialise this request with a request flow and empty data.
      *
-     * The request type indicates how the request will be processed and what data is expected.
+     * The request flow refers to what flow this request will be processed through.
      *
      * See reference values in the documentation for possible values.
      *
-     * @param requestType The request type
+     * @param requestFlow The request type
      */
-    public Request(String requestType) {
-        this(requestType, new AdditionalData());
+    public Request(String requestFlow) {
+        this(requestFlow, new AdditionalData());
     }
 
     /**
-     * Initialise this request with a request type and data.
+     * Initialise this request with a request flow and data.
      *
-     * The request type indicates how the request will be processed and what data is expected.
+     * The request flow refers to what flow this request will be processed through.
      *
      * See reference values in the documentation for possible values.
      *
-     * @param requestType The request type
+     * @param requestFlow The request type
      * @param requestData The data for the request
      */
-    public Request(String requestType, AdditionalData requestData) {
-        this(UUID.randomUUID().toString(), requestType, requestData);
+    public Request(String requestFlow, AdditionalData requestData) {
+        this(UUID.randomUUID().toString(), requestFlow, requestData);
     }
 
-    private Request(String id, String requestType, AdditionalData requestData) {
+    private Request(String id, String requestFlow, AdditionalData requestData) {
         super(id);
-        this.requestType = requestType;
+        this.requestFlow = requestFlow;
         this.requestData = requestData;
     }
 
     /**
-     * Get the request type which indicates how it will be processed and what data to expect.
+     * Get the request flow which refers to what flow this request will be processed through.
+     *
+     * For request type, see {@link #getRequestType()}.
+     *
+     * @return The request flow
+     */
+    @NonNull
+    public String getRequestFlow() {
+        return requestFlow;
+    }
+
+    /**
+     * Get the request type which indicates what function this request represents.
      *
      * @return The request type
      */
@@ -151,6 +164,17 @@ public class Request extends BaseModel {
         return requestData;
     }
 
+    /**
+     * Set the request type for this request.
+     *
+     * For internal use.
+     *
+     * @param requestType Request type
+     */
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -159,11 +183,12 @@ public class Request extends BaseModel {
     @Override
     public String toString() {
         return "Request{" +
-                "requestType='" + requestType + '\'' +
+                "requestFlow='" + requestFlow + '\'' +
                 ", requestData=" + requestData +
+                ", requestType='" + requestType + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", targetAppId='" + targetAppId + '\'' +
-                "} " + super.toString();
+                '}';
     }
 
     @Override
@@ -172,8 +197,9 @@ public class Request extends BaseModel {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Request request = (Request) o;
-        return Objects.equals(requestType, request.requestType) &&
+        return Objects.equals(requestFlow, request.requestFlow) &&
                 Objects.equals(requestData, request.requestData) &&
+                Objects.equals(requestType, request.requestType) &&
                 Objects.equals(deviceId, request.deviceId) &&
                 Objects.equals(targetAppId, request.targetAppId);
     }
@@ -181,7 +207,7 @@ public class Request extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), requestType, requestData, deviceId, targetAppId);
+        return Objects.hash(super.hashCode(), requestFlow, requestData, requestType, deviceId, targetAppId);
     }
 
     public static Request fromJson(String json) {
@@ -192,11 +218,11 @@ public class Request extends BaseModel {
      * For internal use.
      *
      * @param id          Id
-     * @param requestType Request type
+     * @param requestFlow Request flow
      * @param requestData Request data
      * @return Request
      */
-    public static Request fromExternalId(String id, String requestType, AdditionalData requestData) {
-        return new Request(id, requestType, requestData);
+    public static Request fromExternalId(String id, String requestFlow, AdditionalData requestData) {
+        return new Request(id, requestFlow, requestData);
     }
 }

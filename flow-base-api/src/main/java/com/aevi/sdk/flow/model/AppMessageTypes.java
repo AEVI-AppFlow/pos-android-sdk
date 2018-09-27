@@ -20,6 +20,7 @@ package com.aevi.sdk.flow.model;
 public interface AppMessageTypes {
 
     String REQUEST_MESSAGE = "request";
+    String PAYMENT_MESSAGE = "payment";
     String RESPONSE_MESSAGE = "response";
     String FLOW_SERVICE_INFO_REQUEST = "flowServiceInfoRequest";
     String PAYMENT_FLOW_CONFIG_REQUEST = "paymentFlowConfigRequest";

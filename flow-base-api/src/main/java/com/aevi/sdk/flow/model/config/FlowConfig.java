@@ -19,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.aevi.util.json.JsonConverter;
+import com.aevi.util.json.JsonPostProcessing;
 import com.aevi.util.json.Jsonable;
 
 import java.util.*;
@@ -28,7 +29,7 @@ import java.util.*;
  *
  * Use {@link FlowConfigBuilder} to instantiate programmatically.
  */
-public class FlowConfig implements Jsonable {
+public class FlowConfig implements Jsonable, JsonPostProcessing {
 
     public static final String REQUEST_CLASS_GENERIC = "generic";
     public static final String REQUEST_CLASS_PAYMENT = "payment";
@@ -44,7 +45,6 @@ public class FlowConfig implements Jsonable {
 
     private transient List<FlowStage> allStagesFlattened;
     private transient Map<String, FlowStage> allStagesMap;
-    private transient boolean hasGenericStage;
 
     FlowConfig() {
         this("N/A", "N/A", 0, 0, null, null, null);
@@ -170,7 +170,7 @@ public class FlowConfig implements Jsonable {
      * @return The request class for this flow
      */
     public String getRequestClass() {
-        return hasGenericStage ? REQUEST_CLASS_GENERIC : REQUEST_CLASS_PAYMENT;
+        return allStagesMap.keySet().contains(normaliseStageName(FlowStage.STAGE_GENERIC)) ? REQUEST_CLASS_GENERIC : REQUEST_CLASS_PAYMENT;
     }
 
     /**
@@ -200,9 +200,6 @@ public class FlowConfig implements Jsonable {
             for (FlowStage stage : toAdd) {
                 allStages.add(stage);
                 allStagesMap.put(normaliseStageName(stage.getName()), stage);
-                if (stage.getName().equals(FlowStage.STAGE_GENERIC)) {
-                    hasGenericStage = true;
-                }
                 if (stage.hasInnerFlow()) {
                     getDeepStages(allStages, allStagesMap, stage.getInnerFlow().getStages(false));
                 }
@@ -310,9 +307,13 @@ public class FlowConfig implements Jsonable {
         return JsonConverter.serialize(this);
     }
 
-    public static FlowConfig fromJson(String json) {
-        FlowConfig flowConfig = JsonConverter.deserialize(json, FlowConfig.class);
-        flowConfig.parseStageHierarchy();
-        return flowConfig;
+    @Override
+    public void onJsonDeserialisationCompleted() {
+        parseStageHierarchy();
     }
+
+    public static FlowConfig fromJson(String json) {
+        return JsonConverter.deserialize(json, FlowConfig.class);
+    }
+
 }

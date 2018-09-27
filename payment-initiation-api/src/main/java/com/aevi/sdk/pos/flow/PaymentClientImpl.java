@@ -79,9 +79,9 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
         AdditionalData paymentData = new AdditionalData();
         paymentData.addData(PAYMENT, payment);
-        Request request = new Request(PAYMENT, paymentData);
+        Request request = new Request(payment.getFlowName(), paymentData);
         request.setDeviceId(payment.getDeviceId());
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()

@@ -4,6 +4,7 @@
     <string name="transaction_type">Transaction type</string>
     <string name="flow_name">Flow name</string>
     <string name="request_type">Request type</string>
+    <string name="request_flow">Request flow</string>
     <string name="overall_status">All transactions approved</string>
     <string name="outcome">Outcome</string>
     <string name="outcome_message">Outcome message</string>

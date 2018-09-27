@@ -36,7 +36,7 @@ public class BaseApiClientTest {
     class TestApiBase extends BaseApiClient {
 
         public TestApiBase(String propsFile) {
-            super(propsFile, mock(Context.class));
+            super(propsFile, RuntimeEnvironment.application);
         }
 
         @Override
