@@ -108,7 +108,7 @@ public class PaymentFragment extends BaseObservableFragment {
                         throw new Exception("No services available");
                     }
                     this.paymentSettings = paymentSettings;
-                    return paymentSettings.getFlowConfigurations()
+                    return paymentSettings.getFlowConfigurations().stream()
                             .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_PAYMENT))
                             .map(FlowConfig::getName)
                             .toList();

@@ -25,32 +25,32 @@ import com.aevi.util.json.JsonConverter;
  */
 public class TransactionSummary extends Transaction {
 
-    private final String transactionType;
+    private final String flowType;
     private final DeviceAudience deviceAudience;
     private final Card card;
 
     // Default constructor for deserialisation
     TransactionSummary() {
-        transactionType = "";
+        flowType = "";
         deviceAudience = DeviceAudience.MERCHANT;
         card = null;
     }
 
-    public TransactionSummary(Transaction transaction, String transactionType, DeviceAudience deviceAudience, Card card) {
+    public TransactionSummary(Transaction transaction, String flowType, DeviceAudience deviceAudience, Card card) {
         super(transaction, transaction.getRequestedAmounts());
-        this.transactionType = transactionType;
+        this.flowType = flowType;
         this.deviceAudience = deviceAudience != null ? deviceAudience : DeviceAudience.MERCHANT;
         this.card = card != null ? card : Card.getEmptyCard();
     }
 
     /**
-     * The transaction type.
+     * The flow (aka transaction) type.
      *
-     * @return The transaction type.
+     * @return The flow type.
      */
     @NonNull
-    public String getTransactionType() {
-        return transactionType;
+    public String getFlowType() {
+        return flowType;
     }
 
     /**
@@ -89,7 +89,7 @@ public class TransactionSummary extends Transaction {
     @Override
     public String toString() {
         return "TransactionSummary{" +
-                "transactionType='" + transactionType + '\'' +
+                "flowType='" + flowType + '\'' +
                 ", deviceAudience=" + deviceAudience +
                 ", card=" + card +
                 "} " + super.toString();
@@ -103,7 +103,7 @@ public class TransactionSummary extends Transaction {
 
         TransactionSummary that = (TransactionSummary) o;
 
-        if (transactionType != null ? !transactionType.equals(that.transactionType) : that.transactionType != null) return false;
+        if (flowType != null ? !flowType.equals(that.flowType) : that.flowType != null) return false;
         if (deviceAudience != that.deviceAudience) return false;
         return card != null ? card.equals(that.card) : that.card == null;
     }
@@ -111,7 +111,7 @@ public class TransactionSummary extends Transaction {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (transactionType != null ? transactionType.hashCode() : 0);
+        result = 31 * result + (flowType != null ? flowType.hashCode() : 0);
         result = 31 * result + (deviceAudience != null ? deviceAudience.hashCode() : 0);
         result = 31 * result + (card != null ? card.hashCode() : 0);
         return result;

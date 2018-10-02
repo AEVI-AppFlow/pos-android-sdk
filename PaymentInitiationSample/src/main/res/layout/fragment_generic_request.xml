@@ -4,8 +4,8 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:paddingLeft="@dimen/margin_horizontal"
-              android:paddingRight="@dimen/margin_horizontal"
-              android:paddingTop="@dimen/margin_large">
+              android:paddingTop="@dimen/margin_large"
+              android:paddingRight="@dimen/margin_horizontal">
 
 
     <TextView
@@ -15,9 +15,9 @@
         android:text="@string/choose_a_request_type"/>
 
     <com.aevi.ui.library.recycler.DropDownSpinner
-        android:id="@+id/request_type_spinner"
+        android:id="@+id/request_flow_spinner"
         style="@style/DropDownSpinner"
-        android:entries="@array/request_types"/>
+        android:entries="@array/request_flows"/>
 
     <Button
         android:id="@+id/send"

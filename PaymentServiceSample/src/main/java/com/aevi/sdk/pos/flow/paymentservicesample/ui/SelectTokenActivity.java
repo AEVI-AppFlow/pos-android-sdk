@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
-import com.aevi.sdk.flow.constants.FinancialRequestTypes;
+import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.Token;
@@ -80,7 +80,7 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
 
     @Override
     protected String getCurrentStage() {
-        return FinancialRequestTypes.TOKENISATION;
+        return FlowTypes.FLOW_TYPE_TOKENISATION;
     }
 
     @Override

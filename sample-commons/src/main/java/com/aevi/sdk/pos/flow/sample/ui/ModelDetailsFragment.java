@@ -89,8 +89,8 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         List<Pair<String, String>> paymentInfo = new ArrayList<>();
         paymentInfo.add(getStringPair(R.string.id, payment.getId()));
         paymentInfo.add(getStringPair(R.string.flow_name, payment.getFlowName()));
-        if (payment.getTransactionType() != null) {
-            paymentInfo.add(getStringPair(R.string.transaction_type, payment.getTransactionType()));
+        if (payment.getFlowType() != null) {
+            paymentInfo.add(getStringPair(R.string.transaction_type, payment.getFlowType()));
         }
         paymentInfo.add(getStringPair(R.string.split_enabled, payment.isSplitEnabled()));
 
@@ -117,7 +117,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         reset();
         List<Pair<String, String>> requestInfo = new ArrayList<>();
         requestInfo.add(getStringPair(R.string.id, transactionRequest.getId()));
-        requestInfo.add(getStringPair(R.string.transaction_type, transactionRequest.getTransactionType()));
+        requestInfo.add(getStringPair(R.string.transaction_type, transactionRequest.getFlowType()));
         requestInfo.add(getStringPair(R.string.payment_stage, transactionRequest.getPaymentStage().name()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));
 
@@ -138,7 +138,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         reset();
         List<Pair<String, String>> summaryInfo = new ArrayList<>();
         summaryInfo.add(getStringPair(R.string.payment_id, splitRequest.getSourcePayment().getId()));
-        summaryInfo.add(getStringPair(R.string.transaction_type, splitRequest.getSourcePayment().getTransactionType()));
+        summaryInfo.add(getStringPair(R.string.transaction_type, splitRequest.getSourcePayment().getFlowType()));
         addAmountInfo(summaryInfo, splitRequest.getSourcePayment().getAmounts(), null);
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, summaryInfo, true));
 
@@ -154,7 +154,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showTransactionSummary(TransactionSummary transactionSummary) {
         reset();
         List<Pair<String, String>> summaryInfo = new ArrayList<>();
-        summaryInfo.add(getStringPair(R.string.transaction_type, transactionSummary.getTransactionType()));
+        summaryInfo.add(getStringPair(R.string.transaction_type, transactionSummary.getFlowType()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, summaryInfo, true));
         if (transactionSummary.getCard() != null && !transactionSummary.getCard().isEmpty()) {
             adapter.addSection(createCardSection(transactionSummary.getCard()));

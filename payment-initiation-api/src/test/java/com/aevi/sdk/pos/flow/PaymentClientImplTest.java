@@ -4,8 +4,8 @@ import android.content.ComponentName;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
-import com.aevi.sdk.flow.constants.FinancialRequestTypes;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.*;
 
@@ -58,7 +58,7 @@ public class PaymentClientImplTest {
 
         AppMessage sentAppMessage = callSendAndCaptureMessage();
         Request request = Request.fromJson(sentAppMessage.getMessageData());
-        Payment sentPayment = request.getRequestData().getValue(FinancialRequestTypes.PAYMENT, Payment.class);
+        Payment sentPayment = request.getRequestData().getValue(AppMessageTypes.PAYMENT_MESSAGE, Payment.class);
         assertThat(sentPayment).isEqualTo(payment);
         verify(messengerClient).closeConnection();
     }

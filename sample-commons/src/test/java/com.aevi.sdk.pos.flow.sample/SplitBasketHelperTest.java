@@ -1,7 +1,7 @@
 package com.aevi.sdk.pos.flow.sample;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
-import com.aevi.sdk.flow.constants.TransactionTypes;
+import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.pos.flow.model.*;
 
@@ -26,7 +26,7 @@ public class SplitBasketHelperTest {
     private SplitBasketHelper splitBasketHelper;
 
     private void createSplitBasketHelper(boolean... retainZeroCountRemaining) {
-        Payment payment = paymentBuilder.withPaymentFlow(TransactionTypes.SALE)
+        Payment payment = paymentBuilder.withPaymentFlow(FlowTypes.FLOW_TYPE_SALE)
                 .withAmounts(new Amounts(sourceBasket.getTotalBasketValue(), "GBP"))
                 .addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, sourceBasket).build();
         SplitRequest splitRequest = new SplitRequest(payment, transactions);
@@ -75,7 +75,7 @@ public class SplitBasketHelperTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldThrowUnsupportedExceptionIfNoBasket() throws Exception {
-        SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withPaymentFlow(TransactionTypes.SALE)
+        SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withPaymentFlow(FlowTypes.FLOW_TYPE_SALE)
                 .withAmounts(new Amounts(1000, "GBP")).build(), transactions), false);
     }
 

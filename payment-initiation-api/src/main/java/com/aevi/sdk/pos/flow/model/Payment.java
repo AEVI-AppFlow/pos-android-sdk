@@ -44,7 +44,7 @@ public class Payment extends BaseModel {
     private final boolean isExternalId;
     private final String source;
     private final String deviceId;
-    private String transactionType;
+    private String flowType;
 
     // Default constructor for deserialisation
     Payment() {
@@ -193,25 +193,25 @@ public class Payment extends BaseModel {
     }
 
     /**
-     * Get the transaction type associated with this payment.
+     * Get the flow type (aka transaction type) associated with this payment.
      *
-     * The transaction type is derived from the chosen flow this payment will processed by.
+     * The flow type is derived from the chosen flow this payment will processed by.
      *
      * See documentation for the possible values.
      *
      * @return The transaction type
      */
-    public String getTransactionType() {
-        return transactionType;
+    public String getFlowType() {
+        return flowType;
     }
 
     /**
      * For internal use.
      *
-     * @param transactionType Transaction type
+     * @param flowType Transaction type
      */
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
+    public void setFlowType(String flowType) {
+        this.flowType = flowType;
     }
 
     @Override
@@ -225,6 +225,7 @@ public class Payment extends BaseModel {
                 ", isExternalId=" + isExternalId +
                 ", source='" + source + '\'' +
                 ", deviceId='" + deviceId + '\'' +
+                ", flowType='" + flowType + '\'' +
                 "} " + super.toString();
     }
 
@@ -241,13 +242,14 @@ public class Payment extends BaseModel {
                 Objects.equals(cardToken, payment.cardToken) &&
                 Objects.equals(additionalData, payment.additionalData) &&
                 Objects.equals(source, payment.source) &&
-                Objects.equals(deviceId, payment.deviceId);
+                Objects.equals(deviceId, payment.deviceId) &&
+                Objects.equals(flowType, payment.flowType);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), flowName, amounts, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId);
+        return Objects.hash(super.hashCode(), flowName, amounts, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId, flowType);
     }
 
     @Override

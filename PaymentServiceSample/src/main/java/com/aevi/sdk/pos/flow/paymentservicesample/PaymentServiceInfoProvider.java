@@ -15,7 +15,7 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 
-import com.aevi.sdk.flow.constants.FinancialRequestTypes;
+import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.pos.flow.model.Merchant;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
@@ -27,7 +27,6 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
     @Override
     protected PaymentFlowServiceInfo getPaymentFlowServiceInfo() {
 
-        String[] supportedTransactionTypes = getContext().getResources().getStringArray(R.array.transaction_types);
         String[] supportedCurrencies = getContext().getResources().getStringArray(R.array.supported_currencies);
         String[] supportedPaymentMethods = getContext().getResources().getStringArray(R.array.payment_methods);
 
@@ -35,8 +34,7 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withVendor("AEVI")
                 .withDisplayName("Payment Service Sample")
                 .withCanPayAmounts(true, supportedPaymentMethods)
-                .withCustomRequestTypes(FinancialRequestTypes.RESPONSE_REDELIVERY)
-                .withSupportedTransactionTypes(supportedTransactionTypes)
+                .withCustomRequestTypes(FlowTypes.FLOW_TYPE_RESPONSE_REDELIVERY)
                 .withSupportedCurrencies(supportedCurrencies)
                 .withDefaultCurrency(supportedCurrencies[0])
                 .withLogicalDeviceId(IdProvider.getTerminalId())

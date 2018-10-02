@@ -40,7 +40,6 @@ public class PaymentFlowServiceInfoBuilder {
     private Set<String> paymentMethods;
     private Set<String> supportedCurrencies;
     private Set<String> customRequestTypes;
-    private Set<String> supportedTransactionTypes;
     private Set<String> supportedDataKeys;
     private boolean canAdjustAmounts;
     private boolean canPayAmounts;
@@ -113,22 +112,6 @@ public class PaymentFlowServiceInfoBuilder {
         if (customRequestTypes != null) {
             this.customRequestTypes = new HashSet<>(Arrays.asList(customRequestTypes));
         }
-        return this;
-    }
-
-    /**
-     * Sets the transaction types supported by this flow service for processing payments.
-     *
-     * Note that this is only relevant for services that processes transactions in the {@link PaymentStage#TRANSACTION_PROCESSING} stage, i.e
-     * what is commonly referred to as payment applications.
-     *
-     * See reference values in the documentation for all possible values.
-     *
-     * @param supportedTransactionTypes A list of string values indicating the transaction types this flow service can handle.
-     * @return This builder
-     */
-    public PaymentFlowServiceInfoBuilder withSupportedTransactionTypes(String... supportedTransactionTypes) {
-        this.supportedTransactionTypes = new HashSet<>(Arrays.asList(supportedTransactionTypes));
         return this;
     }
 
@@ -299,7 +282,7 @@ public class PaymentFlowServiceInfoBuilder {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
         return new PaymentFlowServiceInfo(packageName, packageName, vendor, serviceVersion, apiVersion, displayName, supportsAccessibility,
-                customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency, supportedTransactionTypes,
+                customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency,
                 supportedCurrencies, paymentMethods, additionalInfo);
     }
 

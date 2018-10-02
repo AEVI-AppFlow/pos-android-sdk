@@ -20,29 +20,27 @@ import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.config.*;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import io.reactivex.Observable;
 import io.reactivex.annotations.Nullable;
-import io.reactivex.functions.Predicate;
 
 /**
  * Represents all available payment settings, configurations and flow service information.
  */
 public class PaymentSettings implements Jsonable {
 
-    private final List<FlowConfig> flowConfigurations;
+    private final FlowConfigurations flowConfigurations;
     private final PaymentFlowServices allServices;
     private final FpsSettings fpsSettings;
     private final AdditionalData additionalSettings;
 
-    public PaymentSettings(List<FlowConfig> flowConfigurations, PaymentFlowServices paymentFlowServices,
+    public PaymentSettings(FlowConfigurations flowConfigurations, PaymentFlowServices paymentFlowServices,
                            FpsSettings fpsSettings, AdditionalData additionalSettings) {
-        this.flowConfigurations = Collections.unmodifiableList(flowConfigurations);
+        this.flowConfigurations = flowConfigurations;
         this.allServices = paymentFlowServices;
         this.fpsSettings = fpsSettings;
         this.additionalSettings = additionalSettings;
@@ -83,34 +81,12 @@ public class PaymentSettings implements Jsonable {
     }
 
     /**
-     * Returns a stream of flow configurations which can be used to easily apply filters or transform into other types.
+     * Get an instance of {@link FlowConfigurations} which can be used to retrieve information about all the flows.
      *
-     * See documentation for examples.
-     *
-     * @return An observable stream of {@link FlowConfig}
+     * @return An instance of {@link FlowConfigurations}
      */
-    public Observable<FlowConfig> getFlowConfigurations() {
-        return Observable.fromIterable(flowConfigurations);
-    }
-
-    /**
-     * Check whether a flow type is supported or not.
-     *
-     * A flow type is defined as supported if there is at least one flow configuration defined for that type.
-     *
-     * @param type The flow type to check
-     * @return True if there is at least one flow for this type, false otherwise
-     */
-    public boolean isFlowTypeSupported(final String type) {
-        return getFlowConfigurations()
-                .filter(new Predicate<FlowConfig>() {
-                    @Override
-                    public boolean test(FlowConfig flowConfig) throws Exception {
-                        return flowConfig.getType().equals(type);
-                    }
-                })
-                .count()
-                .blockingGet() > 0;
+    public FlowConfigurations getFlowConfigurations() {
+        return flowConfigurations;
     }
 
     /**
@@ -127,7 +103,7 @@ public class PaymentSettings implements Jsonable {
     // TODO needs optimisation
     @Nullable
     public PaymentFlowServices getServicesForFlow(String flowName) {
-        FlowConfig flowConfig = fromName(flowName);
+        FlowConfig flowConfig = flowConfigurations.getFlowConfiguration(flowName);
         if (flowConfig == null) {
             return null;
         }
@@ -147,73 +123,6 @@ public class PaymentSettings implements Jsonable {
         return allServices;
     }
 
-    /**
-     * Get a list of all the flow names that are associated with the provided types.
-     *
-     * @param typesArray The types to filter by
-     * @return The list of flow names
-     */
-    @NonNull
-    public List<String> getFlowNamesForType(String... typesArray) {
-        List<String> flowNames = new ArrayList<>();
-        List<String> types = Arrays.asList(typesArray);
-        for (FlowConfig flowConfiguration : flowConfigurations) {
-            if (types.contains(flowConfiguration.getType())) {
-                flowNames.add(flowConfiguration.getName());
-            }
-        }
-        return flowNames;
-    }
-
-    /**
-     * Get a list of all the flow configs that are associated with the provided types.
-     *
-     * @param typesArray The types to filter by
-     * @return The list of flow names
-     */
-    @NonNull
-    public List<FlowConfig> getFlowConfigsForType(String... typesArray) {
-        List<FlowConfig> flowConfigs = new ArrayList<>();
-        List<String> types = Arrays.asList(typesArray);
-        for (FlowConfig flowConfiguration : flowConfigurations) {
-            if (types.contains(flowConfiguration.getType())) {
-                flowConfigs.add(flowConfiguration);
-            }
-        }
-        return flowConfigs;
-    }
-
-    /**
-     * Check whether split is enabled as a stage for a particular flow.
-     *
-     * @param flowName The flow to check if split is enabled for
-     * @return True if split is enabled as a stage, false otherwise
-     */
-    public boolean isSplitEnabledForFlow(String flowName) {
-        FlowConfig flowConfig = fromName(flowName);
-        if (flowConfig != null) {
-            return flowConfig.hasStage(PaymentStage.SPLIT.name());
-        }
-        return false;
-    }
-
-    private FlowConfig fromName(String flowName) {
-        for (FlowConfig flowConfiguration : flowConfigurations) {
-            if (flowConfiguration.getName().equals(flowName)) {
-                return flowConfiguration;
-            }
-        }
-        return null;
-    }
-
-    private FlowConfig fromType(String flowType) {
-        for (FlowConfig flowConfiguration : flowConfigurations) {
-            if (flowConfiguration.getType().equals(flowType)) {
-                return flowConfiguration;
-            }
-        }
-        return null;
-    }
 
     @Override
     public String toJson() {

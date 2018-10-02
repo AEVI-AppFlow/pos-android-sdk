@@ -32,8 +32,6 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
-import static com.aevi.sdk.flow.constants.FinancialRequestTypes.PAYMENT;
-
 public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
@@ -78,7 +76,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         final ObservableMessengerClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         AdditionalData paymentData = new AdditionalData();
-        paymentData.addData(PAYMENT, payment);
+        paymentData.addData(AppMessageTypes.PAYMENT_MESSAGE, payment);
         Request request = new Request(payment.getFlowName(), paymentData);
         request.setDeviceId(payment.getDeviceId());
         AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
@@ -89,7 +87,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     @Override
                     public PaymentResponse apply(String json) throws Exception {
                         Response response = Response.fromJson(json);
-                        PaymentResponse paymentResponse = response.getResponseData().getValue(PAYMENT, PaymentResponse.class);
+                        PaymentResponse paymentResponse = response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, PaymentResponse.class);
                         paymentResponse.setOriginatingPayment(payment);
                         return paymentResponse;
                     }
