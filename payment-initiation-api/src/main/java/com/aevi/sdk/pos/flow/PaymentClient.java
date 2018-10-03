@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.FlowClient;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
@@ -44,6 +46,7 @@ public interface PaymentClient extends FlowClient {
      *
      * @return Single emitting a {@link PaymentServices} object
      */
+    @NonNull
     Single<PaymentServices> getPaymentServices();
 
     /**
@@ -54,6 +57,7 @@ public interface PaymentClient extends FlowClient {
      *
      * @return The list of supported transaction types
      */
+    @NonNull
     Single<List<String>> getSupportedTransactionTypes();
 
     /**
@@ -64,6 +68,7 @@ public interface PaymentClient extends FlowClient {
      * @param payment The payment to process
      * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
      */
+    @NonNull
     Single<PaymentResponse> initiatePayment(Payment payment);
 
     /**
@@ -76,6 +81,7 @@ public interface PaymentClient extends FlowClient {
      * @param deviceId         The id of the device that should be used to process the payment request
      * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
      */
+    @NonNull
     Single<PaymentResponse> initiatePayment(Payment payment, String paymentServiceId, String deviceId);
 
     /**
@@ -86,6 +92,7 @@ public interface PaymentClient extends FlowClient {
      * @param paymentId The id of the payment get status for
      * @return A {@link RequestStatus} object containing the current payment status of the payment processing
      */
+    @NonNull
     RequestStatus getCurrentPaymentStatus(String paymentId);
 
     /**
@@ -94,5 +101,6 @@ public interface PaymentClient extends FlowClient {
      * @param paymentId The id of the payment to listen to status updates for
      * @return Observable emitting a stream of {@link RequestStatus} objects indicating the status of the payment processing
      */
+    @NonNull
     Observable<RequestStatus> subscribeToStatusUpdates(String paymentId);
 }

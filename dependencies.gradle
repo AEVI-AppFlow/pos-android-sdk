@@ -4,7 +4,7 @@ ext {
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.1'
 
-    rxMessengerVersion = '3.0.1'
+    rxMessengerVersion = '3.0.2'
 
     junitVersion = '4.12'
     hamcrestVersion = '1.3'

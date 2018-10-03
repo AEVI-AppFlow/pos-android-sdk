@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow;
 
 
+import android.support.annotation.NonNull;
+
 /**
  * Provides general API information.
  */
@@ -30,6 +32,7 @@ public final class FlowServiceApi {
      *
      * @return The API version
      */
+    @NonNull
     public static String getApiVersion() {
         return FlowServiceConfig.VERSION;
     }

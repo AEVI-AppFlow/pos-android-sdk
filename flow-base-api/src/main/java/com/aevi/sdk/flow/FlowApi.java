@@ -16,6 +16,7 @@ package com.aevi.sdk.flow;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 public final class FlowApi {
 
@@ -29,6 +30,7 @@ public final class FlowApi {
      *
      * @return The API version
      */
+    @NonNull
     public static String getApiVersion() {
         return FlowBaseConfig.VERSION;
     }
@@ -51,6 +53,7 @@ public final class FlowApi {
      * @param context The Android context
      * @return An instance of {@link FlowClient}
      */
+    @NonNull
     public static FlowClient getFlowClient(Context context) {
         return new FlowClientImpl(FlowBaseConfig.VERSION, context);
     }
