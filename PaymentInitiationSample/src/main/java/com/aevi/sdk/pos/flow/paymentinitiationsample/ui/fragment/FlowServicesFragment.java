@@ -34,7 +34,7 @@ public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInf
                     if (paymentFlowServices.getNumberOfFlowServices() == 0) {
                         showNoItemsAvailable(R.string.no_flow_services_found);
                     } else {
-                        FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getFlowServices(),
+                        FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
                                 FlowServicesFragment.this, false);
                         items.setAdapter(adapter);
                     }

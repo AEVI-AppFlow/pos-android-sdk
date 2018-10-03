@@ -31,6 +31,7 @@ public class Response extends BaseModel {
     private final boolean success;
     private final String outcomeMessage;
     private final AdditionalData responseData;
+    private String flowServiceId;
 
     // Default constructor for deserialisation
     Response() {
@@ -141,6 +142,27 @@ public class Response extends BaseModel {
      */
     public void setOriginatingRequest(Request originatingRequest) {
         this.originatingRequest = originatingRequest;
+    }
+
+    /**
+     * Get the id of the service that handled this request, if any,
+     *
+     * This will be null if there was no app that could handle the request or an error occurred.
+     *
+     * @return The flow service if
+     */
+    @Nullable
+    public String getFlowServiceId() {
+        return flowServiceId;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param flowServiceId The flow service id
+     */
+    public void setFlowServiceId(String flowServiceId) {
+        this.flowServiceId = flowServiceId;
     }
 
     @Override

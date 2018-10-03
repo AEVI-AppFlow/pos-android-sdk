@@ -41,7 +41,7 @@ public class PaymentResponseAdapter extends LabelsListAdapter {
             case R.string.transaction_type:
                 long total = response.getOriginatingPayment().getAmounts().getTotalAmountValue();
                 value = AmountFormatter.formatAmount(response.getOriginatingPayment().getAmounts().getCurrency(), total);
-                holder.label.setText(getFriendlyTypeName(response.getOriginatingPayment().getTransactionType()));
+                holder.label.setText(getFriendlyTypeName(response.getOriginatingPayment().getFlowType()));
                 break;
             case R.string.overall_status:
                 value = getYesNo(response.isAllTransactionsApproved());

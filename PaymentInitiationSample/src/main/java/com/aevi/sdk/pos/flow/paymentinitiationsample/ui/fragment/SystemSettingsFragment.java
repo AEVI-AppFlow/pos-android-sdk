@@ -64,7 +64,7 @@ public class SystemSettingsFragment extends BaseFragment {
 
             settingsInfo.setText(stringBuilder.toString());
 
-            systemSettings.getFlowConfigurations().subscribe(this::handleFlowConfig);
+            systemSettings.getFlowConfigurations().stream().subscribe(this::handleFlowConfig);
         }, throwable -> settingsInfo.setText("Operation failed: " + throwable.getMessage()));
     }
 

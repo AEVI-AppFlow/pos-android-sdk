@@ -52,7 +52,6 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     private final boolean canAdjustAmounts;
     private final boolean canPayAmounts;
     private final String defaultCurrency;
-    private final Set<String> supportedTransactionTypes;
     private final Set<String> supportedCurrencies;
     private final Set<String> paymentMethods;
 
@@ -61,14 +60,13 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         canAdjustAmounts = false;
         canPayAmounts = false;
         defaultCurrency = "";
-        supportedTransactionTypes = new HashSet<>();
         supportedCurrencies = new HashSet<>();
         paymentMethods = new HashSet<>();
     }
 
     public PaymentFlowServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion, String displayName,
                                   boolean hasAccessibilityMode, Set<String> supportedRequestTypes, Set<String> supportedDataKeys, String logicalDeviceId,
-                                  boolean canAdjustAmounts, boolean canPayAmounts, String defaultCurrency, Set<String> supportedTransactionTypes,
+                                  boolean canAdjustAmounts, boolean canPayAmounts, String defaultCurrency,
                                   Set<String> supportedCurrencies, Set<String> paymentMethods, AdditionalData additionalInfo) {
         super(id, packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedRequestTypes,
                 supportedDataKeys, additionalInfo);
@@ -77,7 +75,6 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         this.defaultCurrency = defaultCurrency;
         this.paymentMethods = paymentMethods != null ? paymentMethods : new HashSet<String>();
         this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new HashSet<String>();
-        this.supportedTransactionTypes = supportedTransactionTypes != null ? supportedTransactionTypes : new HashSet<String>();
     }
 
     /**
@@ -156,41 +153,6 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         return defaultCurrency;
     }
 
-    /**
-     * Gets a set of transaction types supported by the service.
-     *
-     * Note that this is only relevant for services that processes transactions in the {@link PaymentStage#TRANSACTION_PROCESSING} stage.
-     *
-     * May be empty.
-     *
-     * See reference values in the documentation for possible values.
-     *
-     * @return Set of transaction types supported by the service.
-     */
-    @NonNull
-    public Set<String> getSupportedTransactionTypes() {
-        return supportedTransactionTypes;
-    }
-
-    /**
-     * Check whether this service supports the given transaction type.
-     *
-     * @param transactionType The transaction type to check if supported
-     * @return True if supported, false otherwise
-     */
-    public boolean supportsTransactionType(String transactionType) {
-        return supportedTransactionTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedTransactionTypes, transactionType);
-    }
-
-    @Override
-    public String toJson() {
-        return JsonConverter.serialize(this);
-    }
-
-    public static PaymentFlowServiceInfo fromJson(String json) {
-        return JsonConverter.deserialize(json, PaymentFlowServiceInfo.class);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -200,7 +162,6 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         return canAdjustAmounts == that.canAdjustAmounts &&
                 canPayAmounts == that.canPayAmounts &&
                 Objects.equals(defaultCurrency, that.defaultCurrency) &&
-                Objects.equals(supportedTransactionTypes, that.supportedTransactionTypes) &&
                 Objects.equals(supportedCurrencies, that.supportedCurrencies) &&
                 Objects.equals(paymentMethods, that.paymentMethods);
     }
@@ -208,6 +169,15 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), canAdjustAmounts, canPayAmounts, defaultCurrency, supportedTransactionTypes, supportedCurrencies, paymentMethods);
+        return Objects.hash(super.hashCode(), canAdjustAmounts, canPayAmounts, defaultCurrency, supportedCurrencies, paymentMethods);
+    }
+
+    @Override
+    public String toJson() {
+        return JsonConverter.serialize(this);
+    }
+
+    public static PaymentFlowServiceInfo fromJson(String json) {
+        return JsonConverter.deserialize(json, PaymentFlowServiceInfo.class);
     }
 }

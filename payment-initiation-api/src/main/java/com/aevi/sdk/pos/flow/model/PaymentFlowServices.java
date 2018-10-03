@@ -23,6 +23,9 @@ import com.aevi.util.json.Jsonable;
 
 import java.util.*;
 
+import io.reactivex.Observable;
+
+
 /**
  * Exposes payment and flow services information with helper methods to retrieve collated data across all services.
  */
@@ -58,13 +61,22 @@ public class PaymentFlowServices implements Jsonable {
     }
 
     /**
-     * Get the list of flow services this object was instantiated with.
+     * Get the list of available flow services.
      *
-     * @return The list of flow services
+     * @return The list of {@link PaymentFlowServiceInfo} models
      */
     @NonNull
-    public List<PaymentFlowServiceInfo> getFlowServices() {
+    public List<PaymentFlowServiceInfo> getAll() {
         return paymentFlowServiceInfoList;
+    }
+
+    /**
+     * Get a stream of the available flow services, allowing for simple filtering, conversions etc.
+     *
+     * @return An Observable stream of {@link PaymentFlowServiceInfo} models
+     */
+    public Observable<PaymentFlowServiceInfo> stream() {
+        return Observable.fromIterable(paymentFlowServiceInfoList);
     }
 
     /**

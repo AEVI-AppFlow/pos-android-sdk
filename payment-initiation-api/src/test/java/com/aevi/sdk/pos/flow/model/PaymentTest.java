@@ -10,7 +10,7 @@ import org.junit.Test;
 import static com.aevi.sdk.flow.constants.CardDataKeys.*;
 import static com.aevi.sdk.flow.constants.CardEntryMethods.*;
 import static com.aevi.sdk.flow.constants.CardNetworks.*;
-import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PaymentTest {
@@ -19,23 +19,23 @@ public class PaymentTest {
 
     @Before
     public void setup() {
-        defaultPayment = getValidRequest(1000, "GBP", SALE);
+        defaultPayment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
     }
 
     @Test
     public void canBuildValidRequest() {
-        Payment payment = getValidRequest(1000, "GBP", SALE);
+        Payment payment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
 
-        assertValues(payment, 1000, "GBP", SALE);
+        assertValues(payment, 1000, "GBP", FLOW_TYPE_SALE);
     }
 
     @Test
     public void canSerialiseAndDeserialize() {
-        Payment payment = getValidRequest(1000, "GBP", SALE);
+        Payment payment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
 
         Payment result = Payment.fromJson(payment.toJson());
 
-        assertValues(result, 1000, "GBP", SALE);
+        assertValues(result, 1000, "GBP", FLOW_TYPE_SALE);
         assertThat(payment).isEqualTo(result);
     }
 

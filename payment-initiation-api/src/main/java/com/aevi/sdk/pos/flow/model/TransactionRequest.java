@@ -32,14 +32,13 @@ import static com.aevi.sdk.pos.flow.model.PaymentStage.TRANSACTION_PROCESSING;
  */
 public class TransactionRequest extends BaseModel {
 
-    private final String transactionType;
+    private final String flowType;
     private final Amounts amounts;
     private final PaymentStage paymentStage;
     private final AdditionalData additionalData;
     private final Card card;
     private DeviceAudience deviceAudience;
     private String targetPaymentAppComponent;
-    private String componentName;
 
     // Default constructor for deserialisation
     TransactionRequest() {
@@ -49,40 +48,39 @@ public class TransactionRequest extends BaseModel {
     /**
      * Construct a new instance.
      *
-     * @param id              The transaction id
-     * @param transactionType The transaction type
-     * @param paymentStage    The current payment stage
-     * @param amounts         The amounts to process
-     * @param additionalData  The additional data
-     * @param card            The card details from the VAA or from the payment card reading step
+     * @param id             The transaction id
+     * @param flowType       The flow type
+     * @param paymentStage   The current payment stage
+     * @param amounts        The amounts to process
+     * @param additionalData The additional data
+     * @param card           The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String transactionType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData,
-                              Card card) {
+    public TransactionRequest(String id, String flowType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData, Card card) {
         super(id);
         this.paymentStage = paymentStage;
-        this.transactionType = transactionType;
+        this.flowType = flowType;
         this.amounts = amounts;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.card = card != null ? card : Card.getEmptyCard();
         this.deviceAudience = DeviceAudience.MERCHANT;
         checkArgument(id != null && !id.isEmpty(), "Id must be set");
-        checkArgument(transactionType != null, "Transaction type must be set");
+        checkArgument(flowType != null, "Flow type must be set");
     }
 
     /**
-     * The transaction type.
+     * Get the flow type (aka transaction type).
      *
      * Can not be null.
      *
-     * @return The transaction type.
+     * @return The flow type.
      */
     @NonNull
-    public String getTransactionType() {
-        return transactionType;
+    public String getFlowType() {
+        return flowType;
     }
 
     /**
-     * The amounts to process.
+     * Get the amounts to process.
      *
      * Can be null for non-payment type of transaction.
      *
@@ -94,7 +92,7 @@ public class TransactionRequest extends BaseModel {
     }
 
     /**
-     * The additional data
+     * Get the additional data
      *
      * @return The data. May be empty.
      */
@@ -152,39 +150,36 @@ public class TransactionRequest extends BaseModel {
         return JsonConverter.deserialize(json, TransactionRequest.class);
     }
 
+    /**
+     * For internal use.
+     *
+     * @return String
+     */
     public String getTargetPaymentAppComponent() {
         return targetPaymentAppComponent;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param targetPaymentAppComponent String
+     */
     public void setTargetPaymentAppComponent(String targetPaymentAppComponent) {
         if (targetPaymentAppComponent != null) {
             this.targetPaymentAppComponent = targetPaymentAppComponent;
         }
     }
 
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public String getComponentNameValue() {
-        return componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
     @Override
     public String toString() {
         return "TransactionRequest{" +
-                "transactionType='" + transactionType + '\'' +
+                "flowType='" + flowType + '\'' +
                 ", amounts=" + amounts +
                 ", paymentStage=" + paymentStage +
                 ", additionalData=" + additionalData +
                 ", card=" + card +
                 ", deviceAudience=" + deviceAudience +
                 ", targetPaymentAppComponent='" + targetPaymentAppComponent + '\'' +
-                ", componentName='" + componentName + '\'' +
                 "} " + super.toString();
     }
 
@@ -194,19 +189,18 @@ public class TransactionRequest extends BaseModel {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransactionRequest that = (TransactionRequest) o;
-        return Objects.equals(transactionType, that.transactionType) &&
+        return Objects.equals(flowType, that.flowType) &&
                 Objects.equals(amounts, that.amounts) &&
                 paymentStage == that.paymentStage &&
                 Objects.equals(additionalData, that.additionalData) &&
                 Objects.equals(card, that.card) &&
                 deviceAudience == that.deviceAudience &&
-                Objects.equals(targetPaymentAppComponent, that.targetPaymentAppComponent) &&
-                Objects.equals(componentName, that.componentName);
+                Objects.equals(targetPaymentAppComponent, that.targetPaymentAppComponent);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), transactionType, amounts, paymentStage, additionalData, card, deviceAudience, targetPaymentAppComponent, componentName);
+        return Objects.hash(super.hashCode(), flowType, amounts, paymentStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
     }
 }
