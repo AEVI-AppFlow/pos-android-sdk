@@ -17,15 +17,13 @@ reusable-steps:
   - &restore_cache
     restore_cache:
       keys:
-      - v1-dependencies-{{ checksum "dependencies.gradle" }}
-      # fallback to using the latest cache if no exact match is found
-      - v1-dependencies-
+      - v2-dependencies-{{ checksum "dependencies.gradle" }}
   - &save_cache
     save_cache:
       paths:
         - ~/.gradle
         - ~/.android
-      key: v1-dependencies-{{ checksum "dependencies.gradle" }}
+      key: v2-dependencies-{{ checksum "dependencies.gradle" }}
   - &setup_aws_cli
     run:
       name: Setup AWS CLI
@@ -101,10 +99,10 @@ jobs:
       - *gradle_props
       - *restore_cache
       - *download_android_deps
-      - *save_cache
       - *test
       - *build
       - *store
+      - *save_cache
       - *persist
 
   deploy-qa:
