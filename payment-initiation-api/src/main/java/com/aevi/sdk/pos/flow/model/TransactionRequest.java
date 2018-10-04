@@ -25,7 +25,6 @@ import com.aevi.util.json.JsonConverter;
 import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
-import static com.aevi.sdk.pos.flow.model.PaymentStage.TRANSACTION_PROCESSING;
 
 /**
  * Request for an individual transaction to be processed by a payment app / service.
@@ -34,7 +33,7 @@ public class TransactionRequest extends BaseModel {
 
     private final String flowType;
     private final Amounts amounts;
-    private final PaymentStage paymentStage;
+    private final String flowStage;
     private final AdditionalData additionalData;
     private final Card card;
     private DeviceAudience deviceAudience;
@@ -42,7 +41,7 @@ public class TransactionRequest extends BaseModel {
 
     // Default constructor for deserialisation
     TransactionRequest() {
-        this("N/A", "", TRANSACTION_PROCESSING, new Amounts(), new AdditionalData(), null);
+        this("N/A", "", "", new Amounts(), new AdditionalData(), null);
     }
 
     /**
@@ -50,14 +49,14 @@ public class TransactionRequest extends BaseModel {
      *
      * @param id             The transaction id
      * @param flowType       The flow type
-     * @param paymentStage   The current payment stage
+     * @param flowStage      The current flow stage
      * @param amounts        The amounts to process
      * @param additionalData The additional data
      * @param card           The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String flowType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData, Card card) {
+    public TransactionRequest(String id, String flowType, String flowStage, Amounts amounts, AdditionalData additionalData, Card card) {
         super(id);
-        this.paymentStage = paymentStage;
+        this.flowStage = flowStage;
         this.flowType = flowType;
         this.amounts = amounts;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
@@ -104,13 +103,11 @@ public class TransactionRequest extends BaseModel {
     /**
      * Get the stage the payment is at, which will determine what data is available and what response data can be set.
      *
-     * @return The {@link PaymentStage}
-     * @deprecated This is no longer required and will be deleted in the next major API update
+     * @return The current flow stage this request was generated for
      */
     @NonNull
-    @Deprecated
-    public PaymentStage getPaymentStage() {
-        return paymentStage;
+    public String getFlowStage() {
+        return flowStage;
     }
 
     public void setDeviceAudience(DeviceAudience deviceAudience) {
@@ -175,7 +172,7 @@ public class TransactionRequest extends BaseModel {
         return "TransactionRequest{" +
                 "flowType='" + flowType + '\'' +
                 ", amounts=" + amounts +
-                ", paymentStage=" + paymentStage +
+                ", flowStage=" + flowStage +
                 ", additionalData=" + additionalData +
                 ", card=" + card +
                 ", deviceAudience=" + deviceAudience +
@@ -191,7 +188,7 @@ public class TransactionRequest extends BaseModel {
         TransactionRequest that = (TransactionRequest) o;
         return Objects.equals(flowType, that.flowType) &&
                 Objects.equals(amounts, that.amounts) &&
-                paymentStage == that.paymentStage &&
+                flowStage == that.flowStage &&
                 Objects.equals(additionalData, that.additionalData) &&
                 Objects.equals(card, that.card) &&
                 deviceAudience == that.deviceAudience &&
@@ -201,6 +198,6 @@ public class TransactionRequest extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), flowType, amounts, paymentStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
+        return Objects.hash(super.hashCode(), flowType, amounts, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
     }
 }

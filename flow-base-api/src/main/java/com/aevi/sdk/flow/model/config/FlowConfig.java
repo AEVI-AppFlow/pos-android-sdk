@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonPostProcessing;
 import com.aevi.util.json.Jsonable;
@@ -170,7 +171,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      * @return The request class for this flow
      */
     public String getRequestClass() {
-        return allStagesMap.keySet().contains(normaliseStageName(FlowStage.STAGE_GENERIC)) ? REQUEST_CLASS_GENERIC : REQUEST_CLASS_PAYMENT;
+        return allStagesMap.keySet().contains(normaliseStageName(FlowStages.GENERIC)) ? REQUEST_CLASS_GENERIC : REQUEST_CLASS_PAYMENT;
     }
 
     /**

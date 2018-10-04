@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
@@ -178,7 +179,7 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.TRANSACTION_PROCESSING.name();
+        return FlowStages.TRANSACTION_PROCESSING;
     }
 
     @Override

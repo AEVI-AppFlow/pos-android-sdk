@@ -21,7 +21,7 @@ import android.view.Window;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.aevi.sdk.pos.flow.model.PaymentStage;
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.sample.R;
 
 import java.util.ArrayList;
@@ -47,14 +47,14 @@ public class FlowStagesActivity extends AppCompatActivity {
     static {
         stages = new ArrayList<>();
         stages.add(new Stage("Payment initiation", R.id.payment_initiation));
-        stages.add(new Stage(PaymentStage.PRE_FLOW.name(), R.id.pre_flow));
-        stages.add(new Stage(PaymentStage.SPLIT.name(), R.id.split));
-        stages.add(new Stage(PaymentStage.PRE_TRANSACTION.name(), R.id.pre_payment));
-        stages.add(new Stage(PaymentStage.PAYMENT_CARD_READING.name(), R.id.card_reading));
-        stages.add(new Stage(PaymentStage.POST_CARD_READING.name(), R.id.post_card_reading));
-        stages.add(new Stage(PaymentStage.TRANSACTION_PROCESSING.name(), R.id.transaction_processing));
-        stages.add(new Stage(PaymentStage.POST_TRANSACTION.name(), R.id.post_payment));
-        stages.add(new Stage(PaymentStage.POST_FLOW.name(), R.id.post_flow));
+        stages.add(new Stage(FlowStages.PRE_FLOW, R.id.pre_flow));
+        stages.add(new Stage(FlowStages.SPLIT, R.id.split));
+        stages.add(new Stage(FlowStages.PRE_TRANSACTION, R.id.pre_payment));
+        stages.add(new Stage(FlowStages.PAYMENT_CARD_READING, R.id.card_reading));
+        stages.add(new Stage(FlowStages.POST_CARD_READING, R.id.post_card_reading));
+        stages.add(new Stage(FlowStages.TRANSACTION_PROCESSING, R.id.transaction_processing));
+        stages.add(new Stage(FlowStages.POST_TRANSACTION, R.id.post_payment));
+        stages.add(new Stage(FlowStages.POST_FLOW, R.id.post_flow));
         stages.add(new Stage("Payment response", R.id.payment_response));
     }
 

@@ -118,7 +118,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         List<Pair<String, String>> requestInfo = new ArrayList<>();
         requestInfo.add(getStringPair(R.string.id, transactionRequest.getId()));
         requestInfo.add(getStringPair(R.string.transaction_type, transactionRequest.getFlowType()));
-        requestInfo.add(getStringPair(R.string.payment_stage, transactionRequest.getPaymentStage().name()));
+        requestInfo.add(getStringPair(R.string.payment_stage, transactionRequest.getFlowStage()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));
 
         if (transactionRequest.getAmounts() != null) {

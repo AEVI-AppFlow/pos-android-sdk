@@ -22,13 +22,13 @@ import android.widget.CheckBox;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.AmountsModifier;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -84,7 +84,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.PRE_FLOW.name();
+        return FlowStages.PRE_FLOW;
     }
 
     @Override

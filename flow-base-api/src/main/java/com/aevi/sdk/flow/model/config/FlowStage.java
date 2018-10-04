@@ -24,8 +24,6 @@ import java.util.List;
  */
 public class FlowStage {
 
-    public static final String STAGE_GENERIC = "GENERIC";
-
     private final String name;
     private final AppExecutionType appExecutionType;
     private List<FlowApp> flowApps;
