@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
@@ -245,7 +246,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.SPLIT.name();
+        return FlowStages.SPLIT;
     }
 
     @Override

@@ -19,10 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
 
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.CardResponse;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
@@ -80,7 +80,7 @@ public class SelectPaymentCardActivity extends BaseSampleAppCompatActivity<CardR
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.PAYMENT_CARD_READING.name();
+        return FlowStages.PAYMENT_CARD_READING;
     }
 
     @Override

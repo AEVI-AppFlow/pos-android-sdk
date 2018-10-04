@@ -21,13 +21,14 @@ import com.aevi.sdk.flow.model.NoOpModel;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.aevi.sdk.flow.constants.FlowStages.POST_FLOW;
 
 public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
 
@@ -77,7 +78,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.POST_FLOW.name();
+        return POST_FLOW;
     }
 
     @Override

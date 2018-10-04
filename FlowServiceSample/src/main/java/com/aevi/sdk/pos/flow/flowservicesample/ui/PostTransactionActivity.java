@@ -17,11 +17,11 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -85,7 +85,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.POST_TRANSACTION.name();
+        return FlowStages.POST_TRANSACTION;
     }
 
     @Override

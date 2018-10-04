@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.model.config;
 import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.config.FlowConfig;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,15 +121,15 @@ public class FlowConfigurations {
     }
 
     /**
-     * Check whether split is enabled as a stage for a particular flow.
+     * Check whether a particular flow has the provided stage defined.
      *
-     * @param flowName The flow to check if split is enabled for
-     * @return True if split is enabled as a stage, false otherwise
+     * @param flowName The flow to check if the stage is defined for
+     * @return True if the flow has the stage defined, false otherwise
      */
-    public boolean isSplitEnabledForFlow(String flowName) {
+    public boolean isStageDefinedForFlow(String stage, String flowName) {
         FlowConfig flowConfig = fromName(flowName);
         if (flowConfig != null) {
-            return flowConfig.hasStage(PaymentStage.SPLIT.name());
+            return flowConfig.hasStage(stage);
         }
         return false;
     }

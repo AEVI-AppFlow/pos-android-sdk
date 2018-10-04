@@ -24,9 +24,9 @@ import android.preference.PreferenceManager;
 import com.aevi.sdk.pos.flow.flowservicesample.PaymentFlowServiceInfoProvider;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.flowservicesample.service.*;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
 
 import static android.content.pm.PackageManager.*;
+import static com.aevi.sdk.flow.constants.FlowStages.*;
 
 public class ServiceStateHandler {
 
@@ -38,7 +38,7 @@ public class ServiceStateHandler {
         PaymentFlowServiceInfoProvider.notifyServiceInfoChange(context);
     }
 
-    public static boolean isStageEnabled(Context context, PaymentStage paymentStage) {
+    public static boolean isStageEnabled(Context context, String paymentStage) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (paymentStage) {
             case PRE_FLOW:
