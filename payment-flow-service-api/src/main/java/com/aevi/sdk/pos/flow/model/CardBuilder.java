@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
 
@@ -45,6 +47,7 @@ public class CardBuilder {
      * @param maskedPan The PAN masked according to PCI DSS standards.
      * @return This builder
      */
+    @NonNull
     public CardBuilder withMaskedPan(String maskedPan) {
         this.maskedPan = maskedPan;
         return this;
@@ -56,6 +59,7 @@ public class CardBuilder {
      * @param cardholderName The card holder name.
      * @return This builder
      */
+    @NonNull
     public CardBuilder withCardholderName(String cardholderName) {
         this.cardholderName = cardholderName;
         return this;
@@ -67,6 +71,7 @@ public class CardBuilder {
      * @param expiryDate The expiry date in the format YYMM.
      * @return This builder
      */
+    @NonNull
     public CardBuilder withExpiryDate(String expiryDate) {
         if (expiryDate != null && expiryDate.length() != 4) {
             throw new IllegalArgumentException("Expiry date must be in format YYMM");
@@ -95,6 +100,7 @@ public class CardBuilder {
      * @param additionalData Additional data
      * @return This builder
      */
+    @NonNull
     public CardBuilder withAdditionalData(AdditionalData additionalData) {
         this.additionalData = additionalData;
         return this;
@@ -110,6 +116,7 @@ public class CardBuilder {
      * @param <T>    The type of object this data is an array of
      * @return This builder
      */
+    @NonNull
     public <T> CardBuilder withAdditionalData(String key, T... values) {
         additionalData.addData(key, values);
         return this;
@@ -120,10 +127,10 @@ public class CardBuilder {
      *
      * @return A {@link Card} instance
      */
+    @NonNull
     public Card build() {
         return new Card(maskedPan, cardholderName, expiryDate, cardToken, additionalData);
     }
-
 
     /**
      * Masks PANs of at least 16 digits in length according to PCI DSS:
@@ -137,6 +144,7 @@ public class CardBuilder {
      * @return masked PAN
      * @throws IllegalArgumentException if PAN is null or less than 16 digits
      */
+    @NonNull
     public static String maskPan(String pan) {
         checkArgument(pan != null && pan.length() >= MIN_PAN_LENGTH, "PAN must be >= " + MIN_PAN_LENGTH + " in length");
         byte[] bytes = pan.getBytes();

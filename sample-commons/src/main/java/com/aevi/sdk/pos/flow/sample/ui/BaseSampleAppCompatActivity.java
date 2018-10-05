@@ -23,7 +23,7 @@ import android.view.MenuItem;
 
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.model.ActivityEvents;
+import com.aevi.sdk.flow.constants.ActivityEvents;
 import com.aevi.sdk.pos.flow.sample.R;
 
 public abstract class BaseSampleAppCompatActivity<RESPONSE> extends AppCompatActivity {

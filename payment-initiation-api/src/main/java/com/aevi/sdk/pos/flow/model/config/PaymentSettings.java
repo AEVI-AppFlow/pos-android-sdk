@@ -85,6 +85,7 @@ public class PaymentSettings implements Jsonable {
      *
      * @return An instance of {@link FlowConfigurations}
      */
+    @NonNull
     public FlowConfigurations getFlowConfigurations() {
         return flowConfigurations;
     }

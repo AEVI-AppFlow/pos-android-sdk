@@ -75,6 +75,7 @@ public class PaymentFlowServices implements Jsonable {
      *
      * @return An Observable stream of {@link PaymentFlowServiceInfo} models
      */
+    @NonNull
     public Observable<PaymentFlowServiceInfo> stream() {
         return Observable.fromIterable(paymentFlowServiceInfoList);
     }

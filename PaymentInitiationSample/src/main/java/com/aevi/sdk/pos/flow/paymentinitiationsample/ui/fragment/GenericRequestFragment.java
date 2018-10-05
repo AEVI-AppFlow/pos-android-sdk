@@ -56,6 +56,7 @@ import static com.aevi.sdk.flow.constants.FlowTypes.*;
 public class GenericRequestFragment extends BaseObservableFragment {
 
     private static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
+    private static final String UNSUPPORTED_FLOW = "unsupportedFlow";
 
     @BindView(R.id.request_flow_spinner)
     DropDownSpinner requestFlowSpinner;
@@ -89,7 +90,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
                             .toList();
                 })
                 .subscribe(genericFlowNames -> {
-                    genericFlowNames.add("unsupportedType"); // For illustration of what happens if you initiate a request with unsupported type
+                    genericFlowNames.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
                     dropDownHelper.setupDropDown(requestFlowSpinner, genericFlowNames, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestFlowSpinner, R.array.request_flows));
 
@@ -132,12 +133,18 @@ public class GenericRequestFragment extends BaseObservableFragment {
     }
 
     private Request createRequest() {
+        if (paymentSettings == null) {
+            return null; // Wait for settings to come back first
+        }
         Request request = new Request(selectedApiRequestFlow);
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
-        String flowType = paymentSettings.getFlowConfigurations().stream()
-                .filter(flowConfig -> flowConfig.getName().equals(selectedApiRequestFlow))
-                .map(FlowConfig::getType)
-                .blockingFirst();
+        String flowType = "";
+        if (!selectedApiRequestFlow.equals(UNSUPPORTED_FLOW)) {
+            flowType = paymentSettings.getFlowConfigurations().stream()
+                    .filter(flowConfig -> flowConfig.getName().equals(selectedApiRequestFlow))
+                    .map(FlowConfig::getType)
+                    .blockingFirst();
+        }
 
         // Some types require additional information
         switch (flowType) {

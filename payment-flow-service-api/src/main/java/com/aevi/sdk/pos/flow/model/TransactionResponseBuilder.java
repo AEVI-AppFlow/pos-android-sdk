@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.AdditionalData;
 
@@ -52,6 +54,7 @@ public final class TransactionResponseBuilder {
      *
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder approve() {
         this.outcome = Outcome.APPROVED;
         return this;
@@ -66,6 +69,7 @@ public final class TransactionResponseBuilder {
      * @param paymentMethod    Optional payment method used (defaults to "card")
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder approve(Amounts processedAmounts, String... paymentMethod) {
         checkNotNull(processedAmounts, "Processed amounts must be set");
         this.outcome = Outcome.APPROVED;
@@ -84,6 +88,7 @@ public final class TransactionResponseBuilder {
      * @param declineMessage The message detailing why the transaction was declined
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder decline(String declineMessage) {
         checkNotNull(declineMessage, "Decline message must be set");
         this.outcome = Outcome.DECLINED;
@@ -97,6 +102,7 @@ public final class TransactionResponseBuilder {
      * @param card The card details
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder withCard(Card card) {
         this.card = card;
         return this;
@@ -112,6 +118,7 @@ public final class TransactionResponseBuilder {
      * @param outcomeMessage The outcome message.
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder withOutcomeMessage(String outcomeMessage) {
         this.outcomeMessage = outcomeMessage;
         return this;
@@ -128,6 +135,7 @@ public final class TransactionResponseBuilder {
      * @param responseCode The response code
      * @return This builder
      */
+    @NonNull
     public TransactionResponseBuilder withResponseCode(String responseCode) {
         this.responseCode = responseCode;
         return this;
@@ -145,6 +153,7 @@ public final class TransactionResponseBuilder {
      * @param <T>    The type of object this option is an array of
      * @return This builder
      */
+    @NonNull
     public <T> TransactionResponseBuilder withReference(String key, T... values) {
         references.addData(key, values);
         return this;
@@ -158,6 +167,7 @@ public final class TransactionResponseBuilder {
      * @param references The map of references
      * @return This builder.
      */
+    @NonNull
     public TransactionResponseBuilder withReferences(AdditionalData references) {
         if (references != null) {
             this.references = references;
@@ -170,6 +180,7 @@ public final class TransactionResponseBuilder {
      *
      * @return The TransactionResponse instance
      */
+    @NonNull
     public TransactionResponse build() {
         checkArgument(id != null && !id.isEmpty(), "Request id must be set");
         checkArgument(outcome != null, "Outcome must be set");

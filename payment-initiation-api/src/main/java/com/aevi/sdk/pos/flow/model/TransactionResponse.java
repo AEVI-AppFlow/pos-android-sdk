@@ -198,6 +198,7 @@ public class TransactionResponse extends BaseModel {
      *
      * @return Component name
      */
+    @Nullable
     public String getComponentName() {
         return componentName;
     }

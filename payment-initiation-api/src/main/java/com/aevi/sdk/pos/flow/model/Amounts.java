@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -79,7 +81,7 @@ public class Amounts implements Jsonable {
         checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
         this.baseAmount = baseAmount;
         this.currency = currency;
-        this.additionalAmounts = additionalAmounts;
+        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<String, Long>();
     }
 
     /**
@@ -119,6 +121,7 @@ public class Amounts implements Jsonable {
      *
      * @return The ISO-4217 currency code
      */
+    @NonNull
     public String getCurrency() {
         return currency;
     }
@@ -139,6 +142,7 @@ public class Amounts implements Jsonable {
      *
      * @return Base {@link Amount}
      */
+    @NonNull
     public Amount getBaseAmount() {
         return new Amount(baseAmount, currency);
     }
@@ -164,6 +168,7 @@ public class Amounts implements Jsonable {
      * @param identifier The identifier
      * @return The additional {@link Amount}
      */
+    @NonNull
     public Amount getAdditionalAmount(String identifier) {
         return new Amount(getAdditionalAmountValue(identifier), currency);
     }
@@ -173,6 +178,7 @@ public class Amounts implements Jsonable {
      *
      * @return The map of identifier keys mapped to amount values
      */
+    @NonNull
     public Map<String, Long> getAdditionalAmounts() {
         return additionalAmounts;
     }
@@ -195,6 +201,7 @@ public class Amounts implements Jsonable {
      *
      * @return Total {@link Amount}
      */
+    @NonNull
     public Amount getTotalAmount() {
         return new Amount(getTotalAmountValue(), currency);
     }
@@ -219,6 +226,7 @@ public class Amounts implements Jsonable {
      *
      * @return The original currency
      */
+    @NonNull
     public String getOriginalCurrency() {
         return originalCurrency;
     }
@@ -284,6 +292,7 @@ public class Amounts implements Jsonable {
      * @param a2 The second amount to add with
      * @return The combined result
      */
+    @NonNull
     public static Amounts addAmounts(Amounts a1, Amounts a2) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
@@ -312,6 +321,7 @@ public class Amounts implements Jsonable {
      * @param a2 The amounts of which a1 will be reduced by
      * @return The reduced amounts
      */
+    @NonNull
     public static Amounts subtractAmounts(Amounts a1, Amounts a2) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");

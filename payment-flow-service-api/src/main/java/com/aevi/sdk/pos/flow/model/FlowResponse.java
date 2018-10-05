@@ -14,6 +14,9 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.Nullable;
+
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Sendable;
@@ -69,8 +72,8 @@ public class FlowResponse implements Sendable {
      *
      * This can be combined with setting amounts paid as long as the paid amount does not exceed the updated requested amount.
      *
-     * Changing request amounts is only allowed in {@link PaymentStage#PRE_FLOW}, {@link PaymentStage#PRE_TRANSACTION}
-     * and {@link PaymentStage#POST_CARD_READING} stages.
+     * Changing request amounts is only allowed in {@link FlowStages#PRE_FLOW}, {@link FlowStages#PRE_TRANSACTION}
+     * and {@link FlowStages#POST_CARD_READING} stages.
      *
      * @param modifiedRequestAmounts The updated amounts
      */
@@ -79,10 +82,12 @@ public class FlowResponse implements Sendable {
         validateAmounts();
     }
 
+    @Nullable
     public Amounts getAmountsPaid() {
         return amountsPaid;
     }
 
+    @Nullable
     public String getAmountsPaidPaymentMethod() {
         return amountsPaidPaymentMethod;
     }
@@ -99,7 +104,7 @@ public class FlowResponse implements Sendable {
      *
      * Optional reference data can be set via {@link #setPaymentReferences(AdditionalData)}
      *
-     * Paying off amounts will only have an impact if set during {@link PaymentStage#PRE_TRANSACTION} and {@link PaymentStage#POST_CARD_READING}.
+     * Paying off amounts will only have an impact if set during {@link FlowStages#PRE_TRANSACTION} and {@link FlowStages#POST_CARD_READING}.
      *
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
@@ -113,6 +118,7 @@ public class FlowResponse implements Sendable {
         validateAmounts();
     }
 
+    @Nullable
     public AdditionalData getRequestAdditionalData() {
         return requestAdditionalData;
     }
@@ -124,7 +130,7 @@ public class FlowResponse implements Sendable {
      *
      * This will overwrite any existing data with the same key.
      *
-     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     * This call won't have any effect if set after {@link FlowStages#TRANSACTION_PROCESSING}.
      *
      * See {@link AdditionalData#addData(String, Object[])} for more info.
      *
@@ -145,7 +151,7 @@ public class FlowResponse implements Sendable {
      *
      * This will overwrite any existing data with the same key.
      *
-     * This call won't have any effect if set after {@link PaymentStage#TRANSACTION_PROCESSING}.
+     * This call won't have any effect if set after {@link FlowStages#TRANSACTION_PROCESSING}.
      *
      * @param requestAdditionalData Additional data to set in the request.
      */
@@ -153,6 +159,7 @@ public class FlowResponse implements Sendable {
         this.requestAdditionalData = requestAdditionalData;
     }
 
+    @Nullable
     public AdditionalData getPaymentReferences() {
         return paymentReferences;
     }
@@ -162,7 +169,7 @@ public class FlowResponse implements Sendable {
      *
      * If used together with {@link #setAmountsPaid(Amounts, String)}, this will be set in the transaction response.
      *
-     * Only relevant for {@link PaymentStage#POST_TRANSACTION} where these will be copied into the existing transaction response references.
+     * Only relevant for {@link FlowStages#POST_TRANSACTION} where these will be copied into the existing transaction response references.
      * Note that overwriting existing values will NOT be allowed in this case.
      *
      * @param paymentReferences The references via Options
@@ -182,7 +189,7 @@ public class FlowResponse implements Sendable {
     /**
      * This can be used to override the splitEnabled flag in the source request, to allow the transaction to be split.
      *
-     * Note that this call only has an effect in the {@link PaymentStage#PRE_FLOW} stage.
+     * Note that this call only has an effect in the {@link FlowStages#PRE_FLOW} stage.
      *
      * @param enableSplit True to enable split, false to disable it
      */

@@ -29,11 +29,10 @@ public class FlowConfigBuilder {
     private String name;
     private String type;
     private int version = 1;
-    private int apiCompatibility = getMajorVersionNumber();
+    private int apiMajorVersion = getMajorVersionNumber();
     private String description;
-    private String appFilter;
+    private String restrictedToApp;
     private List<FlowStage> stages = new ArrayList<>();
-    private boolean generatedFromCustomType;
 
     /**
      * Set the name for the flow.
@@ -90,11 +89,11 @@ public class FlowConfigBuilder {
      *
      * If not set, it will default to the current API version.
      *
-     * @param apiCompatibility The major API version this flow is compatible with
+     * @param apiMajorVersion The major API version this flow is compatible with
      * @return This builder
      */
-    public FlowConfigBuilder withApiCompatibility(int apiCompatibility) {
-        this.apiCompatibility = apiCompatibility;
+    public FlowConfigBuilder withApiMajorVersionCompatibility(int apiMajorVersion) {
+        this.apiMajorVersion = apiMajorVersion;
         return this;
     }
 
@@ -112,15 +111,15 @@ public class FlowConfigBuilder {
     }
 
     /**
-     * Set a filter for what client app is allowed to read and use this flow.
+     * Set a restriction for what client app is allowed to read and use this flow.
      *
      * This can be used to limit a flow to a specific client app (a POS app etc).
      *
-     * @param appFilter The client package name to filter by
+     * @param appId The app package name to filter by
      * @return This builder
      */
-    public FlowConfigBuilder withClientAppPackageFilter(String appFilter) {
-        this.appFilter = appFilter;
+    public FlowConfigBuilder withRestrictedToApp(String appId) {
+        this.restrictedToApp = appId;
         return this;
     }
 
@@ -136,16 +135,6 @@ public class FlowConfigBuilder {
     }
 
     /**
-     * Set if this flow was generated from a custom type defined by a flow service.
-     *
-     * @return This builder
-     */
-    public FlowConfigBuilder asGeneratedFromCustomType() {
-        this.generatedFromCustomType = true;
-        return this;
-    }
-
-    /**
      * Build a flow config instance.
      *
      * @return The flow config
@@ -153,7 +142,7 @@ public class FlowConfigBuilder {
     public FlowConfig build() {
         checkNotEmpty(name, "Name must be set");
         checkNotEmpty(type, "Type must be set");
-        return new FlowConfig(name, type, version, apiCompatibility, description, appFilter, stages);
+        return new FlowConfig(name, type, version, apiMajorVersion, description, restrictedToApp, stages);
     }
 
     private static int getMajorVersionNumber() {

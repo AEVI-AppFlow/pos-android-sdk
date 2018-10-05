@@ -17,6 +17,9 @@ package com.aevi.sdk.flow.util;
 
 import java.util.Collection;
 
+/**
+ * Internal API comparison utilility.
+ */
 public final class ComparisonUtil {
 
     private ComparisonUtil() {

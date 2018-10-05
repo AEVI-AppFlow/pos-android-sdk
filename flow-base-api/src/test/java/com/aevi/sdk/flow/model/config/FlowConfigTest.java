@@ -35,7 +35,7 @@ public class FlowConfigTest {
         Set<String> stages = flowConfig.getAllStageNames();
         assertThat(stages).isNotNull();
         assertThat(stages).hasSize(2);
-        assertThat(stages).contains("cauliflower", "carrot");
+        assertThat(stages).contains("CAULIFLOWER", "CARROT");
     }
 
     @Test

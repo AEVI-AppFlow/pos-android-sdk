@@ -14,17 +14,28 @@
 
 package com.aevi.sdk.flow.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.Objects;
 
+/**
+ * Base class for id/name pair entities.
+ */
 public abstract class BaseIdNameEntity extends BaseModel {
 
     private final String name;
 
     public BaseIdNameEntity(String id, String name) {
         super(id);
-        this.name = name;
+        this.name = name != null ? name : "N/A";
     }
 
+    /**
+     * Get the name.
+     *
+     * @return Name
+     */
+    @NonNull
     public String getName() {
         return name;
     }

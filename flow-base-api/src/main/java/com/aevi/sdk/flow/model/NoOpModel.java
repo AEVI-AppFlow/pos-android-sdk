@@ -17,6 +17,9 @@ package com.aevi.sdk.flow.model;
 
 import com.aevi.util.json.Jsonable;
 
+/**
+ * A no-op model where no data is passed. For declarative use only.
+ */
 public class NoOpModel implements Jsonable {
 
     @Override

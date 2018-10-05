@@ -23,6 +23,9 @@ import com.aevi.util.json.Jsonable;
 
 import java.util.Objects;
 
+/**
+ * Represents an event in the flow.
+ */
 public class FlowEvent implements Jsonable {
 
     private final String type;
@@ -45,20 +48,40 @@ public class FlowEvent implements Jsonable {
         this.eventTrigger = eventTrigger;
     }
 
+    /**
+     * Get the type of the event.
+     *
+     * @return The event type
+     */
     @NonNull
     public String getType() {
         return type;
     }
 
+    /**
+     * Get the data for the event.
+     *
+     * @return The event data
+     */
     @NonNull
     public AdditionalData getData() {
         return data;
     }
 
+    /**
+     * Set the event trigger.
+     *
+     * @param eventTrigger The event trigger
+     */
     public void setEventTrigger(String eventTrigger) {
         this.eventTrigger = eventTrigger;
     }
 
+    /**
+     * Get the event trigger.
+     *
+     * @return The event trigger
+     */
     @Nullable
     public String getEventTrigger() {
         return eventTrigger;

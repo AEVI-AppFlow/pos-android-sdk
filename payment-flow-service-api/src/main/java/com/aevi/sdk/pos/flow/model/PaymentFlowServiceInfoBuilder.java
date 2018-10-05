@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.constants.ServiceInfoDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -53,6 +54,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param logicalDeviceId The logical device id
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withLogicalDeviceId(String logicalDeviceId) {
         this.logicalDeviceId = logicalDeviceId;
         return this;
@@ -66,6 +68,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param vendor The vendor name
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withVendor(String vendor) {
         this.vendor = vendor;
         return this;
@@ -79,6 +82,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param displayName The display name of the service
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
@@ -92,6 +96,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param supportsAccessibilityMode True if this flow service supports accessibility mode
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withSupportsAccessibilityMode(boolean supportsAccessibilityMode) {
         this.supportsAccessibility = supportsAccessibilityMode;
         return this;
@@ -108,6 +113,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param customRequestTypes A list of string values representing custom request types
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withCustomRequestTypes(String... customRequestTypes) {
         if (customRequestTypes != null) {
             this.customRequestTypes = new HashSet<>(Arrays.asList(customRequestTypes));
@@ -125,6 +131,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param supportedDataKeys The array of supported data keys
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withSupportedDataKeys(String... supportedDataKeys) {
         if (supportedDataKeys != null) {
             this.supportedDataKeys = new HashSet<>(Arrays.asList(supportedDataKeys));
@@ -148,6 +155,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param canAdjustAmounts True if the service can adjust amounts, false otherwise
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withCanAdjustAmounts(boolean canAdjustAmounts) {
         this.canAdjustAmounts = canAdjustAmounts;
         return this;
@@ -170,6 +178,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param paymentMethods A set of payment methods used by the service (must not be empty)
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withCanPayAmounts(boolean canPayAmounts, String... paymentMethods) {
         if (canPayAmounts && (paymentMethods == null || paymentMethods.length == 0)) {
             throw new IllegalArgumentException("If canPayAmounts flag is set, payment methods must be provided");
@@ -187,6 +196,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param defaultCurrency The default currency as ISO-4217 currency code
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withDefaultCurrency(String defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
         return this;
@@ -202,6 +212,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param supportedCurrencies The set of supported currencies as 3 letter ISO-4217 currency codes (can be empty to support all currencies)
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withSupportedCurrencies(String... supportedCurrencies) {
         if (supportedCurrencies != null) {
             this.supportedCurrencies = new HashSet<>(Arrays.asList(supportedCurrencies));
@@ -219,6 +230,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param <T>    The type of object this data is an array of
      * @return This builder
      */
+    @NonNull
     public <T> PaymentFlowServiceInfoBuilder withAdditionalInfo(String key, T... values) {
         additionalInfo.addData(key, values);
         return this;
@@ -230,6 +242,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param additionalInfo The additional info
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withAdditionalInfo(AdditionalData additionalInfo) {
         this.additionalInfo = additionalInfo;
         return this;
@@ -240,6 +253,7 @@ public class PaymentFlowServiceInfoBuilder {
      *
      * @return The additional info
      */
+    @NonNull
     public AdditionalData getCurrentAdditionalInfo() {
         return additionalInfo;
     }
@@ -250,6 +264,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param merchants The merchants
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withMerchants(Merchant... merchants) {
         additionalInfo.addData(ServiceInfoDataKeys.MERCHANTS, merchants);
         return this;
@@ -261,6 +276,7 @@ public class PaymentFlowServiceInfoBuilder {
      * @param manualEntrySupport True if manual entry is supported, false otherwise
      * @return This builder
      */
+    @NonNull
     public PaymentFlowServiceInfoBuilder withManualEntrySupport(boolean manualEntrySupport) {
         additionalInfo.addData(ServiceInfoDataKeys.SUPPORTS_MANUAL_ENTRY, manualEntrySupport);
         return this;
@@ -272,11 +288,13 @@ public class PaymentFlowServiceInfoBuilder {
      * @param context The Android context
      * @return A new FlowServiceInfo instance
      */
+    @NonNull
     public PaymentFlowServiceInfo build(Context context) {
         String version = getAppVersion(context);
         return build(context.getPackageName(), version);
     }
 
+    @NonNull
     PaymentFlowServiceInfo build(String packageName, String serviceVersion) {
         String apiVersion = PaymentFlowServiceApi.getApiVersion();
         checkNotNull(vendor, "Vendor must be set");
@@ -286,6 +304,7 @@ public class PaymentFlowServiceInfoBuilder {
                 supportedCurrencies, paymentMethods, additionalInfo);
     }
 
+    @NonNull
     private static String getAppVersion(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;

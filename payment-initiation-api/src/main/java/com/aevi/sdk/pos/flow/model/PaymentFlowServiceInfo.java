@@ -30,6 +30,7 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseServiceInfo;
@@ -148,7 +149,7 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
      *
      * @return The default currency of the service.
      */
-
+    @Nullable
     public String getDefaultCurrency() {
         return defaultCurrency;
     }

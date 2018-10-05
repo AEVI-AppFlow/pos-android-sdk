@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
@@ -61,6 +63,7 @@ public class PaymentBuilder {
      * @param flowName The name of the flow to use
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withPaymentFlow(String flowName) {
         this.flowName = flowName;
         return this;
@@ -74,6 +77,7 @@ public class PaymentBuilder {
      * @param amounts The amounts.
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withAmounts(Amounts amounts) {
         this.amounts = amounts;
         return this;
@@ -90,6 +94,7 @@ public class PaymentBuilder {
      * @param enabled True to enable split, false to disable
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withSplitEnabled(boolean enabled) {
         this.splitEnabled = enabled;
         return this;
@@ -101,6 +106,7 @@ public class PaymentBuilder {
      * @param cardToken The card {@link Token}
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withCardToken(Token cardToken) {
         this.cardToken = cardToken;
         return this;
@@ -116,6 +122,7 @@ public class PaymentBuilder {
      * @param <T>    The paymentFunction of object this data is an array of
      * @return This builder
      */
+    @NonNull
     public <T> PaymentBuilder addAdditionalData(String key, T... values) {
         additionalData.addData(key, values);
         return this;
@@ -127,6 +134,7 @@ public class PaymentBuilder {
      * @param additionalData The additional data
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder addAdditionalData(AdditionalData additionalData) {
         this.additionalData = additionalData;
         return this;
@@ -137,6 +145,7 @@ public class PaymentBuilder {
      *
      * @return The additional data
      */
+    @NonNull
     public AdditionalData getCurrentAdditionalData() {
         return additionalData;
     }
@@ -147,6 +156,7 @@ public class PaymentBuilder {
      * @param deviceId The id of the device to process this payment on
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withDeviceId(String deviceId) {
         this.deviceId = deviceId;
         return this;
@@ -158,6 +168,7 @@ public class PaymentBuilder {
      * @return An instance of {@link Payment}
      * @throws IllegalArgumentException for invalid data or combinations of data
      */
+    @NonNull
     public Payment build() {
         checkArgument(flowName != null, "Flow name must be set");
         checkArgument(amounts != null, "Amounts must be set");

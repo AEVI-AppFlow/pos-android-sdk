@@ -41,6 +41,7 @@ public class FlowConfigurations {
      *
      * @return The list of {@link FlowConfig}
      */
+    @NonNull
     public List<FlowConfig> getAll() {
         return flowConfigurations;
     }
@@ -50,6 +51,7 @@ public class FlowConfigurations {
      *
      * @return An Observable stream of {@link FlowConfig}
      */
+    @NonNull
     public Observable<FlowConfig> stream() {
         return Observable.fromIterable(flowConfigurations);
     }
@@ -60,6 +62,7 @@ public class FlowConfigurations {
      * @param flowName The flow name
      * @return The flow config
      */
+    @NonNull
     public FlowConfig getFlowConfiguration(final String flowName) {
         return fromName(flowName);
     }
@@ -134,6 +137,7 @@ public class FlowConfigurations {
         return false;
     }
 
+    @NonNull
     private FlowConfig fromName(String flowName) {
         for (FlowConfig flowConfiguration : flowConfigurations) {
             if (flowConfiguration.getName().equals(flowName)) {
