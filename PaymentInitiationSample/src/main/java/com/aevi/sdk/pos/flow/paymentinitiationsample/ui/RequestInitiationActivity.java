@@ -21,10 +21,13 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 public class RequestInitiationActivity extends AppCompatActivity {
 
     private ModelDisplay modelDisplay;
+
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

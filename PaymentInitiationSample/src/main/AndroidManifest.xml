@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.aevi.sdk.pos.flow.paymentinitiationsample">
 
     <application
@@ -7,7 +8,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -33,6 +36,23 @@
             android:label="@string/payment_result"
             android:theme="@style/Popup">
         </activity>
+
+        <service
+            android:name=".PaymentResponseListenerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.flow.listener.PAYMENT_RESPONSE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".ResponseListenerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.flow.listener.RESPONSE"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
