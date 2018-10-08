@@ -63,6 +63,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.enabled = true;
+        this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();
     }
 
@@ -276,10 +277,11 @@ public abstract class BaseServiceInfo extends BaseModel {
     /**
      * For internal use.
      *
-     * @param flowAndStagesDefinitions
+     * @param flowName The flow name
+     * @param stages   The stages
      */
-    public void setFlowAndStagesDefinitions(Map<String, String[]> flowAndStagesDefinitions) {
-        this.flowAndStagesDefinitions = flowAndStagesDefinitions;
+    public void addFlowAndStagesDefinition(String flowName, String[] stages) {
+        flowAndStagesDefinitions.put(flowName, stages);
     }
 
     @Override
