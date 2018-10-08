@@ -59,6 +59,7 @@ public class BasketItem {
      *
      * @return The id of the item.
      */
+    @NonNull
     public String getId() {
         return id;
     }

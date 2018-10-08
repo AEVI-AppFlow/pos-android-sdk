@@ -16,6 +16,9 @@ package com.aevi.sdk.flow.util;
 
 import java.util.Collection;
 
+/**
+ * Internal preconditions.
+ */
 public final class Preconditions {
     private Preconditions() {
     }

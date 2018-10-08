@@ -15,6 +15,8 @@
 package com.aevi.sdk.flow.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.util.json.Sendable;
 
 public abstract class BaseModel implements Sendable {
@@ -22,7 +24,7 @@ public abstract class BaseModel implements Sendable {
     private final String id;
 
     protected BaseModel(String id) {
-        this.id = id;
+        this.id = id != null ? id : "N/A";
     }
 
     /**
@@ -31,6 +33,7 @@ public abstract class BaseModel implements Sendable {
      * @return The id.
      */
     @Override
+    @NonNull
     public String getId() {
         return id;
     }

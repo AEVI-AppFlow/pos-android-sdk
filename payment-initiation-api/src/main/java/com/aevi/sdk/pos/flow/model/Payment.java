@@ -120,6 +120,7 @@ public class Payment extends BaseModel {
      *
      * @return The name of the flow to execute
      */
+    @NonNull
     public String getFlowName() {
         return flowName;
     }
@@ -199,8 +200,11 @@ public class Payment extends BaseModel {
      *
      * See documentation for the possible values.
      *
+     * This may be null before FPS has associated a type with it.
+     *
      * @return The transaction type
      */
+    @Nullable
     public String getFlowType() {
         return flowType;
     }

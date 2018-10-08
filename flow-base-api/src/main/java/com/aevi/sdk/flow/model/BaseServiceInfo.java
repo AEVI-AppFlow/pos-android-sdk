@@ -19,10 +19,7 @@ import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -43,6 +40,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final AdditionalData additionalInfo;
     private boolean enabled;
     private Set<String> stages;
+    private Map<String, String[]> flowAndStagesDefinitions;
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
@@ -65,6 +63,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.enabled = true;
+        this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();
     }
 
@@ -158,7 +157,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     /**
      * Get the stages this service operates in.
      *
-     * For POS flow, the possible stages are defined in the PaymentStage model and PaymentStage.valueOf(xxx) can be used to map these values.
+     * For POS flow, the possible stages are defined in the FlowStages model.
      *
      * @return The set of stages the service operates in.
      */
@@ -257,6 +256,32 @@ public abstract class BaseServiceInfo extends BaseModel {
      */
     public void setStages(String... stages) {
         this.stages = new HashSet<>(Arrays.asList(stages));
+    }
+
+    /**
+     * Retrieve information on what flows this service is used in and for what stages.
+     *
+     * The map key is the name of the flow and the values is an array of the stages the service is defined in for that flow
+     *
+     * Example: "aeviSale" -> ["PAYMENT_CARD_READING", "TRANSACTION_PROCESSING"]
+     *
+     * More info about a flow can be looked up via {@link com.aevi.sdk.pos.flow.model.config.FlowConfigurations#getFlowConfiguration(String)}
+     *
+     * @return The map of flows and stages this service is defined in
+     */
+    @NonNull
+    public Map<String, String[]> getFlowAndStagesDefinitions() {
+        return flowAndStagesDefinitions;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param flowName The flow name
+     * @param stages   The stages
+     */
+    public void addFlowAndStagesDefinition(String flowName, String[] stages) {
+        flowAndStagesDefinitions.put(flowName, stages);
     }
 
     @Override

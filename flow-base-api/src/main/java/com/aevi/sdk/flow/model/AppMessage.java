@@ -15,11 +15,14 @@
 package com.aevi.sdk.flow.model;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
 /**
- * Application message data for use between PCS and applications it calls.
+ * Application message data for use between FPS and applications it calls.
  */
 public class AppMessage implements Jsonable {
 
@@ -30,8 +33,8 @@ public class AppMessage implements Jsonable {
     private String internalData; // Data that may be useful for internal use, such as API version, etc
 
     public AppMessage(String messageType, String messageData, InternalData internalData) {
-        this.messageType = messageType;
-        this.messageData = messageData;
+        this.messageType = messageType != null ? messageType : "N/A";
+        this.messageData = messageData != null ? messageData : EMPTY_DATA;
         setInternalData(internalData);
     }
 
@@ -47,22 +50,45 @@ public class AppMessage implements Jsonable {
         this(messageType, null, null);
     }
 
+    /**
+     * Get the message type.
+     *
+     * @return Message type
+     */
+    @NonNull
     public String getMessageType() {
         return messageType;
     }
 
+    /**
+     * Get the message data/
+     *
+     * @return The message data
+     */
+    @NonNull
     public String getMessageData() {
-        return messageData != null ? messageData : EMPTY_DATA;
+        return messageData;
     }
 
     private void setInternalData(InternalData internalData) {
         this.internalData = internalData != null ? internalData.toJson() : null;
     }
 
+    /**
+     * Update internal data.
+     *
+     * @param internalData Internal data
+     */
     public void updateInternalData(InternalData internalData) {
         setInternalData(internalData);
     }
 
+    /**
+     * Get the internal data for this message.
+     *
+     * @return Internal data or null
+     */
+    @Nullable
     public InternalData getInternalData() {
         return internalData != null ? InternalData.fromJson(internalData) : null;
     }

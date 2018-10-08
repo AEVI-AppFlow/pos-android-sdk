@@ -53,12 +53,12 @@ public class SystemSettingsFragment extends BaseFragment {
         SampleContext.getInstance(getActivity()).getPaymentClient().getPaymentSettings().subscribe(systemSettings -> {
             FpsSettings fpsSettings = systemSettings.getFpsSettings();
             StringBuilder stringBuilder = new StringBuilder();
-            addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDevice());
+            addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDeviceEnabled());
             addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
             addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
             addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());
             addTimeout(stringBuilder, R.string.flow_response_timeout, fpsSettings.getFlowResponseTimeoutSeconds());
-            addTimeout(stringBuilder, R.string.merchant_selection_timeout, fpsSettings.getAppOrDeviceSelectionTimeoutSeconds());
+            addTimeout(stringBuilder, R.string.merchant_selection_timeout, fpsSettings.getUserSelectionTimeoutSeconds());
             addEnabledDisabled(stringBuilder, R.string.abort_on_flow_app_error, fpsSettings.shouldAbortOnFlowAppError());
             addEnabledDisabled(stringBuilder, R.string.abort_on_payment_app_error, fpsSettings.shouldAbortOnPaymentAppError());
 

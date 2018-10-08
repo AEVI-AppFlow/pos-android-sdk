@@ -38,9 +38,9 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
     private final String name;
     private final String type;
     private final int version;
-    private final int apiCompatibility;
+    private final int apiMajorVersion;
     private final String description;
-    private final String appFilter;
+    private final String restrictedToApp;
     private final List<FlowStage> stages;
     private boolean generatedFromCustomType;
 
@@ -51,13 +51,13 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         this("N/A", "N/A", 0, 0, null, null, null);
     }
 
-    public FlowConfig(String name, String type, int version, int apiCompatibility, String description, String appFilter, List<FlowStage> stages) {
+    public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp, List<FlowStage> stages) {
         this.name = name;
         this.type = type;
         this.version = version;
-        this.apiCompatibility = apiCompatibility;
+        this.apiMajorVersion = apiMajorVersion;
         this.description = description;
-        this.appFilter = appFilter;
+        this.restrictedToApp = restrictedToApp;
         this.stages = stages != null ? stages : new ArrayList<FlowStage>();
         parseStageHierarchy();
     }
@@ -112,8 +112,8 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      *
      * @return The API major version this flow is compatible with
      */
-    public int getApiCompatibility() {
-        return apiCompatibility;
+    public int getApiMajorVersion() {
+        return apiMajorVersion;
     }
 
     /**
@@ -129,14 +129,14 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
     }
 
     /**
-     * Check whether this flow has an app filter defined or not.
+     * Check whether this flow has an app restriction defined or not.
      *
-     * If there is an app filter defined, this can be used to filter out configurations that should only be allowed for a certain client application.
+     * If there is an app restriction defined, this can be used to filter out configurations that should only be allowed for a certain client application.
      *
      * @return True if there is a filter, false otherwise
      */
-    public boolean hasAppFilter() {
-        return !TextUtils.isEmpty(appFilter);
+    public boolean hasAppRestriction() {
+        return !TextUtils.isEmpty(restrictedToApp);
     }
 
     /**
@@ -146,7 +146,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      * @return True if the client app is allowed, false otherwise
      */
     public boolean isClientAppAllowed(String clientPackageName) {
-        return !hasAppFilter() || appFilter.equals(clientPackageName);
+        return !hasAppRestriction() || restrictedToApp.equals(clientPackageName);
     }
 
     /**
@@ -283,7 +283,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
 
     private String normaliseStageName(String stage) {
         if (stage != null) {
-            return stage.toLowerCase();
+            return stage.toUpperCase();
         }
         return null;
     }
@@ -317,4 +317,26 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         return JsonConverter.deserialize(json, FlowConfig.class);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlowConfig that = (FlowConfig) o;
+        return version == that.version &&
+                apiMajorVersion == that.apiMajorVersion &&
+                generatedFromCustomType == that.generatedFromCustomType &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(restrictedToApp, that.restrictedToApp) &&
+                Objects.equals(stages, that.stages) &&
+                Objects.equals(allStagesFlattened, that.allStagesFlattened) &&
+                Objects.equals(allStagesMap, that.allStagesMap);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, generatedFromCustomType, allStagesFlattened, allStagesMap);
+    }
 }

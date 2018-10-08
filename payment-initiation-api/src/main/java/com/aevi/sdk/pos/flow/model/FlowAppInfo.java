@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,7 @@ public class FlowAppInfo {
      *
      * @return The flow application id
      */
+    @NonNull
     public String getFlowAppId() {
         return flowAppId;
     }
@@ -63,6 +66,7 @@ public class FlowAppInfo {
      *
      * @return The flow stage
      */
+    @NonNull
     public String getStage() {
         return stage;
     }
@@ -76,6 +80,7 @@ public class FlowAppInfo {
      *
      * @return The list of data that was augmented.
      */
+    @NonNull
     public List<String> getAugmentedData() {
         return augmentedData;
     }

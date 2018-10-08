@@ -4,8 +4,8 @@ import android.content.ComponentName;
 import android.os.Build;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.AppMessageTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.*;
 

@@ -21,7 +21,11 @@ import android.util.Log;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.BaseApiClient;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.constants.AppMessageTypes;
+import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.RequestStatus;

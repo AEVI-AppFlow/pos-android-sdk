@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.UUID;
 
 /**
@@ -54,6 +56,7 @@ public class BasketItemBuilder {
      *
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder generateRandomId() {
         this.id = UUID.randomUUID().toString();
         return this;
@@ -65,6 +68,7 @@ public class BasketItemBuilder {
      * @param id The id
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withId(String id) {
         this.id = id;
         return this;
@@ -78,6 +82,7 @@ public class BasketItemBuilder {
      * @param count The item count
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withCount(int count) {
         this.count = count;
         return this;
@@ -88,6 +93,7 @@ public class BasketItemBuilder {
      *
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder incrementCount() {
         this.count++;
         return this;
@@ -100,6 +106,7 @@ public class BasketItemBuilder {
      *
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder decrementCount() {
         this.count--;
         return this;
@@ -113,6 +120,7 @@ public class BasketItemBuilder {
      * @param offset The value to modify the current count with.
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder offsetCountBy(int offset) {
         this.count += offset;
         return this;
@@ -124,6 +132,7 @@ public class BasketItemBuilder {
      * @param label The label
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withLabel(String label) {
         this.label = label;
         return this;
@@ -135,6 +144,7 @@ public class BasketItemBuilder {
      * @param category The category the item belongs to
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withCategory(String category) {
         this.category = category;
         return this;
@@ -146,6 +156,7 @@ public class BasketItemBuilder {
      * @param amount The item amount value
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withAmount(long amount) {
         this.amount = amount;
         return this;
@@ -156,6 +167,7 @@ public class BasketItemBuilder {
      *
      * @return A {@link BasketItem} instance
      */
+    @NonNull
     public BasketItem build() {
         if (count < 0) {
             throw new IllegalArgumentException("Basket item must have a count of zero or more");

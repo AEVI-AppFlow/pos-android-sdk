@@ -24,6 +24,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.*;
 
 import java.util.List;
@@ -33,6 +34,9 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
+/**
+ * Base client for all API domain implementations.
+ */
 public abstract class BaseApiClient {
 
     protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";

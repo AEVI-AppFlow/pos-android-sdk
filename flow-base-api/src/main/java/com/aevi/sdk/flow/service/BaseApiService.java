@@ -34,10 +34,10 @@ import com.aevi.util.json.Jsonable;
 import io.reactivex.functions.Consumer;
 
 import static android.content.Intent.*;
-import static com.aevi.sdk.flow.model.ActivityEvents.FINISH;
+import static com.aevi.sdk.flow.constants.ActivityEvents.FINISH;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
+import static com.aevi.sdk.flow.constants.MessageErrors.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
-import static com.aevi.sdk.flow.model.AppMessageTypes.*;
-import static com.aevi.sdk.flow.model.MessageErrors.*;
 
 public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends Jsonable> extends AbstractMessengerService {
 

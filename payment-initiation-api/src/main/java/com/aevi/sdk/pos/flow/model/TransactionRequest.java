@@ -152,6 +152,7 @@ public class TransactionRequest extends BaseModel {
      *
      * @return String
      */
+    @Nullable
     public String getTargetPaymentAppComponent() {
         return targetPaymentAppComponent;
     }

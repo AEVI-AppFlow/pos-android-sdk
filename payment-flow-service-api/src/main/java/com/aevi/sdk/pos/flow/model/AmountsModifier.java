@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.pos.flow.PaymentClient;
 
 import java.util.HashMap;
@@ -55,6 +57,7 @@ public class AmountsModifier {
      * @param exchangeRate The exchange rate (from original currency to updated currency)
      * @return This builder
      */
+    @NonNull
     public AmountsModifier changeCurrency(String currency, double exchangeRate) {
         this.currency = currency;
         this.exchangeRate = exchangeRate;
@@ -82,6 +85,7 @@ public class AmountsModifier {
      * @param baseAmountValue The new base amount
      * @return This builder
      */
+    @NonNull
     public AmountsModifier updateBaseAmount(long baseAmountValue) {
         if (baseAmountValue >= 0) {
             baseAmount = baseAmountValue;
@@ -99,6 +103,7 @@ public class AmountsModifier {
      * @param amount     The amount value
      * @return This builder
      */
+    @NonNull
     public AmountsModifier setAdditionalAmount(String identifier, long amount) {
         if (amount >= 0) {
             additionalAmounts.put(identifier, amount);
@@ -116,6 +121,7 @@ public class AmountsModifier {
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
      * @return This builder
      */
+    @NonNull
     public AmountsModifier setAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         if (fraction < 0.0f || fraction > 1.0f) {
             throw new IllegalArgumentException("Fraction must be between 0.0 and 1.0");
@@ -138,6 +144,7 @@ public class AmountsModifier {
      *
      * @return The new Amounts
      */
+    @NonNull
     public Amounts build() {
         Amounts amounts = new Amounts(baseAmount, currency, additionalAmounts);
         if (!currency.equals(originalCurrency)) {
