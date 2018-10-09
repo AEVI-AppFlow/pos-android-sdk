@@ -41,7 +41,7 @@
             android:name=".PaymentResponseListenerService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.aevi.sdk.flow.listener.PAYMENT_RESPONSE"/>
+                <action android:name="com.aevi.sdk.flow.action.PAYMENT_RESPONSE"/>
             </intent-filter>
         </service>
 
@@ -49,7 +49,7 @@
             android:name=".ResponseListenerService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.aevi.sdk.flow.listener.RESPONSE"/>
+                <action android:name="com.aevi.sdk.flow.action.RESPONSE"/>
             </intent-filter>
         </service>
 

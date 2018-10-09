@@ -24,6 +24,12 @@ import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
 import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
 
+/**
+ * Base service used for notifying clients of the final response for any transaction.
+ *
+ * This class should not be used directly instead choose one of the child classes
+ * e.g. for generic responses use {@link BaseResponseListenerService}.
+ */
 public abstract class BaseListenerService<RESPONSE extends BaseModel> extends AbstractMessengerService {
 
     private final Class<RESPONSE> responseClass;
@@ -56,5 +62,11 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
         sendMessageToClient(clientMessageId, appMessage.toJson());
     }
 
+    /**
+     * This method will be called with the appropriate response for clients that initiated the matching request or flow services that have
+     * processed the request in some way and require to be notified of the final response
+     *
+     * @param response The final response sent after completion of a flow
+     */
     protected abstract void notifyResponse(RESPONSE response);
 }
