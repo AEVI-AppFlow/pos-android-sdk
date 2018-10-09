@@ -14,6 +14,6 @@ public class BasketItemTest {
         assertThat(defaultItem.getCategory()).isEqualTo("Greek Myths");
         assertThat(defaultItem.getIndividualAmount()).isEqualTo(1000);
         assertThat(defaultItem.getTotalAmount()).isEqualTo(2000);
-        assertThat(defaultItem.getCount()).isEqualTo(2);
+        assertThat(defaultItem.getQuantity()).isEqualTo(2);
     }
 }

@@ -322,7 +322,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
         if (addItems) {
             for (BasketItem basketItem : basket.getBasketItems()) {
-                String detail = basketItem.getLabel() + " (" + basketItem.getCount() + ") @ " + formatAmount(currency, basketItem.getIndividualAmount());
+                String detail = basketItem.getLabel() + " (" + basketItem.getQuantity() + ") @ " + formatAmount(currency, basketItem.getIndividualAmount());
                 basketInfo.add(getStringPair(R.string.item, detail));
             }
         }

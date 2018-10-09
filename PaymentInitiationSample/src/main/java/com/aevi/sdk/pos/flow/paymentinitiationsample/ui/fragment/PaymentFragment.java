@@ -220,7 +220,7 @@ public class PaymentFragment extends BaseObservableFragment {
                 new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
                 new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                 // You can also specify the initial count of the item and provide your own id
-                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withCount(3).build());
+                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(3).build());
     }
 
     @OnClick(R.id.send)

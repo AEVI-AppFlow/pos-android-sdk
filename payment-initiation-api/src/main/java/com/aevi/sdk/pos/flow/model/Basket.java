@@ -34,7 +34,7 @@ import java.util.Objects;
  * Basket items are uniquely identified by an id, meaning it is possible that there is more than one item with the same label.
  * It is up to the client to manage this correctly.
  *
- * Note that as basket items are immutable, any update to items (such as merging or changing count) leads to new instances being created. For the
+ * Note that as basket items are immutable, any update to items (such as merging or changing quantity) leads to new instances being created. For the
  * latest up to date item, always fetch via {@link #getItemById(String)}.
  */
 public class Basket implements Jsonable {
@@ -82,7 +82,7 @@ public class Basket implements Jsonable {
     /**
      * Add one or multiple basket items to the *front* of the basket either as a new item or via merging with an existing one with the same id.
      *
-     * If there is an existing item with the same id in the basket, then the item count of the two items will be added together and stored.
+     * If there is an existing item with the same id in the basket, then the item quantity of the two items will be added together and stored.
      *
      * Note that due to how items may be merged, the instance passed into this method is not necessarily the same instance that is stored.
      *
@@ -92,7 +92,7 @@ public class Basket implements Jsonable {
         for (BasketItem item : items) {
             BasketItem existingItem = getItemById(item.getId());
             if (existingItem != null) {
-                replaceItem(existingItem, item.getCount(), true);
+                replaceItem(existingItem, item.getQuantity(), true);
             } else {
                 displayItems.add(0, item);
             }
@@ -102,17 +102,17 @@ public class Basket implements Jsonable {
     /**
      * Check whether the basket has an item with the provided id.
      *
-     * Optionally, a min count parameter can be passed in to filter results against. If an item with the id is found and the min count is set,
-     * this method will only return true if the item has at least the min count.
+     * Optionally, a min quantity parameter can be passed in to filter results against. If an item with the id is found and the min quantity is set,
+     * this method will only return true if the item has at least the min quantity.
      *
      * @param id       The id to match against
-     * @param minCount Optional param to specify a minimum count criteria
+     * @param minQuantity Optional param to specify a minimum quantity criteria
      * @return True if there is an item with matching id, false otherwise
      */
-    public boolean hasItemWithId(String id, int... minCount) {
-        int minCountValue = minCount.length > 0 ? minCount[0] : -1;
+    public boolean hasItemWithId(String id, int... minQuantity) {
+        int minQuantityValue = minQuantity.length > 0 ? minQuantity[0] : -1;
         for (BasketItem item : displayItems) {
-            if (item.getId().equals(id) && item.getCount() >= minCountValue) {
+            if (item.getId().equals(id) && item.getQuantity() >= minQuantityValue) {
                 return true;
             }
         }
@@ -189,16 +189,16 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Increment the basket item count of the item with the provided id.
+     * Increment the basket item quantity of the item with the provided id.
      *
      * Note that if no such item exists, this is a no-op.
      *
-     * @param itemId    The basket item id to increment the count of
+     * @param itemId    The basket item id to increment the quantity of
      * @param increment The increment value (positive)
-     * @return The item with updated count or null if no item with id found
+     * @return The item with updated quantity or null if no item with id found
      */
     @Nullable
-    public BasketItem incrementItemCount(String itemId, int increment) {
+    public BasketItem incrementItemQuantity(String itemId, int increment) {
         BasketItem item = getItemById(itemId);
         if (item != null) {
             return replaceItem(item, increment, true);
@@ -207,19 +207,19 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Decrement the basket item count of the item with the provided id.
+     * Decrement the basket item quantity of the item with the provided id.
      *
      * The default behaviour is that items that are decremented to zero are removed from the basket. This can be overriden by the retainIfZero param.
      *
      * Note that if no such item exists, this is a no-op.
      *
-     * @param itemId       The basket item id to decrement the count of
+     * @param itemId       The basket item id to decrement the quantity of
      * @param decrement    The decrement value (positive)
-     * @param retainIfZero If set to true, the item will be kept in the basket despite the count being zero
-     * @return The item with the updated count or null if no item with id found or it is removed
+     * @param retainIfZero If set to true, the item will be kept in the basket despite the quantity being zero
+     * @return The item with the updated quantity or null if no item with id found or it is removed
      */
     @Nullable
-    public BasketItem decrementItemCount(String itemId, int decrement, Boolean... retainIfZero) {
+    public BasketItem decrementItemQuantity(String itemId, int decrement, Boolean... retainIfZero) {
         BasketItem item = getItemById(itemId);
         if (item != null) {
             boolean retain = retainIfZero.length > 0 && retainIfZero[0];
@@ -229,22 +229,22 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Explicitly set the count for a basket item.
+     * Explicitly set the quantity for a basket item.
      *
      * Note that if no such item exists, this is a no-op.
      *
-     * The count must be zero or larger. Negative values are ignored.
+     * The quantity must be zero or larger. Negative values are ignored.
      *
      * @param itemId   The item id
-     * @param newCount The new count for the basket item (must be positive)
-     * @return The item with the updated count or null if no item with id found
+     * @param newQuantity The new quantity for the basket item (must be positive)
+     * @return The item with the updated quantity or null if no item with id found
      */
     @Nullable
-    public BasketItem setItemCount(String itemId, int newCount) {
-        if (newCount >= 0) {
+    public BasketItem setItemQuantity(String itemId, int newQuantity) {
+        if (newQuantity >= 0) {
             BasketItem item = getItemById(itemId);
             if (item != null) {
-                return replaceItem(item, newCount - item.getCount(), true);
+                return replaceItem(item, newQuantity - item.getQuantity(), true);
             }
         }
         return null;
@@ -273,7 +273,7 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Get the number of unique items in the basket, incl any zero-count items.
+     * Get the number of unique items in the basket, incl any zero-quantity items.
      *
      * See {@link #getTotalNumberOfItems()} for retrieving the total number of items.
      *
@@ -284,18 +284,18 @@ public class Basket implements Jsonable {
     }
 
     /**
-     * Get the total number of items, taking into account the count of each individual item. This excludes zero-count items.
+     * Get the total number of items, taking into account the quantity of each individual item. This excludes zero-quantity items.
      *
      * See {@link #getNumberOfUniqueItems()} for retrieving the number of unique items.
      *
      * @return The total number of items
      */
     public int getTotalNumberOfItems() {
-        int count = 0;
+        int total = 0;
         for (BasketItem displayItem : displayItems) {
-            count += displayItem.getCount();
+            total += displayItem.getQuantity();
         }
-        return count;
+        return total;
     }
 
     /**
@@ -311,9 +311,9 @@ public class Basket implements Jsonable {
         return total;
     }
 
-    private BasketItem replaceItem(BasketItem existingItem, int countOffset, boolean retainIfZero) {
-        BasketItem newItem = new BasketItemBuilder(existingItem).offsetCountBy(countOffset).build();
-        if (newItem.getCount() == 0 && !retainIfZero) {
+    private BasketItem replaceItem(BasketItem existingItem, int quantityOffset, boolean retainIfZero) {
+        BasketItem newItem = new BasketItemBuilder(existingItem).offsetQuantityBy(quantityOffset).build();
+        if (newItem.getQuantity() == 0 && !retainIfZero) {
             displayItems.remove(existingItem);
         } else {
             displayItems.set(displayItems.indexOf(existingItem), newItem);
