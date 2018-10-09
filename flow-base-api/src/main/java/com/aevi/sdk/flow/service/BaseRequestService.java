@@ -15,18 +15,33 @@
 package com.aevi.sdk.flow.service;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.FlowBaseConfig;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 
 /**
  * Base service for handling generic requests defined by a request type and associated bespoke data.
  *
  * See documentation for examples and reference types and data.
  */
-public abstract class BaseRequestService extends BaseApiService<Request, Response> {
+public abstract class BaseRequestService extends BaseApiService {
 
     public BaseRequestService() {
-        super(Request.class, FlowBaseConfig.VERSION);
+        super(FlowBaseConfig.VERSION);
     }
+
+    @Override
+    protected void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage) {
+        GenericStageModel genericStageModel = GenericStageModel.fromService(this, clientMessageId, Request.fromJson(request));
+        processRequest(genericStageModel);
+    }
+
+    /**
+     * Handle the generic request.
+     *
+     * @param stageModel The generic stage model
+     */
+    protected abstract void processRequest(GenericStageModel stageModel);
 }

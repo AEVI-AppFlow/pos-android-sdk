@@ -12,65 +12,57 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.pos.flow.paymentservicesample.service;
-
+package com.aevi.sdk.pos.flow.paymentservicesample;
 
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.BaseRequestService;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
-import com.aevi.sdk.pos.flow.paymentservicesample.ui.SelectTokenActivity;
+import com.aevi.sdk.pos.flow.paymentservicesample.ui.TokenisationActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 
-public class FinancialRequestService extends BaseRequestService {
+public class GenericStageHandler {
 
-    @Override
-    protected void processRequest(String clientMessageId, Request request) {
-
+    public static void handleGenericRequest(GenericStageModel genericStageModel) {
+        Request request = genericStageModel.getRequest();
         switch (request.getRequestType()) {
             case FLOW_TYPE_REVERSAL:
-                handleReversal(clientMessageId, request);
+                handleReversal(request, genericStageModel);
                 break;
             case FLOW_TYPE_TOKENISATION:
-                launchActivity(SelectTokenActivity.class, clientMessageId, request);
+                genericStageModel.processInActivity(TokenisationActivity.class);
                 break;
             case FLOW_TYPE_RESPONSE_REDELIVERY:
-                handleResponseRedelivery(clientMessageId, request);
+                handleResponseRedelivery(request, genericStageModel);
                 break;
             default:
-                finishWithResponse(clientMessageId, new Response(request, false, "Unsupported request: " + request.getRequestType()));
+                genericStageModel.sendResponse(new Response(request, false, "Unsupported request: " + request.getRequestType()));
         }
 
     }
 
-    private void handleReversal(String clientMessageId, Request request) {
+    private static void handleReversal(Request request, GenericStageModel genericStageModel) {
         String transactionId = request.getRequestData().getStringValue(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID);
         TransactionResponse lastTransactionResponse = InMemoryStore.getInstance().getLastTransactionResponseGenerated();
         if (transactionId != null && lastTransactionResponse != null && lastTransactionResponse.getId().equals(transactionId)) {
-            finishWithResponse(clientMessageId, new Response(request, true, "Reversed transaction: " + transactionId));
+            genericStageModel.sendResponse(new Response(request, true, "Reversed transaction: " + transactionId));
         } else {
-            finishWithResponse(clientMessageId, new Response(request, false, "Was unable to perform reversal"));
+            genericStageModel.sendResponse(new Response(request, false, "Was unable to perform reversal"));
         }
     }
 
-    private void handleResponseRedelivery(String clientMessageId, Request request) {
+    private static void handleResponseRedelivery(Request request, GenericStageModel genericStageModel) {
         String transactionId = request.getRequestData().getStringValue(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID);
         TransactionResponse lastTransactionResponse = InMemoryStore.getInstance().getLastTransactionResponseGenerated();
         if (transactionId != null && lastTransactionResponse != null && lastTransactionResponse.getId().equals(transactionId)) {
             Response response = new Response(request, true, "Response redelivery successful");
             request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_RESPONSE, lastTransactionResponse);
-            finishWithResponse(clientMessageId, response);
+            genericStageModel.sendResponse(response);
         } else {
-            finishWithResponse(clientMessageId, new Response(request, false, "Was unable to redeliver response"));
+            genericStageModel.sendResponse(new Response(request, false, "Was unable to redeliver response"));
         }
-    }
-
-    @Override
-    protected void finish(String clientMessageId) {
-        finishLaunchedActivity(clientMessageId);
-        finishWithNoResponse(clientMessageId);
     }
 }

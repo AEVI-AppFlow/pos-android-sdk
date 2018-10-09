@@ -23,6 +23,8 @@ import java.util.Map;
 
 /**
  * Helper to augment {@link Amounts} in a correct way.
+ *
+ * This is mainly used internally in the stage models, but available for use in any context.
  */
 public class AmountsModifier {
 
@@ -34,6 +36,9 @@ public class AmountsModifier {
     private boolean hasModifications;
 
     public AmountsModifier(Amounts originalAmounts) {
+        if (originalAmounts == null) {
+            originalAmounts = new Amounts();
+        }
         this.currency = this.originalCurrency = originalAmounts.getCurrency();
         this.baseAmount = originalAmounts.getBaseAmountValue();
         this.additionalAmounts = new HashMap<>(originalAmounts.getAdditionalAmounts());

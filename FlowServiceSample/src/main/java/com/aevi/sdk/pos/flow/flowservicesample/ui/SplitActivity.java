@@ -21,22 +21,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.SplitModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.aevi.sdk.flow.constants.SplitDataKeys.*;
 
 /**
  * Sample for a split application.
@@ -46,11 +43,11 @@ import static com.aevi.sdk.flow.constants.SplitDataKeys.*;
  * In order to keep complexity down, this sample only allows splitting into two transactions.
  * The API itself supports splitting into any arbitrary number of transactions.
  */
-public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
+public class SplitActivity extends BaseSampleAppCompatActivity {
 
+    private SplitModel splitModel;
     private SplitRequest splitRequest;
     private SplitBasketHelper splitBasketHelper;
-    private FlowResponse flowResponse;
     private ModelDisplay modelDisplay;
 
     @BindView(R.id.info_message)
@@ -77,15 +74,14 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         setContentView(R.layout.activity_split);
         ButterKnife.bind(this);
 
-        splitRequest = SplitRequest.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        splitModel = SplitModel.fromActivity(this);
+        splitRequest = splitModel.getSplitRequest();
         if (SplitBasketHelper.canSplitViaBasket(splitRequest)) {
             splitBasketHelper = SplitBasketHelper.createFromSplitRequest(splitRequest, false);
             splitBasketHelper.logBaskets();
         }
-        flowResponse = new FlowResponse();
 
         setupSplit();
-        registerForActivityEvents();
         setupToolbar(toolbar, R.string.fss_split);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
@@ -95,7 +91,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private void setupSplit() {
         // As a split app, you must take into account declined transactions
-        if (lastTransactionFailed()) {
+        if (splitModel.lastTransactionFailed()) {
             prevSplitInfo.setVisibility(View.VISIBLE);
             prevSplitInfo.setText(R.string.prev_txn_declined);
             prevSplitInfo.setTextColor(Color.RED);
@@ -122,16 +118,11 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
                 prevInfoText = getString(R.string.previously_paid_amount, getPreviousAmountTotalFormatted());
             }
 
-            if (!lastTransactionFailed()) {
+            if (!splitModel.lastTransactionFailed()) {
                 prevSplitInfo.setVisibility(View.VISIBLE);
                 prevSplitInfo.setText(prevInfoText);
             }
         }
-    }
-
-    private boolean lastTransactionFailed() {
-        return splitRequest.hasPreviousTransactions() && !splitRequest.getLastTransaction().hasProcessedRequestedAmounts() &&
-                splitRequest.getLastTransaction().hasDeclinedResponses();
     }
 
     private String getPreviousAmountTotalFormatted() {
@@ -159,7 +150,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(flowResponse);
+            modelDisplay.showFlowResponse(splitModel.getFlowResponse());
         }
     }
 
@@ -180,12 +171,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
             nextSplitBasket = splitBasketHelper.getRemainingItems();
         }
 
-        AmountsModifier amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
-        amountsModifier.updateBaseAmount(nextSplitBasket.getTotalBasketValue());
-
-        flowResponse.updateRequestAmounts(amountsModifier.build());
-        flowResponse.addAdditionalRequestData(AdditionalDataKeys.DATA_KEY_BASKET, nextSplitBasket);
-        addCommonSplitData(SPLIT_TYPE_BASKET);
+        splitModel.setBasketForNextTransaction(nextSplitBasket);
         updateModel();
     }
 
@@ -209,34 +195,27 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @OnClick(R.id.split_amounts)
     public void onSplitAmounts() {
         disableSplitButtons();
-        AmountsModifier amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
-
+        long splitBaseAmount = splitRequest.getRemainingAmounts().getBaseAmountValue();
         // Set up first split to be half the amount, and the second split will simply add the remaining amounts
         if (!splitRequest.hasPreviousTransactions()) {
-            amountsModifier.updateBaseAmount(splitRequest.getRemainingAmounts().getBaseAmountValue() / 2);
+            splitBaseAmount /= 2;
         }
 
-        flowResponse.updateRequestAmounts(amountsModifier.build());
-        addCommonSplitData(SPLIT_TYPE_AMOUNTS);
+        splitModel.setBaseAmountForNextTransaction(splitBaseAmount);
         updateModel();
-    }
-
-    private void addCommonSplitData(String splitType) {
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TXN, true);
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_NUM_SPLITS, 2);
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TYPE, splitType);
     }
 
     @OnClick(R.id.cancel_transaction)
     public void onCancelTransaction() {
         disableSplitButtons();
-        flowResponse.setCancelTransaction(true);
+        splitModel.cancelFlow();
         onSendResponse();
     }
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
-        sendResponseAndFinish(flowResponse);
+        splitModel.sendResponse();
+        finish();
     }
 
     @Override
@@ -261,7 +240,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     @Override
     protected String getModelJson() {
-        return flowResponse.toJson();
+        return splitModel.getFlowResponse().toJson();
     }
 
     @Override

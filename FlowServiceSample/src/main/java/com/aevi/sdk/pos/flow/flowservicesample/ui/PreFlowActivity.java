@@ -24,14 +24,13 @@ import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.Customer;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.model.AmountsModifier;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.PreFlowModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,10 +39,9 @@ import butterknife.OnClick;
 
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
-public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
+public class PreFlowActivity extends BaseSampleAppCompatActivity {
 
-    private Payment payment;
-    private FlowResponse flowResponse;
+    private PreFlowModel preFlowModel;
     private ModelDisplay modelDisplay;
 
     @BindView(R.id.toolbar)
@@ -55,9 +53,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         setContentView(R.layout.activity_pre_flow);
         ButterKnife.bind(this);
 
-        payment = Payment.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
-        flowResponse = new FlowResponse();
-        registerForActivityEvents();
+        preFlowModel = PreFlowModel.fromActivity(this);
         setupToolbar(toolbar, R.string.fss_pre_flow);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
@@ -73,7 +69,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(flowResponse);
+            modelDisplay.showFlowResponse(preFlowModel.getFlowResponse());
         }
     }
 
@@ -99,12 +95,12 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
 
     @Override
     protected String getModelJson() {
-        return flowResponse.toJson();
+        return preFlowModel.getFlowResponse().toJson();
     }
 
     @Override
     protected String getRequestJson() {
-        return payment.toJson();
+        return preFlowModel.getPayment().toJson();
     }
 
     @Override
@@ -115,22 +111,21 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
     @OnClick(R.id.add_tax)
     public void onAddTax(View v) {
         int taxPercentage = getResources().getInteger(R.integer.tax_percentage);
-        AmountsModifier amountsModifier = new AmountsModifier(payment.getAmounts());
-        amountsModifier.setAdditionalAmountAsBaseFraction(AmountIdentifiers.AMOUNT_TAX, percentageToFraction(taxPercentage));
-        flowResponse.updateRequestAmounts(amountsModifier.build());
+        preFlowModel.setAdditionalAmountAsBaseFraction(AmountIdentifiers.AMOUNT_TAX, percentageToFraction(taxPercentage));
         updateModel();
         v.setEnabled(false);
     }
 
     @OnCheckedChanged(R.id.enable_split)
     public void onEnableSplit(CheckBox split) {
-        flowResponse.setEnableSplit(split.isChecked());
+        preFlowModel.setSplitEnabled(split.isChecked());
         updateModel();
     }
 
     @OnClick(R.id.add_customer_data)
     public void addCustomerData(View v) {
         Customer customer;
+        Payment payment = preFlowModel.getPayment();
         if (payment.getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_CUSTOMER)) {
             customer = payment.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_CUSTOMER, Customer.class);
             customer.addCustomerDetails(CustomerDataKeys.CITY, "New York");
@@ -138,13 +133,14 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         } else {
             customer = CustomerProducer.getDefaultCustomer("PreFlow Sample");
         }
-        flowResponse.addAdditionalRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
+        preFlowModel.addRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
         updateModel();
         v.setEnabled(false);
     }
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
-        sendResponseAndFinish(flowResponse);
+        preFlowModel.sendResponse();
+        finish();
     }
 }

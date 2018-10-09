@@ -160,6 +160,9 @@ public class PaymentFragment extends BaseObservableFragment {
 
     private void readAllFields() {
         String flowName = ((String) flowSpinner.getSelectedItem());
+        if (flowName == null) {
+            return; // Not ready yet
+        }
         paymentBuilder.withPaymentFlow(flowName);
         Amounts amounts;
         if (!addBasketBox.isChecked()) {

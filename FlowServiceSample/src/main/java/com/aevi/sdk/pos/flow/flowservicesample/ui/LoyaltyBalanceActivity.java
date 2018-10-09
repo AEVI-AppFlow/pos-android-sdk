@@ -22,10 +22,10 @@ import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 
 import java.util.Random;
 
@@ -33,8 +33,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response> {
+public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity {
 
+    private GenericStageModel genericStageModel;
     private Request request;
 
     @BindView(R.id.toolbar)
@@ -45,8 +46,8 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loyalty_balance);
         ButterKnife.bind(this);
-        request = Request.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
-        registerForActivityEvents();
+        genericStageModel = GenericStageModel.fromActivity(this);
+        request = genericStageModel.getRequest();
         setupToolbar(toolbar, R.string.fss_loyalty_balance);
     }
 
@@ -71,6 +72,11 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity<Response
     @OnClick(R.id.send_response)
     public void onFinish() {
         sendResponseAndFinish(new Response(request, true, "Loyalty balance presented"));
+    }
+
+    private void sendResponseAndFinish(Response response) {
+        genericStageModel.sendResponse(response);
+        finish();
     }
 
     @Override

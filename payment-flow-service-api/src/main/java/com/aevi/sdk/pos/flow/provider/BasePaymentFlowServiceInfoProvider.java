@@ -30,21 +30,19 @@ package com.aevi.sdk.pos.flow.provider;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 
 import com.aevi.sdk.flow.service.BaseServiceInfoProvider;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
+
+import static com.aevi.sdk.flow.constants.IntentActions.SERVICE_INFO_CHANGE_ACTION;
 
 /**
  * Base class for flow services to provide {@link PaymentFlowServiceInfo} information.
  */
 public abstract class BasePaymentFlowServiceInfoProvider extends BaseServiceInfoProvider {
 
-    public static final String ACTION_BROADCAST_FLOW_INFO_CHANGE = "com.aevi.intent.action.PAYMENT_FLOW_SERVICE_INFO_CHANGE";
-
     protected BasePaymentFlowServiceInfoProvider() {
-        super(ACTION_BROADCAST_FLOW_INFO_CHANGE);
+        super(SERVICE_INFO_CHANGE_ACTION);
     }
 
     @Override
@@ -60,8 +58,6 @@ public abstract class BasePaymentFlowServiceInfoProvider extends BaseServiceInfo
      * @param context The Android context
      */
     public static void notifyServiceInfoChange(Context context) {
-        String pkg = "package:" + context.getPackageName();
-        Uri pkgUri = Uri.parse(pkg);
-        context.sendBroadcast(new Intent(ACTION_BROADCAST_FLOW_INFO_CHANGE).setData(pkgUri));
+        notifyServiceInfoChange(context, SERVICE_INFO_CHANGE_ACTION);
     }
 }

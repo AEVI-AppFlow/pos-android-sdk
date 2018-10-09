@@ -23,16 +23,15 @@ import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.Customer;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.AmountsModifier;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
 
 import java.util.List;
 
@@ -43,13 +42,12 @@ import butterknife.OnClick;
 
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
-abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<FlowResponse> {
+abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     private static final String SAMPLE_POINTS_USED_KEY = "sampleLoyaltyPointsUsed";
 
     private TransactionRequest transactionRequest;
-    private FlowResponse flowResponse;
-    private AmountsModifier amountsModifier;
+    private PreTransactionModel preTransactionModel;
     private ModelDisplay modelDisplay;
 
     @BindViews({R.id.pay_with_points, R.id.pay_with_giftcard})
@@ -67,16 +65,13 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
         setContentView(R.layout.activity_pre_txn);
         ButterKnife.bind(this);
 
-        // SamplePrePaymentService uses the API launchActivity() method, which means the request will be available as per below
-        transactionRequest = TransactionRequest.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        preTransactionModel = PreTransactionModel.fromActivity(this);
+        transactionRequest = preTransactionModel.getTransactionRequest();
 
         surchargeView.setText(getString(R.string.add_surcharge_fee, AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
                 getResources().getInteger(R.integer.surcharge_fee))));
         giftCardView.setText(getString(R.string.pay_portion_with_gift_card, AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
                 getResources().getInteger(R.integer.pay_gift_card_value))));
-        amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
-        flowResponse = new FlowResponse();
-        registerForActivityEvents();
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
@@ -91,15 +86,14 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(flowResponse);
+            modelDisplay.showFlowResponse(preTransactionModel.getFlowResponse());
         }
     }
 
     @OnClick(R.id.add_surcharge)
     public void onAddSurcharge() {
         int surchargeFree = getResources().getInteger(R.integer.surcharge_fee);
-        amountsModifier.setAdditionalAmount(AmountIdentifiers.AMOUNT_SURCHARGE, surchargeFree);
-        flowResponse.updateRequestAmounts(amountsModifier.build());
+        preTransactionModel.setAdditionalAmount(AmountIdentifiers.AMOUNT_SURCHARGE, surchargeFree);
         updateModel();
         surchargeView.setEnabled(false);
     }
@@ -107,8 +101,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
     @OnClick(R.id.add_charity)
     public void onAddCharity(View v) {
         int charityPercentage = getResources().getInteger(R.integer.charity_percentage);
-        amountsModifier.setAdditionalAmountAsBaseFraction(AmountIdentifiers.AMOUNT_CHARITY_DONATION, percentageToFraction(charityPercentage));
-        flowResponse.updateRequestAmounts(amountsModifier.build());
+        preTransactionModel.setAdditionalAmountAsBaseFraction(AmountIdentifiers.AMOUNT_CHARITY_DONATION, percentageToFraction(charityPercentage));
         updateModel();
         v.setEnabled(false);
     }
@@ -118,8 +111,8 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
         long points = getResources().getInteger(R.integer.pay_points);
         long pointsAmountValue = getRandomPointsValue(points);
 
-        flowResponse.setAmountsPaid(new Amounts(pointsAmountValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.LOYALTY_POINTS);
-        flowResponse.addAdditionalRequestData(SAMPLE_POINTS_USED_KEY, points);
+        preTransactionModel.setAmountsPaid(new Amounts(pointsAmountValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.LOYALTY_POINTS);
+        preTransactionModel.addRequestData(SAMPLE_POINTS_USED_KEY, points);
         disablePayViews();
         updateModel();
     }
@@ -131,7 +124,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
     @OnClick(R.id.pay_with_giftcard)
     public void onPayWithGiftCard() {
         long giftCardValue = getResources().getInteger(R.integer.pay_gift_card_value);
-        flowResponse.setAmountsPaid(new Amounts(giftCardValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.GIFT_CARD);
+        preTransactionModel.setAmountsPaid(new Amounts(giftCardValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.GIFT_CARD);
         disablePayViews();
         updateModel();
     }
@@ -146,14 +139,15 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
         } else {
             customer = CustomerProducer.getDefaultCustomer("PrePayment Sample");
         }
-        flowResponse.addAdditionalRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
+        preTransactionModel.addRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
         updateModel();
         v.setEnabled(false);
     }
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
-        sendResponseAndFinish(flowResponse);
+        preTransactionModel.sendResponse();
+        finish();
     }
 
     private void disablePayViews() {
@@ -179,7 +173,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity<Flo
 
     @Override
     protected String getModelJson() {
-        return flowResponse.toJson();
+        return preTransactionModel.getFlowResponse().toJson();
     }
 
     @Override

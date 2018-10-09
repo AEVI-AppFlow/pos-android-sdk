@@ -24,9 +24,9 @@ import com.aevi.util.json.Sendable;
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 /**
- * Response model for a flow app to augment data or add information to influence the transaction from this point forward.
+ * Response model for augmenting the flow.
  *
- * Note that what is allowed to augment and when depends on the current payment stage. Please see documentation for more information.
+ * Note that this is mainly intended for internal use by the stage models.
  */
 public class FlowResponse implements Sendable {
 
@@ -54,10 +54,20 @@ public class FlowResponse implements Sendable {
         this.id = id;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param id The id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Get updated request amounts.
+     *
+     * @return The updated request amounts
+     */
     public Amounts getUpdatedRequestAmounts() {
         return updatedRequestAmounts;
     }
@@ -82,11 +92,21 @@ public class FlowResponse implements Sendable {
         validateAmounts();
     }
 
+    /**
+     * Get the amounts paid.
+     *
+     * @return The amounts paid
+     */
     @Nullable
     public Amounts getAmountsPaid() {
         return amountsPaid;
     }
 
+    /**
+     * Get the amounts paid method.
+     *
+     * @return The amounts paid method
+     */
     @Nullable
     public String getAmountsPaidPaymentMethod() {
         return amountsPaidPaymentMethod;
@@ -118,6 +138,11 @@ public class FlowResponse implements Sendable {
         validateAmounts();
     }
 
+    /**
+     * Get request additional data.
+     *
+     * @return The request additional data
+     */
     @Nullable
     public AdditionalData getRequestAdditionalData() {
         return requestAdditionalData;
@@ -159,6 +184,11 @@ public class FlowResponse implements Sendable {
         this.requestAdditionalData = requestAdditionalData;
     }
 
+    /**
+     * Get the payment references.
+     *
+     * @return The payment references
+     */
     @Nullable
     public AdditionalData getPaymentReferences() {
         return paymentReferences;
@@ -178,10 +208,20 @@ public class FlowResponse implements Sendable {
         this.paymentReferences = paymentReferences;
     }
 
+    /**
+     * Check whether this response has any augmented data.
+     *
+     * @return True if data has been augmented, false otherwisee
+     */
     public boolean hasAugmentedData() {
         return requestAdditionalData != null || updatedRequestAmounts != null || amountsPaid != null || paymentReferences != null || enableSplit;
     }
 
+    /**
+     * Check whether split should be enabled.
+     *
+     * @return True if split should be enabled
+     */
     public boolean shouldEnableSplit() {
         return enableSplit;
     }
@@ -197,6 +237,11 @@ public class FlowResponse implements Sendable {
         this.enableSplit = enableSplit;
     }
 
+    /**
+     * Check whether to cancel the transaction / flow.
+     *
+     * @return True to cancel, false otheriwse
+     */
     public boolean shouldCancelTransaction() {
         return cancelTransaction;
     }

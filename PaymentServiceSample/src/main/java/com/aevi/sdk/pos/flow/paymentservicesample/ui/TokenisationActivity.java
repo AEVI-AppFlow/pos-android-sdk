@@ -22,17 +22,17 @@ import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
+public class TokenisationActivity extends BaseSampleAppCompatActivity {
 
     @BindView(R.id.card_scheme_spinner)
     DropDownSpinner cardSchemeSpinner;
@@ -40,15 +40,14 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private Request request;
+    private GenericStageModel genericStageModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_token);
         ButterKnife.bind(this);
-        request = Request.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
-        registerForActivityEvents();
+        genericStageModel = GenericStageModel.fromActivity(this);
         setupToolbar(toolbar, R.string.pss_select_token);
     }
 
@@ -63,9 +62,10 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
     }
 
     private void sendTokenResponseAndFinish(Token token) {
-        Response response = new Response(request, token != null, token != null ? "Sample token generated" : "Failed to generate sample token");
+        Response response = new Response(genericStageModel.getRequest(), token != null, token != null ? "Sample token generated" : "Failed to generate sample token");
         response.addAdditionalData(AdditionalDataKeys.DATA_KEY_TOKEN, token);
-        sendResponseAndFinish(response);
+        genericStageModel.sendResponse(response);
+        finish();
     }
 
     @Override
@@ -95,14 +95,14 @@ public class SelectTokenActivity extends BaseSampleAppCompatActivity<Response> {
 
     @Override
     protected String getModelJson() {
-        Response response = new Response(request, true, "Sample token generated");
+        Response response = new Response(genericStageModel.getRequest(), true, "Sample token generated");
         response.addAdditionalData(AdditionalDataKeys.DATA_KEY_TOKEN, CustomerProducer.CUSTOMER_TOKEN);
         return response.toJson();
     }
 
     @Override
     protected String getRequestJson() {
-        return request.toJson();
+        return genericStageModel.getRequest().toJson();
     }
 
     @Override

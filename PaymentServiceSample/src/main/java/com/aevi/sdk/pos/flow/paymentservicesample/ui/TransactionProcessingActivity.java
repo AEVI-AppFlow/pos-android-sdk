@@ -20,8 +20,10 @@ import android.widget.CheckBox;
 import android.widget.Switch;
 
 import com.aevi.sdk.flow.constants.FlowStages;
-import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.Amounts;
+import com.aevi.sdk.pos.flow.model.Card;
+import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
@@ -29,6 +31,7 @@ import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 
@@ -41,7 +44,7 @@ import butterknife.*;
 
 import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
 
-public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<TransactionResponse> {
+public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
 
     private static final String APPROVED_RESP_CODE = "00";
     private static final String DECLINED_RESP_CODE = "XX";
@@ -65,7 +68,7 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
 
     private List<Long> processedAmountsOptions = new ArrayList<>();
     private TransactionRequest transactionRequest;
-    private TransactionResponse transactionResponse;
+    private TransactionProcessingModel transactionProcessingModel;
     private ModelDisplay modelDisplay;
 
     @Override
@@ -73,7 +76,8 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_response_builder);
         ButterKnife.bind(this);
-        transactionRequest = TransactionRequest.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        transactionProcessingModel = TransactionProcessingModel.fromActivity(this);
+        transactionRequest = transactionProcessingModel.getTransactionRequest();
 
         final DropDownHelper dropDownHelper = new DropDownHelper(this);
         long totalAmount = transactionRequest.getAmounts().getTotalAmountValue();
@@ -87,7 +91,6 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
         processedAmountsSpinner.setSelection(2);
 
         dropDownHelper.setupDropDown(paymentMethodsSpinner, R.array.payment_methods);
-        registerForActivityEvents();
         setupToolbar(toolbar, R.string.pss_txn_processing);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
@@ -120,7 +123,7 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
 
     private void buildTransactionResponse() {
         if (approveSwitch.isChecked()) {
-            transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
+            transactionProcessingModel.getTransactionResponseBuilder()
                     .approve(getProcessedAmounts(), (String) paymentMethodsSpinner.getSelectedItem())
                     .withOutcomeMessage("User approved manually")
                     .withResponseCode(APPROVED_RESP_CODE)
@@ -132,19 +135,21 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
                     .withReference(TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
                     .build();
         } else {
-            transactionResponse = new TransactionResponseBuilder(transactionRequest.getId())
+            transactionProcessingModel.getTransactionResponseBuilder()
                     .decline("Used declined manually")
                     .withResponseCode(DECLINED_RESP_CODE)
                     .build();
         }
         if (modelDisplay != null) {
-            modelDisplay.showTransactionResponse(transactionResponse);
+            modelDisplay.showTransactionResponse(transactionProcessingModel.getTransactionResponse());
         }
     }
 
     @OnClick(R.id.send_response)
-    public void onApprove() {
-        sendResponseAndFinish(transactionResponse);
+    public void onSendResponse() {
+        InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionProcessingModel.getTransactionResponse());
+        transactionProcessingModel.sendResponse();
+        finish();
     }
 
     private Amounts getProcessedAmounts() {
@@ -164,12 +169,6 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
         }
         // If not, let's just return the default card
         return CardProducer.getDefaultCard();
-    }
-
-    @Override
-    protected void sendResponseAndFinish(TransactionResponse response) {
-        super.sendResponseAndFinish(response);
-        InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionResponse);
     }
 
     @Override
@@ -194,7 +193,7 @@ public class PaymentResponseBuilderActivity extends BaseSampleAppCompatActivity<
 
     @Override
     protected String getModelJson() {
-        return transactionResponse.toJson();
+        return transactionProcessingModel.getTransactionResponse().toJson();
     }
 
     @Override

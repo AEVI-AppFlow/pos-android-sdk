@@ -34,7 +34,7 @@ public interface ModelDisplay {
 
     void showTransactionSummary(TransactionSummary transactionSummary);
 
-    void showCardResponse(CardResponse cardResponse);
+    void showCard(Card card);
 
     void showTransactionResponse(TransactionResponse transactionResponse);
 

@@ -68,7 +68,7 @@ public class Payment extends BaseModel {
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
         this.flowName = flowName;
         this.isExternalId = false;
-        this.amounts = amounts;
+        this.amounts = amounts != null ? amounts : new Amounts();
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
@@ -89,7 +89,7 @@ public class Payment extends BaseModel {
         this.source = requestSource;
         this.isExternalId = true;
         this.flowName = flowName;
-        this.amounts = amounts;
+        this.amounts = amounts != null ? amounts : new Amounts();
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
