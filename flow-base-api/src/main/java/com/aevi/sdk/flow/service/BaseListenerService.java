@@ -18,7 +18,7 @@ import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.util.json.JsonConverter;
+import com.aevi.sdk.flow.model.Response;
 
 import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
@@ -41,6 +41,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void handleRequest(String clientMessageId, String message, String packageName) {
         sendAck(clientMessageId);
         sendEndStreamMessageToClient(clientMessageId);
@@ -49,9 +50,16 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
             checkVersions(appMessage, internalData);
 
             if (AppMessageTypes.RESPONSE_MESSAGE.equals(appMessage.getMessageType())) {
-                RESPONSE response = JsonConverter.deserialize(appMessage.getMessageData(), responseClass);
-                if (response != null) {
-                    notifyResponse(response);
+                Response response = Response.fromJson(appMessage.getMessageData());
+                RESPONSE unwrapped = null;
+                if (responseClass.equals(Response.class)) {
+                    unwrapped = (RESPONSE) response;
+                } else {
+                    unwrapped = response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, responseClass);
+                }
+
+                if (unwrapped != null) {
+                    notifyResponse(unwrapped);
                 }
             }
         }
