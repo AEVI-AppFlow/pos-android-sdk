@@ -7,8 +7,10 @@ import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
 
 public class PaymentResponseListenerService extends BasePaymentResponseListenerService {
 
+    private static final String TAG = PaymentResponseListenerService.class.getSimpleName();
+
     @Override
     protected void notifyResponse(PaymentResponse paymentResponse) {
-        Log.d("XXX", "GOT RESPONSE UPDATE: " + paymentResponse.toJson());
+        Log.d(TAG, "Got response in payment response listener: " + paymentResponse.toJson());
     }
 }
