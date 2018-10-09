@@ -25,7 +25,12 @@ import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
 
 import java.util.List;
 
@@ -39,7 +44,7 @@ import io.reactivex.functions.Function;
  */
 public abstract class BaseApiClient {
 
-    protected static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
+    public static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
     protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
     protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");

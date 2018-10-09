@@ -58,7 +58,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
     protected final void handleRequest(String clientMessageId, String message, String packageName) {
         Log.d(TAG, "Received message: " + message);
         AppMessage appMessage = AppMessage.fromJson(message);
-        checkVersions(appMessage);
+        checkVersions(appMessage, internalData);
         switch (appMessage.getMessageType()) {
             case REQUEST_MESSAGE:
                 handleRequestMessage(clientMessageId, appMessage.getMessageData(), packageName);
@@ -73,15 +73,15 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
         }
     }
 
-    private void checkVersions(AppMessage appMessage) {
+    static void checkVersions(AppMessage appMessage, InternalData checkWith) {
         // All we do for now is log this - at some point we might want to have specific checks or whatevs
         InternalData senderInternalData = appMessage.getInternalData();
         if (senderInternalData != null) {
-            Log.i(TAG, String.format("Our API version is: %s. Sender API version is: %s",
-                    internalData.getSenderApiVersion(),
+            Log.i(BaseApiService.class.getSimpleName(), String.format("Our API version is: %s. Sender API version is: %s",
+                    checkWith.getSenderApiVersion(),
                     senderInternalData.getSenderApiVersion()));
         } else {
-            Log.i(TAG, String.format("Our API version is: %s. Sender API version is UNKNOWN!", internalData.getSenderApiVersion()));
+            Log.i(BaseApiService.class.getSimpleName(), String.format("Our API version is: %s. Sender API version is UNKNOWN!", checkWith.getSenderApiVersion()));
         }
     }
 
