@@ -33,14 +33,14 @@ public class BasketTest {
 
     @Test
     public void canMergeItemsWithSameId() throws Exception {
-        int singleItemCount = defaultItemOne.getCount();
+        int singleItemQuantity = defaultItemOne.getQuantity();
         sourceBasket.addItems(defaultItemOne);
 
-        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(singleItemCount);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getQuantity()).isEqualTo(singleItemQuantity);
 
         sourceBasket.addItems(defaultItemOne);
 
-        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(singleItemCount * 2);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getQuantity()).isEqualTo(singleItemQuantity * 2);
     }
 
     @Test
@@ -51,11 +51,11 @@ public class BasketTest {
     }
 
     @Test
-    public void listOrderIsRetainedAfterUpdatingCount() throws Exception {
+    public void listOrderIsRetainedAfterUpdatingQuantity() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        sourceBasket.incrementItemCount(defaultItemOne.getId(), 1);
-        sourceBasket.decrementItemCount(defaultItemOne.getId(), 1);
+        sourceBasket.incrementItemQuantity(defaultItemOne.getId(), 1);
+        sourceBasket.decrementItemQuantity(defaultItemOne.getId(), 1);
 
         assertThat(sourceBasket.getBasketItems()).containsExactly(defaultItemTwo, defaultItemOne);
     }
@@ -83,13 +83,13 @@ public class BasketTest {
     }
 
     @Test
-    public void canSpecifyMinCountForHasItemWithId() throws Exception {
+    public void canSpecifyMinQuantityForHasItemWithId() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
         assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId())).isTrue();
         assertThat(sourceBasket.hasItemWithId(defaultItemTwo.getId())).isTrue();
-        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getCount())).isTrue();
-        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getCount() + 1)).isFalse();
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getQuantity())).isTrue();
+        assertThat(sourceBasket.hasItemWithId(defaultItemOne.getId(), defaultItemOne.getQuantity() + 1)).isFalse();
     }
 
     @Test
@@ -109,57 +109,57 @@ public class BasketTest {
     }
 
     @Test
-    public void canIncrementBasketItemCount() {
+    public void canIncrementBasketItemQuantity() {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        int beforeCount = defaultItemOne.getCount();
-        sourceBasket.incrementItemCount(defaultItemOne.getId(), 1);
+        int beforeQuantity = defaultItemOne.getQuantity();
+        sourceBasket.incrementItemQuantity(defaultItemOne.getId(), 1);
 
-        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(beforeCount + 1);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getQuantity()).isEqualTo(beforeQuantity + 1);
     }
 
     @Test
-    public void canDecrementBasketItemCount() throws Exception {
+    public void canDecrementBasketItemQuantity() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        int beforeCount = defaultItemOne.getCount();
-        sourceBasket.decrementItemCount(defaultItemOne.getId(), 1);
+        int beforeQuantity = defaultItemOne.getQuantity();
+        sourceBasket.decrementItemQuantity(defaultItemOne.getId(), 1);
 
-        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(beforeCount - 1);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getQuantity()).isEqualTo(beforeQuantity - 1);
     }
 
     @Test
-    public void cantDecrementPastZeroAndItemRetainedAsZeroCount() throws Exception {
+    public void cantDecrementPastZeroAndItemRetainedAsZeroQuantity() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        sourceBasket.decrementItemCount(defaultItemTwo.getId(), 1, true);
+        sourceBasket.decrementItemQuantity(defaultItemTwo.getId(), 1, true);
 
-        assertThat(sourceBasket.getItemById(defaultItemTwo.getId()).getCount()).isEqualTo(0);
+        assertThat(sourceBasket.getItemById(defaultItemTwo.getId()).getQuantity()).isEqualTo(0);
     }
 
     @Test
     public void itemIsRemovedAfterDecrementingToZeroIfRetainNotSet() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        sourceBasket.decrementItemCount(defaultItemTwo.getId(), 1);
+        sourceBasket.decrementItemQuantity(defaultItemTwo.getId(), 1);
 
         assertThat(sourceBasket.hasItemWithId(defaultItemTwo.getId())).isFalse();
     }
 
     @Test
-    public void canSetBasketItemCount() throws Exception {
+    public void canSetBasketItemQuantity() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        sourceBasket.setItemCount(defaultItemOne.getId(), 10);
+        sourceBasket.setItemQuantity(defaultItemOne.getId(), 10);
 
-        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getCount()).isEqualTo(10);
+        assertThat(sourceBasket.getItemById(defaultItemOne.getId()).getQuantity()).isEqualTo(10);
     }
 
     @Test
     public void canGetTotalNumberOfItems() throws Exception {
         sourceBasket.addItems(defaultItemOne, defaultItemTwo);
 
-        assertThat(sourceBasket.getTotalNumberOfItems()).isEqualTo(defaultItemOne.getCount() + defaultItemTwo.getCount());
+        assertThat(sourceBasket.getTotalNumberOfItems()).isEqualTo(defaultItemOne.getQuantity() + defaultItemTwo.getQuantity());
     }
 
     @Test

@@ -61,11 +61,11 @@ public class SplitBasketHelper {
      * This will set up the remaining and paid items baskets according to the information in the request.
      *
      * @param splitRequest                  The split request
-     * @param retainZeroCountRemainingItems If true, items with a zero count will be added to remaining items. If false, zero count items will not be added.
+     * @param retainZeroQuantityRemainingItems If true, items with zero quantity will be added to remaining items. If false, zero quantity items will not be added.
      * @return An instance of SplitBasketHelper
      * @throws UnsupportedOperationException If there is no basket in the source payment
      */
-    public static SplitBasketHelper createFromSplitRequest(SplitRequest splitRequest, boolean retainZeroCountRemainingItems) throws UnsupportedOperationException {
+    public static SplitBasketHelper createFromSplitRequest(SplitRequest splitRequest, boolean retainZeroQuantityRemainingItems) throws UnsupportedOperationException {
         Basket sourceBasket = splitRequest.getSourcePayment().getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
         if (sourceBasket == null) {
             throw new UnsupportedOperationException("The source payment does not have any associated basket");
@@ -80,7 +80,7 @@ public class SplitBasketHelper {
                 Basket basket = transaction.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
                 if (basket != null) {
                     paidItemsPerSplit.add(basket);
-                    removeItems(remainingItems, basket, retainZeroCountRemainingItems);
+                    removeItems(remainingItems, basket, retainZeroQuantityRemainingItems);
                 }
             }
         }
@@ -162,17 +162,17 @@ public class SplitBasketHelper {
     /**
      * Transfer basket items from the remaining basket to the next split basket.
      *
-     * The count in the provided item determines the outcome count of the items in the remaining basket and in the next split basket.
+     * The quantity in the provided item determines the outcome quantity of the items in the remaining basket and in the next split basket.
      *
-     * Note that this never removes the items from the remaining items, but simply updates the count and allows for zero-count items.
+     * Note that this never removes the items from the remaining items, but simply updates the quantity and allows for zero-quantity items.
      *
-     * This is intentional to support split apps in showing the full basket with the correct count for customer clarity.
+     * This is intentional to support split apps in showing the full basket with the correct quantity for customer clarity.
      *
      * @param basketItems The basket items to process for the next split transaction
      */
     public void transferItemsFromRemainingToNextSplit(BasketItem... basketItems) {
         for (BasketItem basketItem : basketItems) {
-            // Create new instance to hold the separate count
+            // Create new instance to hold the separate quantity
             nextSplitItems.addItems(new BasketItemBuilder(basketItem).build());
             removeItem(remainingItems, basketItem, true);
         }
@@ -223,19 +223,19 @@ public class SplitBasketHelper {
     }
 
     /*
-     * Removes items of the given type from the basket up to the item count. If the number of items requested to be removed is greater than
-     * the current count for this line item in the basket then all items are removed and the count is set to 0.
+     * Removes items of the given type from the basket up to the item quantity. If the number of items requested to be removed is greater than
+     * the current quantity for this line item in the basket then all items are removed and the quantity is set to 0.
      */
     private static void removeItem(Basket basket, BasketItem item, boolean retain) {
         if (basket.hasItemWithId(item.getId())) {
             BasketItem itemLine = basket.getItemById(item.getId());
-            replaceItem(basket, itemLine, -item.getCount(), retain);
+            replaceItem(basket, itemLine, -item.getQuantity(), retain);
         }
     }
 
-    private static BasketItem replaceItem(Basket basket, BasketItem existingItem, int countOffset, boolean retainIfZero) {
-        BasketItem newItem = new BasketItemBuilder(existingItem).offsetCountBy(countOffset).build();
-        if (newItem.getCount() == 0 && !retainIfZero) {
+    private static BasketItem replaceItem(Basket basket, BasketItem existingItem, int quantityOffset, boolean retainIfZero) {
+        BasketItem newItem = new BasketItemBuilder(existingItem).offsetQuantityBy(quantityOffset).build();
+        if (newItem.getQuantity() == 0 && !retainIfZero) {
             basket.getBasketItems().remove(existingItem);
         } else {
             basket.getBasketItems().set(basket.getBasketItems().indexOf(existingItem), newItem);

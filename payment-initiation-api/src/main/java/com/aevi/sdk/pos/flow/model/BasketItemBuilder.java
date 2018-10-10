@@ -24,7 +24,7 @@ import java.util.UUID;
 public class BasketItemBuilder {
 
     private String id;
-    private int count = 1;
+    private int quantity = 1;
     private String label;
     private String category;
     private long amount;
@@ -43,7 +43,7 @@ public class BasketItemBuilder {
      */
     public BasketItemBuilder(BasketItem copyFrom) {
         this.id = copyFrom.getId();
-        this.count = copyFrom.getCount();
+        this.quantity = copyFrom.getQuantity();
         this.label = copyFrom.getLabel();
         this.category = copyFrom.getCategory();
         this.amount = copyFrom.getIndividualAmount();
@@ -75,54 +75,54 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Set the initial count for this item.
+     * Set the initial quantity for this item.
      *
      * Defaults to 1 if not set.
      *
-     * @param count The item count
+     * @param quantity The item quantity
      * @return This builder
      */
     @NonNull
-    public BasketItemBuilder withCount(int count) {
-        this.count = count;
+    public BasketItemBuilder withQuantity(int quantity) {
+        this.quantity = quantity;
         return this;
     }
 
     /**
-     * Increment the count by one.
+     * Increment the quantity by one.
      *
      * @return This builder
      */
     @NonNull
-    public BasketItemBuilder incrementCount() {
-        this.count++;
+    public BasketItemBuilder incrementQuantity() {
+        this.quantity++;
         return this;
     }
 
     /**
-     * Decrements the item count by one as long as the current count is greater than zero.
+     * Decrements the item quantity by one as long as the current quantity is greater than zero.
      *
-     * If the count is already zero, this method has no effect.
+     * If the quantity is already zero, this method has no effect.
      *
      * @return This builder
      */
     @NonNull
-    public BasketItemBuilder decrementCount() {
-        this.count--;
+    public BasketItemBuilder decrementQuantity() {
+        this.quantity--;
         return this;
     }
 
     /**
-     * Modify the current count with the provided offset.
+     * Modify the current quantity with the provided offset.
      *
-     * This effectively does count += offset, and can be used to increase or decrease the count.
+     * This effectively does quantity += offset, and can be used to increase or decrease the quantity.
      *
-     * @param offset The value to modify the current count with.
+     * @param offset The value to modify the current quantity with.
      * @return This builder
      */
     @NonNull
-    public BasketItemBuilder offsetCountBy(int offset) {
-        this.count += offset;
+    public BasketItemBuilder offsetQuantityBy(int offset) {
+        this.quantity += offset;
         return this;
     }
 
@@ -163,14 +163,14 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Build the instance with a default count of 1 (if not set).
+     * Build the instance with a default quantity of 1 (if not set).
      *
      * @return A {@link BasketItem} instance
      */
     @NonNull
     public BasketItem build() {
-        if (count < 0) {
-            throw new IllegalArgumentException("Basket item must have a count of zero or more");
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Basket item must have a quantity of zero or more");
         }
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have an id");
@@ -178,6 +178,6 @@ public class BasketItemBuilder {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have a label");
         }
-        return new BasketItem(id, label, category, amount, count);
+        return new BasketItem(id, label, category, amount, quantity);
     }
 }

@@ -20,7 +20,7 @@ import android.support.annotation.Nullable;
 import java.util.Objects;
 
 /**
- * Represents an immutable basket item with associated id, label, category, count and amount.
+ * Represents an immutable basket item with associated id, label, category, quantity and amount.
  *
  * Please create via {@link BasketItemBuilder}.
  */
@@ -30,7 +30,7 @@ public class BasketItem {
     private final String label;
     private final String category;
     private final long amount;
-    private final int count;
+    private final int quantity;
 
     // Default constructor for deserialisation
     BasketItem() {
@@ -38,20 +38,20 @@ public class BasketItem {
     }
 
     /**
-     * Create a new basket item with label, category, amount and count.
+     * Create a new basket item with label, category, amount and quantity.
      *
      * @param id       The identifier (SKU or similar) for this item
      * @param label    The label of the item to show to merchants/customers, such as "Red onion"
      * @param category The category the item belongs to, such as "vegetables" or "dairy"
      * @param amount   The purchase amount for this (individual) item
-     * @param count    The number of this type of basket item (default is 1, below 0 will produce an exception)
+     * @param quantity    The number of this type of basket item (default is 1, below 0 will produce an exception)
      */
-    BasketItem(String id, String label, String category, long amount, int count) {
+    BasketItem(String id, String label, String category, long amount, int quantity) {
         this.id = id;
         this.label = label;
         this.category = category;
         this.amount = amount;
-        this.count = count;
+        this.quantity = quantity;
     }
 
     /**
@@ -99,23 +99,23 @@ public class BasketItem {
      * @return The total cost (amount) for the items of this type.
      */
     public long getTotalAmount() {
-        return amount * count;
+        return amount * quantity;
     }
 
     /**
-     * Get the item count.
+     * Get the item quantity.
      *
-     * @return The item count
+     * @return The item quantity
      */
-    public int getCount() {
-        return count;
+    public int getQuantity() {
+        return quantity;
     }
 
     @Override
     public String toString() {
         return "BasketItem{" +
                 "id='" + id + '\'' +
-                ", count=" + count +
+                ", quantity=" + quantity +
                 ", label='" + label + '\'' +
                 ", category='" + category + '\'' +
                 ", amount=" + amount +
@@ -127,7 +127,7 @@ public class BasketItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BasketItem that = (BasketItem) o;
-        return count == that.count &&
+        return quantity == that.quantity &&
                 amount == that.amount &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(label, that.label) &&
@@ -136,6 +136,6 @@ public class BasketItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, count, label, category, amount);
+        return Objects.hash(id, quantity, label, category, amount);
     }
 }

@@ -144,7 +144,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getString(R.string.prev_paid_for_items)).append(" ").append(getPreviousAmountTotalFormatted()).append(")\n");
         for (BasketItem basketItem : paidItems.getBasketItems()) {
-            stringBuilder.append(basketItem.getLabel()).append("  (").append(basketItem.getCount()).append(")").append(" @ ")
+            stringBuilder.append(basketItem.getLabel()).append("  (").append(basketItem.getQuantity()).append(")").append(" @ ")
                     .append(AmountFormatter.formatAmount(splitRequest.getSourcePayment().getAmounts().getCurrency(), basketItem.getIndividualAmount()))
                     .append("\n");
         }
@@ -197,11 +197,11 @@ public class SplitActivity extends BaseSampleAppCompatActivity<FlowResponse> {
         // This will simply get half (rounded down) of the items for the first txn
         for (int i = 0, count = 0; i < basket.getBasketItems().size() && count < itemsForFirstSplit; i++) {
             BasketItem item = basket.getBasketItems().get(i);
-            if (count + item.getCount() > itemsForFirstSplit) {
-                item = new BasketItemBuilder(item).withCount(itemsForFirstSplit - count).build();
+            if (count + item.getQuantity() > itemsForFirstSplit) {
+                item = new BasketItemBuilder(item).withQuantity(itemsForFirstSplit - count).build();
             }
             splitBasketHelper.transferItemsFromRemainingToNextSplit(item);
-            count += item.getCount();
+            count += item.getQuantity();
         }
         return splitBasketHelper.getNextSplitItems();
     }
