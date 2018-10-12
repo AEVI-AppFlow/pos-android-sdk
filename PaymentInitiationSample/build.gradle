@@ -19,11 +19,18 @@ android {
         versionCode sampleVersionCode
         versionName "${apiVersion}"
     }
-
+    signingConfigs {
+        release {
+            storeFile file("../samples-key.jks")
+            storePassword "appflow"
+            keyAlias "sample"
+            keyPassword "appflow"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
