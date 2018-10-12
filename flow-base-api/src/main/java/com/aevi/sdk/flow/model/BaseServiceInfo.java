@@ -263,9 +263,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      *
      * The map key is the name of the flow and the values is an array of the stages the service is defined in for that flow
      *
-     * Example: "aeviSale" -> ["PAYMENT_CARD_READING", "TRANSACTION_PROCESSING"]
-     *
-     * More info about a flow can be looked up via {@link com.aevi.sdk.pos.flow.model.config.FlowConfigurations#getFlowConfiguration(String)}
+     * Example: "aeviSale" maps to ["PAYMENT_CARD_READING", "TRANSACTION_PROCESSING"]
      *
      * @return The map of flows and stages this service is defined in
      */

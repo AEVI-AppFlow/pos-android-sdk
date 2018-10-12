@@ -152,7 +152,7 @@ public class FpsSettings implements Jsonable {
      *
      * See {@link #FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT} for default.
      *
-     * @return The flow service response timeout in seconds
+     * @param responseTimeout The flow service response timeout in seconds
      */
     public void setFlowResponseTimeoutSeconds(int responseTimeout) {
         flowResponseTimeoutSeconds = responseTimeout;
