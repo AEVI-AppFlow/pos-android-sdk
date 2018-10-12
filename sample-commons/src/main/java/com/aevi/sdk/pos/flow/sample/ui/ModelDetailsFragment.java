@@ -164,13 +164,14 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     }
 
     @Override
-    public void showCardResponse(CardResponse cardResponse) {
+    public void showCard(Card card) {
         reset();
         List<Pair<String, String>> cardResponseInfo = new ArrayList<>();
-        cardResponseInfo.add(getStringPair(R.string.outcome, cardResponse.getResult().name()));
+        String outcome = card != null ? "SUCCESS" : "DECLINED";
+        cardResponseInfo.add(getStringPair(R.string.outcome, outcome));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, cardResponseInfo, true));
-        if (cardResponse.getCard() != null && !cardResponse.getCard().isEmpty()) {
-            adapter.addSection(createCardSection(cardResponse.getCard()));
+        if (card != null && !card.isEmpty()) {
+            adapter.addSection(createCardSection(card));
         }
         setupRecyclerView(R.string.card_response_model_overview);
     }

@@ -12,19 +12,9 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.pos.flow.service;
+package com.aevi.sdk.flow.constants;
 
-import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
+public interface ActivityEvents {
 
-/**
- * Base class for post-card reading services.
- */
-public abstract class BasePostCardService extends BaseApiService<TransactionRequest, FlowResponse> {
-
-    public BasePostCardService() {
-        super(TransactionRequest.class, PaymentFlowServiceApi.getApiVersion());
-    }
+    String FINISH = "finish";
 }

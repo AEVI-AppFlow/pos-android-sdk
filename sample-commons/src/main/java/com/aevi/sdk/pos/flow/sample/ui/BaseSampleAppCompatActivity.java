@@ -17,42 +17,12 @@ package com.aevi.sdk.pos.flow.sample.ui;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.constants.ActivityEvents;
 import com.aevi.sdk.pos.flow.sample.R;
 
-public abstract class BaseSampleAppCompatActivity<RESPONSE> extends AppCompatActivity {
-
-    protected void registerForActivityEvents() {
-        try {
-            ObservableActivityHelper<RESPONSE> helper = ObservableActivityHelper.getInstance(getIntent());
-            helper.registerForEvents(getLifecycle()).subscribe(event -> {
-                switch (event) {
-                    case ActivityEvents.FINISH:
-                        finish();
-                        break;
-                }
-            });
-        } catch (NoSuchInstanceException e) {
-            Log.e(getClass().getSimpleName(), "No ObservableActivityHelper found - finishing activity");
-            finish();
-        }
-    }
-
-    protected void sendResponseAndFinish(RESPONSE response) {
-        try {
-            ObservableActivityHelper<RESPONSE> activityHelper = ObservableActivityHelper.getInstance(getIntent());
-            activityHelper.publishResponse(response);
-        } catch (NoSuchInstanceException e) {
-            // Ignore
-        }
-        finish();
-    }
+public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
 
     protected void setupToolbar(Toolbar toolbar, int titleRes) {
         toolbar.setTitle(titleRes);

@@ -48,6 +48,25 @@ public final class TransactionResponseBuilder {
     }
 
     /**
+     * Initialise this builder with an existing transaction response.
+     *
+     * @param transactionResponse The response to use as a base for all values
+     * @return This builder
+     */
+    @NonNull
+    public TransactionResponseBuilder withDefaultsFrom(TransactionResponse transactionResponse) {
+        id = transactionResponse.getId();
+        card = transactionResponse.getCard();
+        outcome = transactionResponse.getOutcome();
+        outcomeMessage = transactionResponse.getOutcomeMessage();
+        amounts = transactionResponse.getAmountsProcessed();
+        responseCode = transactionResponse.getResponseCode();
+        paymentMethod = transactionResponse.getPaymentMethod();
+        references = transactionResponse.getReferences();
+        return this;
+    }
+
+    /**
      * Set the transaction as approved with no processed amounts (for scenarios where no amounts were charged/processed).
      *
      * For cases where amounts were processed, see {@link #approve(Amounts, String...)}.

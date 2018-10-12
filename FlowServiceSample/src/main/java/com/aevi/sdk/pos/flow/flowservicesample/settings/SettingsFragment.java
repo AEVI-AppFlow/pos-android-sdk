@@ -52,12 +52,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
         Preference pref = getPreferenceScreen().findPreference(key);
-        if (pref instanceof SwitchPreference) {
-            boolean enabled = ((SwitchPreference) pref).isChecked();
-            ServiceStateHandler.enableDisableService(getActivity(), key, enabled);
-        }
         setSummary(pref);
     }
 

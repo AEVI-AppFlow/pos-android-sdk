@@ -18,11 +18,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.flow.model.NoOpModel;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.PostFlowModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,12 +30,12 @@ import butterknife.OnClick;
 
 import static com.aevi.sdk.flow.constants.FlowStages.POST_FLOW;
 
-public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
+public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private PaymentResponse paymentResponse;
+    private PostFlowModel postFlowModel;
     private ModelDisplay modelDisplay;
 
     @Override
@@ -43,9 +43,8 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_flow);
         ButterKnife.bind(this);
-        registerForActivityEvents();
         setupToolbar(toolbar, R.string.fss_post_flow);
-        paymentResponse = PaymentResponse.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        postFlowModel = PostFlowModel.fromActivity(this);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         modelDisplay.showTitle(false);
     }
@@ -53,12 +52,13 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay.showPaymentResponse(paymentResponse);
+        modelDisplay.showPaymentResponse(postFlowModel.getPaymentResponse());
     }
 
     @OnClick(R.id.send_response)
     public void onFinish() {
-        sendResponseAndFinish(new NoOpModel());
+        postFlowModel.sendResponse();
+        finish();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity<NoOpModel> {
 
     @Override
     protected String getRequestJson() {
-        return paymentResponse.toJson();
+        return postFlowModel.getPaymentResponse().toJson();
     }
 
     @Override

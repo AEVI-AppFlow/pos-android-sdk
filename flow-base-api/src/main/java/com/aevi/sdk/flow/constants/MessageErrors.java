@@ -12,20 +12,13 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.pos.flow.service;
+
+package com.aevi.sdk.flow.constants;
 
 
-import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
+public interface MessageErrors {
 
-/**
- * Base class for pre-payment (aka pre-transaction) services.
- */
-public abstract class BasePrePaymentService extends BaseApiService<TransactionRequest, FlowResponse> {
+    String ERROR_UNKNOWN_MESSAGE_TYPE = "unknownMessageType";
+    String ERROR_SERVICE_EXCEPTION = "serviceException";
 
-    public BasePrePaymentService() {
-        super(TransactionRequest.class, PaymentFlowServiceApi.getApiVersion());
-    }
 }

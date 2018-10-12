@@ -92,7 +92,7 @@ public class SplitRequest extends BaseModel {
      *
      * @return The requested {@link Amounts} for processing
      */
-    @Nullable
+    @NonNull
     public Amounts getRequestedAmounts() {
         return sourcePayment.getAmounts();
     }
@@ -102,11 +102,8 @@ public class SplitRequest extends BaseModel {
      *
      * @return The remaining {@link Amounts} to process
      */
-    @Nullable
+    @NonNull
     public Amounts getRemainingAmounts() {
-        if (getRequestedAmounts() == null) {
-            return null;
-        }
         if (transactions.isEmpty()) {
             return getRequestedAmounts();
         }
@@ -123,11 +120,8 @@ public class SplitRequest extends BaseModel {
      *
      * @return The processed {@link Amounts} at this point in time
      */
-    @Nullable
+    @NonNull
     public Amounts getProcessedAmounts() {
-        if (getRequestedAmounts() == null) {
-            return null;
-        }
         Amounts processed = new Amounts(0, getRequestedAmounts().getCurrency());
         if (transactions.isEmpty()) {
             return processed;
@@ -138,6 +132,11 @@ public class SplitRequest extends BaseModel {
         return processed;
     }
 
+    /**
+     * For internal use
+     *
+     * @param deviceAudience Device audience
+     */
     public void setDeviceAudience(DeviceAudience deviceAudience) {
         this.deviceAudience = deviceAudience;
     }

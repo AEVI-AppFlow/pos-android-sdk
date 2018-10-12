@@ -14,26 +14,31 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
-import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseRequestService;
+import com.aevi.sdk.flow.stage.GenericStageModel;
+import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
 
-public class GenericRequestService extends BaseRequestService {
+/**
+ * Illustrates how to implement a service to handle a bespoke request type.
+ */
+public class ShowLoyaltyPointsBalanceService extends BaseRequestService {
 
     public static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
 
     @Override
-    protected void processRequest(String clientMessageId, Request request) {
+    protected void processRequest(GenericStageModel stageModel) {
+        Request request = stageModel.getRequest();
         if (request.getRequestType().equals(SHOW_LOYALTY_POINTS_REQUEST)) {
-            launchActivity(LoyaltyBalanceActivity.class, clientMessageId, request);
+            stageModel.processInActivity(LoyaltyBalanceActivity.class);
         } else {
-            finishWithResponse(clientMessageId, new Response(request, false, "Unsupported request type"));
+            stageModel.sendResponse(new Response(request, false, "Unsupported request type"));
         }
     }
 
     @Override
-    protected void finish(String clientMessageId) {
-
+    protected void onFinish(String clientMessageId) {
+        finishLaunchedActivity(clientMessageId);
     }
 }

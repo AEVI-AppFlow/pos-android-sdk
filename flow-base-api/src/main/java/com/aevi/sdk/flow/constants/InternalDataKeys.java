@@ -12,20 +12,9 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.pos.flow.service;
+package com.aevi.sdk.flow.constants;
 
+public interface InternalDataKeys {
 
-import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.SplitRequest;
-
-/**
- * Base class for split services.
- */
-public abstract class BaseSplitService extends BaseApiService<SplitRequest, FlowResponse> {
-
-    public BaseSplitService() {
-        super(SplitRequest.class, PaymentFlowServiceApi.getApiVersion());
-    }
+    String FLOW_STAGE = "flowStage";
 }

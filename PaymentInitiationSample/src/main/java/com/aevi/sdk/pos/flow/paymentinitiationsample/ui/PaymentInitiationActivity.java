@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.PaymentFragment;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
@@ -27,7 +26,7 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<PaymentResponse> {
+public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
 
     private ModelDisplay modelDisplay;
 

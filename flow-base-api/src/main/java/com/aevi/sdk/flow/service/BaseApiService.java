@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.flow.service;
 
-
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
@@ -26,10 +25,9 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.android.rxmessenger.service.AbstractMessengerService;
+import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.util.json.JsonConverter;
-import com.aevi.util.json.Jsonable;
 
 import io.reactivex.functions.Consumer;
 
@@ -39,32 +37,56 @@ import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.MessageErrors.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 
-public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends Jsonable> extends AbstractMessengerService {
+/**
+ * Base service for all API service implementations.
+ */
+public abstract class BaseApiService extends AbstractMessengerService {
 
     public static final String ACTIVITY_REQUEST_KEY = "request";
     public static final String BACKGROUND_PROCESSING = "backgroundProcessing";
 
-    private final Class<REQUEST> requestClass;
     private final String TAG = getClass().getSimpleName(); // Use class name of implementing service
 
     private final InternalData internalData;
+    private boolean stopServiceOnEndOfStream;
 
-    protected BaseApiService(Class<REQUEST> requestClass, String apiVersion) {
-        this.requestClass = requestClass;
+    protected BaseApiService(String apiVersion) {
         internalData = new InternalData(apiVersion);
+    }
+
+    /**
+     * Set whether or not this service should be stopped after the stream to the client has ended.
+     *
+     * The default is false, meaning that the service instance will stay active until Android decides to kill it.
+     * This means the same service instance may be re-used for multiple requests.
+     *
+     * If set to true, the service will be stopped after each request and re-started for new ones. This may have a slight performance impact.
+     *
+     * @param stopServiceOnEndOfStream True to stop service on end of stream, false to keep it running
+     */
+    public void setStopServiceOnEndOfStream(boolean stopServiceOnEndOfStream) {
+        this.stopServiceOnEndOfStream = stopServiceOnEndOfStream;
     }
 
     @Override
     protected final void handleRequest(String clientMessageId, String message, String packageName) {
         Log.d(TAG, "Received message: " + message);
         AppMessage appMessage = AppMessage.fromJson(message);
+        String flowStage = null;
+        if (appMessage.getInternalData() != null && appMessage.getInternalData().getAdditionalData() != null) {
+            flowStage = appMessage.getInternalData().getAdditionalData().get(InternalDataKeys.FLOW_STAGE);
+        }
+        if (flowStage == null) {
+            flowStage = "UNKNOWN";
+        }
+
         checkVersions(appMessage, internalData);
         switch (appMessage.getMessageType()) {
             case REQUEST_MESSAGE:
-                handleRequestMessage(clientMessageId, appMessage.getMessageData(), packageName);
+                handleRequestMessage(clientMessageId, appMessage.getMessageData(), flowStage);
                 break;
             case FORCE_FINISH_MESSAGE:
-                finish(clientMessageId);
+                onFinish(clientMessageId);
                 break;
             default:
                 Log.e(TAG, "Unknown message type: " + appMessage.getMessageType() + ". ");
@@ -85,11 +107,10 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
         }
     }
 
-    private void handleRequestMessage(String clientMessageId, String messageData, String packageName) {
+    private void handleRequestMessage(String clientMessageId, String messageData, String flowStage) {
         try {
-            REQUEST request = JsonConverter.deserialize(messageData, requestClass);
             sendAck(clientMessageId);
-            processRequest(clientMessageId, request);
+            processRequest(clientMessageId, messageData, flowStage);
         } catch (Throwable t) {
             sendErrorMessageAndFinish(clientMessageId, ERROR_SERVICE_EXCEPTION);
             throw t;
@@ -102,7 +123,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
         sendMessageToClient(clientMessageId, appMessage.toJson());
     }
 
-    private void sendErrorMessageAndFinish(String clientMessageId, String error) {
+    public void sendErrorMessageAndFinish(String clientMessageId, String error) {
         Log.d(TAG, "Sending error message: " + error);
         AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, error, internalData);
         sendMessageToClient(clientMessageId, errorMessage.toJson());
@@ -130,7 +151,7 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      *
      * @param clientMessageId The client message id
      */
-    protected void notifyBackgroundProcessing(String clientMessageId) {
+    public void notifyBackgroundProcessing(String clientMessageId) {
         Log.d(TAG, "notifyBackgroundProcessing");
         internalData.addAdditionalData(BACKGROUND_PROCESSING, "true");
         sendAppMessageAndEndStream(clientMessageId, EMPTY_DATA);
@@ -154,15 +175,18 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      * @param clientMessageId The client message id
      * @param response        The response object
      */
-    protected void finishWithResponse(String clientMessageId, RESPONSE response) {
+    public void finishWithResponse(String clientMessageId, String response) {
         Log.d(TAG, "finishWithResponse");
-        sendAppMessageAndEndStream(clientMessageId, response.toJson());
+        sendAppMessageAndEndStream(clientMessageId, response);
     }
 
-    private void sendAppMessageAndEndStream(String clientMessageId, String responseData) {
+    protected void sendAppMessageAndEndStream(String clientMessageId, String responseData) {
         AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, responseData, internalData);
         sendMessageToClient(clientMessageId, appMessage.toJson());
         sendEndStreamMessageToClient(clientMessageId);
+        if (stopServiceOnEndOfStream) {
+            stopSelf();
+        }
     }
 
     /**
@@ -170,21 +194,22 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      *
      * @param clientMessageId The client message id
      * @param request         The request to be processed
+     * @param flowStage       The flow stage this request is being called for
      */
-    protected abstract void processRequest(@NonNull String clientMessageId, @NonNull REQUEST request);
+    protected abstract void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage);
 
     /**
      * Called when your application needs to abort what it is doing and finish any Activity that is running.
      *
      * As part of this callback, you need to;
      *
-     * 1. Finish any Activity. If you launched it via the {@link #launchActivity(Class, String, Jsonable)} method, you can use {@link #finishLaunchedActivity(String)} to ask it to finish itself, provided that the activity has registered with the {@link ObservableActivityHelper} for finish events.
+     * 1. Finish any Activity. If you launched it via the {@link #launchActivity(Class, String, String)} method, you can use {@link #finishLaunchedActivity(String)} to ask it to finish itself, provided that the activity has registered with the {@link ObservableActivityHelper} for finish events.
      *
      * 2. Finish the service with {@link #finishWithNoResponse(String)} as any response data would be ignored at this stage.
      *
      * @param clientMessageId The client message id
      */
-    protected abstract void finish(@NonNull String clientMessageId);
+    protected abstract void onFinish(@NonNull String clientMessageId);
 
     /**
      * Helper to launch an activity with the request passed in.
@@ -192,23 +217,29 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      * The request will be passed in the intent as a string extra with the key "request".
      *
      * @param activityCls     The activity that should handle the request.
-     * @param clientMessageId The id that was passed to {@link #processRequest(String, Jsonable)}
+     * @param clientMessageId The id that was passed to {@link #processRequest(String, String, String)}
      * @param request         The request model.
      * @param extras          Extras to add to the intent
      */
-    protected void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId, final REQUEST request, final Bundle extras) {
+    public void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId, final String request, final Bundle extras) {
         Intent intent = new Intent(this, activityCls);
+        launchActivity(intent, clientMessageId, request, extras);
+    }
+
+    public void launchActivity(Intent intent, final String clientMessageId, final String request, final Bundle extras) {
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         if (request != null) {
-            intent.putExtra(ACTIVITY_REQUEST_KEY, request.toJson());
+            intent.putExtra(ACTIVITY_REQUEST_KEY, request);
         }
         intent.putExtra(ObservableActivityHelper.INTENT_ID, clientMessageId);
-        intent.putExtras(extras);
-        ObservableActivityHelper<RESPONSE> helper = ObservableActivityHelper.createInstance(this, intent);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        ObservableActivityHelper<String> helper = ObservableActivityHelper.createInstance(this, intent);
         subscribeToLifecycle(helper);
-        helper.startObservableActivity().subscribe(new Consumer<RESPONSE>() {
+        helper.startObservableActivity().subscribe(new Consumer<String>() {
             @Override
-            public void accept(@NonNull RESPONSE response) throws Exception {
+            public void accept(@NonNull String response) throws Exception {
                 finishWithResponse(clientMessageId, response);
             }
         }, new Consumer<Throwable>() {
@@ -231,11 +262,11 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
         }
     }
 
-    protected void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId, final REQUEST request) {
+    public void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId, final String request) {
         launchActivity(activityCls, clientMessageId, request, new Bundle());
     }
 
-    private void subscribeToLifecycle(ObservableActivityHelper<RESPONSE> helper) {
+    public void subscribeToLifecycle(ObservableActivityHelper<?> helper) {
         Log.d(TAG, "Subscribing to lifecycle events");
         helper.onLifecycleEvent().subscribe(new Consumer<Lifecycle.Event>() {
             @Override
@@ -259,26 +290,25 @@ public abstract class BaseApiService<REQUEST extends Jsonable, RESPONSE extends 
      * Helper to launch an activity with no request but that needs to send a response.
      *
      * @param activityCls     The activity to start
-     * @param clientMessageId The id that was passed to {@link #processRequest(String, Jsonable)}
+     * @param clientMessageId The id that was passed to {@link #processRequest(String, String, String)}
      */
     protected void launchActivity(Class<? extends Activity> activityCls, final String clientMessageId) {
         launchActivity(activityCls, clientMessageId, null);
     }
 
     /**
-     * Finish an activity launched via {@link #launchActivity(Class, String, Jsonable)}.
+     * Finish an activity launched via {@link #launchActivity(Class, String, String)}.
      *
      * Note that the activity must have subscribed via ObservableActivityHelper.registerForEvents().
      *
-     * @param clientMessageId The id that was used to call {@link #launchActivity(Class, String, Jsonable)}.
+     * @param clientMessageId The id that was used to call {@link #launchActivity(Class, String, String)}.
      */
     protected void finishLaunchedActivity(String clientMessageId) {
         try {
-            ObservableActivityHelper<RESPONSE> helper = ObservableActivityHelper.getInstance(clientMessageId);
+            ObservableActivityHelper<String> helper = ObservableActivityHelper.getInstance(clientMessageId);
             helper.sendEventToActivity(FINISH);
         } catch (NoSuchInstanceException e) {
             // Ignore
         }
     }
-
 }

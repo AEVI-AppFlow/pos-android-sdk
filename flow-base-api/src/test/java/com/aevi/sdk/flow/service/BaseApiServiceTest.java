@@ -1,6 +1,8 @@
 package com.aevi.sdk.flow.service;
 
 
+import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.MessageErrors;
 import com.aevi.sdk.flow.model.AppMessage;
@@ -85,7 +87,7 @@ public class BaseApiServiceTest {
         assertThat(apiService.endStreamSent).isTrue();
     }
 
-    class TestApiService extends BaseApiService<Request, Response> {
+    class TestApiService extends BaseApiService {
 
         boolean throwExceptionInProcessRequest;
 
@@ -97,7 +99,7 @@ public class BaseApiServiceTest {
         String errorMessageSent;
 
         TestApiService() {
-            super(Request.class, "1.0.0");
+            super("1.0.0");
         }
 
         void fakeIncomingMessage(AppMessage appMessage) {
@@ -109,19 +111,19 @@ public class BaseApiServiceTest {
         }
 
         void callFinishWithResponse(Response response) {
-            finishWithResponse("1.2.3", response);
+            finishWithResponse("1.2.3", response.toJson());
         }
 
         @Override
-        protected void processRequest(String clientMessageId, Request request) {
-            requestReceived = request;
+        protected void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage) {
+            requestReceived = Request.fromJson(request);
             if (throwExceptionInProcessRequest) {
                 throw new IllegalStateException("Skimaroo");
             }
         }
 
         @Override
-        protected void finish(String clientMessageId) {
+        protected void onFinish(@NonNull String clientMessageId) {
             finishRequestReceived = true;
         }
 
@@ -143,5 +145,7 @@ public class BaseApiServiceTest {
             errorMessageSent = message;
             return true;
         }
+
+
     }
 }

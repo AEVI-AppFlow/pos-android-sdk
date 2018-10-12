@@ -15,32 +15,19 @@
 package com.aevi.sdk.pos.flow.flowservicesample.settings;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
-import com.aevi.sdk.pos.flow.flowservicesample.PaymentFlowServiceInfoProvider;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.flowservicesample.service.*;
 
-import static android.content.pm.PackageManager.*;
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 
 public class ServiceStateHandler {
 
-    public static void enableDisableService(Context context, String preferenceKey, boolean enable) {
-        PackageManager packageManager = context.getPackageManager();
-        int enableDisableFlag = enable ? COMPONENT_ENABLED_STATE_ENABLED : COMPONENT_ENABLED_STATE_DISABLED;
-        packageManager.setComponentEnabledSetting(getComponentFromPreferenceKey(context, preferenceKey), enableDisableFlag, DONT_KILL_APP);
-
-        PaymentFlowServiceInfoProvider.notifyServiceInfoChange(context);
-    }
-
-    public static boolean isStageEnabled(Context context, String paymentStage) {
+    public static boolean isStageEnabled(Context context, String flowStage) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        switch (paymentStage) {
+        switch (flowStage) {
             case PRE_FLOW:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_preflow), context.getResources().getBoolean(R.bool.pre_flow_default));
             case SPLIT:
@@ -58,23 +45,4 @@ public class ServiceStateHandler {
         }
     }
 
-    private static ComponentName getComponentFromPreferenceKey(Context context, String preferenceKey) {
-
-        String service = null;
-        if (preferenceKey.equals(context.getString(R.string.pref_preflow))) {
-            service = PreFlowService.class.getName();
-        } else if (preferenceKey.equals(context.getString(R.string.pref_split))) {
-            service = SplitService.class.getName();
-        } else if (preferenceKey.equals(context.getString(R.string.pref_prepayment))) {
-            service = PreTransactionService.class.getName();
-        } else if (preferenceKey.equals(context.getString(R.string.pref_postcard))) {
-            service = PostCardService.class.getName();
-        } else if (preferenceKey.equals(context.getString(R.string.pref_postpayment))) {
-            service = PostTransactionService.class.getName();
-        } else if (preferenceKey.equals(context.getString(R.string.pref_postflow))) {
-            service = PostFlowService.class.getName();
-        }
-
-        return new ComponentName(context.getPackageName(), service);
-    }
 }

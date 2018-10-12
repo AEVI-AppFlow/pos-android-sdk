@@ -23,7 +23,7 @@ ext {
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
 
-    posFlowSdkConstants = '2.0.3'
+    posFlowSdkConstants = '2.0.4'
 
     androidBuildVersion = "28.0.2"
     projectTargetSdkVersion = 28
