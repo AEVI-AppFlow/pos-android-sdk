@@ -88,12 +88,44 @@ def exportedProjects = [
         ":payment-service-api"
 ]
 
+def baseAndFlowService = [
+        ":flow-base-api",
+        ":flow-service-api"
+]
+
+def baseAndInitiation = [
+        ":flow-base-api",
+        ":payment-initiation-api"
+]
+
 configure(subprojects.findAll {
     exportedProjects.contains(":" + it.name)
 }) {
     apply plugin: 'java'
     apply plugin: 'de.fuerstenau.buildconfig'
     apply plugin: 'idea'
+}
+
+task mergeBaseAndFlowServiceDocs(type: Javadoc) {
+    source baseAndFlowService.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndFlowService.collect { project(it).sourceSets.main.compileClasspath }, baseAndFlowService.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
+    title = "Payment Flow Service API"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task mergeBaseAndInitiationDocs(type: Javadoc) {
+    source baseAndInitiation.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndInitiation.collect { project(it).sourceSets.main.compileClasspath }, baseAndInitiation.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-initiation-api')
+    title = "Payment Initiation API"
+    exclude "**/**ClientImpl**"
+    exclude "**/BasePaymentModel**"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
 task alljavadoc(type: Javadoc) {
