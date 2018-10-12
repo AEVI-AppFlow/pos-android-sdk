@@ -57,7 +57,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onFinish() {
-        postFlowModel.complete();
+        postFlowModel.sendResponse();
         finish();
     }
 

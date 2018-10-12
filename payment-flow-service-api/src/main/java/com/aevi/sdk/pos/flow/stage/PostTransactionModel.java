@@ -33,7 +33,7 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 public class PostTransactionModel extends BaseStageModel {
 
     private final TransactionSummary transactionSummary;
-    private FlowResponse flowResponse;
+    private final FlowResponse flowResponse;
 
     private PostTransactionModel(Activity activity, BaseApiService service, String clientMessageId, TransactionSummary transactionSummary) {
         super(activity, service, clientMessageId);

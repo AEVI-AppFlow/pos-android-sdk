@@ -64,9 +64,16 @@ public class GenericStageModel extends BaseStageModel {
      * Send off the response.
      *
      * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     *
+     * @param response The response
      */
     public void sendResponse(Response response) {
         doSendResponse(response.toJson());
+    }
+
+    @Override
+    public void sendResponse() {
+        doSendResponse(new Response(request, false, "No response set").toJson());
     }
 
     @Override

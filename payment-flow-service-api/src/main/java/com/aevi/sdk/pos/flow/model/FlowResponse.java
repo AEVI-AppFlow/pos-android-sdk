@@ -240,7 +240,7 @@ public class FlowResponse implements Sendable {
     /**
      * Check whether to cancel the transaction / flow.
      *
-     * @return True to cancel, false otheriwse
+     * @return True to cancel, false otherwise
      */
     public boolean shouldCancelTransaction() {
         return cancelTransaction;
@@ -261,6 +261,22 @@ public class FlowResponse implements Sendable {
     @Override
     public String getId() {
         return id;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param flowResponse Flow response
+     */
+    public void copyFrom(FlowResponse flowResponse) {
+        this.id = flowResponse.id;
+        this.updatedRequestAmounts = flowResponse.updatedRequestAmounts;
+        this.requestAdditionalData = flowResponse.requestAdditionalData;
+        this.amountsPaid = flowResponse.amountsPaid;
+        this.amountsPaidPaymentMethod = flowResponse.amountsPaidPaymentMethod;
+        this.paymentReferences = flowResponse.paymentReferences;
+        this.enableSplit = flowResponse.enableSplit;
+        this.cancelTransaction = flowResponse.cancelTransaction;
     }
 
     private void validateAmounts() {

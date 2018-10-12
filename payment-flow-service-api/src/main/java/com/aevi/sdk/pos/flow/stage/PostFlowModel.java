@@ -88,7 +88,7 @@ public class PostFlowModel extends BaseStageModel {
     /**
      * Call when finished processing.
      */
-    public void complete() {
+    public void sendResponse() {
         doSendResponse(new NoOpModel().toJson());
     }
 

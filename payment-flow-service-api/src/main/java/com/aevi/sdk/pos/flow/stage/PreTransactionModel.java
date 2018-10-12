@@ -37,8 +37,8 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 public class PreTransactionModel extends BaseStageModel {
 
     private final TransactionRequest transactionRequest;
-    private AmountsModifier amountsModifier;
-    private FlowResponse flowResponse;
+    private final AmountsModifier amountsModifier;
+    private final FlowResponse flowResponse;
 
     private PreTransactionModel(Activity activity, BaseApiService service, String clientMessageId, @NonNull TransactionRequest transactionRequest) {
         super(activity, service, clientMessageId);

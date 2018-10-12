@@ -72,6 +72,13 @@ public abstract class BaseStageModel {
     }
 
     /**
+     * Send off the response.
+     *
+     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     */
+    public abstract void sendResponse();
+
+    /**
      * Do send the response back to the calling client.
      *
      * @param response The response
