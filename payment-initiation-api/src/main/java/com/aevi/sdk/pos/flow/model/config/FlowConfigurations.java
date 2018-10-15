@@ -126,6 +126,7 @@ public class FlowConfigurations {
     /**
      * Check whether a particular flow has the provided stage defined.
      *
+     * @param stage    The flow stage
      * @param flowName The flow to check if the stage is defined for
      * @return True if the flow has the stage defined, false otherwise
      */
