@@ -78,7 +78,7 @@ reusable-steps:
   - &publish_to_qa
     run:
       name: Publish to QA
-      command: ./gradlew javadocs assembleRelease jar publishReleasePublicationToQaRepository publishJavadocsByVersion
+      command: ./gradlew javadocs assembleRelease jar publishApiJarPublicationToQaRepository publishReleasePublicationToQaRepository publishJavadocsByVersion
   - &publish_to_snapshot
     run:
       name: Publish to Snapshot

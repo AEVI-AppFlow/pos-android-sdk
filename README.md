@@ -54,12 +54,12 @@ And then for each project/module where you want to integrate with the APIs (repl
 
 ### Payment Initiation API
 ```
-implementation 'com.aevi.sdk.flow:payment-initiation-api:<version>'
+implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:<version>'
 ```
 
 ### Payment Flow Service API
 ```
-implementation 'com.aevi.sdk.flow:payment-flow-service-api:<version>'
+implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 ```
 
 ### Constants
