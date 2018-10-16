@@ -17,15 +17,13 @@ reusable-steps:
   - &restore_cache
     restore_cache:
       keys:
-      - v1-dependencies-{{ checksum "dependencies.gradle" }}
-      # fallback to using the latest cache if no exact match is found
-      - v1-dependencies-
+      - v2-dependencies-{{ checksum "dependencies.gradle" }}
   - &save_cache
     save_cache:
       paths:
         - ~/.gradle
         - ~/.android
-      key: v1-dependencies-{{ checksum "dependencies.gradle" }}
+      key: v2-dependencies-{{ checksum "dependencies.gradle" }}
   - &setup_aws_cli
     run:
       name: Setup AWS CLI
@@ -80,7 +78,7 @@ reusable-steps:
   - &publish_to_qa
     run:
       name: Publish to QA
-      command: ./gradlew assembleRelease publishReleasePublicationToQaRepository
+      command: ./gradlew javadocs assembleRelease jar publishReleasePublicationToQaRepository publishJavadocsByVersion
   - &publish_to_snapshot
     run:
       name: Publish to Snapshot
@@ -88,7 +86,7 @@ reusable-steps:
   - &publish_to_release
     run:
       name: Publish to Release
-      command: ./gradlew javadoc assembleRelease jar publishJavadocsByVersion publishJavadocsAsLatest publishReleasePublicationToReleaseRepository bintrayUpload
+      command: ./gradlew javadocs assembleRelease jar publishJavadocsByVersion publishJavadocsAsLatest publishReleasePublicationToReleaseRepository bintrayUpload
 
 
 
@@ -101,9 +99,9 @@ jobs:
       - *gradle_props
       - *restore_cache
       - *download_android_deps
-      - *save_cache
       - *test
       - *build
+      - *save_cache
       - *store
       - *persist
 
