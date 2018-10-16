@@ -16,17 +16,19 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.Nullable;
 
-import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Sendable;
+
+import java.util.Arrays;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 /**
  * Response model for augmenting the flow.
  *
- * Note that this is mainly intended for internal use by the stage models.
+ * Note that this is intended for internal use by the stage models.
  */
 public class FlowResponse implements Sendable {
 
@@ -35,6 +37,8 @@ public class FlowResponse implements Sendable {
     private AdditionalData requestAdditionalData;
 
     private Amounts amountsPaid;
+    private Basket basket;
+    private Customer customer;
     private String amountsPaidPaymentMethod;
 
     private AdditionalData paymentReferences;
@@ -68,28 +72,67 @@ public class FlowResponse implements Sendable {
      *
      * @return The updated request amounts
      */
+    @Nullable
     public Amounts getUpdatedRequestAmounts() {
         return updatedRequestAmounts;
     }
 
     /**
-     * This can be used to add or update the amount values and/or the currency used in the request for this transaction.
-     *
-     * Please use {@link AmountsModifier} (construct with amounts from request) to augment the request amounts correctly.
-     *
-     * Note that only split applications are allowed to modify the base amount. For all other cases, such as adding a fee, charity contribution, etc
-     * {@link AmountsModifier#setAdditionalAmount(String, long)} should be used where the identifier can be "surcharge" or "charity", etc.
-     *
-     * This can be combined with setting amounts paid as long as the paid amount does not exceed the updated requested amount.
-     *
-     * Changing request amounts is only allowed in {@link FlowStages#PRE_FLOW}, {@link FlowStages#PRE_TRANSACTION}
-     * and {@link FlowStages#POST_CARD_READING} stages.
+     * Update request amounts.
      *
      * @param modifiedRequestAmounts The updated amounts
      */
     public void updateRequestAmounts(Amounts modifiedRequestAmounts) {
         this.updatedRequestAmounts = modifiedRequestAmounts;
         validateAmounts();
+    }
+
+    /**
+     * Add or update customer details.
+     *
+     * @param customer The customer details
+     */
+    public void addOrUpdateCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    /**
+     * Get the customer details
+     *
+     * @return The customer details
+     */
+    @Nullable
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * Add a basket.
+     *
+     * @param basket The basket
+     */
+    public void addBasket(Basket basket) {
+        this.basket = basket;
+    }
+
+    /**
+     * Update an existing basket.
+     *
+     * @param basketId    Basket id of existing basket
+     * @param basketItems Basket items to add
+     */
+    public void updateBasket(String basketId, BasketItem... basketItems) {
+        this.basket = new Basket(basketId, "", Arrays.asList(basketItems));
+    }
+
+    /**
+     * Get basket.
+     *
+     * @return The basket
+     */
+    @Nullable
+    public Basket getBasket() {
+        return basket;
     }
 
     /**
@@ -113,21 +156,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * This can be used to set an amount that has been paid for outside of the payment app.
-     *
-     * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
-     * Examples are loyalty points, cash, etc.
-     *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
-     *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
-     *
-     * Optional reference data can be set via {@link #setPaymentReferences(AdditionalData)}
-     *
-     * Paying off amounts will only have an impact if set during {@link FlowStages#PRE_TRANSACTION} and {@link FlowStages#POST_CARD_READING}.
-     *
-     * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
-     * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
+     * Set amounts paid.
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
@@ -149,15 +178,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * Convenience wrapper for adding additional request data.
-     *
-     * This can be used to set arbitrary data to be passed on in the request to down-stream flow apps and/or payment apps.
-     *
-     * This will overwrite any existing data with the same key.
-     *
-     * This call won't have any effect if set after {@link FlowStages#TRANSACTION_PROCESSING}.
-     *
-     * See {@link AdditionalData#addData(String, Object[])} for more info.
+     * Add request data.
      *
      * @param key    The key to use for this data
      * @param values An array of values for this data
@@ -172,11 +193,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * This can be used to set arbitrary data to be passed on in the request to down-stream flow apps and/or payment apps.
-     *
-     * This will overwrite any existing data with the same key.
-     *
-     * This call won't have any effect if set after {@link FlowStages#TRANSACTION_PROCESSING}.
+     * Set additional request data.
      *
      * @param requestAdditionalData Additional data to set in the request.
      */
@@ -195,12 +212,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * Optional references that are added to the transaction response references.
-     *
-     * If used together with {@link #setAmountsPaid(Amounts, String)}, this will be set in the transaction response.
-     *
-     * Only relevant for {@link FlowStages#POST_TRANSACTION} where these will be copied into the existing transaction response references.
-     * Note that overwriting existing values will NOT be allowed in this case.
+     * Set payment references.
      *
      * @param paymentReferences The references via Options
      */
@@ -227,9 +239,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * This can be used to override the splitEnabled flag in the source request, to allow the transaction to be split.
-     *
-     * Note that this call only has an effect in the {@link FlowStages#PRE_FLOW} stage.
+     * Enable or disable split.
      *
      * @param enableSplit True to enable split, false to disable it
      */
@@ -247,10 +257,7 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * Request that the current transaction should be cancelled.
-     *
-     * Note that there is no guarantee that this request is fulfilled. The current transaction stage, state and acquirer/merchant configuration
-     * determines whether such a request is allowed at any given point during a transaction.
+     * Cancel transaction.
      *
      * @param cancelTransaction True if transaction should be cancelled.
      */

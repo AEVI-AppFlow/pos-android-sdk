@@ -17,8 +17,8 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
@@ -34,6 +34,8 @@ public class PaymentBuilder {
 
     private String flowName;
     private Amounts amounts;
+    private Basket basket;
+    private Customer customer;
     private boolean splitEnabled;
     private Token cardToken;
     private AdditionalData additionalData = new AdditionalData();
@@ -46,6 +48,8 @@ public class PaymentBuilder {
     public PaymentBuilder(Payment paymentToCopyFrom) {
         flowName = paymentToCopyFrom.getFlowName();
         amounts = paymentToCopyFrom.getAmounts();
+        basket = paymentToCopyFrom.getBasket();
+        customer = paymentToCopyFrom.getCustomer();
         splitEnabled = paymentToCopyFrom.isSplitEnabled();
         cardToken = paymentToCopyFrom.getCardToken();
         additionalData = paymentToCopyFrom.getAdditionalData();
@@ -80,6 +84,35 @@ public class PaymentBuilder {
     @NonNull
     public PaymentBuilder withAmounts(Amounts amounts) {
         this.amounts = amounts;
+        return this;
+    }
+
+    /**
+     * Add a basket for this payment.
+     *
+     * Note that {@link #withAmounts(Amounts)} must be called to reflect the value of the basket. This API and the flow processing service do not
+     * take the basket data into account for any processing.
+     *
+     * @param basket The basket
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withBasket(Basket basket) {
+        this.basket = basket;
+        return this;
+    }
+
+    /**
+     * Add customer details for this payment.
+     *
+     * Note that this should not be set for a split payment.
+     *
+     * @param customer Customer details
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withCustomer(Customer customer) {
+        this.customer = customer;
         return this;
     }
 
@@ -119,7 +152,7 @@ public class PaymentBuilder {
      *
      * @param key    The key to use for this data
      * @param values An array of values for this data
-     * @param <T>    The paymentFunction of object this data is an array of
+     * @param <T>    The type of object this data is an array of
      * @return This builder
      */
     @NonNull
@@ -175,12 +208,9 @@ public class PaymentBuilder {
         if (cardToken != null && splitEnabled) {
             throw new IllegalArgumentException("Card token can not be set for a split payment as token relates to only one customer");
         }
-        if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
-            Basket basket = additionalData.getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
-            if (basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
-                throw new IllegalArgumentException("Basket total value must match the request amount base value!");
-            }
+        if (basket != null && basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
+            throw new IllegalArgumentException("The basket total value must match base amounts value");
         }
-        return new Payment(flowName, amounts, splitEnabled, cardToken, additionalData, source, deviceId);
+        return new Payment(flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
     }
 }

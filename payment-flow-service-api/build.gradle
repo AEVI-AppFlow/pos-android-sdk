@@ -14,13 +14,11 @@ dependencies {
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
     implementation apiDependencies.jsonConverter
-    implementation apiDependencies.posFlowConstants
 
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
-    testImplementation apiDependencies.posFlowConstants
 }
 
 buildConfig {

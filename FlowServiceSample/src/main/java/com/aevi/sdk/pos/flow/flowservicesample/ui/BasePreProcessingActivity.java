@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.PaymentMethods;
@@ -132,14 +131,14 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
     @OnClick(R.id.add_customer_data)
     public void addCustomerData(View v) {
         Customer customer;
-        if (transactionRequest.getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_CUSTOMER)) {
-            customer = transactionRequest.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_CUSTOMER, Customer.class);
+        if (transactionRequest.getCustomer() != null) {
+            customer = transactionRequest.getCustomer();
             customer.addCustomerDetails(CustomerDataKeys.CITY, "London");
             customer.addCustomerDetails("updatedBy", "PrePayment Sample");
         } else {
             customer = CustomerProducer.getDefaultCustomer("PrePayment Sample");
         }
-        preTransactionModel.addRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
+        preTransactionModel.addOrUpdateCustomerDetails(customer);
         updateModel();
         v.setEnabled(false);
     }

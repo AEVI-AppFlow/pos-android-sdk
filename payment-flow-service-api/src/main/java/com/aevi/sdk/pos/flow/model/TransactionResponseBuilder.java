@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.AdditionalData;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
@@ -35,7 +34,7 @@ public final class TransactionResponseBuilder {
     private String outcomeMessage;
     private Amounts amounts;
     private String responseCode;
-    private String paymentMethod = PaymentMethods.CARD; // Default to card
+    private String paymentMethod = TransactionResponse.DEFAULT_PAYMENT_METHOD;
     private AdditionalData references = new AdditionalData();
 
     /**

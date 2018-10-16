@@ -80,6 +80,12 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         if (payment.getCardToken() != null) {
             adapter.addSection(createTokenSection(payment.getCardToken()));
         }
+        if (payment.getBasket() != null) {
+            addBasketSection(payment.getBasket(), payment.getAmounts().getCurrency());
+        }
+        if (payment.getCustomer() != null) {
+            addCustomerSection(payment.getCustomer());
+        }
 
         addDataSections(payment.getAdditionalData(), payment.getAmounts().getCurrency());
         setupRecyclerView(R.string.payment_model_overview);
@@ -129,6 +135,13 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             adapter.addSection(createCardSection(transactionRequest.getCard()));
         }
 
+        if (transactionRequest.getBaskets().size() > 0) {
+            addBasketSections(transactionRequest.getBaskets(), transactionRequest.getAmounts().getCurrency());
+        }
+        if (transactionRequest.getCustomer() != null) {
+            addCustomerSection(transactionRequest.getCustomer());
+        }
+
         addDataSections(transactionRequest.getAdditionalData(), transactionRequest.getAmounts().getCurrency());
         setupRecyclerView(R.string.txn_request_model_overview);
     }
@@ -142,9 +155,13 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         addAmountInfo(summaryInfo, splitRequest.getSourcePayment().getAmounts(), null);
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, summaryInfo, true));
 
-        int count = 1;
-        for (Transaction transaction : splitRequest.getTransactions()) {
-            addTransactionSection(transaction, count++);
+        if (splitRequest.hasPreviousTransactions()) {
+            int count = 1;
+            for (Transaction transaction : splitRequest.getTransactions()) {
+                addTransactionSection(transaction, count++);
+            }
+        } else {
+            addBasketSection(splitRequest.getSourcePayment().getBasket(), splitRequest.getSourcePayment().getAmounts().getCurrency());
         }
 
         setupRecyclerView(R.string.split_request_model_overview);
@@ -233,6 +250,8 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         transactionInfo.add(getStringPair(R.string.total_amount_processed, AmountFormatter.formatAmount(transaction.getRequestedAmounts().getCurrency(),
                 transaction.getProcessedAmounts().getTotalAmountValue())));
         transactionInfo.add(getStringPair(R.string.num_responses, transaction.getTransactionResponses().size()));
+        transactionInfo.add(getStringPair(R.string.num_baskets, transaction.getBaskets().size()));
+        transactionInfo.add(getStringPair(R.string.customer_details, transaction.getCustomer() != null));
 
         adapter.addSection(new TransactionSection(getActivity(), transactionInfo, transaction.getTransactionResponses(), index));
     }
@@ -273,6 +292,14 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             currency = flowResponse.getAmountsPaid().getCurrency();
         }
 
+        if (flowResponse.getBasket() != null) {
+            addBasketSection(flowResponse.getBasket(), currency);
+        }
+
+        if (flowResponse.getCustomer() != null) {
+            addCustomerSection(flowResponse.getCustomer());
+        }
+
         if (flowResponse.getRequestAdditionalData() != null) {
             addDataSections(flowResponse.getRequestAdditionalData(), currency, R.string.additional_request_data);
         }
@@ -291,14 +318,21 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         setupRecyclerView(R.string.general_data);
     }
 
-    private void addDataSections(AdditionalData additionalData, String currency, int... sectionTitle) {
-        if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
-            adapter.addSection(createBasketSection(additionalData.getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class), currency, true));
+    private void addBasketSections(List<Basket> baskets, String currency) {
+        for (int i = 0; i < baskets.size(); i++) {
+            adapter.addSection(createBasketSection(baskets.get(i), currency, true, i));
         }
+    }
 
-        if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_CUSTOMER)) {
-            adapter.addSection(createCustomerSection(additionalData.getValue(AdditionalDataKeys.DATA_KEY_CUSTOMER, Customer.class)));
-        }
+    private void addBasketSection(Basket basket, String currency) {
+        adapter.addSection(createBasketSection(basket, currency, true, 0));
+    }
+
+    private void addCustomerSection(Customer customer) {
+        adapter.addSection(createCustomerSection(customer));
+    }
+
+    private void addDataSections(AdditionalData additionalData, String currency, int... sectionTitle) {
 
         if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_TOKEN)) {
             adapter.addSection(createTokenSection(additionalData.getValue(AdditionalDataKeys.DATA_KEY_TOKEN, Token.class)));
@@ -317,8 +351,9 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
     }
 
-    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems) {
+    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, int basketIndex) {
         List<Pair<String, String>> basketInfo = new ArrayList<>();
+        basketInfo.add(getStringPair(R.string.basket_name, basket.getBasketName()));
         basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
         basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
         if (addItems) {
@@ -327,7 +362,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
                 basketInfo.add(getStringPair(R.string.item, detail));
             }
         }
-        return new RecyclerViewSection(getActivity(), R.string.basket_details, basketInfo, false);
+        return new RecyclerViewSection(getActivity(), getString(R.string.basket_title, basketIndex + 1), basketInfo, false);
     }
 
     private RecyclerViewSection createCustomerSection(Customer customer) {

@@ -165,7 +165,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 request.addAdditionalData(ReceiptKeys.RECEIPT_OUTCOME, outcome);
                 break;
             case SHOW_LOYALTY_POINTS_REQUEST:
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+                request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
                 break;
             default:
                 // No extra data required

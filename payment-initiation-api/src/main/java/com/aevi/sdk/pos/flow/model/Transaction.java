@@ -20,16 +20,20 @@ import android.support.annotation.Nullable;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
 
 /**
  * Represents a transaction for a single customer (aka split).
+ *
+ * Instances of {@link TransactionRequest} are created from this information to give applications a snapshot of the current state of the transaction.
  *
  * A transaction can contain one or more {@link TransactionResponse} from different sources, using potentially different payment methods.
  *
@@ -39,33 +43,30 @@ import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
 public class Transaction extends BaseModel {
 
     private Amounts requestedAmounts;
+    private List<Basket> baskets;
+    private Customer customer;
     private final AdditionalData additionalData;
     private final List<TransactionResponse> transactionResponses;
     private final List<FlowAppInfo> executedFlowApps;
 
     // Default constructor for deserialisation
     Transaction() {
-        this(new Amounts());
+        this(new Amounts(), null, null, null);
     }
 
-    public Transaction(Amounts requestedAmounts) {
-        this(requestedAmounts, new AdditionalData());
+    public Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData) {
+        this(requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(), new ArrayList<FlowAppInfo>());
     }
 
-    public Transaction(Amounts requestedAmounts, AdditionalData additionalData) {
+    Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,
+                List<TransactionResponse> transactionResponses, List<FlowAppInfo> executedFlowApps) {
         super(UUID.randomUUID().toString());
         this.requestedAmounts = requestedAmounts;
+        this.baskets = baskets;
+        this.customer = customer;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
-        executedFlowApps = new ArrayList<>();
-        transactionResponses = new ArrayList<>();
-    }
-
-    public Transaction(Transaction other, Amounts newAmounts) {
-        super(other.getId());
-        this.additionalData = other.additionalData;
-        this.executedFlowApps = other.executedFlowApps;
-        this.transactionResponses = other.transactionResponses;
-        this.requestedAmounts = newAmounts;
+        this.executedFlowApps = executedFlowApps;
+        this.transactionResponses = transactionResponses;
     }
 
     /**
@@ -75,6 +76,47 @@ public class Transaction extends BaseModel {
      */
     public void updateAmounts(Amounts newAmounts) {
         this.requestedAmounts = newAmounts;
+    }
+
+    /**
+     * Get the list of baskets for this transaction
+     *
+     * @return The list of baskets
+     */
+    @NonNull
+    public List<Basket> getBaskets() {
+        if (baskets == null) {
+            baskets = new ArrayList<>();
+        }
+        return baskets;
+    }
+
+    /**
+     * Set the list of baskets for this transaction.
+     *
+     * @param baskets The list of baskets
+     */
+    public void setBaskets(List<Basket> baskets) {
+        this.baskets = baskets;
+    }
+
+    /**
+     * Get the customer details for this transaction.
+     *
+     * @return The customer details, or null if none set
+     */
+    @Nullable
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * Set the customer details for this transaction
+     *
+     * @param customer The customer details
+     */
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     /**
@@ -232,6 +274,8 @@ public class Transaction extends BaseModel {
     public String toString() {
         return "Transaction{" +
                 "requestedAmounts=" + requestedAmounts +
+                ", baskets=" + baskets +
+                ", customer=" + customer +
                 ", additionalData=" + additionalData +
                 ", transactionResponses=" + transactionResponses +
                 ", executedFlowApps=" + executedFlowApps +
@@ -240,37 +284,21 @@ public class Transaction extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Transaction that = (Transaction) o;
-
-        if (requestedAmounts != null ? !requestedAmounts.equals(that.requestedAmounts) : that.requestedAmounts != null) {
-            return false;
-        }
-        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) {
-            return false;
-        }
-        if (transactionResponses != null ? !transactionResponses.equals(that.transactionResponses) : that.transactionResponses != null) {
-            return false;
-        }
-        return executedFlowApps != null ? executedFlowApps.equals(that.executedFlowApps) : that.executedFlowApps == null;
+        return Objects.equals(requestedAmounts, that.requestedAmounts) &&
+                Objects.equals(baskets, that.baskets) &&
+                Objects.equals(customer, that.customer) &&
+                Objects.equals(additionalData, that.additionalData) &&
+                Objects.equals(transactionResponses, that.transactionResponses) &&
+                Objects.equals(executedFlowApps, that.executedFlowApps);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (requestedAmounts != null ? requestedAmounts.hashCode() : 0);
-        result = 31 * result + (additionalData != null ? additionalData.hashCode() : 0);
-        result = 31 * result + (transactionResponses != null ? transactionResponses.hashCode() : 0);
-        result = 31 * result + (executedFlowApps != null ? executedFlowApps.hashCode() : 0);
-        return result;
+
+        return Objects.hash(super.hashCode(), requestedAmounts, baskets, customer, additionalData, transactionResponses, executedFlowApps);
     }
 }

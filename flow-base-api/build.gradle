@@ -13,7 +13,6 @@ dependencies {
     implementation apiDependencies.jsonConverter
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
-    implementation apiDependencies.posFlowConstants
 
     testImplementation project(':payment-flow-service-api')
     testImplementation apiDependencies.androidMockable

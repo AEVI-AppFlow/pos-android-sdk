@@ -17,10 +17,14 @@ package com.aevi.sdk.pos.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Represents an immutable basket item with associated id, label, category, quantity and amount.
+ *
+ * A basket item may have a positive or negative amount, representing both purchases and applied discounts.
  *
  * Please create via {@link BasketItemBuilder}.
  */
@@ -31,27 +35,30 @@ public class BasketItem {
     private final String category;
     private final long amount;
     private final int quantity;
+    private final Map<String, String> references;
 
     // Default constructor for deserialisation
     BasketItem() {
-        this("", "", null, 0, 0);
+        this("", "", null, 0, 0, null);
     }
 
     /**
      * Create a new basket item with label, category, amount and quantity.
      *
-     * @param id       The identifier (SKU or similar) for this item
-     * @param label    The label of the item to show to merchants/customers, such as "Red onion"
-     * @param category The category the item belongs to, such as "vegetables" or "dairy"
-     * @param amount   The purchase amount for this (individual) item
-     * @param quantity    The number of this type of basket item (default is 1, below 0 will produce an exception)
+     * @param id         The identifier (SKU or similar) for this item
+     * @param label      The label of the item to show to merchants/customers, such as "Red onion"
+     * @param category   The category the item belongs to, such as "vegetables" or "dairy"
+     * @param amount     The purchase amount for this (individual) item
+     * @param quantity   The number of this type of basket item (default is 1, below 0 will produce an exception)
+     * @param references Custom references for this basket item
      */
-    BasketItem(String id, String label, String category, long amount, int quantity) {
+    BasketItem(String id, String label, String category, long amount, int quantity, Map<String, String> references) {
         this.id = id;
         this.label = label;
         this.category = category;
         this.amount = amount;
         this.quantity = quantity;
+        this.references = references;
     }
 
     /**
@@ -87,6 +94,8 @@ public class BasketItem {
     /**
      * Get the cost (amount) for a single item of this type.
      *
+     * Note that the amount may be negative in the case of discounts, etc.
+     *
      * @return The cost (amount) for a single item of this type
      */
     public long getIndividualAmount() {
@@ -95,6 +104,8 @@ public class BasketItem {
 
     /**
      * Get the total cost (amount) for the items of this type.
+     *
+     * Note that the amount may be negative in the case of discounts, etc.
      *
      * @return The total cost (amount) for the items of this type.
      */
@@ -111,14 +122,48 @@ public class BasketItem {
         return quantity;
     }
 
+    /**
+     * Check whether this basket item has any custom references.
+     *
+     * @return True if there are references, false otherwise
+     */
+    public boolean hasReferences() {
+        return references != null && !references.isEmpty();
+    }
+
+    /**
+     * Get the value for a reference by its key.
+     *
+     * @param referenceKey The key of the reference
+     * @return The reference value, or null if no such reference exists
+     */
+    @Nullable
+    public String getReference(String referenceKey) {
+        if (references != null) {
+            return references.get(referenceKey);
+        }
+        return null;
+    }
+
+    /**
+     * Get all item references.
+     *
+     * @return The item reference map
+     */
+    @NonNull
+    public Map<String, String> getReferences() {
+        return references != null ? references : new HashMap<String, String>();
+    }
+
     @Override
     public String toString() {
         return "BasketItem{" +
                 "id='" + id + '\'' +
-                ", quantity=" + quantity +
                 ", label='" + label + '\'' +
                 ", category='" + category + '\'' +
                 ", amount=" + amount +
+                ", quantity=" + quantity +
+                ", references=" + references +
                 '}';
     }
 
@@ -127,15 +172,24 @@ public class BasketItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BasketItem that = (BasketItem) o;
-        return quantity == that.quantity &&
-                amount == that.amount &&
+        return amount == that.amount &&
+                quantity == that.quantity &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(label, that.label) &&
-                Objects.equals(category, that.category);
+                Objects.equals(category, that.category) &&
+                referenceEquals(references, that.references);
+    }
+
+    private boolean referenceEquals(Map<String, String> refsOne, Map<String, String> refsTwo) {
+        if ((refsOne == null || refsOne.isEmpty()) && (refsTwo == null || refsTwo.isEmpty())) {
+            return true;
+        }
+        return Objects.equals(refsOne, refsTwo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, label, category, amount);
+
+        return Objects.hash(id, label, category, amount, quantity, references);
     }
 }

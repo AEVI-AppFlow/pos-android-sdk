@@ -16,6 +16,8 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -28,6 +30,7 @@ public class BasketItemBuilder {
     private String label;
     private String category;
     private long amount;
+    private Map<String, String> references;
 
     /**
      * Initialise the builder with a default random id.
@@ -47,6 +50,7 @@ public class BasketItemBuilder {
         this.label = copyFrom.getLabel();
         this.category = copyFrom.getCategory();
         this.amount = copyFrom.getIndividualAmount();
+        this.references = copyFrom.getReferences();
     }
 
     /**
@@ -153,12 +157,31 @@ public class BasketItemBuilder {
     /**
      * Set the item amount value.
      *
+     * Note that the amount value can be negative to represent discounts, etc.
+     *
      * @param amount The item amount value
      * @return This builder
      */
     @NonNull
     public BasketItemBuilder withAmount(long amount) {
         this.amount = amount;
+        return this;
+    }
+
+    /**
+     * Add a custom / additional reference to this basket item.
+     *
+     * This can be used to add further information about the basket item that is not covered by the primary fields.
+     *
+     * @param key   The reference key
+     * @param value The reference value
+     * @return This builder
+     */
+    public BasketItemBuilder withReference(String key, String value) {
+        if (references == null) {
+            references = new HashMap<>();
+        }
+        references.put(key, value);
         return this;
     }
 
@@ -178,6 +201,6 @@ public class BasketItemBuilder {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have a label");
         }
-        return new BasketItem(id, label, category, amount, quantity);
+        return new BasketItem(id, label, category, amount, quantity, references);
     }
 }

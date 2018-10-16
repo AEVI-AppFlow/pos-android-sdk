@@ -13,14 +13,14 @@ public class TransactionTest {
 
     @Test
     public void remainingAmountShouldEqualTotalForNoResponses() throws Exception {
-        transaction = new Transaction(new Amounts(1000, "GBP"));
+        transaction = new Transaction(new Amounts(1000, "GBP"), null, null, null);
 
         assertThat(transaction.getRemainingAmounts()).isEqualTo(transaction.getRequestedAmounts());
     }
 
     @Test
     public void remainingAmountShouldTakeProcessedAmountsIntoAccount() throws Exception {
-        transaction = new Transaction(new Amounts(1000, "GBP"));
+        transaction = new Transaction(new Amounts(1000, "GBP"), null, null, null);
         transaction.addTransactionResponse(getResponse(new Amounts(200, "GBP")));
         transaction.addTransactionResponse(getResponse(new Amounts(100, "GBP")));
         transaction.addTransactionResponse(getResponse(new Amounts(50, "GBP")));
@@ -31,7 +31,7 @@ public class TransactionTest {
 
     @Test
     public void processedAmountsShouldReturnSumOfResponsesProcessed() throws Exception {
-        transaction = new Transaction(new Amounts(1000, "GBP"));
+        transaction = new Transaction(new Amounts(1000, "GBP"), null, null, null);
         transaction.addTransactionResponse(getResponse(new Amounts(200, "GBP")));
         transaction.addTransactionResponse(getResponse(new Amounts(100, "GBP")));
         transaction.addTransactionResponse(getResponse(new Amounts(50, "GBP")));

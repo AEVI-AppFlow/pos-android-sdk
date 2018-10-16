@@ -100,6 +100,26 @@ public class AmountsModifier {
     }
 
     /**
+     * Offset the base request amount with a positive or negative value.
+     *
+     * Note that this is only allowed during certain stages in the flow. See documentation for details.
+     *
+     * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long)}.
+     *
+     * @param baseAmountOffset The amount to offset with. Positive to increase, negative to decrease.
+     * @return This builder
+     */
+    @NonNull
+    public AmountsModifier offsetBaseAmount(long baseAmountOffset) {
+        baseAmount += baseAmountOffset;
+        if (baseAmount < 0) {
+            throw new IllegalArgumentException("Total base amount value may not be negative");
+        }
+        hasModifications = true;
+        return this;
+    }
+
+    /**
      * Set or update an additional request amount with an amount value.
      *
      * Must be 0 or greater.

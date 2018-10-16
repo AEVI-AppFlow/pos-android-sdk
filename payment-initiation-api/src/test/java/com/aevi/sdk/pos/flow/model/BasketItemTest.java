@@ -6,7 +6,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class BasketItemTest {
 
-    private BasketItem defaultItem = new BasketItem("123", "Pandoras Box", "Greek Myths", 1000, 2);
+    private BasketItem defaultItem = new BasketItem("123", "Pandoras Box", "Greek Myths", 1000, 2, null);
 
     @Test
     public void checkFieldSetCorrectly() {
