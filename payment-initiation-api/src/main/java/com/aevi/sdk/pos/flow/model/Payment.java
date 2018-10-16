@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.util.json.JsonConverter;
@@ -38,6 +39,8 @@ public class Payment extends BaseModel {
 
     private final String flowName;
     private final Amounts amounts;
+    private final Basket basket;
+    private final Customer customer;
     private final boolean splitEnabled;
     private final Token cardToken;
     private final AdditionalData additionalData;
@@ -52,6 +55,8 @@ public class Payment extends BaseModel {
         this.flowName = "";
         this.isExternalId = false;
         this.amounts = new Amounts();
+        this.basket = null;
+        this.customer = null;
         this.splitEnabled = false;
         this.cardToken = null;
         this.additionalData = new AdditionalData();
@@ -62,13 +67,15 @@ public class Payment extends BaseModel {
     /**
      * Internal constructor for use from the Builder.
      */
-    Payment(String flowName, Amounts amounts, boolean splitEnabled, Token cardToken,
+    Payment(String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String source, String deviceId) {
         super(UUID.randomUUID().toString());
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
         this.flowName = flowName;
         this.isExternalId = false;
         this.amounts = amounts != null ? amounts : new Amounts();
+        this.basket = basket;
+        this.customer = customer;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
@@ -82,7 +89,7 @@ public class Payment extends BaseModel {
      *
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
-    Payment(String id, String requestSource, String flowName, Amounts amounts, boolean splitEnabled, Token cardToken,
+    Payment(String id, String requestSource, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String deviceId) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
@@ -90,6 +97,8 @@ public class Payment extends BaseModel {
         this.isExternalId = true;
         this.flowName = flowName;
         this.amounts = amounts != null ? amounts : new Amounts();
+        this.basket = basket;
+        this.customer = customer;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
@@ -111,6 +120,26 @@ public class Payment extends BaseModel {
     @NonNull
     public Amounts getAmounts() {
         return amounts;
+    }
+
+    /**
+     * Get the basket for this payment.
+     *
+     * @return The basket if set, or null
+     */
+    @Nullable
+    public Basket getBasket() {
+        return basket;
+    }
+
+    /**
+     * Get the customer details for this payment.
+     *
+     * @return The customer details, or null
+     */
+    @Nullable
+    public Customer getCustomer() {
+        return customer;
     }
 
     /**
@@ -223,6 +252,8 @@ public class Payment extends BaseModel {
         return "Payment{" +
                 "flowName='" + flowName + '\'' +
                 ", amounts=" + amounts +
+                ", basket=" + basket +
+                ", customer=" + customer +
                 ", splitEnabled=" + splitEnabled +
                 ", cardToken=" + cardToken +
                 ", additionalData=" + additionalData +
@@ -243,6 +274,8 @@ public class Payment extends BaseModel {
                 isExternalId == payment.isExternalId &&
                 Objects.equals(flowName, payment.flowName) &&
                 Objects.equals(amounts, payment.amounts) &&
+                Objects.equals(basket, payment.basket) &&
+                Objects.equals(customer, payment.customer) &&
                 Objects.equals(cardToken, payment.cardToken) &&
                 Objects.equals(additionalData, payment.additionalData) &&
                 Objects.equals(source, payment.source) &&
@@ -253,7 +286,7 @@ public class Payment extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), flowName, amounts, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId, flowType);
+        return Objects.hash(super.hashCode(), flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId, flowType);
     }
 
     @Override

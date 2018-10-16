@@ -37,7 +37,8 @@ public class TransactionSummary extends Transaction {
     }
 
     public TransactionSummary(Transaction transaction, String flowType, DeviceAudience deviceAudience, Card card) {
-        super(transaction, transaction.getRequestedAmounts());
+        super(transaction.getRequestedAmounts(), transaction.getBaskets(), transaction.getCustomer(), transaction.getAdditionalData(),
+                transaction.getTransactionResponses(), transaction.getExecutedFlowApps());
         this.flowType = flowType;
         this.deviceAudience = deviceAudience != null ? deviceAudience : DeviceAudience.MERCHANT;
         this.card = card != null ? card : Card.getEmptyCard();

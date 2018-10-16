@@ -3,8 +3,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.content.Context;
 
-import com.aevi.sdk.flow.constants.ServiceInfoDataKeys;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +64,7 @@ public class PaymentFlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getDefaultCurrency()).isEqualTo("GBP");
         assertThat(serviceInfo.getLogicalDeviceId()).isEqualTo("12345");
         assertThat(serviceInfo.supportsAccessibilityMode()).isEqualTo(true);
-        assertThat(serviceInfo.getAdditionalInfo().getValue(ServiceInfoDataKeys.SUPPORTS_MANUAL_ENTRY, Boolean.class)).isTrue();
+        assertThat(serviceInfo.getAdditionalInfo().getValue("supportsManualEntry", Boolean.class)).isTrue();
     }
 
     private void setAllMandatoryFields() {

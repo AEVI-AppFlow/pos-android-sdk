@@ -37,10 +37,11 @@
 
     <string name="customer">Customer</string>
     <string name="split_enabled">Split enabled</string>
+    <string name="basket_name">Basket name</string>
     <string name="basket_total">Basket total</string>
     <string name="basket_num_items">Num unique items</string>
     <string name="overview">Overview</string>
-    <string name="basket_details">Basket details</string>
+    <string name="basket_title">Basket #%1$d</string>
     <string name="item">Item</string>
     <string name="payment_stage">Payment stage</string>
     <string name="expiry_date">Expiry date</string>
@@ -70,6 +71,7 @@
     <string name="total_amount_requested">Total amount requested</string>
     <string name="total_amount_processed">Total amount processed</string>
     <string name="num_responses">Num transaction responses</string>
+    <string name="num_baskets">Number of baskets</string>
     <string name="transaction_index">Transaction #%1$d</string>
     <string name="response_index">Response #%1$d</string>
     <string name="success">SUCCESS</string>

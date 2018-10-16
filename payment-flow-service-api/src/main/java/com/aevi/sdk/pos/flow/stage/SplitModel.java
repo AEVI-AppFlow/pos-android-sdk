@@ -17,8 +17,6 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
-import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -101,8 +99,6 @@ public class SplitModel extends BaseStageModel {
      */
     public void setBaseAmountForNextTransaction(long baseAmount) {
         amountsModifier.updateBaseAmount(baseAmount);
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TXN, true);
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TYPE, SplitDataKeys.SPLIT_TYPE_AMOUNTS);
     }
 
     /**
@@ -113,10 +109,8 @@ public class SplitModel extends BaseStageModel {
      * @param basket The basket to process for the next transaction
      */
     public void setBasketForNextTransaction(Basket basket) {
-        flowResponse.addAdditionalRequestData(AdditionalDataKeys.DATA_KEY_BASKET, basket);
+        flowResponse.addBasket(basket);
         amountsModifier.updateBaseAmount(basket.getTotalBasketValue());
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TXN, true);
-        flowResponse.addAdditionalRequestData(SplitDataKeys.DATA_KEY_SPLIT_TYPE, SplitDataKeys.SPLIT_TYPE_BASKET);
     }
 
     /**

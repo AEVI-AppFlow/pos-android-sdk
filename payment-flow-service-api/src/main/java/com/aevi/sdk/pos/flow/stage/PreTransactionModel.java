@@ -18,13 +18,11 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.PaymentClient;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.AmountsModifier;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
@@ -146,6 +144,39 @@ public class PreTransactionModel extends BaseStageModel {
     }
 
     /**
+     * Add a new basket to the transaction.
+     *
+     * An application can either add a new basket via this method, or add more items to an existing basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
+     *
+     * This method is the recommended option to add "extras" to a purchase, whereas the other method is recommended to provide discounts, etc.
+     *
+     * The transaction base amount will automatically be updated to take the value of this basket into account.
+     *
+     * @param basket The basket to add
+     */
+    public void addNewBasket(Basket basket) {
+        flowResponse.addBasket(basket);
+        amountsModifier.offsetBaseAmount(basket.getTotalBasketValue());
+    }
+
+    /**
+     * Add items to an existing basket.
+     *
+     * The main use case for this is to allow applications to apply discounts to existing baskets.
+     *
+     * For adding "extras" to a transaction, please use {@link #addNewBasket(Basket)}.
+     *
+     * The transaction base amount will automatically be updated to take the value of these changes into account.
+     *
+     * @param basketId    The id of the basket to add the items to
+     * @param basketItems The basket items to add
+     */
+    public void addItemsToExistingBasket(String basketId, BasketItem... basketItems) {
+        flowResponse.updateBasket(basketId, basketItems);
+        amountsModifier.offsetBaseAmount(flowResponse.getBasket().getTotalBasketValue());
+    }
+
+    /**
      * Pay off a portion or the full requested amounts.
      *
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
@@ -186,6 +217,15 @@ public class PreTransactionModel extends BaseStageModel {
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod, AdditionalData paymentReferences) {
         flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
         flowResponse.setPaymentReferences(paymentReferences);
+    }
+
+    /**
+     * Add a customer or update existing customer details.
+     *
+     * @param customer The customer details
+     */
+    public void addOrUpdateCustomerDetails(Customer customer) {
+        flowResponse.addOrUpdateCustomer(customer);
     }
 
     /**

@@ -23,7 +23,7 @@ ext {
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
 
-    posFlowSdkConstants = '2.0.4'
+    posFlowSdkConstants = '2.0.6'
 
     androidBuildVersion = "28.0.2"
     projectTargetSdkVersion = 28
@@ -36,8 +36,7 @@ ext {
             gson              : "com.google.code.gson:gson:$gsonVersion",
             archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
             archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
-            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion",
-            posFlowConstants  : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants",
+            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion"
     ]
 
     sampleDependencies = [
@@ -50,7 +49,7 @@ ext {
             supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
             design           : "com.android.support:design:$designLibrary",
             constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            posFlowConstants : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants",
+            posFlowConstants : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants"
     ]
 
     sampleAptDependencies = [

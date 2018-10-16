@@ -17,15 +17,14 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-import com.aevi.sdk.flow.stage.GenericStageModel;
 
 import java.util.Random;
 
@@ -56,11 +55,11 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity {
         super.onResume();
         ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         AdditionalData loyaltyData = new AdditionalData();
-        Customer customer = request.getRequestData().getValue(AdditionalDataKeys.DATA_KEY_CUSTOMER, Customer.class);
+        Customer customer = request.getRequestData().getValue("customer", Customer.class);
         if (customer == null) {
             sendResponseAndFinish(new Response(request, false, "Customer data missing"));
         } else {
-            loyaltyData.addData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
+            loyaltyData.addData("customer", customer);
             loyaltyData.addData("loyaltyPointsBalance", new Random().nextInt(1000));
             loyaltyData.addData("loyaltySignUpDate", "2016-05-24");
             loyaltyData.addData("loyaltyAccumulatedTotal", new Random().nextInt(10000) + 1000);

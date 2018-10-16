@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aevi.android.rxmessenger.MessageException;
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -168,11 +167,11 @@ public class PaymentFragment extends BaseObservableFragment {
         if (!addBasketBox.isChecked()) {
             amountSpinner.setEnabled(true);
             amounts = getManualAmounts();
-            paymentBuilder.getCurrentAdditionalData().removeData(AdditionalDataKeys.DATA_KEY_BASKET);
+            paymentBuilder.withBasket(null);
         } else {
             amountSpinner.setEnabled(false);
             Basket basket = createBasket();
-            paymentBuilder.addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, basket);
+            paymentBuilder.withBasket(basket);
             amounts = new Amounts(basket.getTotalBasketValue(), (String) currencySpinner.getSelectedItem());
         }
         paymentBuilder.withAmounts(amounts);
@@ -181,9 +180,9 @@ public class PaymentFragment extends BaseObservableFragment {
         addCardTokenBox.setEnabled(!splitBox.isChecked());
 
         if (addCustomerBox.isChecked()) {
-            paymentBuilder.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+            paymentBuilder.withCustomer(CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
         } else {
-            paymentBuilder.getCurrentAdditionalData().removeData(AdditionalDataKeys.DATA_KEY_CUSTOMER);
+            paymentBuilder.withCustomer(null);
         }
 
         if (addCardTokenBox.isChecked()) {
@@ -218,12 +217,13 @@ public class PaymentFragment extends BaseObservableFragment {
     }
 
     private Basket createBasket() {
-        return new Basket(
+        return new Basket("sampleBasket",
                 // You can add single count items, with label, category and amount value
                 new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
+                new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
                 new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                 // You can also specify the initial count of the item and provide your own id
-                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(3).build());
+                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2).build());
     }
 
     @OnClick(R.id.send)

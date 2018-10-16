@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
-import com.aevi.sdk.flow.constants.ServiceInfoDataKeys;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
@@ -266,7 +265,7 @@ public class PaymentFlowServiceInfoBuilder {
      */
     @NonNull
     public PaymentFlowServiceInfoBuilder withMerchants(Merchant... merchants) {
-        additionalInfo.addData(ServiceInfoDataKeys.MERCHANTS, merchants);
+        additionalInfo.addData("merchants", merchants);
         return this;
     }
 
@@ -278,7 +277,7 @@ public class PaymentFlowServiceInfoBuilder {
      */
     @NonNull
     public PaymentFlowServiceInfoBuilder withManualEntrySupport(boolean manualEntrySupport) {
-        additionalInfo.addData(ServiceInfoDataKeys.SUPPORTS_MANUAL_ENTRY, manualEntrySupport);
+        additionalInfo.addData("supportsManualEntry", manualEntrySupport);
         return this;
     }
 

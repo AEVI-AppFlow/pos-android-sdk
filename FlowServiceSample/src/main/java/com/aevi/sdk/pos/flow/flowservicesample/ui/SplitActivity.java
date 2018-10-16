@@ -35,6 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.aevi.sdk.flow.constants.SplitDataKeys.*;
+
 /**
  * Sample for a split application.
  *
@@ -108,7 +110,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
             String prevInfoText;
             String lastSplitType = splitRequest.getLastTransaction().getAdditionalData().getStringValue(SplitDataKeys.DATA_KEY_SPLIT_TYPE);
 
-            if (lastSplitType.equals(SplitDataKeys.SPLIT_TYPE_BASKET)) {
+            if (lastSplitType.equals(SPLIT_TYPE_BASKET)) {
                 splitAmountsButton.setVisibility(View.GONE);
                 splitBasketButton.setText(R.string.add_remaining_basket_items);
                 prevInfoText = getPaidForBasketItems();
@@ -172,6 +174,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
         }
 
         splitModel.setBasketForNextTransaction(nextSplitBasket);
+        splitModel.addRequestData(SplitDataKeys.DATA_KEY_SPLIT_TYPE, SPLIT_TYPE_BASKET);
         updateModel();
     }
 
@@ -202,6 +205,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
         }
 
         splitModel.setBaseAmountForNextTransaction(splitBaseAmount);
+        splitModel.addRequestData(SplitDataKeys.DATA_KEY_SPLIT_TYPE, SPLIT_TYPE_AMOUNTS);
         updateModel();
     }
 

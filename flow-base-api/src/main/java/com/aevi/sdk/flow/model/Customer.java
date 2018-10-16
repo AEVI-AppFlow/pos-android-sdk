@@ -17,11 +17,9 @@ package com.aevi.sdk.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -170,24 +168,6 @@ public class Customer extends BaseModel {
     }
 
     /**
-     * Construct a full customer name from the option fields "firstName", "middleNames" and "surname" provided in the Customer details and
-     * then set the fullName field to the result.
-     *
-     * Example - "John", ["Steve"], "Doe" is set as "John Steve Doe".
-     *
-     * First name at a minimum is mandatory.
-     *
-     * @param customer Customer instance
-     */
-    public static void setFullNameFromCustomerDetails(Customer customer) {
-        String firstName = customer.getCustomerDetails().getValue(CustomerDataKeys.FIRST_NAME, String.class);
-        String surname = customer.getCustomerDetails().getValue(CustomerDataKeys.SURNAME, String.class);
-        String[] middleNames = customer.getCustomerDetails().getValue(CustomerDataKeys.MIDDLE_NAMES, String[].class);
-
-        customer.setFullName(constructFullName(firstName, middleNames, surname));
-    }
-
-    /**
      * Construct a full name from the provided first name, middle names and surname fields.
      *
      * Example - "John", ["Steve"], "Doe" returns "John Steve Doe".
@@ -220,41 +200,4 @@ public class Customer extends BaseModel {
         return nameBuilder.toString();
     }
 
-    /**
-     * Construct a Customer instance from the provided details.
-     *
-     * Throws IllegalArgumentException for invalid input.
-     *
-     * @param id       The id of the customer
-     * @param fullName The full name (as constructed by {@link #constructFullName(String, String[], String)} )
-     * @param tokens   The list of tokens to assign to the customer
-     * @return The Customer instance.
-     */
-    public static Customer fromFullNameAndToken(String id, String fullName, Token... tokens) {
-        String[] names = fullName.split(" ");
-        if (fullName.isEmpty() || names.length == 0) {
-            throw new IllegalArgumentException("Full name must contain a first name at a minimum");
-        }
-        if (tokens.length == 0) {
-            throw new IllegalArgumentException("Must specify at least one token");
-        }
-
-        Customer customer = new Customer(id);
-        customer.setFullName(fullName);
-        AdditionalData customerDetails = customer.getCustomerDetails();
-        customerDetails.addData(CustomerDataKeys.FIRST_NAME, names[0]);
-
-        if (names.length > 1) {
-            customerDetails.addData(CustomerDataKeys.SURNAME, names[names.length - 1]);
-        }
-
-        if (names.length > 2) {
-            String[] middleNames = new String[names.length - 2];
-            System.arraycopy(names, 1, middleNames, 0, middleNames.length);
-            customerDetails.addData(CustomerDataKeys.MIDDLE_NAMES, middleNames);
-        }
-
-        customer.getTokens().addAll(Arrays.asList(tokens));
-        return customer;
-    }
 }

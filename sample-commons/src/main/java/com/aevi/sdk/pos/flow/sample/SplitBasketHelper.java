@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.sample;
 
 import android.util.Log;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.pos.flow.model.*;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class SplitBasketHelper {
      * @return True if split via basket items is possible, false otherwise
      */
     public static boolean canSplitViaBasket(SplitRequest splitRequest) {
-        return splitRequest.getSourcePayment().getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_BASKET);
+        return splitRequest.getSourcePayment().getBasket() != null;
     }
 
     /**
@@ -60,25 +59,24 @@ public class SplitBasketHelper {
      *
      * This will set up the remaining and paid items baskets according to the information in the request.
      *
-     * @param splitRequest                  The split request
+     * @param splitRequest                     The split request
      * @param retainZeroQuantityRemainingItems If true, items with zero quantity will be added to remaining items. If false, zero quantity items will not be added.
      * @return An instance of SplitBasketHelper
      * @throws UnsupportedOperationException If there is no basket in the source payment
      */
     public static SplitBasketHelper createFromSplitRequest(SplitRequest splitRequest, boolean retainZeroQuantityRemainingItems) throws UnsupportedOperationException {
-        Basket sourceBasket = splitRequest.getSourcePayment().getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
+        Basket sourceBasket = splitRequest.getSourcePayment().getBasket();
         if (sourceBasket == null) {
             throw new UnsupportedOperationException("The source payment does not have any associated basket");
         }
 
         List<Basket> paidItemsPerSplit = new ArrayList<>();
-        Basket remainingItems = new Basket(sourceBasket.getBasketItems());
+        Basket remainingItems = new Basket("remainingItems", sourceBasket.getBasketItems());
 
         for (Transaction transaction : splitRequest.getTransactions()) {
             // TODO What if this is false ? How do we handle partially fulfilled!?
             if (transaction.hasProcessedRequestedAmounts()) {
-                Basket basket = transaction.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
-                if (basket != null) {
+                for (Basket basket : transaction.getBaskets()) {
                     paidItemsPerSplit.add(basket);
                     removeItems(remainingItems, basket, retainZeroQuantityRemainingItems);
                 }
@@ -93,17 +91,7 @@ public class SplitBasketHelper {
         this.sourceItems = sourceItems;
         this.paidItemsPerSplit = paidItemsPerSplit;
         this.remainingItems = remainingItems;
-        this.nextSplitItems = new Basket();
-    }
-
-    /**
-     * Check whether last transaction was declined.
-     *
-     * @return True if last transaction was declined, false otherwise
-     */
-    public boolean wasLastTransactionDeclined() {
-        return splitRequest.hasPreviousTransactions() && splitRequest.getLastTransaction().hasDeclinedResponses() &&
-                !splitRequest.getLastTransaction().hasProcessedRequestedAmounts();
+        this.nextSplitItems = new Basket("splitItems");
     }
 
     /**
@@ -141,7 +129,7 @@ public class SplitBasketHelper {
      * @return An aggregate basket with all the paid items from the list of transactions
      */
     public Basket getAllPaidItems() {
-        Basket basket = new Basket();
+        Basket basket = new Basket("paidItems");
         for (Basket txnBasket : paidItemsPerSplit) {
             for (BasketItem basketItem : txnBasket.getBasketItems()) {
                 basket.addItems(basketItem);

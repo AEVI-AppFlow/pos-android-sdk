@@ -2,7 +2,6 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Ignore
 public class SplitRequestTest {
 
     private static final long TOTAL_AMOUNT = 2000;
@@ -84,7 +82,7 @@ public class SplitRequestTest {
     }
 
     private void setupWithAllProcessed() {
-        Transaction transaction = new Transaction(new Amounts(TOTAL_AMOUNT, CURRENCY));
+        Transaction transaction = new Transaction(new Amounts(TOTAL_AMOUNT, CURRENCY), null, null, null);
         transaction.addTransactionResponse(getResponse(new Amounts(TOTAL_AMOUNT, CURRENCY)));
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
@@ -93,10 +91,10 @@ public class SplitRequestTest {
     }
 
     private void setupSplitRequestWith75PercentProcessed() {
-        Transaction transaction = new Transaction(new Amounts(TOTAL_AMOUNT / 2, CURRENCY));
+        Transaction transaction = new Transaction(new Amounts(TOTAL_AMOUNT / 2, CURRENCY), null, null, null);
         transaction.addTransactionResponse(getResponse(new Amounts(TOTAL_AMOUNT / 4, CURRENCY)));
 
-        Transaction transaction2 = new Transaction(new Amounts(TOTAL_AMOUNT / 2, CURRENCY));
+        Transaction transaction2 = new Transaction(new Amounts(TOTAL_AMOUNT / 2, CURRENCY), null, null, null);
         transaction2.addTransactionResponse(getResponse(new Amounts(TOTAL_AMOUNT / 2, CURRENCY)));
 
         List<Transaction> transactions = new ArrayList<>();
@@ -107,6 +105,6 @@ public class SplitRequestTest {
     }
 
     private static TransactionResponse getResponse(Amounts amounts) {
-        return new TransactionResponse("", null, null, null, amounts, null, null, null);
+        return new TransactionResponse("", null, TransactionResponse.Outcome.APPROVED, null, amounts, null, null, null);
     }
 }

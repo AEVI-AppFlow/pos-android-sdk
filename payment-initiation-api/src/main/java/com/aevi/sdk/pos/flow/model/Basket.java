@@ -18,16 +18,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
-import com.aevi.util.json.Jsonable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a basket consisting of one or multiple {@link BasketItem}.
+ *
+ * Baskets are uniquely identified via a randomly generated id, and also contains a name as a readable identifier.
  *
  * Basket items are kept in a list sorted by most recently added first.
  *
@@ -37,34 +37,62 @@ import java.util.Objects;
  * Note that as basket items are immutable, any update to items (such as merging or changing quantity) leads to new instances being created. For the
  * latest up to date item, always fetch via {@link #getItemById(String)}.
  */
-public class Basket implements Jsonable {
+public class Basket extends BaseModel {
 
+    private final String basketName;
     private final List<BasketItem> displayItems;
+    private final AdditionalData additionalBasketData;
 
     /**
      * Initialise an empty basket.
-     */
-    public Basket() {
-        displayItems = new ArrayList<>();
-    }
-
-    /**
-     * Initialise a basket based on the provided basket items.
      *
-     * @param basketItems The list of basket items to initialise the basket with
+     * @param basketName The name of the basket
      */
-    public Basket(List<BasketItem> basketItems) {
-        displayItems = basketItems;
+    public Basket(String basketName) {
+        this(basketName, new ArrayList<BasketItem>());
     }
 
     /**
      * Initialise a basket from the provided var-args items, maintaining the same order as they are specified in.
      *
+     * @param basketName  The name of the basket
      * @param basketItems The var-args list of basket items to initialise the basket with
      */
-    public Basket(BasketItem... basketItems) {
-        this();
-        displayItems.addAll(Arrays.asList(basketItems));
+    public Basket(String basketName, BasketItem... basketItems) {
+        this(basketName, Arrays.asList(basketItems));
+    }
+
+    /**
+     * Initialise a basket based on the provided basket items.
+     *
+     * @param basketName  The name of the basket
+     * @param basketItems The list of basket items to initialise the basket with
+     */
+    public Basket(String basketName, List<BasketItem> basketItems) {
+        this(UUID.randomUUID().toString(), basketName, basketItems);
+    }
+
+    /**
+     * Internal constructor for initialising basket.
+     *
+     * @param id          The id of the basket
+     * @param basketName  The name of the basket
+     * @param basketItems The list of basket items to initialise the basket with
+     */
+    Basket(String id, String basketName, List<BasketItem> basketItems) {
+        super(id);
+        this.basketName = basketName;
+        this.displayItems = basketItems;
+        this.additionalBasketData = new AdditionalData();
+    }
+
+    /**
+     * Get the name of the basket.
+     *
+     * @return Name of the basket
+     */
+    public String getBasketName() {
+        return basketName;
     }
 
     /**
@@ -105,7 +133,7 @@ public class Basket implements Jsonable {
      * Optionally, a min quantity parameter can be passed in to filter results against. If an item with the id is found and the min quantity is set,
      * this method will only return true if the item has at least the min quantity.
      *
-     * @param id       The id to match against
+     * @param id          The id to match against
      * @param minQuantity Optional param to specify a minimum quantity criteria
      * @return True if there is an item with matching id, false otherwise
      */
@@ -235,7 +263,7 @@ public class Basket implements Jsonable {
      *
      * The quantity must be zero or larger. Negative values are ignored.
      *
-     * @param itemId   The item id
+     * @param itemId      The item id
      * @param newQuantity The new quantity for the basket item (must be positive)
      * @return The item with the updated quantity or null if no item with id found
      */
@@ -311,6 +339,28 @@ public class Basket implements Jsonable {
         return total;
     }
 
+    /**
+     * Add additional data to this basket.
+     *
+     * See {@link AdditionalData#addData(String, Object[])} for more info.
+     *
+     * @param key    The key to use for this data
+     * @param values An array of values for this data
+     * @param <T>    The type of object this data is an array of
+     */
+    public <T> void addAdditionalData(String key, T... values) {
+        additionalBasketData.addData(key, values);
+    }
+
+    /**
+     * Get any additional data set for this basket.
+     *
+     * @return The additional basket data
+     */
+    public AdditionalData getAdditionalBasketData() {
+        return additionalBasketData;
+    }
+
     private BasketItem replaceItem(BasketItem existingItem, int quantityOffset, boolean retainIfZero) {
         BasketItem newItem = new BasketItemBuilder(existingItem).offsetQuantityBy(quantityOffset).build();
         if (newItem.getQuantity() == 0 && !retainIfZero) {
@@ -328,16 +378,16 @@ public class Basket implements Jsonable {
 
     @Override
     public String toString() {
-        return "Basket{" + "items=" + displayItems.size() + '}';
+        return "Basket{" + "basketName='" + basketName + '\'' + '}';
     }
 
     /**
      * Helper function to log all the items in the basket to Android logcat.
      */
     public void logBasketEntries() {
-        Log.i("Basket", "Items in basket");
+        Log.i("Basket", "Items in basket: " + basketName);
         for (BasketItem displayItem : displayItems) {
-            Log.i("Basket", displayItem.toString());
+            Log.i("BasketItem", displayItem.toString());
         }
     }
 
@@ -345,12 +395,15 @@ public class Basket implements Jsonable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Basket basket = (Basket) o;
-        return Objects.equals(displayItems, basket.displayItems);
+        return Objects.equals(basketName, basket.basketName) &&
+                Objects.equals(displayItems, basket.displayItems) &&
+                Objects.equals(additionalBasketData, basket.additionalBasketData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(displayItems);
+        return Objects.hash(super.hashCode(), basketName, displayItems, additionalBasketData);
     }
 }

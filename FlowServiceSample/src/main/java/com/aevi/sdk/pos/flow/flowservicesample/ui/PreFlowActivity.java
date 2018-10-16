@@ -19,7 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.FlowStages;
@@ -126,14 +125,14 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
     public void addCustomerData(View v) {
         Customer customer;
         Payment payment = preFlowModel.getPayment();
-        if (payment.getAdditionalData().hasData(AdditionalDataKeys.DATA_KEY_CUSTOMER)) {
-            customer = payment.getAdditionalData().getValue(AdditionalDataKeys.DATA_KEY_CUSTOMER, Customer.class);
+        if (payment.getCustomer() != null) {
+            customer = payment.getCustomer();
             customer.addCustomerDetails(CustomerDataKeys.CITY, "New York");
             customer.addCustomerDetails("updatedBy", "PreFlow Sample");
         } else {
             customer = CustomerProducer.getDefaultCustomer("PreFlow Sample");
         }
-        preFlowModel.addRequestData(AdditionalDataKeys.DATA_KEY_CUSTOMER, customer);
+        preFlowModel.addOrUpdateCustomerDetails(customer);
         updateModel();
         v.setEnabled(false);
     }

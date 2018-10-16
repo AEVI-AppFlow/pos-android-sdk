@@ -2,15 +2,10 @@ package com.aevi.sdk.pos.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 import com.google.gson.JsonParseException;
-import com.google.gson.stream.MalformedJsonException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.aevi.sdk.flow.constants.CardDataKeys.*;
-import static com.aevi.sdk.flow.constants.CardEntryMethods.*;
-import static com.aevi.sdk.flow.constants.CardNetworks.*;
-import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PaymentTest {
@@ -19,42 +14,24 @@ public class PaymentTest {
 
     @Before
     public void setup() {
-        defaultPayment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
+        defaultPayment = getValidRequest(1000, "GBP", "sale");
     }
 
     @Test
     public void canBuildValidRequest() {
-        Payment payment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
+        Payment payment = getValidRequest(1000, "GBP", "sale");
 
-        assertValues(payment, 1000, "GBP", FLOW_TYPE_SALE);
+        assertValues(payment, 1000, "GBP", "sale");
     }
 
     @Test
     public void canSerialiseAndDeserialize() {
-        Payment payment = getValidRequest(1000, "GBP", FLOW_TYPE_SALE);
+        Payment payment = getValidRequest(1000, "GBP", "sale");
 
         Payment result = Payment.fromJson(payment.toJson());
 
-        assertValues(result, 1000, "GBP", FLOW_TYPE_SALE);
+        assertValues(result, 1000, "GBP", "sale");
         assertThat(payment).isEqualTo(result);
-    }
-
-    @Test
-    public void canSetCardEntryMethods() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
-
-        Payment result = toFromJson(defaultPayment);
-
-        assertArrayOfOptions(result, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
-    }
-
-    @Test
-    public void canSetCardNetworks() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
-
-        Payment result = toFromJson(defaultPayment);
-
-        assertArrayOfOptions(result, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
     }
 
     @Test(expected = JsonParseException.class)

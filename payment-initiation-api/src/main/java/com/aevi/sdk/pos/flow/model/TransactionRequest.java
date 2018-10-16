@@ -19,9 +19,12 @@ import android.support.annotation.Nullable;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
@@ -33,6 +36,8 @@ public class TransactionRequest extends BaseModel {
 
     private final String flowType;
     private final Amounts amounts;
+    private final List<Basket> baskets;
+    private final Customer customer;
     private final String flowStage;
     private final AdditionalData additionalData;
     private final Card card;
@@ -41,7 +46,7 @@ public class TransactionRequest extends BaseModel {
 
     // Default constructor for deserialisation
     TransactionRequest() {
-        this("N/A", "", "", new Amounts(), new AdditionalData(), null);
+        this("N/A", "", "", new Amounts(), null, null, new AdditionalData(), null);
     }
 
     /**
@@ -51,14 +56,18 @@ public class TransactionRequest extends BaseModel {
      * @param flowType       The flow type
      * @param flowStage      The current flow stage
      * @param amounts        The amounts to process
+     * @param baskets        The baskets
+     * @param customer       The customer details
      * @param additionalData The additional data
      * @param card           The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String flowType, String flowStage, Amounts amounts, AdditionalData additionalData, Card card) {
+    public TransactionRequest(String id, String flowType, String flowStage, Amounts amounts, List<Basket> baskets, Customer customer, AdditionalData additionalData, Card card) {
         super(id);
         this.flowStage = flowStage;
         this.flowType = flowType;
         this.amounts = amounts;
+        this.baskets = baskets;
+        this.customer = customer;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.card = card != null ? card : Card.getEmptyCard();
         this.deviceAudience = DeviceAudience.MERCHANT;
@@ -88,6 +97,26 @@ public class TransactionRequest extends BaseModel {
     @Nullable
     public Amounts getAmounts() {
         return amounts;
+    }
+
+    /**
+     * Get the baskets for this transaction.
+     *
+     * @return The baskets
+     */
+    @NonNull
+    public List<Basket> getBaskets() {
+        return baskets != null ? baskets : new ArrayList<Basket>();
+    }
+
+    /**
+     * Get the customer details for this transaction.
+     *
+     * @return The customer details, or null
+     */
+    @Nullable
+    public Customer getCustomer() {
+        return customer;
     }
 
     /**
@@ -173,7 +202,9 @@ public class TransactionRequest extends BaseModel {
         return "TransactionRequest{" +
                 "flowType='" + flowType + '\'' +
                 ", amounts=" + amounts +
-                ", flowStage=" + flowStage +
+                ", baskets=" + baskets +
+                ", customer=" + customer +
+                ", flowStage='" + flowStage + '\'' +
                 ", additionalData=" + additionalData +
                 ", card=" + card +
                 ", deviceAudience=" + deviceAudience +
@@ -189,7 +220,9 @@ public class TransactionRequest extends BaseModel {
         TransactionRequest that = (TransactionRequest) o;
         return Objects.equals(flowType, that.flowType) &&
                 Objects.equals(amounts, that.amounts) &&
-                flowStage == that.flowStage &&
+                Objects.equals(baskets, that.baskets) &&
+                Objects.equals(customer, that.customer) &&
+                Objects.equals(flowStage, that.flowStage) &&
                 Objects.equals(additionalData, that.additionalData) &&
                 Objects.equals(card, that.card) &&
                 deviceAudience == that.deviceAudience &&
@@ -199,6 +232,6 @@ public class TransactionRequest extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), flowType, amounts, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
+        return Objects.hash(super.hashCode(), flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
     }
 }
