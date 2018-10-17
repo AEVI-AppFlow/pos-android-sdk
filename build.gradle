@@ -1,5 +1,5 @@
 version = "2.0.0-SNAPSHOT"
-ext.sampleVersionCode = 7
+ext.sampleVersionCode = 02000001 // semver based, MMmmppbb (major minor patch build)
 
 buildscript {
     repositories {
@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
     }

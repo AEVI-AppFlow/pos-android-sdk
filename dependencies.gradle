@@ -4,7 +4,7 @@ ext {
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.2'
 
-    rxMessengerVersion = '3.0.1'
+    rxMessengerVersion = '3.0.2'
 
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
@@ -18,14 +18,13 @@ ext {
 
     butterKnifeVersion = '8.8.1'
     recyclerViewVersion = '28.0.0'
-    supportLibrary = '28.0.0'
-    designLibrary = '28.0.0'
+    supportLibraryVersion = '28.0.0'
+    designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
 
-    posFlowSdkConstants = '2.0.6'
+    appFlowConstantsVersion = '2.0.6'
 
-    androidBuildVersion = "28.0.2"
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
 
@@ -42,14 +41,14 @@ ext {
     sampleDependencies = [
             aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibrary",
+            support          : "com.android.support:support-v4:$supportLibraryVersion",
             recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            cardView         : "com.android.support:cardview-v7:$supportLibrary",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibrary",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
-            design           : "com.android.support:design:$designLibrary",
+            cardView         : "com.android.support:cardview-v7:$supportLibraryVersion",
+            appCompat        : "com.android.support:appcompat-v7:$supportLibraryVersion",
+            supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
+            design           : "com.android.support:design:$designLibraryVersion",
             constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            posFlowConstants : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants"
+            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
     ]
 
     sampleAptDependencies = [

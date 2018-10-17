@@ -1,14 +1,14 @@
-# AEVI POS Flow SDK
+# AEVI AppFlow SDK
 
-The AEVI POS Flow SDK enables developers to build applications for all stages of the point of sale journey.
+The AEVI AppFlow SDK enables developers to build applications for all stages of the point of sale journey.
 
-Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further information.
+Please see the [Wiki](https://github.com/Aevi-UK/appflow-sdk/wiki) for further information.
 
-[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/appflow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/appflow-sdk/_latestVersion)
 
 ## Prerequisites
 
-In order to test the integration with POS Flow from your application, you will need the AEVI `Flow Processing Service` installed
+In order to test the integration with AppFlow from your application, you will need the AEVI `Flow Processing Service` installed
 on your device. Please ask your AEVI point of contact for access to this application.
 
 If you do not have a point of contact, please get in touch with us at info@aevi.com.
@@ -17,7 +17,7 @@ If you do not have a point of contact, please get in touch with us at info@aevi.
 
 Some of the features provided by this API are dependent on them being allowed and enabled in the `Flow Processing Service`.
 
-Whether or not a feature is allowed is down to the acquirer and/or merchant configuration for POS Flow.
+Whether or not a feature is allowed is down to the acquirer and/or merchant configuration for AppFlow.
 You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call.
 
 See `SystemSettingsFragment` in `PaymentInitiationSample` for examples.
@@ -57,19 +57,14 @@ And then for each project/module where you want to integrate with the APIs (repl
 implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:<version>'
 ```
 
-### Flow Service API
+### Payment Flow Service API
 ```
-implementation 'com.aevi.sdk.pos.flow:flow-service-api:<version>'
-```
-
-### Payment Service API
-```
-implementation 'com.aevi.sdk.pos.flow:payment-service-api:<version>'
+implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 ```
 
 ### Constants
 
-POS Flow constants are now stored in a separate repo here [https://github.com/Aevi-UK/pos-flow-sdk-constants](https://github.com/Aevi-UK/pos-flow-sdk-constants)
+AppFlow constants are now stored in a separate repo here [https://github.com/Aevi-UK/appflow-sdk-constants](https://github.com/Aevi-UK/appflow-sdk-constants)
 
 To include these in your project use
 ```
@@ -80,10 +75,10 @@ implementation `com.aevi.sdk.flow:api-constants:<version>'
 
 There are three code samples in this repository to illustrate the use of each API. Please see
 - `PaymentInitationSample` for an example of how to build an application that initiates payments via the `Payment Initation API`
-- `FlowServiceSample` for an example of how to build an application that integrates with `Flow Service API`
-- `PaymentServiceSample` for an example of how to build an application that integrates with `Payment Service API`
+- `FlowServiceSample` for an example of how to build a VAA (value added application) that integrates with `Payment Flow Service API`
+- `PaymentServiceSample` for an example of how to build a payment processing application that integrates with `Payment Flow Service API`
 
-These samples can also be used to test the full POS Flow integration.
+These samples can also be used to test the full AppFlow integration.
 If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
 In a similar manner, if you are developing a flow app or a payment app, you will want to use the PaymentInitiationSample to initiate payments.
 
@@ -116,12 +111,12 @@ and deselecting the check box.
 
 ## Documentation
 
-* [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki)
-* [Javadocs](https://github.com/Aevi-UK/pos-flow-sdk/wiki/javadocs)
+* [Wiki](https://github.com/Aevi-UK/appflow-sdk/wiki)
+* [Javadocs](https://github.com/Aevi-UK/appflow-sdk/wiki/javadocs)
 
 ## Bugs and Feedback
 
-For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/Aevi-UK/pos-flow-sdk/issues)
+For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/Aevi-UK/appflow-sdk/issues)
 
 ## LICENSE
 

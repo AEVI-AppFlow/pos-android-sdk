@@ -10,7 +10,6 @@ ext.artifactGroupId = "com.aevi.sdk.pos.flow"
 
 android {
     compileSdkVersion projectTargetSdkVersion
-    buildToolsVersion "${androidBuildVersion}"
 
     defaultConfig {
         applicationId "com.aevi.sdk.pos.flow.paymentinitiationsample"
