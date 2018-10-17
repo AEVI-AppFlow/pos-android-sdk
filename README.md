@@ -1,23 +1,28 @@
-# AEVI POS Flow SDK
+# AEVI AppFlow - POS Android SDK
 
-The AEVI POS Flow SDK enables developers to build applications for all stages of the point of sale journey.
+AEVI AppFlow enables applications to be called in different stages of a _flow_ that has been initiated by a client application.
 
-Please see the [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki) for further information.
+The POS Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate flows where value added
+services such as loyalty, split bill, receipt delivery, are called as part of the payment.
+
+The SDK consists of two APIs - one for POS applications to initiate flows and one for app
+
+Please see the [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki) for further information.
 
 [ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
 
 ## Prerequisites
 
-In order to test the integration with POS Flow from your application, you will need the AEVI `Flow Processing Service` installed
-on your device. Please ask your AEVI point of contact for access to this application.
+In order to test the integration with this SDK from your application, you will need the AEVI `FPS` (`Flow Processing Service`) installed
+on your device. Please download FPS and associated binaries from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/fps-installation) for development and testing purposes.
 
-If you do not have a point of contact, please get in touch with us at info@aevi.com.
+If you require other variants of FPS, please get in touch with us at info@aevi.com.
 
 ## API Feature Support
 
 Some of the features provided by this API are dependent on them being allowed and enabled in the `Flow Processing Service`.
 
-Whether or not a feature is allowed is down to the acquirer and/or merchant configuration for POS Flow.
+Whether or not a feature is allowed is down to the acquirer and/or merchant configuration.
 You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call.
 
 See `SystemSettingsFragment` in `PaymentInitiationSample` for examples.
@@ -69,7 +74,7 @@ implementation 'com.aevi.sdk.pos.flow:payment-service-api:<version>'
 
 ### Constants
 
-POS Flow constants are now stored in a separate repo here [https://github.com/Aevi-UK/pos-flow-sdk-constants](https://github.com/Aevi-UK/pos-flow-sdk-constants)
+API constants are now stored in a separate repo here [https://github.com/Aevi-UK/pos-flow-sdk-constants](https://github.com/Aevi-UK/pos-flow-sdk-constants)
 
 To include these in your project use
 ```
@@ -83,7 +88,7 @@ There are three code samples in this repository to illustrate the use of each AP
 - `FlowServiceSample` for an example of how to build an application that integrates with `Flow Service API`
 - `PaymentServiceSample` for an example of how to build an application that integrates with `Payment Service API`
 
-These samples can also be used to test the full POS Flow integration.
+These samples can also be used to test the full SDK integration.
 If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
 In a similar manner, if you are developing a flow app or a payment app, you will want to use the PaymentInitiationSample to initiate payments.
 
@@ -116,12 +121,12 @@ and deselecting the check box.
 
 ## Documentation
 
-* [Wiki](https://github.com/Aevi-UK/pos-flow-sdk/wiki)
-* [Javadocs](https://github.com/Aevi-UK/pos-flow-sdk/wiki/javadocs)
+* [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki)
+* [Javadocs](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/javadocs)
 
 ## Bugs and Feedback
 
-For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/Aevi-UK/pos-flow-sdk/issues)
+For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/AEVI-AppFlow/pos-android-sdk/issues)
 
 ## LICENSE
 
