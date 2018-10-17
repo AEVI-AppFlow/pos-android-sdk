@@ -23,7 +23,15 @@
             android:name=".service.ShowLoyaltyPointsBalanceService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.aevi.sdk.flow.action.PROCESS_REQUEST"/>
+                <action android:name="com.aevi.sdk.flow.action.PROCESS_GENERIC"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".service.PostGenericSampleService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.flow.action.PROCESS_POST_GENERIC"/>
             </intent-filter>
         </service>
 

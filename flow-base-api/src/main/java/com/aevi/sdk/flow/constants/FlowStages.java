@@ -14,6 +14,9 @@
 
 package com.aevi.sdk.flow.constants;
 
+/**
+ * Flow stage definitions.
+ */
 public interface FlowStages {
 
     /**
@@ -69,6 +72,11 @@ public interface FlowStages {
     String GENERIC = "GENERIC";
 
     /**
+     * Post-generic stage that is called with the response outcome from the generic stage
+     */
+    String POST_GENERIC = "POST_GENERIC";
+
+    /**
      * All stages for a payment flow
      */
     String[] ALL_PAYMENT_STAGES = new String[]{PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
@@ -77,6 +85,6 @@ public interface FlowStages {
     /**
      * All defined stages
      */
-    String[] ALL_STAGES = new String[]{GENERIC, PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
+    String[] ALL_STAGES = new String[]{GENERIC, POST_GENERIC, PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
             TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
 }

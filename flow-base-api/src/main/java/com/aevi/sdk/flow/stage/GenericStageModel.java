@@ -19,11 +19,12 @@ import android.app.Activity;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.BaseGenericService;
 
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link com.aevi.sdk.flow.service.BaseRequestService} or domain implementations for various ways of getting access to this object.
+ * See {@link BaseGenericService} or domain implementations for various ways of getting access to this object.
  */
 public class GenericStageModel extends BaseStageModel {
 

@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class PaymentFlowServiceInfoBuilder {
     /**
      * Define custom request types that this service can handle.
      *
-     * A service can via an implementation of {@link com.aevi.sdk.flow.service.BaseRequestService} handle any custom request.
+     * A service can via an implementation of {@link BaseGenericService} handle any custom request.
      *
      * These custom requests are identified via their type, which is set in the {@link com.aevi.sdk.flow.model.Request} and routed to the
      * service that has defined it as a supported custom type here.

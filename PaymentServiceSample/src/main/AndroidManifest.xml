@@ -15,7 +15,7 @@
             android:name=".service.PaymentService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.aevi.sdk.flow.action.PROCESS_REQUEST"/>
+                <action android:name="com.aevi.sdk.flow.action.PROCESS_GENERIC"/>
                 <action android:name="com.aevi.sdk.flow.action.READ_PAYMENT_CARD"/>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_TRANSACTION"/>
             </intent-filter>

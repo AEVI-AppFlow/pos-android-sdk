@@ -16,14 +16,14 @@ package com.aevi.sdk.pos.flow.flowservicesample.service;
 
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.BaseRequestService;
+import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
 
 /**
  * Illustrates how to implement a service to handle a bespoke request type.
  */
-public class ShowLoyaltyPointsBalanceService extends BaseRequestService {
+public class ShowLoyaltyPointsBalanceService extends BaseGenericService {
 
     public static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
 
