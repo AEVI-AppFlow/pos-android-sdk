@@ -1,11 +1,17 @@
 # AEVI AppFlow - POS Android SDK
 
-AEVI AppFlow enables applications to be called in different stages of a _flow_ that has been initiated by a client application.
+AEVI AppFlow is a solution that enables a client applications to initiate a request that is then passed to other applications at different stages of a _flow_.
+ Apps within the flow can be launched in one or many flow stages, and can access information about the flow in a standardised way.
 
-The POS Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate flows where value added
-services such as loyalty, split bill, receipt delivery, are called as part of the payment.
+The point of sale (POS) Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate various
+flows for common operations such as payment, refund, void etc. During the flow any number of value added services can be called such as loyalty,
+discounts, split bill, receipt delivery, as part of the process. AppFlow for POS can be configured with an initial set of flows for payment transactions,
+this also includes the definitions of various types of data that can be shared (e.g. customer, payment details and basket data).
 
-The SDK consists of two APIs - one for POS applications to initiate flows and one for app
+The APIs in this SDK also allow for client/POS, value added and payment applications to be integrated into these flows.
+The flows can be defined in advance to ensure a customer experience for all types of retail or payment processing.
+
+The SDK consists of two APIs - one for client/POS applications to initiate flows and one for app developers to implement flow services.
 
 Please see the [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki) for further information.
 
@@ -74,7 +80,7 @@ implementation 'com.aevi.sdk.pos.flow:payment-service-api:<version>'
 
 ### Constants
 
-API constants are now stored in a separate repo here [https://github.com/Aevi-UK/pos-flow-sdk-constants](https://github.com/Aevi-UK/pos-flow-sdk-constants)
+API constants are stored in a separate repo here [https://github.com/AEVI-AppFlow/api-constants](https://github.com/AEVI-AppFlow/api-constants)
 
 To include these in your project use
 ```
@@ -85,8 +91,8 @@ implementation `com.aevi.sdk.flow:api-constants:<version>'
 
 There are three code samples in this repository to illustrate the use of each API. Please see
 - `PaymentInitationSample` for an example of how to build an application that initiates payments via the `Payment Initation API`
-- `FlowServiceSample` for an example of how to build an application that integrates with `Flow Service API`
-- `PaymentServiceSample` for an example of how to build an application that integrates with `Payment Service API`
+- `FlowServiceSample` for an example of how to build an application that integrates with `Payment Flow Service API` as a value added application
+- `PaymentServiceSample` for an example of how to build an application that integrates with `Payment Flow Service API` as a payment application
 
 These samples can also be used to test the full SDK integration.
 If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
