@@ -4,17 +4,13 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.stage.GenericStageModel;
+import com.aevi.sdk.flow.stage.PostGenericStageModel;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import com.aevi.sdk.pos.flow.model.*;
-import com.aevi.sdk.pos.flow.stage.CardReadingModel;
-import com.aevi.sdk.pos.flow.stage.PostFlowModel;
-import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
-import com.aevi.sdk.pos.flow.stage.PreFlowModel;
-import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
-import com.aevi.sdk.pos.flow.stage.SplitModel;
-import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
+import com.aevi.sdk.pos.flow.stage.*;
 
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 
@@ -46,31 +42,34 @@ public abstract class BasePaymentFlowService extends BaseApiService {
         if (flowStage != null) {
             switch (flowStage) {
                 case PRE_FLOW:
-                    onPreFlow(com.aevi.sdk.pos.flow.stage.PreFlowModel.fromService(this, clientMessageId, Payment.fromJson(request)));
+                    onPreFlow(PreFlowModel.fromService(this, clientMessageId, Payment.fromJson(request)));
                     break;
                 case SPLIT:
-                    onSplit(com.aevi.sdk.pos.flow.stage.SplitModel.fromService(this, clientMessageId, SplitRequest.fromJson(request)));
+                    onSplit(SplitModel.fromService(this, clientMessageId, SplitRequest.fromJson(request)));
                     break;
                 case PRE_TRANSACTION:
-                    onPreTransaction(com.aevi.sdk.pos.flow.stage.PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPreTransaction(PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
                     break;
                 case PAYMENT_CARD_READING:
-                    onPaymentCardReading(com.aevi.sdk.pos.flow.stage.CardReadingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPaymentCardReading(CardReadingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
                     break;
                 case POST_CARD_READING:
-                    onPostCardReading(com.aevi.sdk.pos.flow.stage.PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPostCardReading(PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
                     break;
                 case TRANSACTION_PROCESSING:
-                    onTransactionProcessing(com.aevi.sdk.pos.flow.stage.TransactionProcessingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onTransactionProcessing(TransactionProcessingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
                     break;
                 case POST_TRANSACTION:
-                    onPostTransaction(com.aevi.sdk.pos.flow.stage.PostTransactionModel.fromService(this, clientMessageId, TransactionSummary.fromJson(request)));
+                    onPostTransaction(PostTransactionModel.fromService(this, clientMessageId, TransactionSummary.fromJson(request)));
                     break;
                 case POST_FLOW:
-                    onPostFlow(com.aevi.sdk.pos.flow.stage.PostFlowModel.fromService(this, clientMessageId, PaymentResponse.fromJson(request)));
+                    onPostFlow(PostFlowModel.fromService(this, clientMessageId, PaymentResponse.fromJson(request)));
                     break;
                 case GENERIC:
                     onGeneric(GenericStageModel.fromService(this, clientMessageId, Request.fromJson(request)));
+                    break;
+                case POST_GENERIC:
+                    onPostGeneric(PostGenericStageModel.fromService(this, clientMessageId, Response.fromJson(request)));
                     break;
                 default:
                     onUnknownStage(flowStage, clientMessageId, request);
@@ -103,7 +102,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      *
      * @param model The model relevant for this stage
      */
-    protected void onPreTransaction(com.aevi.sdk.pos.flow.stage.PreTransactionModel model) {
+    protected void onPreTransaction(PreTransactionModel model) {
 
     }
 
@@ -158,6 +157,15 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onGeneric(GenericStageModel model) {
+
+    }
+
+    /**
+     * Override to handle a request in the post-generic stage.
+     *
+     * @param model The model relevant for this stage
+     */
+    protected void onPostGeneric(PostGenericStageModel model) {
 
     }
 
