@@ -123,11 +123,13 @@ public class GenericRequestFragment extends BaseObservableFragment {
         switch (selectedApiRequestType) {
             case FinancialRequestTypes.REVERSAL:
             case FinancialRequestTypes.RESPONSE_REDELIVERY:
-                if (lastResponse == null) {
+                int lastTransactionIndex = lastResponse.getTransactions().size() - 1;
+                if (lastResponse == null || lastResponse.getTransactions().isEmpty() ||
+                        !lastResponse.getTransactions().get(lastTransactionIndex).hasResponses()) {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getId());
+                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(lastTransactionIndex).getLastResponse().getId());
                 break;
             case FinancialRequestTypes.CASH_RECEIPT_DELIVERY:
                 Amounts cashAmounts = new Amounts(15000, "EUR");
