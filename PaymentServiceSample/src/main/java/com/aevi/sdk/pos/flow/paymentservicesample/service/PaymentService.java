@@ -35,14 +35,12 @@ public class PaymentService extends BasePaymentFlowService {
 
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
-        activityHelper = new ActivityHelper(getBaseContext(), PaymentCardReadingActivity.class, model);
-        activityHelper.launchActivity();
+        model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
-        activityHelper = new ActivityHelper(getBaseContext(), TransactionProcessingActivity.class, model);
-        activityHelper.launchActivity();
+        model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
     }
 
     @Override

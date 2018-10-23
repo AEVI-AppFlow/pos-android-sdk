@@ -54,7 +54,7 @@ public class ActivityProxyService extends BaseApiService {
             clientCommunicator.finishWithNoResponse();
             return;
         }
-        activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request);
+        activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request, null);
         activityHelper.launchActivity();
     }
 

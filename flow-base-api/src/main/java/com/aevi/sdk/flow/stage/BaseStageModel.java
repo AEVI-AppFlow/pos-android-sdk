@@ -18,6 +18,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.ActivityEvents;
+import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
 import java.lang.ref.WeakReference;
@@ -137,4 +139,13 @@ public abstract class BaseStageModel {
         return null;
     }
 
+    /**
+     * Send this model to be processed by an activity
+     *
+     * @param context       The Android context
+     * @param activityClass The class of the activity to send it to
+     */
+    public void processInActivity(Context context, Class<? extends Activity> activityClass) {
+        new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null).launchActivity();
+    }
 }

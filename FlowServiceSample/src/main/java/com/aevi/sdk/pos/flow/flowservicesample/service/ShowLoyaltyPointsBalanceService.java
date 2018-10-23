@@ -34,8 +34,7 @@ public class ShowLoyaltyPointsBalanceService extends BaseGenericService {
     protected void processRequest(GenericStageModel stageModel) {
         Request request = stageModel.getRequest();
         if (request.getRequestType().equals(SHOW_LOYALTY_POINTS_REQUEST)) {
-            activityHelper = new ActivityHelper(getBaseContext(), LoyaltyBalanceActivity.class, stageModel.getClientCommunicator(), request.toJson());
-            activityHelper.launchActivity();
+            stageModel.processInActivity(getBaseContext(), LoyaltyBalanceActivity.class);
         } else {
             stageModel.sendResponse(new Response(request, false, "Unsupported request type"));
         }

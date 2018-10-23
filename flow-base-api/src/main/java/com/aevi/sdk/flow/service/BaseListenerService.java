@@ -44,7 +44,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     @Override
     protected void onNewClient(ChannelServer channelServer, String packageName) {
         sendAck(channelServer);
-        String lastMessage = channelServer.getLastMessage();
+        String lastMessage = channelServer.getLastMessageBlocking();
         channelServer.sendEndStream();
         if (FLOW_PROCESSING_SERVICE.equals(packageName)) {
             AppMessage appMessage = AppMessage.fromJson(lastMessage);

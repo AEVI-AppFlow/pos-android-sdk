@@ -19,7 +19,6 @@ import android.content.Context;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TokenisationActivity;
@@ -38,8 +37,7 @@ public class GenericStageHandler {
                 handleReversal(request, genericStageModel);
                 break;
             case FLOW_TYPE_TOKENISATION:
-                ActivityHelper activityHelper = new ActivityHelper(context, TokenisationActivity.class, genericStageModel);
-                activityHelper.launchActivity();
+                genericStageModel.processInActivity(context, TokenisationActivity.class);
                 break;
             case FLOW_TYPE_RESPONSE_REDELIVERY:
                 handleResponseRedelivery(request, genericStageModel);
