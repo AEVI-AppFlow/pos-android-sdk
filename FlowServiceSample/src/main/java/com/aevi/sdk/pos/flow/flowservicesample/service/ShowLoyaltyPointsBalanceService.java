@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.flowservicesample.service;
 
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
@@ -27,18 +28,23 @@ public class ShowLoyaltyPointsBalanceService extends BaseGenericService {
 
     public static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
 
+    private ActivityHelper activityHelper;
+
     @Override
     protected void processRequest(GenericStageModel stageModel) {
         Request request = stageModel.getRequest();
         if (request.getRequestType().equals(SHOW_LOYALTY_POINTS_REQUEST)) {
-            stageModel.processInActivity(LoyaltyBalanceActivity.class);
+            activityHelper = new ActivityHelper(getBaseContext(), LoyaltyBalanceActivity.class, stageModel.getClientCommunicator(), request.toJson());
+            activityHelper.launchActivity();
         } else {
             stageModel.sendResponse(new Response(request, false, "Unsupported request type"));
         }
     }
 
     @Override
-    protected void onFinish(String clientMessageId) {
-        finishLaunchedActivity(clientMessageId);
+    protected void onFinish() {
+        if (activityHelper != null) {
+            activityHelper.finishLaunchedActivity();
+        }
     }
 }

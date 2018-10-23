@@ -38,6 +38,7 @@ javadoc {
     exclude "**/MessageErrors**"
     title = "Flow API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+    failOnError = false
 }
 
 buildConfig {

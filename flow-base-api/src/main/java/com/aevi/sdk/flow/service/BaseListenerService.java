@@ -13,7 +13,8 @@
  */
 package com.aevi.sdk.flow.service;
 
-import com.aevi.android.rxmessenger.service.AbstractMessengerService;
+import com.aevi.android.rxmessenger.ChannelServer;
+import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.BaseModel;
@@ -30,7 +31,7 @@ import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
  * This class should not be used directly instead choose one of the child classes
  * e.g. for generic responses use {@link BaseResponseListenerService}.
  */
-public abstract class BaseListenerService<RESPONSE extends BaseModel> extends AbstractMessengerService {
+public abstract class BaseListenerService<RESPONSE extends BaseModel> extends AbstractChannelService {
 
     private final Class<RESPONSE> responseClass;
     private final InternalData internalData;
@@ -41,12 +42,12 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected void handleRequest(String clientMessageId, String message, String packageName) {
-        sendAck(clientMessageId);
-        sendEndStreamMessageToClient(clientMessageId);
+    protected void onNewClient(ChannelServer channelServer, String packageName) {
+        sendAck(channelServer);
+        String lastMessage = channelServer.getLastMessage();
+        channelServer.sendEndStream();
         if (FLOW_PROCESSING_SERVICE.equals(packageName)) {
-            AppMessage appMessage = AppMessage.fromJson(message);
+            AppMessage appMessage = AppMessage.fromJson(lastMessage);
             checkVersions(appMessage, internalData);
 
             if (AppMessageTypes.RESPONSE_MESSAGE.equals(appMessage.getMessageType())) {
@@ -65,9 +66,9 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
         }
     }
 
-    private void sendAck(String clientMessageId) {
+    private void sendAck(ChannelServer channelServer) {
         AppMessage appMessage = new AppMessage(REQUEST_ACK_MESSAGE, internalData);
-        sendMessageToClient(clientMessageId, appMessage.toJson());
+        channelServer.send(appMessage.toJson());
     }
 
     /**

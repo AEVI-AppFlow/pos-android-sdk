@@ -23,7 +23,8 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.android.rxmessenger.ChannelClient;
+import com.aevi.android.rxmessenger.Channels;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Device;
@@ -68,7 +69,7 @@ public abstract class BaseApiClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
         return requestMessenger
                 .sendMessage(appMessage.toJson())
@@ -94,7 +95,7 @@ public abstract class BaseApiClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        final ChannelClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.DEVICE_INFO_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
@@ -118,7 +119,7 @@ public abstract class BaseApiClient {
         if (!isProcessingServiceInstalled(context)) {
             return Observable.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
+        final ChannelClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
@@ -136,8 +137,8 @@ public abstract class BaseApiClient {
                 });
     }
 
-    protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
-        return new ObservableMessengerClient(context, componentName);
+    protected ChannelClient getMessengerClient(ComponentName componentName) {
+        return Channels.webSocket(context, componentName);
     }
 
     protected static void startFps(Context context) {

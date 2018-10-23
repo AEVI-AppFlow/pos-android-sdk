@@ -6,11 +6,22 @@ import android.util.Log;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
-import com.aevi.sdk.pos.flow.model.*;
-import com.aevi.sdk.pos.flow.stage.*;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.SplitRequest;
+import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.TransactionSummary;
+import com.aevi.sdk.pos.flow.stage.CardReadingModel;
+import com.aevi.sdk.pos.flow.stage.PostFlowModel;
+import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
+import com.aevi.sdk.pos.flow.stage.PreFlowModel;
+import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
+import com.aevi.sdk.pos.flow.stage.SplitModel;
+import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 
@@ -26,53 +37,52 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
         Log.d(BasePaymentFlowService.class.getSimpleName(), "Mapping request for flow stage: " + flowStage);
-        mapStageToCallback(flowStage, clientMessageId, request);
+        mapStageToCallback(flowStage, clientCommunicator, request);
     }
 
     /**
      * Maps a stage to one of the callback methods that can be overridden in this class.
      *
-     * @param flowStage       The flow stage
-     * @param clientMessageId The client message id
-     * @param request         The request
+     * @param flowStage          The flow stage
+     * @param clientCommunicator The client message communicator
+     * @param request            The request
      */
-    protected void mapStageToCallback(String flowStage, String clientMessageId, String request) {
+    protected void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
         if (flowStage != null) {
             switch (flowStage) {
                 case PRE_FLOW:
-                    onPreFlow(PreFlowModel.fromService(this, clientMessageId, Payment.fromJson(request)));
+                    onPreFlow(PreFlowModel.fromService(clientCommunicator, Payment.fromJson(request)));
                     break;
                 case SPLIT:
-                    onSplit(SplitModel.fromService(this, clientMessageId, SplitRequest.fromJson(request)));
+                    onSplit(SplitModel.fromService(clientCommunicator, SplitRequest.fromJson(request)));
                     break;
                 case PRE_TRANSACTION:
-                    onPreTransaction(PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPreTransaction(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
                     break;
                 case PAYMENT_CARD_READING:
-                    onPaymentCardReading(CardReadingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPaymentCardReading(CardReadingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
                     break;
                 case POST_CARD_READING:
-                    onPostCardReading(PreTransactionModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onPostCardReading(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
                     break;
                 case TRANSACTION_PROCESSING:
-                    onTransactionProcessing(TransactionProcessingModel.fromService(this, clientMessageId, TransactionRequest.fromJson(request)));
+                    onTransactionProcessing(TransactionProcessingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
                     break;
                 case POST_TRANSACTION:
-                    onPostTransaction(PostTransactionModel.fromService(this, clientMessageId, TransactionSummary.fromJson(request)));
+                    onPostTransaction(PostTransactionModel.fromService(clientCommunicator, TransactionSummary.fromJson(request)));
                     break;
                 case POST_FLOW:
-                    onPostFlow(PostFlowModel.fromService(this, clientMessageId, PaymentResponse.fromJson(request)));
+                    onPostFlow(PostFlowModel.fromService(clientCommunicator, PaymentResponse.fromJson(request)));
                     break;
                 case GENERIC:
-                    onGeneric(GenericStageModel.fromService(this, clientMessageId, Request.fromJson(request)));
+                    onGeneric(GenericStageModel.fromService(clientCommunicator, Request.fromJson(request)));
                     break;
                 case POST_GENERIC:
-                    onPostGeneric(PostGenericStageModel.fromService(this, clientMessageId, Response.fromJson(request)));
-                    break;
+                    onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request)));
                 default:
-                    onUnknownStage(flowStage, clientMessageId, request);
+                    onUnknownStage(flowStage, clientCommunicator, request);
                     break;
 
             }
@@ -102,7 +112,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      *
      * @param model The model relevant for this stage
      */
-    protected void onPreTransaction(PreTransactionModel model) {
+    protected void onPreTransaction(com.aevi.sdk.pos.flow.stage.PreTransactionModel model) {
 
     }
 
@@ -175,10 +185,10 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * The default implementation here will throw an exception. Clients can override to implement an alternative fallback behaviour.
      *
      * @param flowStage       The flow stage that could not be mapped
-     * @param clientMessageId The client message id
+     * @param clientCommunicator The client message id
      * @param request         The request
      */
-    protected void onUnknownStage(String flowStage, String clientMessageId, String request) {
+    protected void onUnknownStage(String flowStage, ClientCommunicator clientCommunicator, String request) {
         throw new IllegalArgumentException("Unknown stage: " + flowStage);
     }
 

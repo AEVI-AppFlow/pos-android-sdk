@@ -32,8 +32,8 @@ public abstract class BasePostGenericService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage) {
-        PostGenericStageModel postGenericStageModel = PostGenericStageModel.fromService(this, clientMessageId, Response.fromJson(request));
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+        PostGenericStageModel postGenericStageModel = PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request));
         processResponse(postGenericStageModel);
     }
 

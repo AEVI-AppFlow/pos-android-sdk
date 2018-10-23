@@ -19,10 +19,13 @@ import android.app.Activity;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
+
+import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the pre-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -36,8 +39,15 @@ public class PreFlowModel extends BaseStageModel {
     private final AmountsModifier amountsModifier;
     private final FlowResponse flowResponse;
 
-    private PreFlowModel(Activity activity, BaseApiService service, String clientMessageId, Payment payment) {
-        super(activity, service, clientMessageId);
+    private PreFlowModel(Activity activity, Payment payment) {
+        super(activity);
+        this.payment = payment;
+        this.amountsModifier = new AmountsModifier(payment.getAmounts());
+        this.flowResponse = new FlowResponse();
+    }
+
+    private PreFlowModel(ClientCommunicator clientCommunicator, Payment payment) {
+        super(clientCommunicator);
         this.payment = payment;
         this.amountsModifier = new AmountsModifier(payment.getAmounts());
         this.flowResponse = new FlowResponse();
@@ -53,8 +63,8 @@ public class PreFlowModel extends BaseStageModel {
      * @return An instance of {@link PreFlowModel}
      */
     public static PreFlowModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY);
-        return new PreFlowModel(activity, null, null, Payment.fromJson(request));
+        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+        return new PreFlowModel(activity, Payment.fromJson(request));
     }
 
     /**
@@ -65,8 +75,8 @@ public class PreFlowModel extends BaseStageModel {
      * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
      * @return An instance of {@link PreFlowModel}
      */
-    public static PreFlowModel fromService(BaseApiService service, String clientMessageId, Payment request) {
-        return new PreFlowModel(null, service, clientMessageId, request);
+    public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request) {
+        return new PreFlowModel(clientCommunicator, request);
     }
 
     /**
@@ -218,7 +228,7 @@ public class PreFlowModel extends BaseStageModel {
     }
 
     @Override
-    protected String getRequestJson() {
+    public String getRequestJson() {
         return payment.toJson();
     }
 }

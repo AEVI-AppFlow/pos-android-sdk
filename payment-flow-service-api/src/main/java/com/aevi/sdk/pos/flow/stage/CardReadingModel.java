@@ -18,12 +18,15 @@ package com.aevi.sdk.pos.flow.stage;
 import android.app.Activity;
 
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
+
+import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the card-reading stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -36,8 +39,14 @@ public class CardReadingModel extends BaseStageModel {
     private final TransactionRequest transactionRequest;
     private final TransactionResponseBuilder transactionResponseBuilder;
 
-    private CardReadingModel(Activity activity, BaseApiService service, String clientMessageId, TransactionRequest request) {
-        super(activity, service, clientMessageId);
+    private CardReadingModel(Activity activity, TransactionRequest request) {
+        super(activity);
+        this.transactionRequest = request;
+        this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
+    }
+
+    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request) {
+        super(clientCommunicator);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
@@ -52,8 +61,8 @@ public class CardReadingModel extends BaseStageModel {
      * @return An instance of {@link CardReadingModel}
      */
     public static CardReadingModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY);
-        return new CardReadingModel(activity, null, null, TransactionRequest.fromJson(request));
+        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+        return new CardReadingModel(activity, TransactionRequest.fromJson(request));
     }
 
     /**
@@ -64,8 +73,8 @@ public class CardReadingModel extends BaseStageModel {
      * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
      * @return An instance of {@link CardReadingModel}
      */
-    public static CardReadingModel fromService(BaseApiService service, String clientMessageId, TransactionRequest request) {
-        return new CardReadingModel(null, service, clientMessageId, request);
+    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
+        return new CardReadingModel(clientCommunicator, request);
     }
 
     /**
@@ -124,7 +133,7 @@ public class CardReadingModel extends BaseStageModel {
     }
 
     @Override
-    protected String getRequestJson() {
+    public String getRequestJson() {
         return transactionRequest.toJson();
     }
 }

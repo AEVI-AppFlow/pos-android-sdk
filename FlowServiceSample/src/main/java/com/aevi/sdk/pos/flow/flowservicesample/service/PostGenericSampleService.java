@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,7 +31,7 @@ public class PostGenericSampleService extends BasePostGenericService {
     }
 
     @Override
-    protected void onFinish(@NonNull String clientMessageId) {
+    protected void onFinish() {
         // No-op
     }
 }

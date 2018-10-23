@@ -15,12 +15,13 @@
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
 
+import com.aevi.sdk.flow.service.ActivityHelper;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TransactionProcessingActivity;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
-import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 /**
@@ -30,24 +31,29 @@ import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
  */
 public class PaymentService extends BasePaymentFlowService {
 
+    private ActivityHelper activityHelper;
+
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
-        model.processInActivity(PaymentCardReadingActivity.class);
+        activityHelper = new ActivityHelper(getBaseContext(), PaymentCardReadingActivity.class, model);
+        activityHelper.launchActivity();
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
-        model.processInActivity(TransactionProcessingActivity.class);
+        activityHelper = new ActivityHelper(getBaseContext(), TransactionProcessingActivity.class, model);
+        activityHelper.launchActivity();
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
-        GenericStageHandler.handleGenericRequest(model);
+        GenericStageHandler.handleGenericRequest(getBaseContext(), model);
     }
 
     @Override
-    protected void onFinish(String clientMessageId) {
-        finishLaunchedActivity(clientMessageId);
-        finishWithNoResponse(clientMessageId);
+    protected void onFinish() {
+        if (activityHelper != null) {
+            activityHelper.finishLaunchedActivity();
+        }
     }
 }

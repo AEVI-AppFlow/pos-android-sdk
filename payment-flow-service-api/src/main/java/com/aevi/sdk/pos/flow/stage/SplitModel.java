@@ -19,10 +19,13 @@ import android.app.Activity;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
+
+import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the split stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -36,8 +39,15 @@ public class SplitModel extends BaseStageModel {
     private final AmountsModifier amountsModifier;
     private final FlowResponse flowResponse;
 
-    private SplitModel(Activity activity, BaseApiService service, String clientMessageId, SplitRequest splitRequest) {
-        super(activity, service, clientMessageId);
+    private SplitModel(Activity activity, SplitRequest splitRequest) {
+        super(activity);
+        this.splitRequest = splitRequest;
+        this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
+        this.flowResponse = new FlowResponse();
+    }
+
+    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest) {
+        super(clientCommunicator);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
@@ -53,8 +63,8 @@ public class SplitModel extends BaseStageModel {
      * @return An instance of {@link SplitModel}
      */
     public static SplitModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY);
-        return new SplitModel(activity, null, null, SplitRequest.fromJson(request));
+        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+        return new SplitModel(activity, SplitRequest.fromJson(request));
     }
 
     /**
@@ -65,8 +75,8 @@ public class SplitModel extends BaseStageModel {
      * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
      * @return An instance of {@link SplitModel}
      */
-    public static SplitModel fromService(BaseApiService service, String clientMessageId, SplitRequest request) {
-        return new SplitModel(null, service, clientMessageId, request);
+    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request) {
+        return new SplitModel(clientCommunicator, request);
     }
 
     /**
@@ -204,7 +214,7 @@ public class SplitModel extends BaseStageModel {
     }
 
     @Override
-    protected String getRequestJson() {
+    public String getRequestJson() {
         return splitRequest.toJson();
     }
 }

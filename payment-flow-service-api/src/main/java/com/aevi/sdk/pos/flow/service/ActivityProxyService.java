@@ -21,12 +21,16 @@ import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.constants.IntentActions.*;
+import static com.aevi.sdk.flow.constants.IntentActions.ACTIVITY_PROXY_ACTION_POSTFIX;
+import static com.aevi.sdk.flow.constants.IntentActions.ACTIVITY_PROXY_ACTION_PREFIX;
+import static com.aevi.sdk.flow.constants.IntentActions.BASE_INTENT_ACTION;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
@@ -39,20 +43,26 @@ public class ActivityProxyService extends BaseApiService {
         super(PaymentFlowServiceApi.getApiVersion());
     }
 
+    private ActivityHelper activityHelper;
+
     @Override
-    protected void processRequest(@NonNull String clientMessageId, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
         Intent activityIntent = getActivityIntent(flowStage);
         if (!isActivityDefined(activityIntent)) {
-            Log.e(TAG, "No activity defined to handle: " + activityIntent.getAction() + " in app: " + getPackageName() + "! Finishing with no response");
-            finishWithNoResponse(clientMessageId);
+            Log.e(TAG,
+                    "No activity defined to handle: " + activityIntent.getAction() + " in app: " + getPackageName() + "! Finishing with no response");
+            clientCommunicator.finishWithNoResponse();
             return;
         }
-        launchActivity(activityIntent, clientMessageId, request, null);
+        activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request);
+        activityHelper.launchActivity();
     }
 
     @Override
-    protected void onFinish(@NonNull String clientMessageId) {
-        finishLaunchedActivity(clientMessageId);
+    protected void onFinish() {
+        if(activityHelper != null) {
+            activityHelper.finishLaunchedActivity();
+        }
     }
 
     private Intent getActivityIntent(String flowStage) {
