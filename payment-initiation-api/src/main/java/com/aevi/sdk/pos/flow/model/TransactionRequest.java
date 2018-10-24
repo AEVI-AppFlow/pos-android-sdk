@@ -34,6 +34,7 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class TransactionRequest extends BaseModel {
 
+    private final String transactionId;
     private final String flowType;
     private final Amounts amounts;
     private final List<Basket> baskets;
@@ -46,13 +47,14 @@ public class TransactionRequest extends BaseModel {
 
     // Default constructor for deserialisation
     TransactionRequest() {
-        this("N/A", "", "", new Amounts(), null, null, new AdditionalData(), null);
+        this("N/A", "N/A", "", "", new Amounts(), null, null, new AdditionalData(), null);
     }
 
     /**
      * Construct a new instance.
      *
-     * @param id             The transaction id
+     * @param id             The request id (unique for this request)
+     * @param transactionId  The transaction id representing the overall transaction this request is generated for
      * @param flowType       The flow type
      * @param flowStage      The current flow stage
      * @param amounts        The amounts to process
@@ -61,8 +63,10 @@ public class TransactionRequest extends BaseModel {
      * @param additionalData The additional data
      * @param card           The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String flowType, String flowStage, Amounts amounts, List<Basket> baskets, Customer customer, AdditionalData additionalData, Card card) {
+    public TransactionRequest(String id, String transactionId, String flowType, String flowStage, Amounts amounts, List<Basket> baskets,
+                              Customer customer, AdditionalData additionalData, Card card) {
         super(id);
+        this.transactionId = transactionId;
         this.flowStage = flowStage;
         this.flowType = flowType;
         this.amounts = amounts;
@@ -73,6 +77,36 @@ public class TransactionRequest extends BaseModel {
         this.deviceAudience = DeviceAudience.MERCHANT;
         checkArgument(id != null && !id.isEmpty(), "Id must be set");
         checkArgument(flowType != null, "Flow type must be set");
+    }
+
+    /**
+     * Get the unique id for this particular {@link TransactionRequest}.
+     *
+     * This id is generated uniquely for each request within a {@link Transaction}, meaning it should NOT be used to identify the current transaction.
+     *
+     * Please see {@link #getTransactionId()} for an id that represents the {@link Transaction}.
+     *
+     * @return The unique id for this particular request
+     */
+    @NonNull
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
+    /**
+     * Get the id for the {@link Transaction} this request originates from.
+     *
+     * This id will be consistent for all requests and for all stages within the transaction, and can be used by applications that are called
+     * in multiple stages to identify it as the same transaction for any saved state, etc.
+     *
+     * To retrieve the unique id for this particular request, please see {@link #getId()}.
+     *
+     * @return The transaction id that is consistent for all requests within a {@link Transaction}
+     */
+    @NonNull
+    public String getTransactionId() {
+        return transactionId;
     }
 
     /**
@@ -139,6 +173,11 @@ public class TransactionRequest extends BaseModel {
         return flowStage;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param deviceAudience Device audience
+     */
     public void setDeviceAudience(DeviceAudience deviceAudience) {
         this.deviceAudience = deviceAudience;
     }
@@ -200,7 +239,8 @@ public class TransactionRequest extends BaseModel {
     @Override
     public String toString() {
         return "TransactionRequest{" +
-                "flowType='" + flowType + '\'' +
+                "transactionId='" + transactionId + '\'' +
+                ", flowType='" + flowType + '\'' +
                 ", amounts=" + amounts +
                 ", baskets=" + baskets +
                 ", customer=" + customer +
@@ -218,7 +258,8 @@ public class TransactionRequest extends BaseModel {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransactionRequest that = (TransactionRequest) o;
-        return Objects.equals(flowType, that.flowType) &&
+        return Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(flowType, that.flowType) &&
                 Objects.equals(amounts, that.amounts) &&
                 Objects.equals(baskets, that.baskets) &&
                 Objects.equals(customer, that.customer) &&
@@ -232,6 +273,6 @@ public class TransactionRequest extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
+        return Objects.hash(super.hashCode(), transactionId, flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
     }
 }

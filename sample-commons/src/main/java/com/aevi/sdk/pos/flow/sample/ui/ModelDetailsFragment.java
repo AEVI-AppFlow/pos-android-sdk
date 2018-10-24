@@ -123,6 +123,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         reset();
         List<Pair<String, String>> requestInfo = new ArrayList<>();
         requestInfo.add(getStringPair(R.string.id, transactionRequest.getId()));
+        requestInfo.add(getStringPair(R.string.transaction_id, transactionRequest.getTransactionId()));
         requestInfo.add(getStringPair(R.string.transaction_type, transactionRequest.getFlowType()));
         requestInfo.add(getStringPair(R.string.payment_stage, transactionRequest.getFlowStage()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));

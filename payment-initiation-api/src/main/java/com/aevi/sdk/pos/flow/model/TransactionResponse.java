@@ -22,7 +22,7 @@ import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
 
 /**
- * A transaction response representing the outcome of processing by a flow app or payment app.
+ * A transaction response representing the outcome of processing a {@link TransactionRequest}.
  */
 public class TransactionResponse extends BaseModel {
 
@@ -41,7 +41,7 @@ public class TransactionResponse extends BaseModel {
     private final String paymentMethod;
     private final AdditionalData references;
 
-    private String paymentServiceId;
+    private String flowServiceId;
     private String componentName;
 
     // Default constructor for deserialisation
@@ -146,7 +146,8 @@ public class TransactionResponse extends BaseModel {
      * @param values An array of values for this reference
      * @param <T>    The type of object this reference is an array of
      */
-    public <T> void addReference(String key, T... values) {
+    @SafeVarargs
+    public final <T> void addReference(String key, T... values) {
         if (!references.hasData(key)) {
             references.addData(key, values);
         }
@@ -174,24 +175,24 @@ public class TransactionResponse extends BaseModel {
     }
 
     /**
-     * Get the id of the payment service that generated this response.
+     * Get the id of the flow service that generated this response.
      *
-     * Note that this will be null in cases where a flow app paid an amount.
+     * Note that this may be null.
      *
-     * @return The payment service id, if set.
+     * @return The flow service id, if set.
      */
     @Nullable
-    public String getPaymentServiceId() {
-        return paymentServiceId;
+    public String getFlowServiceId() {
+        return flowServiceId;
     }
 
     /**
      * For internal use.
      *
-     * @param paymentServiceId Payment service id
+     * @param flowServiceId Flow service id
      */
-    public void setPaymentServiceId(String paymentServiceId) {
-        this.paymentServiceId = paymentServiceId;
+    public void setFlowServiceId(String flowServiceId) {
+        this.flowServiceId = flowServiceId;
     }
 
     /**
@@ -232,7 +233,7 @@ public class TransactionResponse extends BaseModel {
                 ", responseCode='" + responseCode + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", references=" + references +
-                ", paymentServiceId='" + paymentServiceId + '\'' +
+                ", flowServiceId='" + flowServiceId + '\'' +
                 ", componentName='" + componentName + '\'' +
                 "} " + super.toString();
     }
@@ -252,7 +253,7 @@ public class TransactionResponse extends BaseModel {
         if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null) return false;
         if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null) return false;
         if (references != null ? !references.equals(that.references) : that.references != null) return false;
-        if (paymentServiceId != null ? !paymentServiceId.equals(that.paymentServiceId) : that.paymentServiceId != null) return false;
+        if (flowServiceId != null ? !flowServiceId.equals(that.flowServiceId) : that.flowServiceId != null) return false;
         return componentName != null ? componentName.equals(that.componentName) : that.componentName == null;
     }
 
@@ -266,7 +267,7 @@ public class TransactionResponse extends BaseModel {
         result = 31 * result + (responseCode != null ? responseCode.hashCode() : 0);
         result = 31 * result + (paymentMethod != null ? paymentMethod.hashCode() : 0);
         result = 31 * result + (references != null ? references.hashCode() : 0);
-        result = 31 * result + (paymentServiceId != null ? paymentServiceId.hashCode() : 0);
+        result = 31 * result + (flowServiceId != null ? flowServiceId.hashCode() : 0);
         result = 31 * result + (componentName != null ? componentName.hashCode() : 0);
         return result;
     }

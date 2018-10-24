@@ -38,9 +38,9 @@ public final class TransactionResponseBuilder {
     private AdditionalData references = new AdditionalData();
 
     /**
-     * Initialise this builder with the id of the processed TransactionRequest.
+     * Initialise this builder with {@link TransactionRequest#getId()} for the request that your service received.
      *
-     * @param requestId The id of the TransactionRequest passed to the payment app / service.
+     * @param requestId The id of the TransactionRequest passed to the flow service.
      */
     public TransactionResponseBuilder(String requestId) {
         this.id = requestId;
