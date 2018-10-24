@@ -97,7 +97,7 @@ public class BaseListenerServiceTest {
 
     private void fakeIncomingMessage(AppMessage appMessage) {
         lastMessage = appMessage.toJson();
-        when(channelServer.getLastMessage()).thenReturn(lastMessage);
+        when(channelServer.getLastMessageBlocking()).thenReturn(lastMessage);
         incomingMessagePublisher.onNext(appMessage.toJson());
     }
 

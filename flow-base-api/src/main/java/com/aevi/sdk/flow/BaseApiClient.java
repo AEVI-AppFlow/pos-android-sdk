@@ -25,6 +25,8 @@ import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.android.rxmessenger.Channels;
+import com.aevi.sdk.config.ConfigApi;
+import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Device;
@@ -40,24 +42,44 @@ import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
+import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
+
 /**
  * Base client for all API domain implementations.
  */
 public abstract class BaseApiClient {
 
+    private static final String APPFLOW_COMMS_CHANNEL = "appFlowCommsChannel";
+
     public static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
-    protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
-    protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
-    protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
-    protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT = new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
+    protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT =
+            new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
+    protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT =
+            new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
+    protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT =
+            new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
+    protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT =
+            new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
     protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
 
     private final InternalData internalData;
     protected final Context context;
+    private boolean useWebsocket = false;
 
     protected BaseApiClient(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
         this.context = context;
+        checkCommsChannel(context);
+    }
+
+    private void checkCommsChannel(Context context) {
+        // here we only check the channel once and once only for each instance of this client
+        // once setup the client will use the same comm channel until it is disposed of and re-created
+        ConfigClient configClient = ConfigApi.getConfigClient(context);
+        String channel = configClient.getConfigValue(APPFLOW_COMMS_CHANNEL);
+        if(CHANNEL_WEBSOCKET.equals(channel)) {
+            useWebsocket = true;
+        }
     }
 
     protected InternalData getInternalData() {
@@ -138,7 +160,11 @@ public abstract class BaseApiClient {
     }
 
     protected ChannelClient getMessengerClient(ComponentName componentName) {
-        return Channels.webSocket(context, componentName);
+        if (useWebsocket) {
+            return Channels.webSocket(context, componentName);
+        } else {
+            return Channels.messenger(context, componentName);
+        }
     }
 
     protected static void startFps(Context context) {

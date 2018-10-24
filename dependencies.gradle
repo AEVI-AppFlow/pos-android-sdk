@@ -6,6 +6,8 @@ ext {
 
     rxMessengerVersion = '4.0.0-SNAPSHOT'
 
+    configApiVersion = '1.1.0'
+
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
     mockitoVersion = '1.10.19'
@@ -35,7 +37,8 @@ ext {
             gson              : "com.google.code.gson:gson:$gsonVersion",
             archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
             archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
-            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion"
+            jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion",
+            configApi         : "com.aevi.sdk.config:config-api:$configApiVersion",
     ]
 
     sampleDependencies = [
