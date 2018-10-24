@@ -21,7 +21,7 @@ import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
 /**
- * Transaction summary model provided to post-payment applications.
+ * Transaction summary providing all relevant details for a completed {@link Transaction}.
  */
 public class TransactionSummary extends Transaction {
 
@@ -37,7 +37,7 @@ public class TransactionSummary extends Transaction {
     }
 
     public TransactionSummary(Transaction transaction, String flowType, DeviceAudience deviceAudience, Card card) {
-        super(transaction.getRequestedAmounts(), transaction.getBaskets(), transaction.getCustomer(), transaction.getAdditionalData(),
+        super(transaction.getId(), transaction.getRequestedAmounts(), transaction.getBaskets(), transaction.getCustomer(), transaction.getAdditionalData(),
                 transaction.getTransactionResponses(), transaction.getExecutedFlowApps());
         this.flowType = flowType;
         this.deviceAudience = deviceAudience != null ? deviceAudience : DeviceAudience.MERCHANT;

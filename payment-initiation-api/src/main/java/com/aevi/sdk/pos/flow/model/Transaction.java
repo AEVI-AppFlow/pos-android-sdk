@@ -31,11 +31,14 @@ import java.util.UUID;
 import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
 
 /**
- * Represents a transaction for a single customer (aka split).
+ * Represents a transaction within a flow.
  *
- * Instances of {@link TransactionRequest} are created from this information to give applications a snapshot of the current state of the transaction.
+ * In the case of a split enabled flow, there will be an instance of this class for each "split", which usually represents each customer.
  *
- * A transaction can contain one or more {@link TransactionResponse} from different sources, using potentially different payment methods.
+ * {@link TransactionRequest} instances are created as required to call flow services within this transaction, with the remaining amounts to process.
+ *
+ * A transaction can contain zero to many {@link TransactionResponse} instances, as a result of calling into flow services that pay off a portion
+ * or all of the requested amounts.
  *
  * Use {@link #getRequestedAmounts()} to retrieve the total amount requested for this transaction, and {@link #getRemainingAmounts()} to retrieve
  * the amounts remaining to pay for this transaction, if any.
@@ -55,12 +58,12 @@ public class Transaction extends BaseModel {
     }
 
     public Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData) {
-        this(requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(), new ArrayList<FlowAppInfo>());
+        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(), new ArrayList<FlowAppInfo>());
     }
 
-    Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,
+    Transaction(String id, Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,
                 List<TransactionResponse> transactionResponses, List<FlowAppInfo> executedFlowApps) {
-        super(UUID.randomUUID().toString());
+        super(id);
         this.requestedAmounts = requestedAmounts;
         this.baskets = baskets;
         this.customer = customer;
