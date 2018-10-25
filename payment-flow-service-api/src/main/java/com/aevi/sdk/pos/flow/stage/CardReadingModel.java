@@ -16,6 +16,7 @@
 package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
@@ -54,7 +55,7 @@ public class CardReadingModel extends BaseStageModel {
     /**
      * Create an instance from an activity context.
      *
-     * This assumes that the activity was started via {@link #processInActivity(Class)}, {@link BaseApiService#launchActivity(Class, String, String)}
+     * This assumes that the activity was started via {@link BaseStageModel#processInActivity(Context, Class)},
      * or via the {@link ActivityProxyService}.
      *
      * @param activity The activity that was started via one of the means described above
@@ -68,9 +69,8 @@ public class CardReadingModel extends BaseStageModel {
     /**
      * Create an instance from a service context.
      *
-     * @param service         The service instance
-     * @param clientMessageId The client message id provided via {@link BaseApiService#processRequest(String, String, String)}
-     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
+     * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
+     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
      * @return An instance of {@link CardReadingModel}
      */
     public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {

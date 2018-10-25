@@ -25,10 +25,6 @@ buildConfig {
     clsName = 'FlowServiceConfig'
 }
 
-javadoc {
-    failOnError = false
-}
-
 apply from: '../jar-publisher.gradle'
 apply from: '../bintray.gradle'
 
