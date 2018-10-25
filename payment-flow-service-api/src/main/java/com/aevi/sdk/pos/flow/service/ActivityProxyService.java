@@ -43,8 +43,6 @@ public class ActivityProxyService extends BaseApiService {
         super(PaymentFlowServiceApi.getApiVersion());
     }
 
-    private ActivityHelper activityHelper;
-
     @Override
     protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
         Intent activityIntent = getActivityIntent(flowStage);
@@ -54,15 +52,9 @@ public class ActivityProxyService extends BaseApiService {
             clientCommunicator.finishWithNoResponse();
             return;
         }
-        activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request, null);
+        ActivityHelper activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request, null);
+        clientCommunicator.addActivityHelper(activityHelper);
         activityHelper.launchActivity();
-    }
-
-    @Override
-    protected void onFinish() {
-        if(activityHelper != null) {
-            activityHelper.finishLaunchedActivity();
-        }
     }
 
     private Intent getActivityIntent(String flowStage) {

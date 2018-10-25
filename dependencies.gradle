@@ -1,6 +1,6 @@
 ext {
     gsonVersion = '2.8.0'
-    rxJavaVersion = '2.1.2'
+    rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.2'
 

@@ -144,8 +144,14 @@ public abstract class BaseStageModel {
      *
      * @param context       The Android context
      * @param activityClass The class of the activity to send it to
+     * @return An Observable stream of lifecycle events for the activity
      */
-    public void processInActivity(Context context, Class<? extends Activity> activityClass) {
-        new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null).launchActivity();
+    public ObservableActivityHelper<String> processInActivity(Context context, Class<? extends Activity> activityClass) {
+        ActivityHelper activityHelper =
+                new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null);
+        if (clientCommunicator != null) {
+            clientCommunicator.addActivityHelper(activityHelper);
+        }
+        return activityHelper.launchActivity();
     }
 }

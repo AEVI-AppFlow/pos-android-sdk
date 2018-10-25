@@ -29,9 +29,4 @@ public class PostGenericSampleService extends BasePostGenericService {
         stageModel.addReferences("postGeneric", "wasHere");
         stageModel.sendResponse();
     }
-
-    @Override
-    protected void onFinish() {
-        // No-op
-    }
 }

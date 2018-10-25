@@ -53,9 +53,8 @@ public class PostGenericStageModel extends BaseStageModel {
     /**
      * Create an instance from a service context.
      *
-     * @param service         The service instance
-     * @param clientMessageId The client message id provided via {@link BaseApiService#processRequest(String, String, String)}
-     * @param response        The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
+     * @param clientCommunicator A communicator that can be used to send messages and/or end the communication stream
+     * @param response           The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)} method
      * @return An instance of {@link GenericStageModel}
      */
     public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response) {

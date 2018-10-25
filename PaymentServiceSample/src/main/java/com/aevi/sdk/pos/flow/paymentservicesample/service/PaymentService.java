@@ -11,11 +11,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
-
-import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
@@ -31,8 +28,6 @@ import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
  */
 public class PaymentService extends BasePaymentFlowService {
 
-    private ActivityHelper activityHelper;
-
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
@@ -46,12 +41,5 @@ public class PaymentService extends BasePaymentFlowService {
     @Override
     protected void onGeneric(GenericStageModel model) {
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
-    }
-
-    @Override
-    protected void onFinish() {
-        if (activityHelper != null) {
-            activityHelper.finishLaunchedActivity();
-        }
     }
 }

@@ -8,6 +8,9 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import io.reactivex.Observable;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FAILURE_MESSAGE;
@@ -16,24 +19,36 @@ import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.service.BaseApiService.BACKGROUND_PROCESSING;
 
+/**
+ * This class can be used to communicate with clients.
+ *
+ * A communicator instance will be created for your Flow Service on connection from a client
+ */
 public class ClientCommunicator {
 
     private static final String TAG = ClientCommunicator.class.getSimpleName();
 
     private final ChannelServer channelServer;
     private final InternalData internalData;
+    private final Set<ActivityHelper> activityHelpers;
 
-    public ClientCommunicator(ChannelServer channelServer, InternalData internalData) {
+    ClientCommunicator(ChannelServer channelServer, InternalData internalData) {
         this.channelServer = channelServer;
         this.internalData = internalData;
+        this.activityHelpers = new HashSet<>();
     }
 
-    public void sendAck() {
+    void sendAck() {
         Log.d(TAG, "Sending ack");
         AppMessage appMessage = new AppMessage(REQUEST_ACK_MESSAGE, internalData);
         channelServer.send(appMessage.toJson());
     }
 
+    /**
+     * Send a message to the client and end the communication stream
+     *
+     * @param response The response to send
+     */
     public void sendResponseAndEnd(@NonNull String response) {
         if (channelServer != null) {
             AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, response, internalData);
@@ -42,12 +57,20 @@ public class ClientCommunicator {
         }
     }
 
+    /**
+     * Send an exception or error message to the client
+     *
+     * @param me The {@link MessageException} to send
+     */
     public void send(MessageException me) {
         if (channelServer != null) {
             channelServer.send(me);
         }
     }
 
+    /**
+     * Finish your flow service with no response
+     */
     public void finishWithNoResponse() {
         if (channelServer != null) {
             AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, EMPTY_DATA, internalData);
@@ -56,7 +79,7 @@ public class ClientCommunicator {
         }
     }
 
-    public void sendResponseAsErrorAndEnd(@NonNull String error) {
+    void sendResponseAsErrorAndEnd(@NonNull String error) {
         if (channelServer != null) {
             Log.d(TAG, "Sending error message: " + error);
             AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, error, internalData);
@@ -79,9 +102,22 @@ public class ClientCommunicator {
         sendResponseAndEnd(EMPTY_DATA);
     }
 
-    public Observable<String> subscribeToMessages() {
+    Observable<String> subscribeToMessages() {
         return channelServer.subscribeToMessages();
     }
 
+    void finishStartedActivities() {
+        for (ActivityHelper activityHelper : activityHelpers) {
+            activityHelper.finishLaunchedActivity();
+        }
+    }
 
+    /**
+     * Add any {@link ActivityHelper} classes used to start activities for this client connection
+     *
+     * @param activityHelper The Activity helper class to add
+     */
+    public void addActivityHelper(ActivityHelper activityHelper) {
+        activityHelpers.add(activityHelper);
+    }
 }

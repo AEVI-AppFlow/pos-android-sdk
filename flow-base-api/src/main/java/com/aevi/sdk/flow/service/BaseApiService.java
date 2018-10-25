@@ -14,20 +14,19 @@
 
 package com.aevi.sdk.flow.service;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.ChannelServer;
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
-import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 
 import io.reactivex.functions.Consumer;
 
-import static com.aevi.sdk.flow.constants.ActivityEvents.FINISH;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
@@ -83,12 +82,13 @@ public abstract class BaseApiService extends AbstractChannelService {
                 }
 
                 checkVersions(appMessage, internalData);
+                String messageData = appMessage.getMessageData();
                 switch (appMessage.getMessageType()) {
                     case REQUEST_MESSAGE:
-                        handleRequestMessage(clientCommunicator, appMessage.getMessageData(), flowStage);
+                        handleRequestMessage(clientCommunicator, messageData, flowStage);
                         break;
                     case FORCE_FINISH_MESSAGE:
-                        onFinish();
+                        onForceFinish(clientCommunicator);
                         break;
                     default:
                         Log.e(TAG, "Unknown message type: " + appMessage.getMessageType() + ". ");
@@ -138,7 +138,6 @@ public abstract class BaseApiService extends AbstractChannelService {
         return internalData.getSenderApiVersion();
     }
 
-
     /**
      * Finish without passing any response back.
      *
@@ -181,18 +180,17 @@ public abstract class BaseApiService extends AbstractChannelService {
      * @param request            The request to be processed
      * @param flowStage          The flow stage this request is being called for
      */
-    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage);
+    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                                     @NonNull String flowStage);
 
     /**
-     * Called when your application needs to abort what it is doing and finish any Activity that is running.
+     * Called externally when your application needs to abort what it is doing and finish anything that may be running including an Activity that you may have started.
      *
-     * As part of this callback, you need to;
+     * Any activities started using the {@link BaseStageModel#processInActivity(Context, Class)} method will be automatically finished for you
      *
-     * 1. Finish any Activity. If you launched it via the {@link #launchActivity(Class, String, String)} method, you can use {@link #finishLaunchedActivity(String)} to ask it to finish itself, provided that the activity has registered with the {@link ObservableActivityHelper} for finish events.
-     *
-     * 2. Finish the service with {@link #finishWithNoResponse(String)} as any response data would be ignored at this stage.
+     * If you are overriding this method ensure that you include the super call to it here
      */
-    protected abstract void onFinish();
-
-
+    protected void onForceFinish(ClientCommunicator clientCommunicator) {
+        clientCommunicator.finishStartedActivities();
+    }
 }

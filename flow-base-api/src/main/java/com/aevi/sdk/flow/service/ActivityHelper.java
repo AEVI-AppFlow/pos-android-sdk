@@ -1,6 +1,5 @@
 package com.aevi.sdk.flow.service;
 
-import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 
 import java.util.UUID;
 
-import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -60,9 +58,9 @@ public class ActivityHelper {
      * If you are interested in receiving lifecycle events from the started activity here then you should subscribe to the returned
      * returned observable.
      *
-     * @return An observable stream of events for the lifecycle of this activity
+     * @return An {@link ObservableActivityHelper} object that can be used to get an observable stream of events for the lifecycle of this activity
      */
-    public Observable<Lifecycle.Event> launchActivity() {
+    public ObservableActivityHelper<String> launchActivity() {
         activityIntent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         if (request != null) {
             activityIntent.putExtra(ACTIVITY_REQUEST_KEY, request);
@@ -83,7 +81,7 @@ public class ActivityHelper {
                 handleActivityException(throwable, clientCommunicator);
             }
         });
-        return helper.onLifecycleEvent();
+        return helper;
     }
 
     /**

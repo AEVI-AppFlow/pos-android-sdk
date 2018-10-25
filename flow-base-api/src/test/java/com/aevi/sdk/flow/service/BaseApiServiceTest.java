@@ -150,10 +150,11 @@ public class BaseApiServiceTest {
             }
         }
 
+
         @Override
-        protected void onFinish() {
+        protected void onForceFinish(ClientCommunicator clientCommunicator) {
+            super.onForceFinish(clientCommunicator);
             finishRequestReceived = true;
         }
     }
-
 }
