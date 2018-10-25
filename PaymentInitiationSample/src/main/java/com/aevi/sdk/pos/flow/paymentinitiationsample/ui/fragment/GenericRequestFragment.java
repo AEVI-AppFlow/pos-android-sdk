@@ -149,7 +149,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
         // Some types require additional information
         switch (flowType) {
             case FLOW_TYPE_REVERSAL:
-            case FLOW_TYPE_RESPONSE_REDELIVERY:
                 if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;

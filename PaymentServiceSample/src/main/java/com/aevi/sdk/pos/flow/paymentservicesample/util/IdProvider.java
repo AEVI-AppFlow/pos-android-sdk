@@ -11,7 +11,7 @@ public final class IdProvider {
     }
 
     public static String getMerchantId() {
-        return "1234abcd";
+        return "87654321";
     }
 
     public static String getMerchantName() {
