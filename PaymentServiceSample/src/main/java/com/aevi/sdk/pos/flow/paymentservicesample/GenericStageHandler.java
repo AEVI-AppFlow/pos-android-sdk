@@ -14,26 +14,30 @@
 
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
+import android.content.Context;
+
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TokenisationActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
-import com.aevi.sdk.flow.stage.GenericStageModel;
 
-import static com.aevi.sdk.flow.constants.FlowTypes.*;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_RESPONSE_REDELIVERY;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_TOKENISATION;
 
 public class GenericStageHandler {
 
-    public static void handleGenericRequest(GenericStageModel genericStageModel) {
+    public static void handleGenericRequest(Context context, GenericStageModel genericStageModel) {
         Request request = genericStageModel.getRequest();
         switch (request.getRequestType()) {
             case FLOW_TYPE_REVERSAL:
                 handleReversal(request, genericStageModel);
                 break;
             case FLOW_TYPE_TOKENISATION:
-                genericStageModel.processInActivity(TokenisationActivity.class);
+                genericStageModel.processInActivity(context, TokenisationActivity.class);
                 break;
             case FLOW_TYPE_RESPONSE_REDELIVERY:
                 handleResponseRedelivery(request, genericStageModel);

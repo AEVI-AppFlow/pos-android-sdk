@@ -11,16 +11,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
-
+import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TransactionProcessingActivity;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
-import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 /**
@@ -32,22 +30,16 @@ public class PaymentService extends BasePaymentFlowService {
 
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
-        model.processInActivity(PaymentCardReadingActivity.class);
+        model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
-        model.processInActivity(TransactionProcessingActivity.class);
+        model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
-        GenericStageHandler.handleGenericRequest(model);
-    }
-
-    @Override
-    protected void onFinish(String clientMessageId) {
-        finishLaunchedActivity(clientMessageId);
-        finishWithNoResponse(clientMessageId);
+        GenericStageHandler.handleGenericRequest(getBaseContext(), model);
     }
 }

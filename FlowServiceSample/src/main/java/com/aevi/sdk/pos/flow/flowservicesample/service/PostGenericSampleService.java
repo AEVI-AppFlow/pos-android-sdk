@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,10 +28,5 @@ public class PostGenericSampleService extends BasePostGenericService {
         Log.d(PostGenericSampleService.class.getSimpleName(), "processResponse: " + stageModel.getResponse().toJson());
         stageModel.addReferences("postGeneric", "wasHere");
         stageModel.sendResponse();
-    }
-
-    @Override
-    protected void onFinish(@NonNull String clientMessageId) {
-        // No-op
     }
 }

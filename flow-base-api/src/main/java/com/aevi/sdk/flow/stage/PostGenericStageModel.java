@@ -19,6 +19,9 @@ import android.app.Activity;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
+
+import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the post generic stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -30,27 +33,32 @@ public class PostGenericStageModel extends BaseStageModel {
     private final Response inputResponse;
     private final Response outputResponse;
 
-    private PostGenericStageModel(Activity activity, BaseApiService service, String clientMessageId, Response response) {
-        super(activity, service, clientMessageId);
+    private PostGenericStageModel(Activity activity, Response response) {
+        super(activity);
+        this.inputResponse = response;
+        this.outputResponse = Response.fromJson(response.toJson()); // Same data, different instance
+    }
+
+    private PostGenericStageModel(ClientCommunicator clientCommunicator, Response response) {
+        super(clientCommunicator);
         this.inputResponse = response;
         this.outputResponse = Response.fromJson(response.toJson()); // Same data, different instance
     }
 
     public static PostGenericStageModel fromActivity(Activity activity) {
-        String response = activity.getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY);
-        return new PostGenericStageModel(activity, null, null, Response.fromJson(response));
+        String response = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+        return new PostGenericStageModel(activity, Response.fromJson(response));
     }
 
     /**
      * Create an instance from a service context.
      *
-     * @param service         The service instance
-     * @param clientMessageId The client message id provided via {@link BaseApiService#processRequest(String, String, String)}
-     * @param response        The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
+     * @param clientCommunicator A communicator that can be used to send messages and/or end the communication stream
+     * @param response           The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)} method
      * @return An instance of {@link GenericStageModel}
      */
-    public static PostGenericStageModel fromService(BaseApiService service, String clientMessageId, Response response) {
-        return new PostGenericStageModel(null, service, clientMessageId, response);
+    public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response) {
+        return new PostGenericStageModel(clientCommunicator, response);
     }
 
     /**
@@ -84,7 +92,7 @@ public class PostGenericStageModel extends BaseStageModel {
     }
 
     @Override
-    protected String getRequestJson() {
+    public String getRequestJson() {
         return inputResponse.toJson();
     }
 }

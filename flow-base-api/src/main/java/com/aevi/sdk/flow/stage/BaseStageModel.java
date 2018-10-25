@@ -18,7 +18,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
-import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,7 +27,8 @@ import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.ActivityEvents;
-import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ActivityHelper;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 
 import java.lang.ref.WeakReference;
 
@@ -39,63 +40,21 @@ import io.reactivex.functions.Consumer;
 public abstract class BaseStageModel {
 
     private WeakReference<Activity> activityReference;
-    private WeakReference<BaseApiService> serviceReference;
-    private String clientMessageId;
+    protected ClientCommunicator clientCommunicator;
 
     /**
-     * Initialise the stage model
+     * Initialise the stage model from an activity
      *
-     * @param activity        The activity, if initialised from an activity
-     * @param service         The service, if initialised from a service
-     * @param clientMessageId The client message id
+     * @param activity The activity initialised from
      */
-    protected BaseStageModel(@Nullable Activity activity, @Nullable BaseApiService service, @NonNull String clientMessageId) {
+    protected BaseStageModel(@Nullable Activity activity) {
         if (activity != null) {
             this.activityReference = new WeakReference<>(activity);
             if (activity instanceof LifecycleOwner) {
                 registerForFinishRequest(activity.getIntent(), ((LifecycleOwner) activity).getLifecycle());
             }
         }
-        if (service != null) {
-            this.serviceReference = new WeakReference<>(service);
-        }
-        this.clientMessageId = clientMessageId;
-    }
 
-    /**
-     * Get the client message id.
-     *
-     * @return The client message id
-     */
-    public String getClientMessageId() {
-        return clientMessageId;
-    }
-
-    /**
-     * Send off the response.
-     *
-     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
-     */
-    public abstract void sendResponse();
-
-    /**
-     * Do send the response back to the calling client.
-     *
-     * @param response The response
-     */
-    protected void doSendResponse(String response) {
-        Activity activity = getActivity();
-        BaseApiService service = getService();
-        if (activity != null) {
-            try {
-                ObservableActivityHelper<String> helper = ObservableActivityHelper.getInstance(activity.getIntent());
-                helper.publishResponse(response);
-            } catch (NoSuchInstanceException e) {
-                Log.e(getClass().getSimpleName(), "Failed to retrieve ObservableActivityHelper - was the activity started correctly?");
-            }
-        } else if (service != null) {
-            service.finishWithResponse(clientMessageId, response);
-        }
     }
 
     /*
@@ -126,44 +85,52 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Can be called from a service context to start up an activity to handle the current stage with associated user interface.
+     * Initialise the stage model from a service
      *
-     * @param activityCls The activity class to start
+     * @param clientCommunicator The client communication channel for this model
      */
-    public void processInActivity(Class<? extends Activity> activityCls) {
-        BaseApiService service = getService();
-        if (service != null) {
-            Intent intent = new Intent(service, activityCls);
-            launchActivity(service, intent, clientMessageId, getRequestJson());
-        }
+    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
+        this.clientCommunicator = clientCommunicator;
     }
 
     /**
-     * Can be called from a service context to start up an activity to handle the current stage with associated user interface.
+     * A communicator that be used to talk directly to the client
      *
-     * @param activityComponentName The component name for the activity to start
+     * Internal use only
+     *
+     * @return The client communicator
      */
-    public void processInActivity(ComponentName activityComponentName) {
-        BaseApiService service = getService();
-        if (service != null) {
-            Intent intent = new Intent();
-            intent.setComponent(activityComponentName);
-            launchActivity(service, intent, clientMessageId, getRequestJson());
+    public ClientCommunicator getClientCommunicator() {
+        return clientCommunicator;
+    }
+
+    /**
+     * Send off the response.
+     *
+     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     */
+    public abstract void sendResponse();
+
+    /**
+     * Do send the response back to the calling client.
+     *
+     * @param response The response
+     */
+    protected void doSendResponse(String response) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            try {
+                ObservableActivityHelper<String> helper = ObservableActivityHelper.getInstance(activity.getIntent());
+                helper.publishResponse(response);
+            } catch (NoSuchInstanceException e) {
+                Log.e(getClass().getSimpleName(), "Failed to retrieve ObservableActivityHelper - was the activity started correctly?");
+            }
+        } else {
+            clientCommunicator.sendResponseAndEnd(response);
         }
     }
 
-    private void launchActivity(final BaseApiService service, Intent intent, final String clientMessageId, final String request) {
-        service.launchActivity(intent, clientMessageId, request, null);
-    }
-
-    protected abstract String getRequestJson();
-
-    protected BaseApiService getService() {
-        if (serviceReference != null) {
-            return serviceReference.get();
-        }
-        return null;
-    }
+    public abstract String getRequestJson();
 
     protected Activity getActivity() {
         if (activityReference != null) {
@@ -172,4 +139,19 @@ public abstract class BaseStageModel {
         return null;
     }
 
+    /**
+     * Send this model to be processed by an activity
+     *
+     * @param context       The Android context
+     * @param activityClass The class of the activity to send it to
+     * @return An Observable stream of lifecycle events for the activity
+     */
+    public ObservableActivityHelper<String> processInActivity(Context context, Class<? extends Activity> activityClass) {
+        ActivityHelper activityHelper =
+                new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null);
+        if (clientCommunicator != null) {
+            clientCommunicator.addActivityHelper(activityHelper);
+        }
+        return activityHelper.launchActivity();
+    }
 }

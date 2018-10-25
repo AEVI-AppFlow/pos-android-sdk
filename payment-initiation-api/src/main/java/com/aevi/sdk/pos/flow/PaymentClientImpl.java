@@ -19,7 +19,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
+import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -52,7 +52,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        final ChannelClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_FLOW_CONFIG_REQUEST, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
@@ -77,7 +77,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        final ChannelClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
 
         AdditionalData paymentData = new AdditionalData();
         paymentData.addData(AppMessageTypes.PAYMENT_MESSAGE, payment);
@@ -110,7 +110,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         if (!isProcessingServiceInstalled(context)) {
             return Observable.error(NO_FPS_EXCEPTION);
         }
-        final ObservableMessengerClient requestStatusMessenger = getMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
+        final ChannelClient requestStatusMessenger = getMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
         RequestStatus requestStatus = new RequestStatus(paymentId);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestStatus.toJson(), getInternalData());
         return requestStatusMessenger

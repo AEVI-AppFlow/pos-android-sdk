@@ -15,14 +15,18 @@
 package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
+
+import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the post-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -35,8 +39,14 @@ public class PostTransactionModel extends BaseStageModel {
     private final TransactionSummary transactionSummary;
     private final FlowResponse flowResponse;
 
-    private PostTransactionModel(Activity activity, BaseApiService service, String clientMessageId, TransactionSummary transactionSummary) {
-        super(activity, service, clientMessageId);
+    private PostTransactionModel(Activity activity, TransactionSummary transactionSummary) {
+        super(activity);
+        this.transactionSummary = transactionSummary;
+        this.flowResponse = new FlowResponse();
+    }
+
+    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary) {
+        super(clientCommunicator);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
@@ -44,27 +54,26 @@ public class PostTransactionModel extends BaseStageModel {
     /**
      * Create an instance from an activity context.
      *
-     * This assumes that the activity was started via {@link #processInActivity(Class)}, {@link BaseApiService#launchActivity(Class, String, String)}
+     * This assumes that the activity was started via {@link BaseStageModel#processInActivity(Context, Class)},
      * or via the {@link ActivityProxyService}.
      *
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PostTransactionModel}
      */
     public static PostTransactionModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY);
-        return new PostTransactionModel(activity, null, null, TransactionSummary.fromJson(request));
+        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+        return new PostTransactionModel(activity, TransactionSummary.fromJson(request));
     }
 
     /**
      * Create an instance from a service context.
      *
-     * @param service         The service instance
-     * @param clientMessageId The client message id provided via {@link BaseApiService#processRequest(String, String, String)}
-     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(String, String, String)}
+     * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
+     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
      * @return An instance of {@link PostTransactionModel}
      */
-    public static PostTransactionModel fromService(BaseApiService service, String clientMessageId, TransactionSummary request) {
-        return new PostTransactionModel(null, service, clientMessageId, request);
+    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request) {
+        return new PostTransactionModel(clientCommunicator, request);
     }
 
     /**
@@ -114,7 +123,7 @@ public class PostTransactionModel extends BaseStageModel {
     }
 
     @Override
-    protected String getRequestJson() {
+    public String getRequestJson() {
         return transactionSummary.toJson();
     }
 }

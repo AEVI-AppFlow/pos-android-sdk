@@ -1,5 +1,6 @@
 package com.aevi.sdk.flow.service;
 
+import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
@@ -7,9 +8,20 @@ import com.aevi.sdk.flow.model.Response;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+
+import java.util.List;
+
+import io.reactivex.subjects.PublishSubject;
 
 import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BaseListenerServiceTest {
 
@@ -17,62 +29,104 @@ public class BaseListenerServiceTest {
     Response response;
     AppMessage incomingAppMessage;
 
+    @Mock
+    ChannelServer channelServer;
+
+    PublishSubject<String> incomingMessagePublisher;
+
+    String lastMessage;
+
     @Before
     public void setUp() throws Exception {
-        listenerService = new TestListenerService();
+        initMocks(this);
+        listenerService = new TestListenerService(channelServer);
         response = new Response(new Request("banana"), true, "Believe!");
         incomingAppMessage = new AppMessage(AppMessageTypes.RESPONSE_MESSAGE, response.toJson());
+
+        incomingMessagePublisher = PublishSubject.create();
+        when(channelServer.subscribeToMessages()).thenReturn(incomingMessagePublisher);
+    }
+
+    private void setupNewFPSClient() {
+        listenerService.onNewClient(channelServer, FLOW_PROCESSING_SERVICE);
+    }
+
+    private void setupNewEvilClient() {
+        listenerService.onNewClient(channelServer, "com.nefarious.app");
     }
 
     @Test
     public void shouldSendAckOnResponseMessage() {
-        listenerService.fakeIncomingMessage(incomingAppMessage, FLOW_PROCESSING_SERVICE);
+        fakeIncomingMessage(incomingAppMessage);
+        setupNewFPSClient();
 
-        assertThat(listenerService.messageSent.getMessageType()).isEqualTo(AppMessageTypes.REQUEST_ACK_MESSAGE);
-        assertThat(listenerService.endStreamSent).isTrue();
+        verifyMessageSent(AppMessageTypes.REQUEST_ACK_MESSAGE, "{}");
+        verifyCommsEnded(true);
     }
 
     @Test
     public void shouldPassOnResponseMessage() {
-        listenerService.fakeIncomingMessage(incomingAppMessage, FLOW_PROCESSING_SERVICE);
+        fakeIncomingMessage(incomingAppMessage);
+        setupNewFPSClient();
 
         assertThat(listenerService.responseCalled).isTrue();
         assertThat(listenerService.responseReceived).isEqualTo(response);
-        assertThat(listenerService.endStreamSent).isTrue();
+        verifyCommsEnded(true);
     }
 
     @Test
     public void willIgnoreMessageFromOtherPackages() {
-        listenerService.fakeIncomingMessage(incomingAppMessage, "com.nefarious.app");
+        fakeIncomingMessage(incomingAppMessage);
+        setupNewEvilClient();
 
         assertThat(listenerService.responseCalled).isFalse();
         assertThat(listenerService.responseReceived).isNull();
-        assertThat(listenerService.endStreamSent).isTrue();
+        verifyCommsEnded(true);
     }
 
     @Test
     public void willIgnoreWrongMessageType() {
         AppMessage wrongIncomingAppMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, response.toJson());
-        listenerService.fakeIncomingMessage(wrongIncomingAppMessage, FLOW_PROCESSING_SERVICE);
+        fakeIncomingMessage(wrongIncomingAppMessage);
+        setupNewFPSClient();
 
         assertThat(listenerService.responseCalled).isFalse();
         assertThat(listenerService.responseReceived).isNull();
-        assertThat(listenerService.endStreamSent).isTrue();
+        verifyCommsEnded(true);
+    }
+
+    private void fakeIncomingMessage(AppMessage appMessage) {
+        lastMessage = appMessage.toJson();
+        when(channelServer.getLastMessageBlocking()).thenReturn(lastMessage);
+        incomingMessagePublisher.onNext(appMessage.toJson());
+    }
+
+    private void verifyMessageSent(String type, String response) {
+        ArgumentCaptor<String> msgCaptor = ArgumentCaptor.forClass(String.class);
+        verify(channelServer, atLeastOnce()).send(msgCaptor.capture());
+        List<String> msgs = msgCaptor.getAllValues();
+        String lastMsg = msgs.get(msgs.size() - 1);
+        AppMessage messageSent = AppMessage.fromJson(lastMsg);
+        assertThat(messageSent.getMessageType()).isEqualTo(type);
+        assertThat(messageSent.getMessageData()).isEqualTo(response);
+    }
+
+    private void verifyCommsEnded(boolean ended) {
+        if (ended) {
+            verify(channelServer).sendEndStream();
+        } else {
+            verify(channelServer, times(0)).sendEndStream();
+        }
     }
 
     class TestListenerService extends BaseListenerService<Response> {
 
         Response responseReceived;
-        boolean endStreamSent;
         boolean responseCalled;
-        AppMessage messageSent;
 
-        protected TestListenerService() {
+        protected TestListenerService(ChannelServer channelServer) {
             super(Response.class, "1.0.0");
-        }
-
-        void fakeIncomingMessage(AppMessage appMessage, String packageName) {
-            handleRequest("123", appMessage.toJson(), packageName);
+            channelServerMap.put("123", channelServer);
         }
 
         @Override
@@ -81,16 +135,5 @@ public class BaseListenerServiceTest {
             responseReceived = response;
         }
 
-        @Override
-        public boolean sendEndStreamMessageToClient(String clientId) {
-            endStreamSent = true;
-            return true;
-        }
-
-        @Override
-        public boolean sendMessageToClient(String clientId, String response) {
-            messageSent = AppMessage.fromJson(response);
-            return true;
-        }
     }
 }
