@@ -89,6 +89,7 @@ def exportedProjects = [
 
 def baseAndFlowService = [
         ":flow-base-api",
+        ":payment-initiation-api",
         ":payment-flow-service-api"
 ]
 
@@ -112,6 +113,14 @@ task mergeBaseAndFlowServiceDocs(type: Javadoc) {
     })
     destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
     title = "Payment Flow Service API"
+    exclude "**/BaseApiClient**"
+    exclude "**/PaymentClient**"
+    exclude "**/PaymentApi**"
+    exclude "**/BaseListenerService**"
+    exclude "**/config/**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
     options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
@@ -123,7 +132,14 @@ task mergeBaseAndInitiationDocs(type: Javadoc) {
     destinationDir = file('documentation/public/javadocs/payment-initiation-api')
     title = "Payment Initiation API"
     exclude "**/**ClientImpl**"
-    exclude "**/BasePaymentModel**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BasePostGenericService**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BaseListenerService**"
+    exclude "**/**StageModel**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
     options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
