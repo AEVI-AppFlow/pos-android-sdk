@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 
-import com.aevi.sdk.flow.model.NoOpModel;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -65,7 +64,7 @@ public class PostFlowModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
      * @return An instance of {@link PostFlowModel}
      */
     public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request) {
@@ -94,7 +93,7 @@ public class PostFlowModel extends BaseStageModel {
      * Call when finished processing.
      */
     public void sendResponse() {
-        doSendResponse(new NoOpModel().toJson());
+        doSendResponse("{}");
     }
 
     @Override

@@ -39,9 +39,6 @@ public class GenericStageHandler {
             case FLOW_TYPE_TOKENISATION:
                 genericStageModel.processInActivity(context, TokenisationActivity.class);
                 break;
-            case FLOW_TYPE_RESPONSE_REDELIVERY:
-                handleResponseRedelivery(request, genericStageModel);
-                break;
             default:
                 genericStageModel.sendResponse(new Response(request, false, "Unsupported request: " + request.getRequestType()));
         }
@@ -55,18 +52,6 @@ public class GenericStageHandler {
             genericStageModel.sendResponse(new Response(request, true, "Reversed transaction: " + transactionId));
         } else {
             genericStageModel.sendResponse(new Response(request, false, "Was unable to perform reversal"));
-        }
-    }
-
-    private static void handleResponseRedelivery(Request request, GenericStageModel genericStageModel) {
-        String transactionId = request.getRequestData().getStringValue(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID);
-        TransactionResponse lastTransactionResponse = InMemoryStore.getInstance().getLastTransactionResponseGenerated();
-        if (transactionId != null && lastTransactionResponse != null && lastTransactionResponse.getId().equals(transactionId)) {
-            Response response = new Response(request, true, "Response redelivery successful");
-            request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_RESPONSE, lastTransactionResponse);
-            genericStageModel.sendResponse(response);
-        } else {
-            genericStageModel.sendResponse(new Response(request, false, "Was unable to redeliver response"));
         }
     }
 }

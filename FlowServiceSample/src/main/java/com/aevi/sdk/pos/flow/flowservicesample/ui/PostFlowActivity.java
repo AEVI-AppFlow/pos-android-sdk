@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.aevi.sdk.flow.model.NoOpModel;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
@@ -88,7 +87,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected Class<?> getResponseClass() {
-        return NoOpModel.class;
+        return Object.class;
     }
 
     @Override
