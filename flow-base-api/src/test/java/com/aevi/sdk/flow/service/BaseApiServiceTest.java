@@ -8,7 +8,6 @@ import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.MessageErrors;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -83,24 +82,6 @@ public class BaseApiServiceTest {
         verifyCommsEnded(false);
     }
 
-    @Test
-    public void shouldAllowFinishWithNoResponse() throws Exception {
-        apiService.callFinishWithEmptyResponse();
-
-        verifyMessageSent(AppMessageTypes.RESPONSE_MESSAGE, AppMessage.EMPTY_DATA);
-        verifyCommsEnded(true);
-    }
-
-    @Test
-    public void shouldAllowFinishWithResponse() throws Exception {
-        Response response = new Response(request, true, "The Rock or The Mountain?");
-        apiService.callFinishWithResponse(response);
-
-        verifyMessageSent(AppMessageTypes.RESPONSE_MESSAGE, response.toJson());
-
-        verifyCommsEnded(true);
-    }
-
     private void verifyCommsEnded(boolean ended) {
         if (ended) {
             verify(channelServer).sendEndStream();
@@ -132,14 +113,6 @@ public class BaseApiServiceTest {
         TestApiService(ChannelServer channelServer) {
             super("1.0.0");
             channelServerMap.put("1.2.3", channelServer);
-        }
-
-        void callFinishWithEmptyResponse() {
-            finishWithNoResponse("1.2.3");
-        }
-
-        void callFinishWithResponse(Response response) {
-            finishWithResponse("1.2.3", response.toJson());
         }
 
         @Override

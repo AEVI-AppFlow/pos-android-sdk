@@ -29,10 +29,8 @@ import io.reactivex.functions.Consumer;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
 import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_SERVICE_EXCEPTION;
 import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
-import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 
 /**
  * Base service for all API service implementations.
@@ -44,7 +42,6 @@ public abstract class BaseApiService extends AbstractChannelService {
     private final String TAG = getClass().getSimpleName(); // Use class name of implementing service
 
     protected final InternalData internalData;
-    private boolean stopServiceOnEndOfStream;
 
     protected BaseApiService(String apiVersion) {
         internalData = new InternalData(apiVersion);
@@ -61,7 +58,7 @@ public abstract class BaseApiService extends AbstractChannelService {
      * @param stopServiceOnEndOfStream True to stop service on end of stream, false to keep it running
      */
     public void setStopServiceOnEndOfStream(boolean stopServiceOnEndOfStream) {
-        this.stopServiceOnEndOfStream = stopServiceOnEndOfStream;
+        setStopSelfOnEndOfStream(stopServiceOnEndOfStream);
     }
 
     @Override
@@ -136,41 +133,6 @@ public abstract class BaseApiService extends AbstractChannelService {
      */
     protected String getApiVersion() {
         return internalData.getSenderApiVersion();
-    }
-
-    /**
-     * Finish without passing any response back.
-     *
-     * This is the preferred approach for any case where no response data was generated.
-     *
-     * @param clientMessageId The client message id
-     */
-    protected void finishWithNoResponse(String clientMessageId) {
-        Log.d(TAG, "finishWithNoResponse");
-        sendAppMessageAndEndStream(clientMessageId, EMPTY_DATA);
-    }
-
-    /**
-     * Finish with a valid response.
-     *
-     * @param clientMessageId The client message id
-     * @param response        The response object
-     */
-    public void finishWithResponse(String clientMessageId, String response) {
-        Log.d(TAG, "finishWithResponse");
-        sendAppMessageAndEndStream(clientMessageId, response);
-    }
-
-    protected void sendAppMessageAndEndStream(String clientMessageId, String responseData) {
-        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, responseData, internalData);
-        ChannelServer channelServer = getChannelServerForId(clientMessageId);
-        if (channelServer != null) {
-            channelServer.send(appMessage.toJson());
-            channelServer.sendEndStream();
-        }
-        if (stopServiceOnEndOfStream) {
-            stopSelf();
-        }
     }
 
     /**
