@@ -27,10 +27,8 @@ import com.aevi.sdk.flow.stage.BaseStageModel;
 
 import io.reactivex.functions.Consumer;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
-import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_SERVICE_EXCEPTION;
-import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
+import static com.aevi.sdk.flow.constants.MessageErrors.*;
 
 /**
  * Base service for all API service implementations.
@@ -142,8 +140,7 @@ public abstract class BaseApiService extends AbstractChannelService {
      * @param request            The request to be processed
      * @param flowStage          The flow stage this request is being called for
      */
-    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
-                                                     @NonNull String flowStage);
+    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage);
 
     /**
      * Called externally when your application needs to abort what it is doing and finish anything that may be running including an Activity that you may have started.

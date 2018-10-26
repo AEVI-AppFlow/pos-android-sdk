@@ -43,13 +43,14 @@ public class PaymentBuilderTest {
     public void shouldBuildPaymentWithCorrectSetup() throws Exception {
         Basket basket = new Basket("test", new BasketItemBuilder().generateRandomId().withLabel("bla").withAmount(1000).build());
         Payment payment = new PaymentBuilder()
-                .withPaymentFlow("sale")
+                .withPaymentFlow("sale", "monkeySale")
                 .withAmounts(new Amounts(1000, "GBP"))
                 .withBasket(basket)
                 .withSplitEnabled(true)
                 .build();
 
-        assertThat(payment.getFlowName()).isEqualTo("sale");
+        assertThat(payment.getFlowType()).isEqualTo("sale");
+        assertThat(payment.getFlowName()).isEqualTo("monkeySale");
         assertThat(payment.getAmounts()).isEqualTo(new Amounts(1000, "GBP"));
         assertThat(payment.isSplitEnabled()).isTrue();
         assertThat(payment.getBasket()).isNotNull();

@@ -48,15 +48,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Function;
 
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 
 public class GenericRequestFragment extends BaseObservableFragment {
 
     private static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
-    private static final String UNSUPPORTED_FLOW = "unsupportedFlow";
+    private static final String UNSUPPORTED_FLOW = "unsupportedFlowType";
 
     @BindView(R.id.request_flow_spinner)
     DropDownSpinner requestFlowSpinner;
@@ -82,18 +80,12 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
         PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
         paymentClient.getPaymentSettings()
-                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings -> {
-                    this.paymentSettings = paymentSettings;
-                    return paymentSettings.getFlowConfigurations().stream()
-                            .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_GENERIC))
-                            .map(FlowConfig::getName)
-                            .toList();
-                })
-                .subscribe(genericFlowNames -> {
-                    genericFlowNames.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
-                    dropDownHelper.setupDropDown(requestFlowSpinner, genericFlowNames, false);
+                .subscribe(paymentSettings -> {
+                    GenericRequestFragment.this.paymentSettings = paymentSettings;
+                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_GENERIC);
+                    flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
+                    dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
                 }, throwable -> dropDownHelper.setupDropDown(requestFlowSpinner, R.array.request_flows));
-
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -138,16 +130,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
         }
         Request request = new Request(selectedApiRequestFlow);
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
-        String flowType = "";
-        if (!selectedApiRequestFlow.equals(UNSUPPORTED_FLOW)) {
-            flowType = paymentSettings.getFlowConfigurations().stream()
-                    .filter(flowConfig -> flowConfig.getName().equals(selectedApiRequestFlow))
-                    .map(FlowConfig::getType)
-                    .blockingFirst();
-        }
 
         // Some types require additional information
-        switch (flowType) {
+        switch (request.getRequestType()) {
             case FLOW_TYPE_REVERSAL:
                 if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();

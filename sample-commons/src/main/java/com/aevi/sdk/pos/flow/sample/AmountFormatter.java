@@ -14,14 +14,29 @@
 
 package com.aevi.sdk.pos.flow.sample;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.Currency;
 
 public class AmountFormatter {
 
-    private static final DecimalFormat TWO_PLACES = new DecimalFormat("0.00");
-
-    public static String formatAmount(String currency, long amount) {
-        return Currency.getInstance(currency).getSymbol() + TWO_PLACES.format(amount / (double) 100);
+    /**
+     * Format amount to a readable format, taking currency sub-unit fractions into account
+     */
+    public static String formatAmount(String currencyCode, long amountValue) {
+        if (currencyCode != null && amountValue > 0) {
+            String symbol;
+            int subUnitFractions;
+            try {
+                Currency currency = Currency.getInstance(currencyCode);
+                symbol = currency.getSymbol();
+                subUnitFractions = currency.getDefaultFractionDigits();
+            } catch (Throwable t) {
+                symbol = currencyCode;
+                subUnitFractions = 2;
+            }
+            return symbol + BigDecimal.valueOf(amountValue).movePointLeft(subUnitFractions).toString();
+        } else {
+            return "0.00";
+        }
     }
 }

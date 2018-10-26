@@ -22,7 +22,6 @@ import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
@@ -37,6 +36,7 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class Payment extends BaseModel {
 
+    private final String flowType;
     private final String flowName;
     private final Amounts amounts;
     private final Basket basket;
@@ -47,12 +47,12 @@ public class Payment extends BaseModel {
     private final boolean isExternalId;
     private final String source;
     private final String deviceId;
-    private String flowType;
 
     // Default constructor for deserialisation
     Payment() {
         super("N/A");
-        this.flowName = "";
+        this.flowType = "";
+        this.flowName = null;
         this.isExternalId = false;
         this.amounts = new Amounts();
         this.basket = null;
@@ -67,10 +67,11 @@ public class Payment extends BaseModel {
     /**
      * Internal constructor for use from the Builder.
      */
-    Payment(String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
+    Payment(String flowType, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String source, String deviceId) {
         super(UUID.randomUUID().toString());
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
+        this.flowType = flowType;
         this.flowName = flowName;
         this.isExternalId = false;
         this.amounts = amounts != null ? amounts : new Amounts();
@@ -89,12 +90,13 @@ public class Payment extends BaseModel {
      *
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
-    Payment(String id, String requestSource, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
+    Payment(String id, String requestSource, String flowType, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String deviceId) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
         this.source = requestSource;
         this.isExternalId = true;
+        this.flowType = flowType;
         this.flowName = flowName;
         this.amounts = amounts != null ? amounts : new Amounts();
         this.basket = basket;
@@ -108,8 +110,36 @@ public class Payment extends BaseModel {
 
     private void validateArguments() {
         checkArgument(getId() != null, "Id cannot be null");
-        checkArgument(flowName != null, "Flow name cannot be null");
+        checkArgument(flowType != null, "Flow type cannot be null");
         checkArgument(amounts != null, "Amounts cannot be null (but can be zero)");
+    }
+
+    /**
+     * Get the flow type (aka transaction type) associated with this payment.
+     *
+     * The flow type is either set by the client or derived from the chosen flow this payment will processed by.
+     *
+     * In cases where only the flow type is set for the payment, FPS will look up matching flows from it and assign a flow name.
+     *
+     * See documentation for the possible values.
+     *
+     * @return The flow type
+     */
+    @NonNull
+    public String getFlowType() {
+        return flowType;
+    }
+
+    /**
+     * Get the name of the flow that will be processing this payment.
+     *
+     * This may be null if the client has not specified it.
+     *
+     * @return The name of the flow to execute
+     */
+    @Nullable
+    public String getFlowName() {
+        return flowName;
     }
 
     /**
@@ -140,18 +170,6 @@ public class Payment extends BaseModel {
     @Nullable
     public Customer getCustomer() {
         return customer;
-    }
-
-    /**
-     * Get the name of the flow to execute for this payment.
-     *
-     * See {@link PaymentSettings} for retrieving possible values.
-     *
-     * @return The name of the flow to execute
-     */
-    @NonNull
-    public String getFlowName() {
-        return flowName;
     }
 
     /**
@@ -222,30 +240,6 @@ public class Payment extends BaseModel {
         return deviceId;
     }
 
-    /**
-     * Get the flow type (aka transaction type) associated with this payment.
-     *
-     * The flow type is derived from the chosen flow this payment will processed by.
-     *
-     * See documentation for the possible values.
-     *
-     * This may be null before FPS has associated a type with it.
-     *
-     * @return The transaction type
-     */
-    @Nullable
-    public String getFlowType() {
-        return flowType;
-    }
-
-    /**
-     * For internal use.
-     *
-     * @param flowType Transaction type
-     */
-    public void setFlowType(String flowType) {
-        this.flowType = flowType;
-    }
 
     @Override
     public String toString() {
@@ -285,7 +279,6 @@ public class Payment extends BaseModel {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId, flowType);
     }
 

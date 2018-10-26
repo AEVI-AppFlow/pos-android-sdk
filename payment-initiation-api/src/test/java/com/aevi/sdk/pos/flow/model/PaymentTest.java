@@ -45,9 +45,9 @@ public class PaymentTest {
 
     private void assertValues(Payment payment, long amount, String currency, String type) {
         assertThat(payment).isNotNull();
-        assertThat(payment.getAmounts()).isEqualTo(new com.aevi.sdk.pos.flow.model.Amounts(amount, currency));
+        assertThat(payment.getAmounts()).isEqualTo(new Amounts(amount, currency));
         assertThat(payment.getAmounts().getCurrency()).isEqualTo(currency);
-        assertThat(payment.getFlowName()).isEqualTo(type);
+        assertThat(payment.getFlowType()).isEqualTo(type);
     }
 
     private void assertArrayOfOptions(Payment result, String key, String... types) {

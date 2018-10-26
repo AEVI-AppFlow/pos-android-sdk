@@ -42,14 +42,13 @@ import com.aevi.ui.library.recycler.DropDownSpinner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Function;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -102,20 +101,15 @@ public class PaymentFragment extends BaseObservableFragment {
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
 
         paymentClient.getPaymentSettings()
-                .flatMap((Function<PaymentSettings, SingleSource<List<String>>>) paymentSettings -> {
+                .subscribe(paymentSettings -> {
                     if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0) {
                         throw new Exception("No services available");
                     }
                     this.paymentSettings = paymentSettings;
-                    return paymentSettings.getFlowConfigurations().stream()
-                            .filter(flowConfig -> flowConfig.getRequestClass().equals(FlowConfig.REQUEST_CLASS_PAYMENT))
-                            .map(FlowConfig::getName)
-                            .toList();
-                })
-                .subscribe(paymentFlowNames -> {
+                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
                     allFieldsReady = true;
                     dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()), false);
-                    dropDownHelper.setupDropDown(flowSpinner, paymentFlowNames, false);
+                    dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
                 }, throwable -> {
                     if (throwable instanceof IllegalStateException) {
                         Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
@@ -158,11 +152,11 @@ public class PaymentFragment extends BaseObservableFragment {
     }
 
     private void readAllFields() {
-        String flowName = ((String) flowSpinner.getSelectedItem());
-        if (flowName == null) {
+        String flowType = ((String) flowSpinner.getSelectedItem());
+        if (flowType == null) {
             return; // Not ready yet
         }
-        paymentBuilder.withPaymentFlow(flowName);
+        paymentBuilder.withPaymentFlow(flowType); // Note, for production, the overloaded method that also takes a flow name should be used!
         Amounts amounts;
         if (!addBasketBox.isChecked()) {
             amountSpinner.setEnabled(true);
@@ -201,19 +195,29 @@ public class PaymentFragment extends BaseObservableFragment {
     private Amounts getManualAmounts() {
         String amountChoice = (String) amountSpinner.getSelectedItem();
         String[] amountValues = amountChoice.split(",");
-        long baseAmount = formattedAmountToLong(amountValues[0].trim());
-        Amounts amounts = new Amounts(baseAmount, (String) currencySpinner.getSelectedItem());
+        String currency = (String) currencySpinner.getSelectedItem();
+        long baseAmount = formattedAmountToLong(amountValues[0].trim(), currency);
+        Amounts amounts = new Amounts(baseAmount, currency);
         if (amountValues.length > 1) {
             for (int i = 1; i < amountValues.length; i++) {
                 String[] additionalAmount = amountValues[i].split(":");
-                amounts.addAdditionalAmount(additionalAmount[0].trim(), formattedAmountToLong(additionalAmount[1].trim()));
+                amounts.addAdditionalAmount(additionalAmount[0].trim(), formattedAmountToLong(additionalAmount[1].trim(), currency));
             }
         }
         return amounts;
     }
 
-    public static long formattedAmountToLong(String formattedAmount) {
-        return Math.round(new BigDecimal(formattedAmount).doubleValue() * 100);
+    // Different currencies have different unit fractions - see docs for more details
+    public static long formattedAmountToLong(String formattedAmount, String currencyCode) {
+        BigDecimal bd = new BigDecimal(formattedAmount);
+        int subUnitFraction = 2;
+        try {
+            Currency currency = Currency.getInstance(currencyCode);
+            subUnitFraction = currency.getDefaultFractionDigits();
+        } catch (Exception e) {
+            // Ignore
+        }
+        return bd.movePointRight(subUnitFraction).longValue();
     }
 
     private Basket createBasket() {

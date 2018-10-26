@@ -94,7 +94,9 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addPaymentOverview(Payment payment) {
         List<Pair<String, String>> paymentInfo = new ArrayList<>();
         paymentInfo.add(getStringPair(R.string.id, payment.getId()));
-        paymentInfo.add(getStringPair(R.string.flow_name, payment.getFlowName()));
+        if (payment.getFlowName() != null) {
+            paymentInfo.add(getStringPair(R.string.flow_name, payment.getFlowName()));
+        }
         if (payment.getFlowType() != null) {
             paymentInfo.add(getStringPair(R.string.transaction_type, payment.getFlowType()));
         }
@@ -108,7 +110,9 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         reset();
         List<Pair<String, String>> requestInfo = new ArrayList<>();
         requestInfo.add(getStringPair(R.string.id, request.getId()));
-        requestInfo.add(getStringPair(R.string.request_flow, request.getRequestFlow()));
+        if (request.getFlowName() != null) {
+            requestInfo.add(getStringPair(R.string.request_flow, request.getFlowName()));
+        }
         if (request.getRequestType() != null) {
             requestInfo.add(getStringPair(R.string.request_type, request.getRequestType()));
         }
@@ -226,6 +230,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showPaymentResponse(PaymentResponse paymentResponse) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
+        if (paymentResponse.getOriginatingPayment().getFlowName() != null) {
+            responseInfo.add(getStringPair(R.string.request_flow, paymentResponse.getOriginatingPayment().getFlowName()));
+        }
+        responseInfo.add(getStringPair(R.string.flow_type, paymentResponse.getOriginatingPayment().getFlowType()));
         responseInfo.add(getStringPair(R.string.outcome, paymentResponse.getOutcome().name()));
         responseInfo.add(getStringPair(R.string.failure_reason, paymentResponse.getFailureReason().name()));
         if (paymentResponse.getFailureMessage() != null) {
@@ -261,7 +269,9 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showResponse(Response response) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
-        responseInfo.add(getStringPair(R.string.request_flow, response.getOriginatingRequest().getRequestFlow()));
+        if (response.getOriginatingRequest().getFlowName() != null) {
+            responseInfo.add(getStringPair(R.string.request_flow, response.getOriginatingRequest().getFlowName()));
+        }
         if (response.getOriginatingRequest().getRequestType() != null) {
             responseInfo.add(getStringPair(R.string.request_type, response.getOriginatingRequest().getRequestType()));
         }
