@@ -24,13 +24,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Generic request that contains a request type and arbitrary data bespoke to each request type.
+ * Generic request that at minimum contains a request type and optionally flow name and bespoke request data.
+ *
+ * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
+ * and one will be selected either automatically or via user interaction.
  */
 public class Request extends BaseModel {
 
-    private final String requestFlow;
+    private final String requestType;
     private final AdditionalData requestData;
-    private String requestType;
+    private String flowName;
     private String deviceId;
     private String targetAppId;
 
@@ -40,48 +43,40 @@ public class Request extends BaseModel {
     }
 
     /**
-     * Initialise this request with a request flow and empty data.
+     * Initialise this request with a request type and empty data.
      *
-     * The request flow refers to what flow this request will be processed through.
+     * The request type will be used to assign the correct flow for this request.
+     *
+     * Please see {@link #setFlowName(String)} to explicitly specify what flow to use.
      *
      * See reference values in the documentation for possible values.
      *
-     * @param requestFlow The request type
+     * @param requestType The request type
      */
-    public Request(String requestFlow) {
-        this(requestFlow, new AdditionalData());
+    public Request(String requestType) {
+        this(requestType, new AdditionalData());
     }
 
     /**
-     * Initialise this request with a request flow and data.
+     * Initialise this request with a request type and data.
      *
-     * The request flow refers to what flow this request will be processed through.
+     * The request type will be used to assign the correct flow for this request.
+     *
+     * Please see {@link #setFlowName(String)} to explicitly specify what flow to use.
      *
      * See reference values in the documentation for possible values.
      *
-     * @param requestFlow The request type
+     * @param requestType The request type
      * @param requestData The data for the request
      */
-    public Request(String requestFlow, AdditionalData requestData) {
-        this(UUID.randomUUID().toString(), requestFlow, requestData);
+    public Request(String requestType, AdditionalData requestData) {
+        this(UUID.randomUUID().toString(), requestType, requestData);
     }
 
-    private Request(String id, String requestFlow, AdditionalData requestData) {
+    private Request(String id, String requestType, AdditionalData requestData) {
         super(id);
-        this.requestFlow = requestFlow;
+        this.requestType = requestType;
         this.requestData = requestData;
-    }
-
-    /**
-     * Get the request flow which refers to what flow this request will be processed through.
-     *
-     * For request type, see {@link #getRequestType()}.
-     *
-     * @return The request flow
-     */
-    @NonNull
-    public String getRequestFlow() {
-        return requestFlow;
     }
 
     /**
@@ -92,6 +87,29 @@ public class Request extends BaseModel {
     @NonNull
     public String getRequestType() {
         return requestType;
+    }
+
+    /**
+     * Explicitly set the name of the flow to process this request.
+     *
+     * This can and should be used in cases where there is more than one flow for the provided request type.
+     *
+     * @param flowName The name of the flow to use
+     */
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+    }
+
+    /**
+     * Get the name of the flow which will process this request, if any.
+     *
+     * If not set, the request type will be used to map this to a flow.
+     *
+     * @return The request flow
+     */
+    @Nullable
+    public String getFlowName() {
+        return flowName;
     }
 
     /**
@@ -164,17 +182,6 @@ public class Request extends BaseModel {
         return requestData;
     }
 
-    /**
-     * Set the request type for this request.
-     *
-     * For internal use.
-     *
-     * @param requestType Request type
-     */
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
-    }
-
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -183,7 +190,7 @@ public class Request extends BaseModel {
     @Override
     public String toString() {
         return "Request{" +
-                "requestFlow='" + requestFlow + '\'' +
+                "flowName='" + flowName + '\'' +
                 ", requestData=" + requestData +
                 ", requestType='" + requestType + '\'' +
                 ", deviceId='" + deviceId + '\'' +
@@ -197,7 +204,7 @@ public class Request extends BaseModel {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Request request = (Request) o;
-        return Objects.equals(requestFlow, request.requestFlow) &&
+        return Objects.equals(flowName, request.flowName) &&
                 Objects.equals(requestData, request.requestData) &&
                 Objects.equals(requestType, request.requestType) &&
                 Objects.equals(deviceId, request.deviceId) &&
@@ -207,7 +214,7 @@ public class Request extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), requestFlow, requestData, requestType, deviceId, targetAppId);
+        return Objects.hash(super.hashCode(), flowName, requestData, requestType, deviceId, targetAppId);
     }
 
     public static Request fromJson(String json) {
@@ -218,11 +225,11 @@ public class Request extends BaseModel {
      * For internal use.
      *
      * @param id          Id
-     * @param requestFlow Request flow
+     * @param requestType Request flow
      * @param requestData Request data
      * @return Request
      */
-    public static Request fromExternalId(String id, String requestFlow, AdditionalData requestData) {
-        return new Request(id, requestFlow, requestData);
+    public static Request fromExternalId(String id, String requestType, AdditionalData requestData) {
+        return new Request(id, requestType, requestData);
     }
 }

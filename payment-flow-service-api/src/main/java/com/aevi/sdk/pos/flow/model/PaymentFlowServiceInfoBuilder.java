@@ -105,10 +105,14 @@ public class PaymentFlowServiceInfoBuilder {
     /**
      * Define custom request types that this service can handle.
      *
+     * Note that the names should follow camel case convention. "myType" is valid, but "my type", "my_type" or "MyType" etc are all invalid.
+     *
      * A service can via an implementation of {@link BaseGenericService} handle any custom request.
      *
      * These custom requests are identified via their type, which is set in the {@link com.aevi.sdk.flow.model.Request} and routed to the
      * service that has defined it as a supported custom type here.
+     *
+     * What data is required in the request, or available from the response, needs to be made available via documentation. See docs for details.
      *
      * @param customRequestTypes A list of string values representing custom request types
      * @return This builder
@@ -117,6 +121,9 @@ public class PaymentFlowServiceInfoBuilder {
     public PaymentFlowServiceInfoBuilder withCustomRequestTypes(String... customRequestTypes) {
         if (customRequestTypes != null) {
             this.customRequestTypes = new HashSet<>(Arrays.asList(customRequestTypes));
+            if (this.customRequestTypes.contains("payment")) {
+                throw new IllegalArgumentException("payment is not a valid custom type");
+            }
         }
         return this;
     }

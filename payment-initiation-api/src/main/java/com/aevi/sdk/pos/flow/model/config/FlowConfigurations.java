@@ -15,6 +15,7 @@
 package com.aevi.sdk.pos.flow.model.config;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.aevi.sdk.flow.model.config.FlowConfig;
 
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 /**
@@ -65,6 +67,36 @@ public class FlowConfigurations {
     @NonNull
     public FlowConfig getFlowConfiguration(final String flowName) {
         return fromName(flowName);
+    }
+
+    /**
+     * Get supported flow types for the given request class.
+     *
+     * If this should return flow types for initiating generic {@link com.aevi.sdk.flow.model.Request}, then use {@link FlowConfig#REQUEST_CLASS_GENERIC}
+     *
+     * If this should return flow types for initiating {@link com.aevi.sdk.pos.flow.model.Payment}, then use {@link FlowConfig#REQUEST_CLASS_PAYMENT}
+     *
+     * If null is passed, all types will be returned.
+     *
+     * @param requestClass {@link FlowConfig#REQUEST_CLASS_GENERIC}, {@link FlowConfig#REQUEST_CLASS_PAYMENT} or null for all types
+     * @return A list of supported flow types
+     */
+    public List<String> getFlowTypes(@Nullable final String requestClass) {
+        return stream()
+                .filter(new Predicate<FlowConfig>() {
+                    @Override
+                    public boolean test(FlowConfig flowConfig) throws Exception {
+                        return requestClass == null || flowConfig.getRequestClass().equals(requestClass);
+                    }
+                })
+                .map(new Function<FlowConfig, String>() {
+                    @Override
+                    public String apply(FlowConfig flowConfig) throws Exception {
+                        return flowConfig.getType();
+                    }
+                })
+                .toList()
+                .blockingGet();
     }
 
     /**

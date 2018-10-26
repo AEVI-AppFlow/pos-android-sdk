@@ -30,8 +30,9 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class PaymentBuilder {
 
-    public static final String AEVI_POS_FLOW = "AEVI POS Flow";
+    public static final String AEVI_APPFLOW = "AEVI AppFlow";
 
+    private String flowType;
     private String flowName;
     private Amounts amounts;
     private Basket basket;
@@ -39,13 +40,14 @@ public class PaymentBuilder {
     private boolean splitEnabled;
     private Token cardToken;
     private AdditionalData additionalData = new AdditionalData();
-    private String source = AEVI_POS_FLOW;
+    private String source = AEVI_APPFLOW;
     private String deviceId;
 
     public PaymentBuilder() {
     }
 
     public PaymentBuilder(Payment paymentToCopyFrom) {
+        flowType = paymentToCopyFrom.getFlowType();
         flowName = paymentToCopyFrom.getFlowName();
         amounts = paymentToCopyFrom.getAmounts();
         basket = paymentToCopyFrom.getBasket();
@@ -58,17 +60,42 @@ public class PaymentBuilder {
     }
 
     /**
-     * Set what flow to use for processing this payment.
+     * Set what flow to use based on flow type.
+     *
+     * As AppFlow supports multiple flows per type, assigning a flow based on type only may lead to a runtime selection dialog for the merchant.
+     *
+     * Ideally, for any production scenarios, use {@link #withPaymentFlow(String, String)} to specify the name of the flow as well to ensure
+     * a good experience for the merchant. See docs for more clarification on this.
      *
      * The flow will determine what stages the payment goes through and what applications get called. Please see documentation for more details.
      *
      * See {@link PaymentSettings} for retrieving flow information.
      *
+     * @param flowType The flow type
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withPaymentFlow(String flowType) {
+        this.flowType = flowType;
+        return this;
+    }
+
+    /**
+     * Set what flow to use based on flow type and name.
+     *
+     * This ensures that the intended flow is used in the case of multiple flows for the provided type.
+     *
+     * The flow will determine what stages the payment goes through and what applications get called. Please see documentation for more details.
+     *
+     * See {@link PaymentSettings} for retrieving flow information.
+     *
+     * @param flowType The flow type
      * @param flowName The name of the flow to use
      * @return This builder
      */
     @NonNull
-    public PaymentBuilder withPaymentFlow(String flowName) {
+    public PaymentBuilder withPaymentFlow(String flowType, String flowName) {
+        this.flowType = flowType;
         this.flowName = flowName;
         return this;
     }
@@ -203,7 +230,7 @@ public class PaymentBuilder {
      */
     @NonNull
     public Payment build() {
-        checkArgument(flowName != null, "Flow name must be set");
+        checkArgument(flowType != null, "Flow type must be set");
         checkArgument(amounts != null, "Amounts must be set");
         if (cardToken != null && splitEnabled) {
             throw new IllegalArgumentException("Card token can not be set for a split payment as token relates to only one customer");
@@ -211,6 +238,6 @@ public class PaymentBuilder {
         if (basket != null && basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
             throw new IllegalArgumentException("The basket total value must match base amounts value");
         }
-        return new Payment(flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
+        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
     }
 }
