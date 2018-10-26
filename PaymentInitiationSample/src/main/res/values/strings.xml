@@ -78,6 +78,7 @@
     <string name="service_label_app_version">Application Version</string>
     <string name="service_label_api_version">API Version</string>
     <string name="service_label_payment_methods">Payment methods</string>
+    <string name="service_label_flow_types">Flow types</string>
     <string name="service_label_request_types">Custom request types</string>
     <string name="service_label_currencies">Currencies</string>
     <string name="service_label_transaction_types">Transaction types</string>
@@ -144,31 +145,13 @@
     </string>
     <string name="choose_a_transaction_flow">Choose a transaction flow</string>
 
-    <array name="payment_service_labels">
-        <item>@string/service_label_id</item>
-        <item>@string/service_label_vendor</item>
-        <item>@string/service_label_app_version</item>
-        <item>@string/service_label_api_version</item>
-        <item>@string/ps_label_terminal_id</item>
-        <item>@string/ps_label_merchant_ids</item>
-        <item>@string/service_label_payment_methods</item>
-        <item>@string/ps_label_default_currency</item>
-        <item>@string/service_label_currencies</item>
-        <item>@string/service_label_request_types</item>
-        <item>@string/service_label_transaction_types</item>
-        <item>@string/ps_label_manual_entry</item>
-        <item>@string/service_label_accessible_mode</item>
-        <item>@string/ps_label_print_receipts</item>
-        <item>@string/ps_label_card_reading</item>
-        <item>@string/service_label_supported_data_keys</item>
-    </array>
-
     <array name="flow_service_labels">
         <item>@string/service_label_id</item>
         <item>@string/service_label_vendor</item>
         <item>@string/service_label_app_version</item>
         <item>@string/service_label_api_version</item>
         <item>@string/fs_label_stages</item>
+        <item>@string/service_label_flow_types</item>
         <item>@string/service_label_request_types</item>
         <item>@string/service_label_accessible_mode</item>
         <item>@string/fs_label_can_adjust_amounts</item>

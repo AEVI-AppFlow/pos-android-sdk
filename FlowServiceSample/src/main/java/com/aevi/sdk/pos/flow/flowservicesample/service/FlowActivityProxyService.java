@@ -21,6 +21,9 @@ import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.flowservicesample.settings.ServiceStateHandler;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 
+/**
+ * Standard flow services do not need to extend ActivityProxyService. This sample does it to enable the stage enable/disable controls.
+ */
 public class FlowActivityProxyService extends ActivityProxyService {
 
     @Override

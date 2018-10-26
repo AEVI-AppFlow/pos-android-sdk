@@ -10,18 +10,8 @@ import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
-import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.SplitRequest;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
-import com.aevi.sdk.pos.flow.model.TransactionSummary;
-import com.aevi.sdk.pos.flow.stage.CardReadingModel;
-import com.aevi.sdk.pos.flow.stage.PostFlowModel;
-import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
-import com.aevi.sdk.pos.flow.stage.PreFlowModel;
-import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
-import com.aevi.sdk.pos.flow.stage.SplitModel;
-import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
+import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.stage.*;
 
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 
@@ -112,7 +102,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      *
      * @param model The model relevant for this stage
      */
-    protected void onPreTransaction(com.aevi.sdk.pos.flow.stage.PreTransactionModel model) {
+    protected void onPreTransaction(PreTransactionModel model) {
 
     }
 
@@ -184,9 +174,9 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      *
      * The default implementation here will throw an exception. Clients can override to implement an alternative fallback behaviour.
      *
-     * @param flowStage       The flow stage that could not be mapped
+     * @param flowStage          The flow stage that could not be mapped
      * @param clientCommunicator The client message id
-     * @param request         The request
+     * @param request            The request
      */
     protected void onUnknownStage(String flowStage, ClientCommunicator clientCommunicator, String request) {
         throw new IllegalArgumentException("Unknown stage: " + flowStage);
