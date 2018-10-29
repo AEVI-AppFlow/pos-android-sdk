@@ -23,8 +23,7 @@ public class ApiFunction {
         FLOW_SERVICES,
         SUBSCRIBE_EVENTS,
         GENERIC_REQUEST,
-        INITIATE_PAYMENT,
-        SYSTEM_SETTINGS
+        INITIATE_PAYMENT
     }
 
     private final ApiMethod apiMethod;

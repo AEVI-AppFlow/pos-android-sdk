@@ -15,12 +15,16 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 
+import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
+import com.aevi.sdk.pos.flow.model.config.FlowConfigurations;
 
 public class SystemOverview {
 
     private int numDevices;
     private PaymentFlowServices paymentFlowServices;
+    private FlowConfigurations flowConfigurations;
+    private FpsSettings fpsSettings;
 
     public int getNumDevices() {
         return numDevices;
@@ -36,5 +40,21 @@ public class SystemOverview {
 
     public void setPaymentFlowServices(PaymentFlowServices paymentFlowServices) {
         this.paymentFlowServices = paymentFlowServices;
+    }
+
+    public void setFlowConfigurations(FlowConfigurations flowConfigurations) {
+        this.flowConfigurations = flowConfigurations;
+    }
+
+    public FlowConfigurations getFlowConfigurations() {
+        return flowConfigurations;
+    }
+
+    public void setFpsSettings(FpsSettings fpsSettings) {
+        this.fpsSettings = fpsSettings;
+    }
+
+    public FpsSettings getFpsSettings() {
+        return fpsSettings;
     }
 }

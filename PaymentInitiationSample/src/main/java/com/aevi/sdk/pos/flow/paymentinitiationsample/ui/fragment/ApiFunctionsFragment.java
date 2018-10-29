@@ -50,9 +50,6 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
             case SUBSCRIBE_EVENTS:
                 showPopup(FRAGMENT_SYSTEM_EVENTS);
                 break;
-            case SYSTEM_SETTINGS:
-                showPopup(FRAGMENT_SYSTEM_SETTINGS);
-                break;
             case GENERIC_REQUEST:
                 Intent requestIntent = new Intent(getContext(), RequestInitiationActivity.class);
                 startActivity(requestIntent);

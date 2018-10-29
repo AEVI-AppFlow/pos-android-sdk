@@ -31,7 +31,10 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<BaseServiceInfoAdapter.ViewHolder> {
+public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     protected Context context;
     protected T info;
@@ -55,10 +58,26 @@ public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<Bas
     }
 
     @Override
-    public BaseServiceInfoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.snippet_two_line_item_medium_title, parent, false);
-        return new BaseServiceInfoAdapter.ViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.snippet_two_line_item_medium_title, parent, false);
+            return new BaseServiceInfoAdapter.ViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.snippet_recycler_view_header, parent, false);
+            return new BaseServiceInfoAdapter.ViewHeaderHolder(v);
+        }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position)) {
+            return TYPE_HEADER;
+        }
+
+        return TYPE_ITEM;
+    }
+
+    protected abstract boolean isPositionHeader(int position);
 
     @Override
     public int getItemCount() {
@@ -108,10 +127,23 @@ public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<Bas
         @BindView(R.id.item_subtitle)
         TextView value;
 
+        @BindView(R.id.item_info_line)
+        ViewGroup lineLayout;
+
         ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
     }
 
+    static class ViewHeaderHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.item_header)
+        TextView header;
+
+        ViewHeaderHolder(View v) {
+            super(v);
+            ButterKnife.bind(this, v);
+        }
+    }
 }

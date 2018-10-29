@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -27,7 +28,13 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
     }
 
     @Override
-    public void onBindViewHolder(FlowServiceInfoAdapter.ViewHolder holder, int position) {
+    protected boolean isPositionHeader(int position) {
+        return false;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        ViewHolder holder = (ViewHolder) viewHolder;
         holder.label.setText(labels[position]);
         String value = "";
         switch (resIds[position]) {

@@ -107,10 +107,14 @@
     <string name="add_card_token">Add card token</string>
     <string name="enable_split">Enable split</string>
 
+    <string name="system_overview_header_flow_configs">Flow configs (click for details)</string>
+    <string name="system_overview_header_fps_settings">Fps Settings</string>
+
     <string name="system_info_label_api_version">Payment Initiation API version</string>
     <string name="system_info_label_fps_version">Flow Processing Service version</string>
     <string name="system_info_label_num_flow_services">Number of payment flow services</string>
     <string name="system_info_label_num_devices">Number of connected devices</string>
+    <string name="system_info_label_flow_names">%1$s</string>
     <string name="system_info_label_all_request_types">Custom request types</string>
     <string name="system_info_label_all_currencies">All supported currencies</string>
     <string name="system_info_label_all_payment_methods">All supported payment methods</string>
@@ -126,14 +130,15 @@
     <string name="split_response_timeout">Split response timeout is\u0020</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
-    <string name="multi_device">Multi-device is\u0020</string>
-    <string name="split_support">Split is\u0020</string>
-    <string name="currency_change">Currency change is\u0020</string>
-    <string name="payment_response_timeout">Payment response timeout is\u0020</string>
-    <string name="flow_response_timeout">Flow response timeout is\u0020</string>
-    <string name="merchant_selection_timeout">Merchant selection timeout is\u0020</string>
-    <string name="abort_on_flow_app_error">Abort on flow app error is\u0020</string>
-    <string name="abort_on_payment_app_error">Abort on payment app error is\u0020</string>
+    <string name="multi_device">Multi-device</string>
+    <string name="split_support">Spli</string>
+    <string name="currency_change">Currency change</string>
+    <string name="payment_response_timeout">Payment response timeout</string>
+    <string name="flow_response_timeout">Flow response timeout</string>
+    <string name="merchant_selection_timeout">Merchant selection timeout</string>
+    <string name="abort_on_flow_app_error">Abort on flow app error</string>
+    <string name="abort_on_payment_app_error">Abort on payment app error</string>
+    <string name="filter_services_by_flow_type">Filter services by flow type</string>
     <string name="request_stages">Request stages</string>
     <string name="flow_config">Flow config</string>
     <string name="system_settings">System settings</string>
@@ -169,5 +174,26 @@
         <item>@string/system_info_label_all_currencies</item>
         <item>@string/system_info_label_all_payment_methods</item>
         <item>@string/system_info_label_all_data_keys</item>
+    </array>
+
+    addEnabledDisabled(stringBuilder, R.string.multi_device, fpsSettings.isMultiDeviceEnabled());
+    addEnabledDisabled(stringBuilder, R.string.currency_change, fpsSettings.isCurrencyChangeAllowed());
+    addTimeout(stringBuilder, R.string.split_response_timeout, fpsSettings.getSplitResponseTimeoutSeconds());
+    addTimeout(stringBuilder, R.string.payment_response_timeout, fpsSettings.getPaymentResponseTimeoutSeconds());
+    addTimeout(stringBuilder, R.string.flow_response_timeout, fpsSettings.getFlowResponseTimeoutSeconds());
+    addTimeout(stringBuilder, R.string.merchant_selection_timeout, fpsSettings.getUserSelectionTimeoutSeconds());
+    addEnabledDisabled(stringBuilder, R.string.abort_on_flow_app_error, fpsSettings.shouldAbortOnFlowAppError());
+    addEnabledDisabled(stringBuilder, R.string.abort_on_payment_app_error, fpsSettings.shouldAbortOnPaymentAppError());
+
+    <array name="fps_settings_labels">
+        <item>@string/multi_device</item>
+        <item>@string/currency_change</item>
+        <item>@string/split_response_timeout</item>
+        <item>@string/payment_response_timeout</item>
+        <item>@string/flow_response_timeout</item>
+        <item>@string/merchant_selection_timeout</item>
+        <item>@string/abort_on_flow_app_error</item>
+        <item>@string/abort_on_payment_app_error</item>
+        <item>@string/filter_services_by_flow_type</item>
     </array>
 </resources>

@@ -20,4 +20,8 @@
         <item name="android:elevation">4dp</item>
     </style>
 
+    <style name="RecyclerViewHeader" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
