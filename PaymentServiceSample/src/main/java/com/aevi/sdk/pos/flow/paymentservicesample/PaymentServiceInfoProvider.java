@@ -21,6 +21,8 @@ import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
+import static com.aevi.sdk.flow.constants.FlowTypes.*;
+
 public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 
     @Override
@@ -35,6 +37,7 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withCanPayAmounts(true, supportedPaymentMethods)
                 .withSupportedCurrencies(supportedCurrencies)
                 .withDefaultCurrency(supportedCurrencies[0])
+                .withSupportedFlowTypes(FLOW_TYPE_SALE, FLOW_TYPE_REFUND, FLOW_TYPE_REVERSAL, FLOW_TYPE_TOKENISATION)
                 .withLogicalDeviceId(IdProvider.getTerminalId())
                 .withMerchants(new Merchant(IdProvider.getMerchantId(), IdProvider.getMerchantName()))
                 .withManualEntrySupport(false)

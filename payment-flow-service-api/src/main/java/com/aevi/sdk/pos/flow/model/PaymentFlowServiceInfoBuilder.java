@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
+import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ public class PaymentFlowServiceInfoBuilder {
     private String defaultCurrency;
     private Set<String> paymentMethods;
     private Set<String> supportedCurrencies;
+    private Set<String> supportedFlowTypes;
     private Set<String> customRequestTypes;
     private Set<String> supportedDataKeys;
     private boolean canAdjustAmounts;
@@ -103,16 +105,42 @@ public class PaymentFlowServiceInfoBuilder {
     }
 
     /**
-     * Define custom request types that this service can handle.
+     * Set which of the pre-defined flow types your service supports.
      *
-     * Note that the names should follow camel case convention. "myType" is valid, but "my type", "my_type" or "MyType" etc are all invalid.
+     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * associated with it, if supported on the current device.
      *
-     * A service can via an implementation of {@link BaseGenericService} handle any custom request.
+     * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.
+     * Instead, this is used to ensure applications can handle flows they have been assigned to and for various other internal uses.
      *
-     * These custom requests are identified via their type, which is set in the {@link com.aevi.sdk.flow.model.Request} and routed to the
-     * service that has defined it as a supported custom type here.
+     * If you leave this empty, your service will always be called for any type and it is up to your service to handle unsupported types.
      *
-     * What data is required in the request, or available from the response, needs to be made available via documentation. See docs for details.
+     * For defining your own, custom/bespoke, types, please see {@link #withCustomRequestTypes(String...)}.
+     *
+     * @param flowTypes The list of supported pre-defined flow types
+     * @return This builder
+     */
+    @NonNull
+    public PaymentFlowServiceInfoBuilder withSupportedFlowTypes(String... flowTypes) {
+        if (flowTypes != null) {
+            this.supportedFlowTypes = new HashSet<>(Arrays.asList(flowTypes));
+        }
+        return this;
+    }
+
+    /**
+     * Define custom request types that this service can process.
+     *
+     * A custom request type is a type unique to your service for which a special type of generic flow is generated dynamically.
+     *
+     * All such requests are called into your flow service via the generic routes, either via a {@link BaseGenericService} implementation, or
+     * from generic handling in a {@link BasePaymentFlowService} implementation.
+     *
+     * The type names should follow camel case convention. "myType" is valid, but "my type", "my_type" or "MyType" etc are all invalid.
+     *
+     * Clients can initiate a {@link com.aevi.sdk.flow.model.Request} with your custom request type for processing by your service.
+     *
+     * If there is any data required in the request, or available from the response, this needs to be made available via documentation.
      *
      * @param customRequestTypes A list of string values representing custom request types
      * @return This builder
@@ -307,7 +335,7 @@ public class PaymentFlowServiceInfoBuilder {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
         return new PaymentFlowServiceInfo(packageName, packageName, vendor, serviceVersion, apiVersion, displayName, supportsAccessibility,
-                customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency,
+                supportedFlowTypes, customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency,
                 supportedCurrencies, paymentMethods, additionalInfo);
     }
 

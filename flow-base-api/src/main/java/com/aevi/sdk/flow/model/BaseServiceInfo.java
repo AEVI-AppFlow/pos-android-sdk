@@ -35,6 +35,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final String apiVersion;
     private final String displayName;
     private final boolean hasAccessibilityMode;
+    private final Set<String> supportedFlowTypes;
     private final Set<String> customRequestTypes;
     private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
@@ -45,11 +46,11 @@ public abstract class BaseServiceInfo extends BaseModel {
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
         this("", "", "", "", "", "", "", false,
-                null, null, null);
+                null, null, null, null);
     }
 
     protected BaseServiceInfo(String id, String packageName, String vendor, String logicalDeviceId, String serviceVersion, String apiVersion,
-                              String displayName, boolean hasAccessibilityMode, Set<String> customRequestTypes,
+                              String displayName, boolean hasAccessibilityMode, Set<String> supportedFlowTypes, Set<String> customRequestTypes,
                               Set<String> supportedDataKeys, AdditionalData additionalInfo) {
         super(id);
         this.packageName = packageName;
@@ -59,6 +60,7 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
+        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<String>();
         this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
@@ -133,11 +135,37 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
-     * Gets an array of the supported request types, indicating what type of requests it can handle.
+     * Get the list of supported pre-defined flow types.
      *
-     * See reference values in the documentation for possible values.
+     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * associated with it, if supported on the current device.
      *
-     * @return array of request types supported by the service
+     * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.
+     * Instead, this is used to ensure applications can handle flows they have been assigned to and for various other internal uses.
+     *
+     * @return The set of supported pre-defined flow types
+     */
+    @NonNull
+    public Set<String> getSupportedFlowTypes() {
+        return supportedFlowTypes;
+    }
+
+    /**
+     * Check whether this service supports the given flow type.
+     *
+     * @param flowType The flow type to check if supported
+     * @return True if supported, false otherwise
+     */
+    public boolean supportsFlowType(String flowType) {
+        return supportedFlowTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedFlowTypes, flowType);
+    }
+
+    /**
+     * Get the list of custom/bespoke request types that this service has defined.
+     *
+     * A custom request type is a type unique to a service for which a special type of generic flow is generated dynamically.
+     *
+     * @return The set of request types supported by the service
      */
     @NonNull
     public Set<String> getCustomRequestTypes() {
@@ -289,21 +317,24 @@ public abstract class BaseServiceInfo extends BaseModel {
         if (!super.equals(o)) return false;
         BaseServiceInfo that = (BaseServiceInfo) o;
         return hasAccessibilityMode == that.hasAccessibilityMode &&
+                enabled == that.enabled &&
                 Objects.equals(packageName, that.packageName) &&
                 Objects.equals(vendor, that.vendor) &&
                 Objects.equals(logicalDeviceId, that.logicalDeviceId) &&
                 Objects.equals(serviceVersion, that.serviceVersion) &&
                 Objects.equals(apiVersion, that.apiVersion) &&
                 Objects.equals(displayName, that.displayName) &&
+                Objects.equals(supportedFlowTypes, that.supportedFlowTypes) &&
                 Objects.equals(customRequestTypes, that.customRequestTypes) &&
                 Objects.equals(supportedDataKeys, that.supportedDataKeys) &&
                 Objects.equals(additionalInfo, that.additionalInfo) &&
-                Objects.equals(stages, that.stages);
+                Objects.equals(stages, that.stages) &&
+                Objects.equals(flowAndStagesDefinitions, that.flowAndStagesDefinitions);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, customRequestTypes, supportedDataKeys, additionalInfo, stages);
+        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, enabled, stages, flowAndStagesDefinitions);
     }
 }

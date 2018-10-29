@@ -21,6 +21,8 @@ import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_SALE;
+
 public class PaymentFlowServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 
     @Override
@@ -30,6 +32,7 @@ public class PaymentFlowServiceInfoProvider extends BasePaymentFlowServiceInfoPr
                 .withDisplayName("Flow Service Sample")
                 .withCanAdjustAmounts(true)
                 .withCanPayAmounts(true, PaymentMethods.LOYALTY_POINTS, PaymentMethods.GIFT_CARD, PaymentMethods.CASH)
+                .withSupportedFlowTypes(FLOW_TYPE_SALE)
                 .withCustomRequestTypes(ShowLoyaltyPointsBalanceService.SHOW_LOYALTY_POINTS_REQUEST)
                 .build(getContext());
     }

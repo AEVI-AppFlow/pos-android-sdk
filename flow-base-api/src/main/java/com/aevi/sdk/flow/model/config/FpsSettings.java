@@ -30,6 +30,7 @@ public class FpsSettings implements Jsonable {
     public static final boolean ALWAYS_ALLOW_DYNAMIC_SELECT_DEFAULT = false;
     public static final boolean ABORT_ON_FLOW_APP_ERROR_DEFAULT = false;
     public static final boolean ABORT_ON_PAYMENT_APP_ERROR_DEFAULT = false;
+    public static final boolean FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT = true;
 
     public static final int SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 1200;
     public static final int FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
@@ -49,6 +50,8 @@ public class FpsSettings implements Jsonable {
 
     private boolean allowAccessViaStatusBar = ALLOW_ACCESS_STATUS_BAR_DEFAULT;
     private boolean alwaysAllowDynamicSelect = ALWAYS_ALLOW_DYNAMIC_SELECT_DEFAULT;
+
+    private boolean filterServicesByFlowType = FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT;
 
     /**
      * Check whether multi-device support is enabled.
@@ -306,6 +309,32 @@ public class FpsSettings implements Jsonable {
         this.alwaysAllowDynamicSelect = alwaysAllowDynamicSelect;
     }
 
+    /**
+     * Check whether or not FPS should filter flow services based on their reported type and the type of the flow.
+     *
+     * If true, services that do not explicitly report a type as supported will not be called for flows with that type.
+     *
+     * If false, FPS will always call flow services even if they don't report types, or the flow type is not supported by that service.
+     *
+     * @return True to enable FPS filtering, false otherwise
+     */
+    public boolean shouldFilterServicesByFlowType() {
+        return filterServicesByFlowType;
+    }
+
+    /**
+     * Set whether or not FPS should filter flow services based on their reported type and the type of the flow.
+     *
+     * If true, services that do not explicitly report a type as supported will not be called for flows with that type.
+     *
+     * If false, FPS will always call flow services even if they don't report types, or the flow type is not supported by that service.
+     *
+     * @param filterServicesByFlowType True to enable FPS filtering, false otherwise
+     */
+    public void setFilterServicesByFlowType(boolean filterServicesByFlowType) {
+        this.filterServicesByFlowType = filterServicesByFlowType;
+    }
+
     public static FpsSettings fromJson(String json) {
         return JsonConverter.deserialize(json, FpsSettings.class);
     }
@@ -329,12 +358,13 @@ public class FpsSettings implements Jsonable {
                 shouldAbortOnFlowAppError == that.shouldAbortOnFlowAppError &&
                 shouldAbortOnPaymentError == that.shouldAbortOnPaymentError &&
                 allowAccessViaStatusBar == that.allowAccessViaStatusBar &&
-                alwaysAllowDynamicSelect == that.alwaysAllowDynamicSelect;
+                alwaysAllowDynamicSelect == that.alwaysAllowDynamicSelect &&
+                filterServicesByFlowType == that.filterServicesByFlowType;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds, appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError, allowAccessViaStatusBar, alwaysAllowDynamicSelect);
+        return Objects.hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds, appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError, allowAccessViaStatusBar, alwaysAllowDynamicSelect, filterServicesByFlowType);
     }
 }

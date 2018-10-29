@@ -35,6 +35,7 @@
             </intent-filter>
         </service>
 
+        <!--Standard flow services do not need to extend ActivityProxyService. This sample does it to enable the stage enable/disable controls.-->
         <service
             android:name=".service.FlowActivityProxyService"
             android:exported="true">

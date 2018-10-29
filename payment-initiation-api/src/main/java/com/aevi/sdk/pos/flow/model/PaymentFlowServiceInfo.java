@@ -66,11 +66,11 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     }
 
     public PaymentFlowServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion, String displayName,
-                                  boolean hasAccessibilityMode, Set<String> supportedRequestTypes, Set<String> supportedDataKeys, String logicalDeviceId,
-                                  boolean canAdjustAmounts, boolean canPayAmounts, String defaultCurrency,
-                                  Set<String> supportedCurrencies, Set<String> paymentMethods, AdditionalData additionalInfo) {
-        super(id, packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedRequestTypes,
-                supportedDataKeys, additionalInfo);
+                                  boolean hasAccessibilityMode, Set<String> supportedFlowTypes, Set<String> supportedRequestTypes,
+                                  Set<String> supportedDataKeys, String logicalDeviceId, boolean canAdjustAmounts, boolean canPayAmounts,
+                                  String defaultCurrency, Set<String> supportedCurrencies, Set<String> paymentMethods, AdditionalData additionalInfo) {
+        super(id, packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedFlowTypes,
+                supportedRequestTypes, supportedDataKeys, additionalInfo);
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
         this.defaultCurrency = defaultCurrency;
