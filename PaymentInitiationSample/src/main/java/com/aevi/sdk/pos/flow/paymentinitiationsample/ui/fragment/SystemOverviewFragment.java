@@ -15,19 +15,25 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemOverviewAdapter;
 
 import butterknife.BindView;
 import io.reactivex.Single;
 
-public class SystemOverviewFragment extends BaseFragment {
+public class SystemOverviewFragment extends BaseFragment implements SystemOverviewAdapter.OnFlowConfigClickListener {
 
     @BindView(R.id.items)
     RecyclerView infoItems;
@@ -36,19 +42,25 @@ public class SystemOverviewFragment extends BaseFragment {
     TextView title;
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        setupRecyclerView(infoItems);
+        return v;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        setupRecyclerView(infoItems);
         title.setText(R.string.system_overview);
 
         createSystemInfo().subscribe(systemOverview -> {
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview);
+            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
             infoItems.setAdapter(systemOverviewAdapter);
         }, throwable -> {
             if (throwable instanceof IllegalStateException) {
                 Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
             }
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), new SystemOverview());
+            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), new SystemOverview(), null);
             infoItems.setAdapter(systemOverviewAdapter);
         });
     }
@@ -59,7 +71,9 @@ public class SystemOverviewFragment extends BaseFragment {
                 (paymentSettings, devices) -> {
                     SystemOverview systemOverview = new SystemOverview();
                     systemOverview.setPaymentFlowServices(paymentSettings.getPaymentFlowServices());
+                    systemOverview.setFlowConfigurations(paymentSettings.getFlowConfigurations());
                     systemOverview.setNumDevices(devices.size());
+                    systemOverview.setFpsSettings(paymentSettings.getFpsSettings());
                     return systemOverview;
                 });
     }
@@ -68,4 +82,14 @@ public class SystemOverviewFragment extends BaseFragment {
     public int getLayoutResource() {
         return R.layout.fragment_recycler_view;
     }
+
+    @Override
+    public void onClick(FlowConfig config) {
+        showJsonView(config.getName(), config.toJson());
+    }
+
+    private void showJsonView(String requestType, String json) {
+        ((PopupActivity) getActivity()).showJsonFragment(requestType, json);
+    }
+
 }

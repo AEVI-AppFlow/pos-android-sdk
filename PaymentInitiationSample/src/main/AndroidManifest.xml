@@ -27,8 +27,7 @@
         <activity
             android:name=".ui.PopupActivity"
             android:excludeFromRecents="true"
-            android:noHistory="true"
-            android:theme="@style/Popup">
+            android:noHistory="true">
         </activity>
         <activity
             android:name=".ui.PaymentResultActivity"

@@ -16,49 +16,166 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.aevi.sdk.flow.model.config.FlowConfig;
+import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
 
+import java.util.List;
+
 public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview> {
 
-    public SystemOverviewAdapter(Context context, SystemOverview info) {
+    private final OnFlowConfigClickListener listener;
+
+    private String[] fpsSettingsLabels;
+    private int[] fpsSettingsResIds;
+
+    private final int numFlowConfigs;
+
+    public SystemOverviewAdapter(Context context, SystemOverview info, OnFlowConfigClickListener listener) {
         super(context, R.array.system_info_labels, info);
+        this.listener = listener;
+
+        numFlowConfigs = info.getFlowConfigurations().getAll().size();
+
+        TypedArray typedArray = context.getResources().obtainTypedArray(R.array.fps_settings_labels);
+        fpsSettingsLabels = new String[typedArray.length()];
+        fpsSettingsResIds = new int[typedArray.length()];
+        for (int i = 0; i < fpsSettingsLabels.length; i++) {
+            fpsSettingsLabels[i] = typedArray.getString(i);
+            fpsSettingsResIds[i] = typedArray.getResourceId(i, 0);
+        }
+        typedArray.recycle();
+    }
+
+    public interface OnFlowConfigClickListener {
+
+        void onClick(FlowConfig config);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.label.setText(labels[position]);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        if (viewHolder instanceof ViewHolder) {
+            handleViewLine(position, (ViewHolder) viewHolder);
+        } else {
+            handleHeaderLine(position, (ViewHeaderHolder) viewHolder);
+        }
+    }
+
+    private void handleHeaderLine(int position, @NonNull ViewHeaderHolder viewHolder) {
+        if (position == resIds.length) {
+            viewHolder.header.setText(R.string.system_overview_header_flow_configs);
+        } else {
+            viewHolder.header.setText(R.string.system_overview_header_fps_settings);
+        }
+    }
+
+    private void handleViewLine(int position, @NonNull ViewHolder holder) {
         String value = "";
-        PaymentFlowServices paymentFlowServices = info.getPaymentFlowServices();
+        if (isFlowConfig(position)) {
+            value = handleFlowConfig(position, holder, info.getFlowConfigurations().getAll());
+        } else if (isFpsSetting(position)) {
+            value = handleFpsSettings(position, holder, info.getFpsSettings());
+        } else {
+            value = handleSystemInfo(position, holder, info.getPaymentFlowServices());
+        }
+
+        if (value.isEmpty()) {
+            holder.value.setVisibility(View.GONE);
+        } else {
+            holder.value.setText(value);
+        }
+    }
+
+    private boolean isInfo(int position) {
+        return position < resIds.length;
+    }
+
+    private boolean isFlowConfig(int position) {
+        return position > resIds.length && position <= resIds.length + 1 + numFlowConfigs;
+    }
+
+    private boolean isFpsSetting(int position) {
+        return position > resIds.length + 1 + numFlowConfigs;
+    }
+
+    private String handleFpsSettings(int position, ViewHolder holder, FpsSettings fpsSettings) {
+        int index = position - (resIds.length + numFlowConfigs + 2);
+        holder.label.setText(fpsSettingsLabels[index]);
+        switch (fpsSettingsResIds[index]) {
+            case R.string.multi_device:
+                return getYesNo(fpsSettings.isMultiDeviceEnabled());
+            case R.string.currency_change:
+                return getYesNo(fpsSettings.isCurrencyChangeAllowed());
+            case R.string.split_response_timeout:
+                return String.valueOf(fpsSettings.getSplitResponseTimeoutSeconds());
+            case R.string.payment_response_timeout:
+                return String.valueOf(fpsSettings.getPaymentResponseTimeoutSeconds());
+            case R.string.flow_response_timeout:
+                return String.valueOf(fpsSettings.getFlowResponseTimeoutSeconds());
+            case R.string.merchant_selection_timeout:
+                return String.valueOf(fpsSettings.getUserSelectionTimeoutSeconds());
+            case R.string.abort_on_flow_app_error:
+                return getYesNo(fpsSettings.shouldAbortOnFlowAppError());
+            case R.string.abort_on_payment_app_error:
+                return getYesNo(fpsSettings.shouldAbortOnPaymentAppError());
+            case R.string.filter_services_by_flow_type:
+                return getYesNo(fpsSettings.shouldFilterServicesByFlowType());
+        }
+        return "";
+    }
+
+    @NonNull
+    private String handleFlowConfig(int position, @NonNull ViewHolder holder, List<FlowConfig> flowConfigs) {
+        String value;
+        final FlowConfig config = flowConfigs.get(position - resIds.length - 1);
+        holder.label.setText(holder.label.getContext().getString(R.string.system_info_label_flow_names, config.getName()));
+        value = config.getType();
+        holder.lineLayout.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onClick(config);
+            }
+        });
+        return value;
+    }
+
+    private String handleSystemInfo(int position, @NonNull ViewHolder holder, PaymentFlowServices paymentFlowServices) {
+        holder.label.setText(labels[position]);
         switch (resIds[position]) {
             case R.string.system_info_label_api_version:
-                value = PaymentApi.getApiVersion();
-                break;
+                return PaymentApi.getApiVersion();
             case R.string.system_info_label_fps_version:
-                value = PaymentApi.getProcessingServiceVersion(context);
-                break;
+                return PaymentApi.getProcessingServiceVersion(context);
             case R.string.system_info_label_num_flow_services:
-                value = String.valueOf(paymentFlowServices.getNumberOfFlowServices());
-                break;
+                return String.valueOf(paymentFlowServices.getNumberOfFlowServices());
             case R.string.system_info_label_num_devices:
-                value = String.valueOf(info.getNumDevices());
-                break;
+                return String.valueOf(info.getNumDevices());
             case R.string.system_info_label_all_currencies:
-                value = getSetValue(paymentFlowServices.getAllSupportedCurrencies());
-                break;
+                return getSetValue(paymentFlowServices.getAllSupportedCurrencies());
             case R.string.system_info_label_all_data_keys:
-                value = getSetValue(paymentFlowServices.getAllSupportedDataKeys());
-                break;
+                return getSetValue(paymentFlowServices.getAllSupportedDataKeys());
             case R.string.system_info_label_all_payment_methods:
-                value = getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
-                break;
+                return getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
             case R.string.system_info_label_all_request_types:
-                value = getSetValue(paymentFlowServices.getAllCustomRequestTypes());
-                break;
+                return getSetValue(paymentFlowServices.getAllCustomRequestTypes());
         }
-        holder.value.setText(value);
+        return "";
+    }
+
+    @Override
+    protected boolean isPositionHeader(int position) {
+        return position == resIds.length || position == resIds.length + numFlowConfigs + 1;
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() + fpsSettingsLabels.length + info.getFlowConfigurations().getAll().size() + 2;
     }
 }

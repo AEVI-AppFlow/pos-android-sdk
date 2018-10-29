@@ -30,7 +30,6 @@ public class PopupActivity extends AppCompatActivity {
     public static final String FRAGMENT_FLOW_SERVICES = "fragment_flow_services";
     public static final String FRAGMENT_DEVICES = "fragment_devices";
     public static final String FRAGMENT_SYSTEM_INFO = "fragment_system_info";
-    public static final String FRAGMENT_SYSTEM_SETTINGS = "fragment_system_settings";
     public static final String FRAGMENT_SYSTEM_EVENTS = "fragment_system_events";
     public static final String FRAGMENT_JSON = "fragment_json";
 
@@ -57,8 +56,6 @@ public class PopupActivity extends AppCompatActivity {
                 return new SystemOverviewFragment();
             case FRAGMENT_SYSTEM_EVENTS:
                 return new SystemEventFragment();
-            case FRAGMENT_SYSTEM_SETTINGS:
-                return new SystemSettingsFragment();
             case FRAGMENT_JSON:
                 String json = getIntent().getStringExtra(KEY_JSON);
                 return JsonDisplayFragment.create("", json);

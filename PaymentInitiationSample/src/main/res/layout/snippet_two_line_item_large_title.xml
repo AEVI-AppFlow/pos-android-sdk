@@ -6,14 +6,15 @@
               android:background="?attr/selectableItemBackground"
               android:clickable="true"
               android:orientation="vertical"
-              android:paddingBottom="10dp">
+              android:paddingBottom="@dimen/default_vertical_margin"
+              android:paddingTop="@dimen/default_vertical_margin">
 
     <TextView
         android:id="@+id/item_title"
         style="@style/TextAppearance.AppCompat.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_horizontal"
+        android:layout_marginLeft="@dimen/default_horizontal_margin"
         android:ellipsize="end"
         android:maxLines="1"/>
 
@@ -21,15 +22,10 @@
         android:id="@+id/item_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_horizontal"
+        android:layout_marginLeft="@dimen/default_horizontal_margin"
         android:ellipsize="end"
         android:maxLines="1"
         android:visibility="gone"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="15dp"
-        android:background="@color/iconColorLight"/>
 
 </LinearLayout>
