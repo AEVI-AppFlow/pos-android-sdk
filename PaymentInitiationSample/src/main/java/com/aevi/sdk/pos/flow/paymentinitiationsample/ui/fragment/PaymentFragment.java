@@ -136,8 +136,10 @@ public class PaymentFragment extends BaseObservableFragment {
     public void onFlowSpinnerSelection() {
         if (allFieldsReady) {
             // This will trigger an update to all fields as per below
-            String flowName = ((String) flowSpinner.getSelectedItem());
-            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()), false);
+            String flowType = ((String) flowSpinner.getSelectedItem());
+            String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()),
+                    false);
         }
     }
 
