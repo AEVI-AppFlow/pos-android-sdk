@@ -71,14 +71,6 @@ task copyApiLibs(type: Copy) {
     into 'artifacts/libs'
 }
 
-task copyApks(type: Copy) {
-    from 'PaymentInitiationSample/build/outputs/apk/debug'
-    from 'PaymentServiceSample/build/outputs/apk/debug'
-    from 'FlowServiceSample/build/outputs/apk/debug'
-    exclude 'output.json'
-    into 'artifacts/samples'
-}
-
 apply from: 'dependencies.gradle'
 
 def exportedProjects = [
