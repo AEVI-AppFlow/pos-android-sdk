@@ -34,6 +34,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  *
  * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
+ *
+ * The outcome of the transaction must be set in the builder before {@link #sendResponse()} is called.
  */
 public class TransactionProcessingModel extends BaseStageModel {
 
@@ -70,7 +72,7 @@ public class TransactionProcessingModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
      * @return An instance of {@link TransactionProcessingModel}
      */
     public static TransactionProcessingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {

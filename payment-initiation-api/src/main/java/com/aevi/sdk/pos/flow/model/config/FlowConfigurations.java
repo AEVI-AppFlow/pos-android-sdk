@@ -64,7 +64,7 @@ public class FlowConfigurations {
      * @param flowName The flow name
      * @return The flow config
      */
-    @NonNull
+    @Nullable
     public FlowConfig getFlowConfiguration(final String flowName) {
         return fromName(flowName);
     }
@@ -170,7 +170,7 @@ public class FlowConfigurations {
         return false;
     }
 
-    @NonNull
+    @Nullable
     private FlowConfig fromName(String flowName) {
         for (FlowConfig flowConfiguration : flowConfigurations) {
             if (flowConfiguration.getName().equals(flowName)) {

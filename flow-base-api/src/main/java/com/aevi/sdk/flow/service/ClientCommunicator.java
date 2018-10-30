@@ -13,9 +13,7 @@ import java.util.Set;
 
 import io.reactivex.Observable;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.FAILURE_MESSAGE;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.service.BaseApiService.BACKGROUND_PROCESSING;
 

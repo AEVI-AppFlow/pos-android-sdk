@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
-import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.Amounts;
@@ -39,6 +38,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.aevi.sdk.flow.constants.PaymentMethods.*;
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
 abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
@@ -110,7 +110,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         long points = getResources().getInteger(R.integer.pay_points);
         long pointsAmountValue = getRandomPointsValue(points);
 
-        preTransactionModel.setAmountsPaid(new Amounts(pointsAmountValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.LOYALTY_POINTS);
+        preTransactionModel.setAmountsPaid(new Amounts(pointsAmountValue, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_LOYALTY_POINTS);
         preTransactionModel.addRequestData(SAMPLE_POINTS_USED_KEY, points);
         disablePayViews();
         updateModel();
@@ -123,7 +123,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
     @OnClick(R.id.pay_with_giftcard)
     public void onPayWithGiftCard() {
         long giftCardValue = getResources().getInteger(R.integer.pay_gift_card_value);
-        preTransactionModel.setAmountsPaid(new Amounts(giftCardValue, transactionRequest.getAmounts().getCurrency()), PaymentMethods.GIFT_CARD);
+        preTransactionModel.setAmountsPaid(new Amounts(giftCardValue, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_GIFT_CARD);
         disablePayViews();
         updateModel();
     }

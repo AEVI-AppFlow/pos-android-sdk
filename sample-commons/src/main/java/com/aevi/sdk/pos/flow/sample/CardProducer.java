@@ -15,12 +15,13 @@
 package com.aevi.sdk.pos.flow.sample;
 
 
-import com.aevi.sdk.flow.constants.CardDataKeys;
 import com.aevi.sdk.flow.constants.CardEntryMethods;
-import com.aevi.sdk.flow.constants.CardNetworks;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.CardBuilder;
+
+import static com.aevi.sdk.flow.constants.CardDataKeys.*;
+import static com.aevi.sdk.flow.constants.CardNetworks.*;
 
 public class CardProducer {
 
@@ -37,7 +38,7 @@ public class CardProducer {
     private static final String WE_BUILT_THIS_CARD_KEY = "cardProducedInSample"; // We built this card on rock'n'roll...
 
     public static Card getDefaultCard() {
-        return buildCard(CardNetworks.CARD_NETWORK_VISA, true, false, false);
+        return buildCard(CARD_NETWORK_VISA, true, false, false);
     }
 
     public static Card buildCard(String cardNetwork, boolean includeToken, boolean includeCardholder, boolean includeEmvDetails) {
@@ -49,16 +50,16 @@ public class CardProducer {
                 .withMaskedPan(maskedPan)
                 .withExpiryDate(EXPIRY_DATE)
                 .withCardholderName(cardholderName)
-                .withAdditionalData(CardDataKeys.NETWORK, cardNetwork)
-                .withAdditionalData(CardDataKeys.ENTRY_METHOD, CardEntryMethods.CARD_ENTRY_METHOD_INSERT);
+                .withAdditionalData(CARD_DATA_NETWORK, cardNetwork)
+                .withAdditionalData(CARD_DATA_ENTRY_METHOD, CardEntryMethods.CARD_ENTRY_METHOD_INSERT);
 
         if (includeToken) {
             cardBuilder.withCardToken(customer.getTokens().get(0));
         }
         if (includeEmvDetails) {
             cardBuilder
-                    .withAdditionalData(CardDataKeys.AID, getAidForNetwork(cardNetwork))
-                    .withAdditionalData(CardDataKeys.LANGUAGES, LANGUAGES);
+                    .withAdditionalData(CARD_DATA_AID, getAidForNetwork(cardNetwork))
+                    .withAdditionalData(CARD_DATA_LANGUAGES, LANGUAGES);
         }
         cardBuilder.withAdditionalData(WE_BUILT_THIS_CARD_KEY, true);
 
@@ -71,11 +72,11 @@ public class CardProducer {
 
     private static String getPanForNetwork(String cardNetwork) {
         switch (cardNetwork) {
-            case CardNetworks.CARD_NETWORK_VISA:
+            case CARD_NETWORK_VISA:
                 return VISA_PAN;
-            case CardNetworks.CARD_NETWORK_MASTERCARD:
+            case CARD_NETWORK_MASTERCARD:
                 return MASTERCARD_PAN;
-            case CardNetworks.CARD_NETWORK_AMEX:
+            case CARD_NETWORK_AMEX:
                 return AMEX_PAN;
             default:
                 return VISA_PAN;
@@ -85,11 +86,11 @@ public class CardProducer {
     private static String getAidForNetwork(String cardNetwork) {
         cardNetwork = cardNetwork.toLowerCase();
         switch (cardNetwork) {
-            case CardNetworks.CARD_NETWORK_VISA:
+            case CARD_NETWORK_VISA:
                 return VISA_AID;
-            case CardNetworks.CARD_NETWORK_MASTERCARD:
+            case CARD_NETWORK_MASTERCARD:
                 return MASTERCARD_AID;
-            case CardNetworks.CARD_NETWORK_AMEX:
+            case CARD_NETWORK_AMEX:
                 return AMEX_AID;
             default:
                 return VISA_AID;
