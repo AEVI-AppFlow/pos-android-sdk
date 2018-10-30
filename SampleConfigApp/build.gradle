@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+apply from: "../artifacts.gradle"
+apply from: "../publish-repo.gradle"
+apply from: "../publish-repo-android.gradle"
+
+ext.applicationName = "SampleConfigApp"
+ext.artifactIdPrefix = "sample-config-provider"
+ext.artifactGroupId = "com.aevi.sdk.pos.flow"
+
+android {
+    compileSdkVersion projectTargetSdkVersion
+
+    defaultConfig {
+        applicationId "com.aevi.sdk.pos.flow.config.sample"
+        minSdkVersion projectMinSdkVersion
+        targetSdkVersion projectTargetSdkVersion
+        versionName "${apiVersion}"
+    }
+    signingConfigs {
+        release {
+            storeFile file("../samples-key.jks")
+            storePassword "appflow"
+            keyAlias "sample"
+            keyPassword "appflow"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation project(':flow-base-api')
+
+    implementation(sampleDependencies.support) { force = true }
+    implementation(sampleDependencies.appCompat) { force = true }
+    implementation(sampleDependencies.recyclerView) { force = true }
+    implementation(sampleDependencies.cardView) { force = true }
+    implementation(sampleDependencies.design) { force = true }
+    implementation sampleDependencies.constraintLayout
+
+    implementation sampleDependencies.aeviUiLibrary
+    implementation apiDependencies.configApi
+    implementation apiDependencies.jsonConverter
+    implementation sampleDependencies.appFlowConstants
+    implementation sampleDependencies.paymentLegacyAppUtils
+
+    implementation sampleDependencies.butterKnife
+    annotationProcessor sampleAptDependencies.butterKnife
+
+    annotationProcessor sampleAptDependencies.dagger
+    implementation sampleDependencies.dagger
+
+    implementation sampleDependencies.okio
+    implementation sampleDependencies.rxAndroid
+    implementation apiDependencies.rxJava
+
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.assertJ
+    testImplementation testDependencies.robolectric
+}

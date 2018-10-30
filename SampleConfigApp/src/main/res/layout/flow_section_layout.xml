@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/flow_config_card_margin"
+    android:background="@color/colorColumnHeadBackground">
+
+    <LinearLayout
+        android:layout_width="@dimen/flow_config_title_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/section_title"
+            style="@style/FlowSectionHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:lines="2"
+            android:maxLines="2"
+            android:text="TITLE"/>
+
+        <TextView
+            android:id="@+id/section_flow_app_type"
+            style="@style/FlowSectionType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:text="Type"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/flow_app_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/flowSectionBackground">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

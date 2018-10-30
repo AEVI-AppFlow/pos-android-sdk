@@ -1,0 +1,46 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppIconText">
+        <item name="android:textColor">@color/colorMainText</item>
+        <item name="android:textSize">@dimen/app_icon_text_size</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">top|center_horizontal</item>
+        <item name="android:minLines">2</item>
+        <item name="android:maxLines">2</item>
+    </style>
+
+    <style name="FlowSectionHeader" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:background">@color/colorColumnHeadBackground</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingTop">@dimen/flow_config_title_margin</item>
+        <item name="android:paddingLeft">@dimen/flow_config_title_margin</item>
+        <item name="android:paddingRight">@dimen/flow_config_title_margin</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="FlowSectionType" parent="Base.TextAppearance.AppCompat.Small">
+        <item name="android:background">@color/colorColumnHeadBackground</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingTop">@dimen/flow_config_title_margin</item>
+        <item name="android:paddingBottom">@dimen/flow_config_title_margin</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="Dropdown" parent="Widget.AppCompat.Spinner">
+        <item name="android:windowBackground">@drawable/dialog_corners</item>
+        <item name="android:background">@drawable/spinner_bg</item>
+        <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
+        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:popupElevation">3dp</item>
+        <item name="android:stateListAnimator">@drawable/spinner_sla</item>
+    </style>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="whitelist_coffee_shop">
+        <item>com.aevi.sdk.config.fps</item>
+        <item>com.aevi.sdk.demo.pos</item>
+        <item>com.aevi.sdk.demo.loyalty</item>
+    </array>
+
+    <array name="whitelist_restaurant">
+        <item>com.aevi.sdk.config.fps</item>
+        <item>com.aevi.sdk.demo.pos</item>
+        <item>com.aevi.sdk.demo.loyalty</item>
+    </array>
+
+    <array name="whitelist_car_hire">
+        <item>com.aevi.sdk.config.fps</item>
+        <item>com.aevi.sdk.demo.carhire</item>
+    </array>
+
+    <array name="whitelist_default"/>
+</resources>

@@ -1,12 +1,14 @@
 ext {
-    gsonVersion = '2.8.0'
-    rxJavaVersion = '2.2.2'
+
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.2'
-
     rxMessengerVersion = '4.0.0-SNAPSHOT'
-
     configApiVersion = '1.1.0'
+    appFlowConstantsVersion = '2.0.6'
+    aeviUiLibraryVersion = "1.2.0"
+    paymentLegacyLibsVersion = '2.0.0-SNAPSHOT'
+    posFlowAppManagementVersion = '2.0.0-SNAPSHOT'
+    posFlowDeviceCommsVersion = '2.0.0-SNAPSHOT'
 
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
@@ -23,9 +25,11 @@ ext {
     supportLibraryVersion = '28.0.0'
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
-    aeviUiLibraryVersion = "1.2.0"
-
-    appFlowConstantsVersion = '2.0.6'
+    rxJavaVersion = '2.2.2'
+    rxAndroidVersion = '2.0.1'
+    gsonVersion = '2.8.0'
+    daggerVersion = '2.10'
+    okioVersion = '1.16.0'
 
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
@@ -42,19 +46,27 @@ ext {
     ]
 
     sampleDependencies = [
-            aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
-            butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibraryVersion",
-            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            cardView         : "com.android.support:cardview-v7:$supportLibraryVersion",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibraryVersion",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
-            design           : "com.android.support:design:$designLibraryVersion",
-            constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
+            aeviUiLibrary         : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
+            butterKnife           : "com.jakewharton:butterknife:$butterKnifeVersion",
+            dagger                : "com.google.dagger:dagger:$daggerVersion",
+            support               : "com.android.support:support-v4:$supportLibraryVersion",
+            recyclerView          : "com.android.support:recyclerview-v7:$recyclerViewVersion",
+            cardView              : "com.android.support:cardview-v7:$supportLibraryVersion",
+            appCompat             : "com.android.support:appcompat-v7:$supportLibraryVersion",
+            supportAnnotation     : "com.android.support:support-annotations:$supportLibraryVersion",
+            design                : "com.android.support:design:$designLibraryVersion",
+            constraintLayout      : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+            appFlowConstants      : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion",
+            okio                  : "com.squareup.okio:okio:$okioVersion",
+            rxAndroid             : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
+            paymentLegacyConverter: "com.aevi.sdk:payment-legacy-converter:$paymentLegacyLibsVersion",
+            paymentLegacyAppUtils : "com.aevi.sdk:payment-legacy-app-utils:$paymentLegacyLibsVersion",
+            posFlowAppManagement  : "com.aevi.sdk:pos-flow-app-management:$posFlowAppManagementVersion",
+            posFlowDeviceComms    : "com.aevi.sdk:pos-flow-device-comms:$posFlowDeviceCommsVersion"
     ]
 
     sampleAptDependencies = [
+            dagger     : "com.google.dagger:dagger-compiler:$daggerVersion",
             butterKnife: "com.jakewharton:butterknife-compiler:$butterKnifeVersion",
     ]
 

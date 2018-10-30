@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/select_app_grid"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:paddingLeft="@dimen/margin_horizontal"
+            android:paddingRight="@dimen/margin_horizontal"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/margin_horizontal"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/Widget.AppCompat.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/spinner_bg"
+                android:orientation="horizontal">
+
+                <com.aevi.ui.library.recycler.DropDownSpinner
+                    android:id="@+id/transaction_type_spinner"
+                    style="@style/Dropdown"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <Switch
+                    android:id="@+id/auto_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vertical"
+                    android:layout_marginLeft="@dimen/margin_horizontal"
+                    android:layout_marginRight="@dimen/margin_horizontal"
+                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:text="@string/auto_generate_configs"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/flow_section_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/flow_section_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/margin_vertical">
+
+
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_flow_config_message"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_vertical"
+        android:layout_weight="0.7"
+        android:text="@string/no_config_for_flow_type"
+        android:visibility="gone"/>
+
+</LinearLayout>

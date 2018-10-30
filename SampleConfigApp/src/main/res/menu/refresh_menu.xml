@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/refresh_group"
+        android:visible="true">
+        <item
+            android:id="@+id/menu_send_to_fps"
+            android:icon="@drawable/ic_backup"
+            android:title="@string/menu_send"
+            android:visible="true"
+            app:showAsAction="ifRoom"/>
+
+        <item
+            android:id="@+id/menu_refresh_apps"
+            android:icon="@drawable/ic_refresh_24dp"
+            android:title="@string/menu_refresh_apps"
+            android:visible="true"
+            app:showAsAction="ifRoom"/>
+    </group>
+</menu>

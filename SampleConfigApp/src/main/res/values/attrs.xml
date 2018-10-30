@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditTimeout">
+        <attr name="editTitle" format="string"/>
+        <attr name="editSummary" format="string"/>
+        <attr name="editSuffix" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="SettingSwitch">
+        <attr name="switchTitle" format="string"/>
+        <attr name="switchSummary" format="string"/>
+        <attr name="switchDefaultValue" format="boolean"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,17 @@
+{
+  "stages": [
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "GENERIC",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.paymentservicesample"
+        }
+      ]
+    }
+  ],
+  "type": "reversal",
+  "name": "sampleReversal",
+  "description": "sample reversal flow",
+  "apiMajorVersion": 2
+}
