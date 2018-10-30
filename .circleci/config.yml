@@ -3,7 +3,7 @@ version: 2
 generic:
   - &job_config
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     working_directory: ~/repo
     environment:
       _JAVA_OPTIONS: "-Xms516m -Xmx1024m"
