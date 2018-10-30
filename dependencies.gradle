@@ -1,13 +1,15 @@
 ext {
+    // API dependencies
     gsonVersion = '2.8.0'
     rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.2'
-
     rxMessengerVersion = '4.0.0-SNAPSHOT'
-
     configApiVersion = '1.1.0'
+    archLifecycleVersion = '1.0.3'
+    archLifecycleJava8Version = '1.1.0'
 
+    // Test dependencies
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
     mockitoVersion = '1.10.19'
@@ -15,17 +17,14 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
-    archLifecycleVersion = '1.0.3'
-    archLifecycleJava8Version = '1.1.0'
-
+    // Sample dependencies
     butterKnifeVersion = '8.8.1'
     recyclerViewVersion = '28.0.0'
     supportLibraryVersion = '28.0.0'
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
-
-    appFlowConstantsVersion = '2.0.6'
+    appFlowConstantsVersion = '2.0.7'
 
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21

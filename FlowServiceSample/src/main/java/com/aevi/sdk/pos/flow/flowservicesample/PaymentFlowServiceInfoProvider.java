@@ -15,13 +15,13 @@
 package com.aevi.sdk.pos.flow.flowservicesample;
 
 
-import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.pos.flow.flowservicesample.service.ShowLoyaltyPointsBalanceService;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_SALE;
+import static com.aevi.sdk.flow.constants.PaymentMethods.*;
 
 public class PaymentFlowServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 
@@ -31,7 +31,7 @@ public class PaymentFlowServiceInfoProvider extends BasePaymentFlowServiceInfoPr
                 .withVendor("AEVI")
                 .withDisplayName("Flow Service Sample")
                 .withCanAdjustAmounts(true)
-                .withCanPayAmounts(true, PaymentMethods.LOYALTY_POINTS, PaymentMethods.GIFT_CARD, PaymentMethods.CASH)
+                .withCanPayAmounts(true, PAYMENT_METHOD_LOYALTY_POINTS, PAYMENT_METHOD_GIFT_CARD, PAYMENT_METHOD_CASH)
                 .withSupportedFlowTypes(FLOW_TYPE_SALE)
                 .withCustomRequestTypes(ShowLoyaltyPointsBalanceService.SHOW_LOYALTY_POINTS_REQUEST)
                 .build(getContext());

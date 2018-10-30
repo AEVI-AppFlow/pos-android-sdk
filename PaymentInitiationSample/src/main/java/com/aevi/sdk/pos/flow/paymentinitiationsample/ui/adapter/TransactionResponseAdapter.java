@@ -22,17 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.flow.constants.CardDataKeys;
 import com.aevi.sdk.flow.constants.ReferenceKeys;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_DATA_NETWORK;
 
 public class TransactionResponseAdapter extends RecyclerView.Adapter<TransactionResponseAdapter.ViewHolder> {
 
@@ -109,7 +110,7 @@ public class TransactionResponseAdapter extends RecyclerView.Adapter<Transaction
         holder.status.setText(response.getOutcome().name());
         if (response.getCard() != null && response.getCard().getMaskedPan() != null) {
             Card card = response.getCard();
-            String cardNetwork = card.getAdditionalData().getValue(CardDataKeys.NETWORK, String.class);
+            String cardNetwork = card.getAdditionalData().getValue(CARD_DATA_NETWORK, String.class);
             cardNetwork = cardNetwork == null ? "N/A" : cardNetwork;
             holder.cardUsed.setText(getString(R.string.card_used_value, cardNetwork, card.getMaskedPan(), card.getExpiryDate()));
             holder.cardUsed.setVisibility(View.VISIBLE);

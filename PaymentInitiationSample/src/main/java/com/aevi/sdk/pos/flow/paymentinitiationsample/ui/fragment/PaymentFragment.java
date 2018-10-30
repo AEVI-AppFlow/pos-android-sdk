@@ -49,6 +49,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import io.reactivex.disposables.Disposable;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -84,6 +85,7 @@ public class PaymentFragment extends BaseObservableFragment {
     private ModelDisplay modelDisplay;
     private DropDownHelper dropDownHelper;
     private PaymentSettings paymentSettings;
+    private Disposable initiateDisposable;
 
     @Override
     public int getLayoutResource() {
@@ -236,28 +238,39 @@ public class PaymentFragment extends BaseObservableFragment {
         final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        paymentClient.initiatePayment(paymentBuilder.build()).subscribe(response -> {
-            SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-            if (isAdded()) {
-                intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-                startActivity(intent);
-            }
-        }, throwable -> {
-            if (throwable instanceof MessageException) {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
-            } else if (throwable instanceof IllegalStateException) {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
-            } else {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
-            }
-            if (isAdded()) {
-                startActivity(intent);
-            }
-        });
+
+        initiateDisposable = paymentClient.initiatePayment(paymentBuilder.build())
+                .subscribe(response -> {
+                    SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
+                    if (isAdded()) {
+                        intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
+                        startActivity(intent);
+                    }
+                }, throwable -> {
+                    if (throwable instanceof MessageException) {
+                        intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
+                    } else if (throwable instanceof IllegalStateException) {
+                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
+                    } else {
+                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
+                    }
+                    if (isAdded()) {
+                        startActivity(intent);
+                    }
+                });
     }
 
     public Payment getPayment() {
         return paymentBuilder.build();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (initiateDisposable != null) {
+            initiateDisposable.dispose();
+            initiateDisposable = null;
+        }
+    }
 }

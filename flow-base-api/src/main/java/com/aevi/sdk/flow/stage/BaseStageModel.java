@@ -54,7 +54,6 @@ public abstract class BaseStageModel {
                 registerForFinishRequest(activity.getIntent(), ((LifecycleOwner) activity).getLifecycle());
             }
         }
-
     }
 
     /*
@@ -91,17 +90,6 @@ public abstract class BaseStageModel {
      */
     protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
         this.clientCommunicator = clientCommunicator;
-    }
-
-    /**
-     * A communicator that be used to talk directly to the client
-     *
-     * Internal use only
-     *
-     * @return The client communicator
-     */
-    public ClientCommunicator getClientCommunicator() {
-        return clientCommunicator;
     }
 
     /**
@@ -148,7 +136,7 @@ public abstract class BaseStageModel {
      */
     public ObservableActivityHelper<String> processInActivity(Context context, Class<? extends Activity> activityClass) {
         ActivityHelper activityHelper =
-                new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null);
+                new ActivityHelper(context, new Intent(context, activityClass), clientCommunicator, getRequestJson(), null);
         if (clientCommunicator != null) {
             clientCommunicator.addActivityHelper(activityHelper);
         }
