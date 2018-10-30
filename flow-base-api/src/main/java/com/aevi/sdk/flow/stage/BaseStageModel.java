@@ -43,7 +43,7 @@ public abstract class BaseStageModel {
     protected ClientCommunicator clientCommunicator;
 
     /**
-     * Initialise the stage model from an activity
+     * Initialise the stage model from an activity.
      *
      * @param activity The activity initialised from
      */
@@ -84,7 +84,7 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Initialise the stage model from a service
+     * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
      */
@@ -128,15 +128,30 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Send this model to be processed by an activity
+     * Send this model and its associated request to be processed by an activity.
      *
      * @param context       The Android context
      * @param activityClass The class of the activity to send it to
      * @return An Observable stream of lifecycle events for the activity
      */
     public ObservableActivityHelper<String> processInActivity(Context context, Class<? extends Activity> activityClass) {
+        return processInActivity(context, new Intent(context, activityClass), getRequestJson());
+    }
+
+    /**
+     * Send this model with the provided request data to the activity specified by the intent.
+     *
+     * For the majority of cases, use {@link #processInActivity(Context, Class)}. If you have a use case where you need to build the intent yourself,
+     * or need to modify the request data before passing it on, this method can be used.
+     *
+     * @param context        The Android context
+     * @param activityIntent The activity intent
+     * @param requestJson    The request json (see {@link #getRequestJson()} to retrieve the input request)
+     * @return An Observable stream of lifecycle events for the activity
+     */
+    public ObservableActivityHelper<String> processInActivity(Context context, Intent activityIntent, String requestJson) {
         ActivityHelper activityHelper =
-                new ActivityHelper(context, new Intent(context, activityClass), clientCommunicator, getRequestJson(), null);
+                new ActivityHelper(context, activityIntent, clientCommunicator, requestJson, null);
         if (clientCommunicator != null) {
             clientCommunicator.addActivityHelper(activityHelper);
         }
