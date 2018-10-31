@@ -1,0 +1,12 @@
+{
+  "stages": [
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "TRANSACTION_PROCESSING"
+    }
+  ],
+  "type": "refund",
+  "name": "refund",
+  "description": "Simple refund flow with value added services",
+  "apiMajorVersion": 2
+}
