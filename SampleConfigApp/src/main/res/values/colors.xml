@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="flowAppDisabled">#cccccc</color>
+
+    <color name="flowAppColor1">#1abc9c</color>
+    <color name="flowAppColor2">#2ecc71</color>
+    <color name="flowAppColor3">#3498db</color>
+    <color name="flowAppColor4">#9b59b6</color>
+    <color name="flowAppColor5">#34495e</color>
+    <color name="flowAppColor6">#f1c40f</color>
+    <color name="flowAppColor7">#e67e22</color>
+    <color name="flowAppColor8">#e74c3c</color>
+    <color name="flowAppColor9">#95a5a6</color>
+    <color name="flowAppColor10">#16a085</color>
+    <color name="flowAppColor11">#27ae60</color>
+    <color name="flowAppColor12">#2980b9</color>
+    <color name="flowAppColor13">#8e44ad</color>
+    <color name="flowAppColor14">#2c3e50</color>
+    <color name="flowAppColor15">#f39c12</color>
+    <color name="flowAppColor16">#d35400</color>
+    <color name="flowAppColor17">#c0392b</color>
+    <color name="flowAppColor18">#bdc3c7</color>
+    <color name="flowAppColor19">#7f8c8d</color>
+    <integer-array name="flowAppColorList">
+        <item>@color/flowAppDisabled</item>
+        <item>@color/flowAppColor1</item>
+        <item>@color/flowAppColor2</item>
+        <item>@color/flowAppColor3</item>
+        <item>@color/flowAppColor4</item>
+        <item>@color/flowAppColor5</item>
+        <item>@color/flowAppColor6</item>
+        <item>@color/flowAppColor7</item>
+        <item>@color/flowAppColor8</item>
+        <item>@color/flowAppColor9</item>
+        <item>@color/flowAppColor10</item>
+        <item>@color/flowAppColor11</item>
+        <item>@color/flowAppColor12</item>
+        <item>@color/flowAppColor13</item>
+        <item>@color/flowAppColor14</item>
+        <item>@color/flowAppColor15</item>
+        <item>@color/flowAppColor16</item>
+        <item>@color/flowAppColor17</item>
+        <item>@color/flowAppColor18</item>
+        <item>@color/flowAppColor19</item>
+    </integer-array>
+</resources>

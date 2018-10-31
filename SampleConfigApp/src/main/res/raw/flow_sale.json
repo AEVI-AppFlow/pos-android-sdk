@@ -1,0 +1,45 @@
+{
+  "stages": [
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "PRE_FLOW"
+    },
+    {
+      "appExecutionType": "SINGLE",
+      "innerFlow": {
+        "stages": [
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "PRE_TRANSACTION"
+          },
+          {
+            "appExecutionType": "SINGLE_SELECT",
+            "name": "PAYMENT_CARD_READING"
+          },
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "POST_CARD_READING"
+          },
+          {
+            "appExecutionType": "SINGLE_SELECT",
+            "name": "TRANSACTION_PROCESSING"
+          },
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "POST_TRANSACTION"
+          }
+        ],
+        "type": "transaction"
+      },
+      "name": "SPLIT"
+    },
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "POST_FLOW"
+    }
+  ],
+  "type": "sale",
+  "name": "sale",
+  "description": "Default sale flow",
+  "apiMajorVersion": 2
+}
