@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
-
+import butterknife.*;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.Card;
@@ -39,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import butterknife.*;
 
 import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
 

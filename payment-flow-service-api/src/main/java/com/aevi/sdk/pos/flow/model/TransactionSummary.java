@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
@@ -37,8 +36,9 @@ public class TransactionSummary extends Transaction {
     }
 
     public TransactionSummary(Transaction transaction, String flowType, DeviceAudience deviceAudience, Card card) {
-        super(transaction.getId(), transaction.getRequestedAmounts(), transaction.getBaskets(), transaction.getCustomer(), transaction.getAdditionalData(),
-                transaction.getTransactionResponses(), transaction.getExecutedFlowApps());
+        super(transaction.getId(), transaction.getRequestedAmounts(), transaction.getBaskets(), transaction.getCustomer(),
+              transaction.getAdditionalData(),
+              transaction.getTransactionResponses(), transaction.getExecutedFlowApps());
         this.flowType = flowType;
         this.deviceAudience = deviceAudience != null ? deviceAudience : DeviceAudience.MERCHANT;
         this.card = card != null ? card : Card.getEmptyCard();
@@ -98,14 +98,24 @@ public class TransactionSummary extends Transaction {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         TransactionSummary that = (TransactionSummary) o;
 
-        if (flowType != null ? !flowType.equals(that.flowType) : that.flowType != null) return false;
-        if (deviceAudience != that.deviceAudience) return false;
+        if (flowType != null ? !flowType.equals(that.flowType) : that.flowType != null) {
+            return false;
+        }
+        if (deviceAudience != that.deviceAudience) {
+            return false;
+        }
         return card != null ? card.equals(that.card) : that.card == null;
     }
 

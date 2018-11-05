@@ -17,7 +17,6 @@ package com.aevi.sdk.flow.model.config;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonPostProcessing;
@@ -51,7 +50,8 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         this("N/A", "N/A", 0, 0, null, null, null);
     }
 
-    public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp, List<FlowStage> stages) {
+    public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp,
+                      List<FlowStage> stages) {
         this.name = name;
         this.type = type;
         this.version = version;
@@ -319,8 +319,12 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FlowConfig that = (FlowConfig) o;
         return version == that.version &&
                 apiMajorVersion == that.apiMajorVersion &&
@@ -337,6 +341,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, generatedFromCustomType, allStagesFlattened, allStagesMap);
+        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, generatedFromCustomType, allStagesFlattened,
+                            allStagesMap);
     }
 }

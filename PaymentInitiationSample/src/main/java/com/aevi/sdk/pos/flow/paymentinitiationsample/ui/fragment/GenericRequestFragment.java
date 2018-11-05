@@ -19,7 +19,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.Request;
@@ -40,16 +42,13 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
+import io.reactivex.disposables.Disposable;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
-import io.reactivex.disposables.Disposable;
-
 import static android.content.Intent.*;
-import static com.aevi.sdk.flow.constants.FlowTypes.*;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_CASH_RECEIPT_DELIVERY;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
 import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
 
@@ -141,7 +140,8 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getLastResponse().getId());
+                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID,
+                                          lastResponse.getTransactions().get(0).getLastResponse().getId());
                 break;
             case FLOW_TYPE_CASH_RECEIPT_DELIVERY:
                 Amounts cashAmounts = new Amounts(15000, "EUR");

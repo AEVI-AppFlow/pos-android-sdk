@@ -18,7 +18,6 @@ package com.aevi.sdk.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonOption;
 import com.aevi.util.json.Jsonable;

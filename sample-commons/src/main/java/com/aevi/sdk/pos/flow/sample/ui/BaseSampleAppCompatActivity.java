@@ -19,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.aevi.sdk.pos.flow.sample.R;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {

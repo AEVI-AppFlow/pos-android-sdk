@@ -16,11 +16,9 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
+import butterknife.ButterKnife;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-
-import butterknife.ButterKnife;
 
 public class RequestInitiationActivity extends AppCompatActivity {
 

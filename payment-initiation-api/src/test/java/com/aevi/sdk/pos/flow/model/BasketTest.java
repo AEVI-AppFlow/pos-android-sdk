@@ -2,7 +2,6 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import com.aevi.util.json.JsonConverter;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,8 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasketTest {
 
-    private static final BasketItem defaultItemOne = new BasketItem(UUID.randomUUID().toString(), "LabelOne", null, 1000, 2, new HashMap<String, String>());
-    private static final BasketItem defaultItemTwo = new BasketItem(UUID.randomUUID().toString(), "LabelTwo", null, 400, 1, new HashMap<String, String>());
+    private static final BasketItem defaultItemOne =
+            new BasketItem(UUID.randomUUID().toString(), "LabelOne", null, 1000, 2, new HashMap<String, String>());
+    private static final BasketItem defaultItemTwo =
+            new BasketItem(UUID.randomUUID().toString(), "LabelTwo", null, 400, 1, new HashMap<String, String>());
     private Basket sourceBasket;
 
     @Before
@@ -199,8 +200,8 @@ public class BasketTest {
     @Test
     public void canGetItemsByCategory() throws Exception {
         sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1, null),
-                new BasketItem("456", "Fanta", "Drinks", 1000, 1, null),
-                new BasketItem("789", "Pork", "Meat", 1000, 1, null));
+                              new BasketItem("456", "Fanta", "Drinks", 1000, 1, null),
+                              new BasketItem("789", "Pork", "Meat", 1000, 1, null));
 
         List<BasketItem> drinks = sourceBasket.getBasketItemsByCategory("Drinks");
         assertThat(drinks).hasSize(2).containsExactlyInAnyOrder(sourceBasket.getItemById("123"), sourceBasket.getItemById("456"));

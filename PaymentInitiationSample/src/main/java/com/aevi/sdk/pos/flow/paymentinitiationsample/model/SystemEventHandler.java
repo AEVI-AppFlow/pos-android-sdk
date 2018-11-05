@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 import android.util.Log;
-
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemEventAdapter;

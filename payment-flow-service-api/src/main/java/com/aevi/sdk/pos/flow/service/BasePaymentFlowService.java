@@ -2,7 +2,6 @@ package com.aevi.sdk.pos.flow.service;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;

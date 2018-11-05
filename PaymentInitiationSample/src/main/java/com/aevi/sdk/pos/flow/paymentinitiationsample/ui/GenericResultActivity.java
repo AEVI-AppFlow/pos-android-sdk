@@ -20,14 +20,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.ImageView;
-
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 public class GenericResultActivity extends AppCompatActivity {
 

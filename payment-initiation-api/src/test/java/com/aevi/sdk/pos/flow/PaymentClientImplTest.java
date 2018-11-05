@@ -2,13 +2,13 @@ package com.aevi.sdk.pos.flow;
 
 import android.content.ComponentName;
 import android.os.Build;
-
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.*;
-
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +18,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
-
-import io.reactivex.Observable;
-import io.reactivex.observers.TestObserver;
 
 import static com.aevi.sdk.pos.flow.TestEnvironment.pretendFpsIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;

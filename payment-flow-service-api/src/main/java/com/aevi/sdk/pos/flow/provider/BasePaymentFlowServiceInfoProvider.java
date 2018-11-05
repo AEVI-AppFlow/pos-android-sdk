@@ -30,7 +30,6 @@ package com.aevi.sdk.pos.flow.provider;
 
 
 import android.content.Context;
-
 import com.aevi.sdk.flow.service.BaseServiceInfoProvider;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 

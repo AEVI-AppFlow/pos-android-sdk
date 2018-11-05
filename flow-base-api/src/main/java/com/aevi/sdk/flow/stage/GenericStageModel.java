@@ -15,7 +15,6 @@
 package com.aevi.sdk.flow.stage;
 
 import android.app.Activity;
-
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;

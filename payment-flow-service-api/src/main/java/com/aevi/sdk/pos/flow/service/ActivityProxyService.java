@@ -20,7 +20,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
@@ -28,9 +27,7 @@ import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.constants.IntentActions.ACTIVITY_PROXY_ACTION_POSTFIX;
-import static com.aevi.sdk.flow.constants.IntentActions.ACTIVITY_PROXY_ACTION_PREFIX;
-import static com.aevi.sdk.flow.constants.IntentActions.BASE_INTENT_ACTION;
+import static com.aevi.sdk.flow.constants.IntentActions.*;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
@@ -48,7 +45,7 @@ public class ActivityProxyService extends BaseApiService {
         Intent activityIntent = getActivityIntent(flowStage);
         if (!isActivityDefined(activityIntent)) {
             Log.e(TAG,
-                    "No activity defined to handle: " + activityIntent.getAction() + " in app: " + getPackageName() + "! Finishing with no response");
+                  "No activity defined to handle: " + activityIntent.getAction() + " in app: " + getPackageName() + "! Finishing with no response");
             clientCommunicator.finishWithNoResponse();
             return;
         }

@@ -18,7 +18,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 
 import static com.aevi.sdk.flow.constants.FlowStages.*;
@@ -29,17 +28,22 @@ public class ServiceStateHandler {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (flowStage) {
             case PRE_FLOW:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_preflow), context.getResources().getBoolean(R.bool.pre_flow_default));
+                return sharedPreferences
+                        .getBoolean(context.getString(R.string.pref_preflow), context.getResources().getBoolean(R.bool.pre_flow_default));
             case SPLIT:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_split), context.getResources().getBoolean(R.bool.split_default));
             case PRE_TRANSACTION:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_prepayment), context.getResources().getBoolean(R.bool.pre_payment_default));
+                return sharedPreferences
+                        .getBoolean(context.getString(R.string.pref_prepayment), context.getResources().getBoolean(R.bool.pre_payment_default));
             case POST_CARD_READING:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_postcard), context.getResources().getBoolean(R.bool.postcard_default));
+                return sharedPreferences
+                        .getBoolean(context.getString(R.string.pref_postcard), context.getResources().getBoolean(R.bool.postcard_default));
             case POST_TRANSACTION:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_postpayment), context.getResources().getBoolean(R.bool.post_payment_default));
+                return sharedPreferences
+                        .getBoolean(context.getString(R.string.pref_postpayment), context.getResources().getBoolean(R.bool.post_payment_default));
             case POST_FLOW:
-                return sharedPreferences.getBoolean(context.getString(R.string.pref_postflow), context.getResources().getBoolean(R.bool.post_flow_default));
+                return sharedPreferences
+                        .getBoolean(context.getString(R.string.pref_postflow), context.getResources().getBoolean(R.bool.post_flow_default));
             default:
                 return false;
         }

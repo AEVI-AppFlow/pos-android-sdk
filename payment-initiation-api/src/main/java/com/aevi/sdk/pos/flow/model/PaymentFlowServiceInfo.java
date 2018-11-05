@@ -31,7 +31,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseServiceInfo;
 import com.aevi.sdk.flow.util.ComparisonUtil;
@@ -68,9 +67,10 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
     public PaymentFlowServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion, String displayName,
                                   boolean hasAccessibilityMode, Set<String> supportedFlowTypes, Set<String> supportedRequestTypes,
                                   Set<String> supportedDataKeys, String logicalDeviceId, boolean canAdjustAmounts, boolean canPayAmounts,
-                                  String defaultCurrency, Set<String> supportedCurrencies, Set<String> paymentMethods, AdditionalData additionalInfo) {
+                                  String defaultCurrency, Set<String> supportedCurrencies, Set<String> paymentMethods,
+                                  AdditionalData additionalInfo) {
         super(id, packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedFlowTypes,
-                supportedRequestTypes, supportedDataKeys, additionalInfo);
+              supportedRequestTypes, supportedDataKeys, additionalInfo);
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
         this.defaultCurrency = defaultCurrency;
@@ -156,9 +156,15 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         PaymentFlowServiceInfo that = (PaymentFlowServiceInfo) o;
         return canAdjustAmounts == that.canAdjustAmounts &&
                 canPayAmounts == that.canPayAmounts &&

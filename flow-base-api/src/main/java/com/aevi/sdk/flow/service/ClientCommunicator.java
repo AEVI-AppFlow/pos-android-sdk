@@ -2,16 +2,14 @@ package com.aevi.sdk.flow.service;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
+import io.reactivex.Observable;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import io.reactivex.Observable;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;

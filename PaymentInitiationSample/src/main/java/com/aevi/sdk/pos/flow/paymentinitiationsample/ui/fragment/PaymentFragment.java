@@ -23,7 +23,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
@@ -39,17 +42,12 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
+import io.reactivex.disposables.Disposable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
-import io.reactivex.disposables.Disposable;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -110,7 +108,9 @@ public class PaymentFragment extends BaseObservableFragment {
                     this.paymentSettings = paymentSettings;
                     List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
                     allFieldsReady = true;
-                    dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()), false);
+                    dropDownHelper
+                            .setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()),
+                                           false);
                     dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
                 }, throwable -> {
                     if (throwable instanceof IllegalStateException) {
@@ -139,7 +139,7 @@ public class PaymentFragment extends BaseObservableFragment {
             String flowType = ((String) flowSpinner.getSelectedItem());
             String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
             dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()),
-                    false);
+                                         false);
         }
     }
 
@@ -226,12 +226,13 @@ public class PaymentFragment extends BaseObservableFragment {
 
     private Basket createBasket() {
         return new Basket("sampleBasket",
-                // You can add single count items, with label, category and amount value
-                new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
-                new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
-                new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
-                // You can also specify the initial count of the item and provide your own id
-                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2).build());
+                          // You can add single count items, with label, category and amount value
+                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
+                          new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
+                          new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
+                          // You can also specify the initial count of the item and provide your own id
+                          new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2)
+                                  .build());
     }
 
     @OnClick(R.id.send)
@@ -239,7 +240,8 @@ public class PaymentFragment extends BaseObservableFragment {
         PaymentClient paymentClient = PaymentApi.getPaymentClient(getContext());
         final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
         intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
+                        Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         initiateDisposable = paymentClient.initiatePayment(paymentBuilder.build())
                 .subscribe(response -> {

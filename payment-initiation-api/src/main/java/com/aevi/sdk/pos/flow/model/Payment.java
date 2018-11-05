@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Customer;
@@ -90,7 +89,8 @@ public class Payment extends BaseModel {
      *
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
-    Payment(String id, String requestSource, String flowType, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
+    Payment(String id, String requestSource, String flowType, String flowName, Amounts amounts, Basket basket, Customer customer,
+            boolean splitEnabled, Token cardToken,
             AdditionalData additionalData, String deviceId) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
@@ -260,9 +260,15 @@ public class Payment extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Payment payment = (Payment) o;
         return splitEnabled == payment.splitEnabled &&
                 isExternalId == payment.isExternalId &&
@@ -279,7 +285,9 @@ public class Payment extends BaseModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId, flowType);
+        return Objects
+                .hash(super.hashCode(), flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId,
+                      flowType);
     }
 
     @Override

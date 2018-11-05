@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.*;
-
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.res.builder.RobolectricPackageManager;
 
@@ -14,12 +13,14 @@ import java.nio.file.Paths;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 public class TestEnvironment {
 
-    private static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT = new ComponentName("com.aevi.sdk.fps", "com.aevi.sdk.fps.FlowProcessingService");
+    private static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT =
+            new ComponentName("com.aevi.sdk.fps", "com.aevi.sdk.fps.FlowProcessingService");
     private static final String BASE_TEST_DIR = "src/test/resources/";
     private static final String VALID_RESPONSE = "valid_response.json";
     private static final String ERROR_RESPONSE = "error_response.json";

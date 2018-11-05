@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.Device;
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.Request;
@@ -25,11 +24,10 @@ import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.RequestStatus;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
-
-import java.util.List;
-
 import io.reactivex.Observable;
 import io.reactivex.Single;
+
+import java.util.List;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
