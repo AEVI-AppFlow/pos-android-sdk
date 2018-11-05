@@ -16,16 +16,14 @@ package com.aevi.sdk.pos.flow.model.config;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.config.FlowConfig;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 /**
  * Exposes the various flows and helper methods to query for information.

@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.service;
 
 import android.util.Log;
 import android.widget.Toast;
-
 import com.aevi.sdk.flow.service.BasePostGenericService;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 

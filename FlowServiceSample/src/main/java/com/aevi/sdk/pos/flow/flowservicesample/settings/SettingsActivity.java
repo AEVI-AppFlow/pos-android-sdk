@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.settings;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 
 public class SettingsActivity extends AppCompatActivity {

@@ -23,16 +23,14 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.ActivityEvents;
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.ClientCommunicator;
+import io.reactivex.functions.Consumer;
 
 import java.lang.ref.WeakReference;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Base model for all stage models that provide the stage specific data functions.

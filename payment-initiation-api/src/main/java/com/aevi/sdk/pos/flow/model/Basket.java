@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
@@ -393,9 +392,15 @@ public class Basket extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Basket basket = (Basket) o;
         return Objects.equals(basketName, basket.basketName) &&
                 Objects.equals(displayItems, basket.displayItems) &&

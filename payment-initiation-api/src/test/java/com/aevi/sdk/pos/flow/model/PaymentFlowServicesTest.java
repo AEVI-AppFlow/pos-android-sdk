@@ -2,9 +2,7 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import android.content.Context;
-
 import com.aevi.sdk.pos.flow.TestEnvironment;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

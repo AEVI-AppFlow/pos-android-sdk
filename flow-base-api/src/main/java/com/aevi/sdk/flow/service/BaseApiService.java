@@ -17,18 +17,18 @@ package com.aevi.sdk.flow.service;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.stage.BaseStageModel;
-
 import io.reactivex.functions.Consumer;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
-import static com.aevi.sdk.flow.constants.MessageErrors.*;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
+import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_SERVICE_EXCEPTION;
+import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
 
 /**
  * Base service for all API service implementations.
@@ -104,11 +104,11 @@ public abstract class BaseApiService extends AbstractChannelService {
         InternalData senderInternalData = appMessage.getInternalData();
         if (senderInternalData != null) {
             Log.i(BaseApiService.class.getSimpleName(), String.format("Our API version is: %s. Sender API version is: %s",
-                    checkWith.getSenderApiVersion(),
-                    senderInternalData.getSenderApiVersion()));
+                                                                      checkWith.getSenderApiVersion(),
+                                                                      senderInternalData.getSenderApiVersion()));
         } else {
             Log.i(BaseApiService.class.getSimpleName(),
-                    String.format("Our API version is: %s. Sender API version is UNKNOWN!", checkWith.getSenderApiVersion()));
+                  String.format("Our API version is: %s. Sender API version is UNKNOWN!", checkWith.getSenderApiVersion()));
         }
     }
 

@@ -80,11 +80,11 @@ public interface FlowStages {
      * All stages for a payment flow
      */
     String[] ALL_PAYMENT_STAGES = new String[]{PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
-            TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
+                                               TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
 
     /**
      * All defined stages
      */
     String[] ALL_STAGES = new String[]{GENERIC, POST_GENERIC, PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
-            TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
+                                       TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
 }

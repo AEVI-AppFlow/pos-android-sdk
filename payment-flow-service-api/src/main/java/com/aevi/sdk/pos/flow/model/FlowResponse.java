@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.util.json.JsonConverter;
@@ -295,12 +294,12 @@ public class FlowResponse implements Sendable {
 
     private void checkAmountsPaidLessEqualUpdatedAmounts() {
         checkArgument(amountsPaid.getBaseAmountValue() <= updatedRequestAmounts.getBaseAmountValue(),
-                "Amounts paid can not be > than updated amounts");
+                      "Amounts paid can not be > than updated amounts");
     }
 
     private void checkCurrencyMatch() {
         checkArgument(updatedRequestAmounts.getCurrency() == null || updatedRequestAmounts.getCurrency().equals(amountsPaid.getCurrency()),
-                "Updated amounts and amounts paid currency must be the same");
+                      "Updated amounts and amounts paid currency must be the same");
     }
 
     @Override

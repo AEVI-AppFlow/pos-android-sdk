@@ -16,7 +16,6 @@
 package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
-
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -81,8 +80,12 @@ public class FlowApp implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FlowApp flowApp = (FlowApp) o;
         return mandatory == flowApp.mandatory &&
                 Objects.equals(id, flowApp.id);

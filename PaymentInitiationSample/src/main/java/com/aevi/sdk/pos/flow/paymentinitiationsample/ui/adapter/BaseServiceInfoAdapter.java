@@ -22,14 +22,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 import java.util.Arrays;
 import java.util.Set;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

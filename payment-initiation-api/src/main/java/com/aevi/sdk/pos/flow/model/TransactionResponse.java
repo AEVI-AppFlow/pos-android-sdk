@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
@@ -240,20 +239,42 @@ public class TransactionResponse extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         TransactionResponse that = (TransactionResponse) o;
 
-        if (card != null ? !card.equals(that.card) : that.card != null) return false;
-        if (outcome != that.outcome) return false;
-        if (outcomeMessage != null ? !outcomeMessage.equals(that.outcomeMessage) : that.outcomeMessage != null) return false;
-        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) return false;
-        if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null) return false;
-        if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null) return false;
-        if (references != null ? !references.equals(that.references) : that.references != null) return false;
-        if (flowServiceId != null ? !flowServiceId.equals(that.flowServiceId) : that.flowServiceId != null) return false;
+        if (card != null ? !card.equals(that.card) : that.card != null) {
+            return false;
+        }
+        if (outcome != that.outcome) {
+            return false;
+        }
+        if (outcomeMessage != null ? !outcomeMessage.equals(that.outcomeMessage) : that.outcomeMessage != null) {
+            return false;
+        }
+        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) {
+            return false;
+        }
+        if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null) {
+            return false;
+        }
+        if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null) {
+            return false;
+        }
+        if (references != null ? !references.equals(that.references) : that.references != null) {
+            return false;
+        }
+        if (flowServiceId != null ? !flowServiceId.equals(that.flowServiceId) : that.flowServiceId != null) {
+            return false;
+        }
         return componentName != null ? componentName.equals(that.componentName) : that.componentName == null;
     }
 

@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.*;
@@ -46,7 +45,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
         this("", "", "", "", "", "", "", false,
-                null, null, null, null);
+             null, null, null, null);
     }
 
     protected BaseServiceInfo(String id, String packageName, String vendor, String logicalDeviceId, String serviceVersion, String apiVersion,
@@ -312,9 +311,15 @@ public abstract class BaseServiceInfo extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         BaseServiceInfo that = (BaseServiceInfo) o;
         return hasAccessibilityMode == that.hasAccessibilityMode &&
                 enabled == that.enabled &&
@@ -335,6 +340,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode, supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, enabled, stages, flowAndStagesDefinitions);
+        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode,
+                            supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, enabled, stages, flowAndStagesDefinitions);
     }
 }

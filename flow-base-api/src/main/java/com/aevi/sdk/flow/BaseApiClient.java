@@ -22,25 +22,18 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
-
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.android.rxmessenger.Channels;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.FlowEvent;
-import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
-
-import java.util.List;
-
+import com.aevi.sdk.flow.model.*;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
+
+import java.util.List;
 
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
 
@@ -77,7 +70,7 @@ public abstract class BaseApiClient {
         // once setup the client will use the same comm channel until it is disposed of and re-created
         ConfigClient configClient = ConfigApi.getConfigClient(context);
         String channel = configClient.getConfigValue(APPFLOW_COMMS_CHANNEL);
-        if(CHANNEL_WEBSOCKET.equals(channel)) {
+        if (CHANNEL_WEBSOCKET.equals(channel)) {
             useWebsocket = true;
         }
     }

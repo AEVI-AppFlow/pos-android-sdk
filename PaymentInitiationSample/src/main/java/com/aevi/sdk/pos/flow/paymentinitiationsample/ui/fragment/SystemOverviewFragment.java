@@ -22,15 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemOverviewAdapter;
-
-import butterknife.BindView;
 import io.reactivex.Single;
 
 public class SystemOverviewFragment extends BaseFragment implements SystemOverviewAdapter.OnFlowConfigClickListener {
@@ -68,14 +66,14 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
     private Single<SystemOverview> createSystemInfo() {
         PaymentClient paymentClient = getSampleContext().getPaymentClient();
         return Single.zip(paymentClient.getPaymentSettings(), paymentClient.getDevices(),
-                (paymentSettings, devices) -> {
-                    SystemOverview systemOverview = new SystemOverview();
-                    systemOverview.setPaymentFlowServices(paymentSettings.getPaymentFlowServices());
-                    systemOverview.setFlowConfigurations(paymentSettings.getFlowConfigurations());
-                    systemOverview.setNumDevices(devices.size());
-                    systemOverview.setFpsSettings(paymentSettings.getFpsSettings());
-                    return systemOverview;
-                });
+                          (paymentSettings, devices) -> {
+                              SystemOverview systemOverview = new SystemOverview();
+                              systemOverview.setPaymentFlowServices(paymentSettings.getPaymentFlowServices());
+                              systemOverview.setFlowConfigurations(paymentSettings.getFlowConfigurations());
+                              systemOverview.setNumDevices(devices.size());
+                              systemOverview.setFpsSettings(paymentSettings.getFpsSettings());
+                              return systemOverview;
+                          });
     }
 
     @Override

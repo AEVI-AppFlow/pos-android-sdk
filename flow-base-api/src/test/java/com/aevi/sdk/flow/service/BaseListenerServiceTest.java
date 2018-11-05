@@ -5,7 +5,7 @@ import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-
+import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,14 +13,9 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-import io.reactivex.subjects.PublishSubject;
-
 import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BaseListenerServiceTest {

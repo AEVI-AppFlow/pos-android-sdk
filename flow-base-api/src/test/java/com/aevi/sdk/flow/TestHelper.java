@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
-
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.res.builder.RobolectricPackageManager;
 

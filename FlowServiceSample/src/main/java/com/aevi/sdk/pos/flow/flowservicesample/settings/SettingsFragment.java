@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
-
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 
 import java.util.Arrays;

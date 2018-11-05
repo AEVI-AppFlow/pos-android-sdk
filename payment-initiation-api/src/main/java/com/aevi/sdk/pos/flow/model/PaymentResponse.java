@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
 
@@ -284,23 +283,44 @@ public class PaymentResponse extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PaymentResponse paymentResponse = (PaymentResponse) o;
 
-        if (allTransactionsApproved != paymentResponse.allTransactionsApproved) return false;
-        if (originatingPayment != null ? !originatingPayment.equals(paymentResponse.originatingPayment) : paymentResponse.originatingPayment != null)
+        if (allTransactionsApproved != paymentResponse.allTransactionsApproved) {
             return false;
-        if (outcome != paymentResponse.outcome) return false;
-        if (failureReason != paymentResponse.failureReason) return false;
-        if (failureMessage != null ? !failureMessage.equals(paymentResponse.failureMessage) : paymentResponse.failureMessage != null) return false;
-        if (totalAmountsProcessed != null ? !totalAmountsProcessed.equals(paymentResponse.totalAmountsProcessed) : paymentResponse.totalAmountsProcessed != null)
+        }
+        if (originatingPayment != null ? !originatingPayment.equals(paymentResponse.originatingPayment) :
+                paymentResponse.originatingPayment != null) {
             return false;
-        if (transactions != null ? !transactions.equals(paymentResponse.transactions) : paymentResponse.transactions != null) return false;
-        if (executedPreFlowApp != null ? !executedPreFlowApp.equals(paymentResponse.executedPreFlowApp) : paymentResponse.executedPreFlowApp != null)
+        }
+        if (outcome != paymentResponse.outcome) {
             return false;
-        return executedPostFlowApp != null ? executedPostFlowApp.equals(paymentResponse.executedPostFlowApp) : paymentResponse.executedPostFlowApp == null;
+        }
+        if (failureReason != paymentResponse.failureReason) {
+            return false;
+        }
+        if (failureMessage != null ? !failureMessage.equals(paymentResponse.failureMessage) : paymentResponse.failureMessage != null) {
+            return false;
+        }
+        if (totalAmountsProcessed != null ? !totalAmountsProcessed.equals(paymentResponse.totalAmountsProcessed) :
+                paymentResponse.totalAmountsProcessed != null) {
+            return false;
+        }
+        if (transactions != null ? !transactions.equals(paymentResponse.transactions) : paymentResponse.transactions != null) {
+            return false;
+        }
+        if (executedPreFlowApp != null ? !executedPreFlowApp.equals(paymentResponse.executedPreFlowApp) :
+                paymentResponse.executedPreFlowApp != null) {
+            return false;
+        }
+        return executedPostFlowApp != null ? executedPostFlowApp.equals(paymentResponse.executedPostFlowApp) :
+                paymentResponse.executedPostFlowApp == null;
     }
 
     @Override

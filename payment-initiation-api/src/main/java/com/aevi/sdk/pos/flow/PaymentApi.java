@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.BaseApiClient;
 
 /**

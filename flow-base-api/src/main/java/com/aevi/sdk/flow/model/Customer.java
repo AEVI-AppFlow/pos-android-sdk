@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
@@ -136,14 +135,24 @@ public class Customer extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Customer customer = (Customer) o;
 
-        if (fullName != null ? !fullName.equals(customer.fullName) : customer.fullName != null) return false;
-        if (customerDetails != null ? !customerDetails.equals(customer.customerDetails) : customer.customerDetails != null) return false;
+        if (fullName != null ? !fullName.equals(customer.fullName) : customer.fullName != null) {
+            return false;
+        }
+        if (customerDetails != null ? !customerDetails.equals(customer.customerDetails) : customer.customerDetails != null) {
+            return false;
+        }
         return tokens != null ? tokens.equals(customer.tokens) : customer.tokens == null;
     }
 

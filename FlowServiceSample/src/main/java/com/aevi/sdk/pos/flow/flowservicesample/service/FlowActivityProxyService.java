@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.service;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.flowservicesample.settings.ServiceStateHandler;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;

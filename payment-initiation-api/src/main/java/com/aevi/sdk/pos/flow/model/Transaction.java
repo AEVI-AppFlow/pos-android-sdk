@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Customer;
@@ -28,7 +27,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.*;
+import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.APPROVED;
+import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome.DECLINED;
 
 /**
  * Represents a transaction within a flow.
@@ -58,7 +58,8 @@ public class Transaction extends BaseModel {
     }
 
     public Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData) {
-        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(), new ArrayList<FlowAppInfo>());
+        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(),
+             new ArrayList<FlowAppInfo>());
     }
 
     Transaction(String id, Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,
@@ -287,9 +288,15 @@ public class Transaction extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Transaction that = (Transaction) o;
         return Objects.equals(requestedAmounts, that.requestedAmounts) &&
                 Objects.equals(baskets, that.baskets) &&

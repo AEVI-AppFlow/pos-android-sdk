@@ -19,13 +19,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
-
 import com.aevi.sdk.pos.flow.sample.R;
-
-import java.util.List;
-
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+
+import java.util.List;
 
 public class RecyclerViewSection extends StatelessSection {
 
@@ -40,7 +38,7 @@ public class RecyclerViewSection extends StatelessSection {
 
     public RecyclerViewSection(Context context, String title, List<Pair<String, String>> keyValueItems, boolean firstHeader) {
         super(SectionParameters.builder().itemResourceId(R.layout.snippet_list_item)
-                .headerResourceId(R.layout.snippet_list_header).build());
+                      .headerResourceId(R.layout.snippet_list_header).build());
         this.context = context;
         this.title = title;
         this.keyValueItems = keyValueItems;

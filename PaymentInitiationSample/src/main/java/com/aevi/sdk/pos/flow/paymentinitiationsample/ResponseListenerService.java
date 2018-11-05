@@ -14,7 +14,6 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
 import android.util.Log;
-
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 

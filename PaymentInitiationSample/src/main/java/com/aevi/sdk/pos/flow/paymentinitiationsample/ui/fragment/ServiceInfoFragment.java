@@ -18,12 +18,10 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
-
+import butterknife.BindView;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServiceInfoAdapter;
-
-import butterknife.BindView;
 
 @SuppressLint("ValidFragment")
 public class ServiceInfoFragment extends BaseFragment {
