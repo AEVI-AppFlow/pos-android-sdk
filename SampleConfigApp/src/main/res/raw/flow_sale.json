@@ -2,7 +2,12 @@
   "stages": [
     {
       "appExecutionType": "SINGLE_SELECT",
-      "name": "PRE_FLOW"
+      "name": "PRE_FLOW",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
     },
     {
       "appExecutionType": "SINGLE",
@@ -10,36 +15,73 @@
         "stages": [
           {
             "appExecutionType": "MULTIPLE",
-            "name": "PRE_TRANSACTION"
+            "name": "PRE_TRANSACTION",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
           },
           {
             "appExecutionType": "SINGLE_SELECT",
-            "name": "PAYMENT_CARD_READING"
+            "name": "PAYMENT_CARD_READING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+                "mandatory": true
+              }
+            ]
           },
           {
             "appExecutionType": "MULTIPLE",
-            "name": "POST_CARD_READING"
+            "name": "POST_CARD_READING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
           },
           {
             "appExecutionType": "SINGLE_SELECT",
-            "name": "TRANSACTION_PROCESSING"
+            "name": "TRANSACTION_PROCESSING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+                "mandatory": true
+              }
+            ]
           },
           {
             "appExecutionType": "MULTIPLE",
-            "name": "POST_TRANSACTION"
+            "name": "POST_TRANSACTION",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
           }
         ],
         "type": "transaction"
       },
-      "name": "SPLIT"
+      "name": "SPLIT",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
     },
     {
       "appExecutionType": "SINGLE_SELECT",
-      "name": "POST_FLOW"
+      "name": "POST_FLOW",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
     }
   ],
   "type": "sale",
-  "name": "sale",
-  "description": "Default sale flow",
+  "name": "sampleSale",
+  "description": "Sample sale flow",
   "apiMajorVersion": 2
 }

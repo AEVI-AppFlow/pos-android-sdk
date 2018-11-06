@@ -20,6 +20,8 @@ import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
+
 /**
  * A transaction response representing the outcome of processing a {@link TransactionRequest}.
  */
@@ -41,7 +43,7 @@ public class TransactionResponse extends BaseModel {
     private final AdditionalData references;
 
     private String flowServiceId;
-    private String componentName;
+    private String flowStage;
 
     // Default constructor for deserialisation
     TransactionResponse() {
@@ -51,7 +53,7 @@ public class TransactionResponse extends BaseModel {
     TransactionResponse(String id, Card card, Outcome outcome, String outcomeMessage, Amounts amounts, String responseCode,
                         AdditionalData references, String paymentMethod) {
         super(id);
-        this.card = card;
+        this.card = card != null ? card : Card.getEmptyCard();
         this.outcome = outcome;
         this.outcomeMessage = outcomeMessage;
         this.amounts = amounts;
@@ -117,9 +119,11 @@ public class TransactionResponse extends BaseModel {
     /**
      * Get the card details for the card used for this transaction.
      *
-     * @return The card details
+     * Note that all fields in this model are optional.
+     *
+     * @return The card details (may be empty)
      */
-    @Nullable
+    @NonNull
     public Card getCard() {
         return card;
     }
@@ -176,7 +180,7 @@ public class TransactionResponse extends BaseModel {
     /**
      * Get the id of the flow service that generated this response.
      *
-     * Note that this may be null.
+     * Note that this may be null for cases where a response is auto-generated (due to errors, etc)
      *
      * @return The flow service id, if set.
      */
@@ -195,22 +199,22 @@ public class TransactionResponse extends BaseModel {
     }
 
     /**
-     * For internal use.
+     * Get the flow stage this response was generated in.
      *
-     * @return Component name
+     * @return The flow stage this response was generated in, if set
      */
     @Nullable
-    public String getComponentName() {
-        return componentName;
+    public String getFlowStage() {
+        return flowStage;
     }
 
     /**
      * For internal use.
      *
-     * @param componentName Component name
+     * @param flowStage The flow stage
      */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
+    public void setFlowStage(String flowStage) {
+        this.flowStage = flowStage;
     }
 
     @Override
@@ -233,7 +237,7 @@ public class TransactionResponse extends BaseModel {
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", references=" + references +
                 ", flowServiceId='" + flowServiceId + '\'' +
-                ", componentName='" + componentName + '\'' +
+                ", flowStage='" + flowStage + '\'' +
                 "} " + super.toString();
     }
 
@@ -248,49 +252,23 @@ public class TransactionResponse extends BaseModel {
         if (!super.equals(o)) {
             return false;
         }
-
         TransactionResponse that = (TransactionResponse) o;
-
-        if (card != null ? !card.equals(that.card) : that.card != null) {
-            return false;
-        }
-        if (outcome != that.outcome) {
-            return false;
-        }
-        if (outcomeMessage != null ? !outcomeMessage.equals(that.outcomeMessage) : that.outcomeMessage != null) {
-            return false;
-        }
-        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) {
-            return false;
-        }
-        if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null) {
-            return false;
-        }
-        if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null) {
-            return false;
-        }
-        if (references != null ? !references.equals(that.references) : that.references != null) {
-            return false;
-        }
-        if (flowServiceId != null ? !flowServiceId.equals(that.flowServiceId) : that.flowServiceId != null) {
-            return false;
-        }
-        return componentName != null ? componentName.equals(that.componentName) : that.componentName == null;
+        return Objects.equals(card, that.card) &&
+                outcome == that.outcome &&
+                Objects.equals(outcomeMessage, that.outcomeMessage) &&
+                Objects.equals(amounts, that.amounts) &&
+                Objects.equals(responseCode, that.responseCode) &&
+                Objects.equals(paymentMethod, that.paymentMethod) &&
+                Objects.equals(references, that.references) &&
+                Objects.equals(flowServiceId, that.flowServiceId) &&
+                Objects.equals(flowStage, that.flowStage);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (card != null ? card.hashCode() : 0);
-        result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
-        result = 31 * result + (outcomeMessage != null ? outcomeMessage.hashCode() : 0);
-        result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
-        result = 31 * result + (responseCode != null ? responseCode.hashCode() : 0);
-        result = 31 * result + (paymentMethod != null ? paymentMethod.hashCode() : 0);
-        result = 31 * result + (references != null ? references.hashCode() : 0);
-        result = 31 * result + (flowServiceId != null ? flowServiceId.hashCode() : 0);
-        result = 31 * result + (componentName != null ? componentName.hashCode() : 0);
-        return result;
+
+        return Objects
+                .hash(super.hashCode(), card, outcome, outcomeMessage, amounts, responseCode, paymentMethod, references, flowServiceId, flowStage);
     }
 }
 

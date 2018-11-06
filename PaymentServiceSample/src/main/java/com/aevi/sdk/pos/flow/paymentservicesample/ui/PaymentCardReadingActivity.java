@@ -138,7 +138,6 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
         } else {
             cardReadingModel.declineTransaction("Declined via sample");
         }
-        cardReadingModel.sendResponse();
         finish();
     }
 

@@ -26,6 +26,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
  * See {@link BaseGenericService}or domain implementations for various ways of getting access to this object.
+ *
+ * Call {@link #sendResponse(Response)} to send back a response.
  */
 public class GenericStageModel extends BaseStageModel {
 
@@ -75,11 +77,6 @@ public class GenericStageModel extends BaseStageModel {
      */
     public void sendResponse(Response response) {
         doSendResponse(response.toJson());
-    }
-
-    @Override
-    public void sendResponse() {
-        doSendResponse(new Response(request, false, "No response set").toJson());
     }
 
     @Override

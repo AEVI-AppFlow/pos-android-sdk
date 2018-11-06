@@ -38,7 +38,6 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final Set<String> customRequestTypes;
     private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
-    private boolean enabled;
     private Set<String> stages;
     private Map<String, String[]> flowAndStagesDefinitions;
 
@@ -63,7 +62,6 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
         this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
-        this.enabled = true;
         this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();
     }
@@ -239,26 +237,6 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
-     * Check whether this service is enabled or not.
-     *
-     * Disabled services are never eligible to be called.
-     *
-     * @return True if enabled, false otherwise.
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * For internal use.
-     *
-     * @param enabled Enabled/disabled
-     */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    /**
      * Get the package name for this service.
      *
      * @return The service package name
@@ -322,7 +300,6 @@ public abstract class BaseServiceInfo extends BaseModel {
         }
         BaseServiceInfo that = (BaseServiceInfo) o;
         return hasAccessibilityMode == that.hasAccessibilityMode &&
-                enabled == that.enabled &&
                 Objects.equals(packageName, that.packageName) &&
                 Objects.equals(vendor, that.vendor) &&
                 Objects.equals(logicalDeviceId, that.logicalDeviceId) &&
@@ -341,6 +318,6 @@ public abstract class BaseServiceInfo extends BaseModel {
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode,
-                            supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, enabled, stages, flowAndStagesDefinitions);
+                            supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, stages, flowAndStagesDefinitions);
     }
 }

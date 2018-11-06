@@ -34,8 +34,7 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
- * One of {@link #approveWithCard(Card)}, {@link #declineTransaction(String)} or {@link #skipCardReading()} must be called before calling
- * {@link #sendResponse()}.
+ * One of {@link #approveWithCard(Card)}, {@link #declineTransaction(String)} or {@link #skipCardReading()} must be called.
  */
 public class CardReadingModel extends BaseStageModel {
 
@@ -91,22 +90,30 @@ public class CardReadingModel extends BaseStageModel {
     /**
      * Approve the card reading with a valid card instance.
      *
+     * This will send the response back but it does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     *
      * @param card The card details
      */
     public void approveWithCard(Card card) {
         transactionResponseBuilder.approve();
         transactionResponseBuilder.withCard(card);
+        sendResponse();
     }
 
     /**
      * Call to skip the card reading stage.
+     *
+     * This will send the response back but it does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void skipCardReading() {
         transactionResponseBuilder.approve();
+        sendResponse();
     }
 
     /**
      * Decline the transaction due to invalid card, cancellation, etc.
+     *
+     * This will send the response back but it does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      *
      * @param message The decline message
      */
@@ -117,20 +124,18 @@ public class CardReadingModel extends BaseStageModel {
     /**
      * Decline the transaction due to invalid card, cancellation, etc.
      *
+     * This will send the response back but it does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     *
      * @param message      The decline message
      * @param responseCode The response code
      */
     public void declineTransaction(String message, String responseCode) {
         transactionResponseBuilder.decline(message);
         transactionResponseBuilder.withResponseCode(responseCode);
+        sendResponse();
     }
 
-    /**
-     * Send off the response.
-     *
-     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
-     */
-    public void sendResponse() {
+    private void sendResponse() {
         doSendResponse(transactionResponseBuilder.build().toJson());
     }
 

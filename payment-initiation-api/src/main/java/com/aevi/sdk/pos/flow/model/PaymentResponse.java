@@ -20,6 +20,7 @@ import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -88,7 +89,8 @@ public class PaymentResponse extends BaseModel {
     protected String failureMessage;
     protected boolean allTransactionsApproved = true;
     protected Amounts totalAmountsProcessed;
-    protected List<Transaction> transactions; // This will be a single item for most cases, but can be more for split
+    protected List<Transaction> transactions;
+    protected long creationDateTimeMs;
     protected FlowAppInfo executedPreFlowApp;
     protected FlowAppInfo executedPostFlowApp;
 
@@ -211,6 +213,15 @@ public class PaymentResponse extends BaseModel {
     }
 
     /**
+     * Get the creation date/time of this response in milliseconds since epoch.
+     *
+     * @return The creation date/time of this response in milliseconds since epoch
+     */
+    public long getCreationDateTimeMs() {
+        return creationDateTimeMs;
+    }
+
+    /**
      * Get the pre-flow app that was executed for this transaction, if any.
      *
      * @return The pre-flow app info, or null.
@@ -221,15 +232,6 @@ public class PaymentResponse extends BaseModel {
     }
 
     /**
-     * For internal use.
-     *
-     * @param executedPreFlowApp Pre flow app
-     */
-    public void setExecutedPreFlowApp(FlowAppInfo executedPreFlowApp) {
-        this.executedPreFlowApp = executedPreFlowApp;
-    }
-
-    /**
      * Get the post-flow app that was executed for this transaction, if any.
      *
      * @return The post-flow app info, or null.
@@ -237,15 +239,6 @@ public class PaymentResponse extends BaseModel {
     @Nullable
     public FlowAppInfo getExecutedPostFlowApp() {
         return executedPostFlowApp;
-    }
-
-    /**
-     * For internal use.
-     *
-     * @param executedPostFlowApp Post flow app
-     */
-    public void setExecutedPostFlowApp(FlowAppInfo executedPostFlowApp) {
-        this.executedPostFlowApp = executedPostFlowApp;
     }
 
     /**
@@ -269,16 +262,17 @@ public class PaymentResponse extends BaseModel {
     @Override
     public String toString() {
         return "PaymentResponse{" +
-                "originatingRequest=" + originatingPayment +
+                "originatingPayment=" + originatingPayment +
                 ", outcome=" + outcome +
                 ", failureReason=" + failureReason +
                 ", failureMessage='" + failureMessage + '\'' +
                 ", allTransactionsApproved=" + allTransactionsApproved +
                 ", totalAmountsProcessed=" + totalAmountsProcessed +
                 ", transactions=" + transactions +
+                ", creationDateTimeMs=" + creationDateTimeMs +
                 ", executedPreFlowApp=" + executedPreFlowApp +
                 ", executedPostFlowApp=" + executedPostFlowApp +
-                '}';
+                "} " + super.toString();
     }
 
     @Override
@@ -289,51 +283,27 @@ public class PaymentResponse extends BaseModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        PaymentResponse paymentResponse = (PaymentResponse) o;
-
-        if (allTransactionsApproved != paymentResponse.allTransactionsApproved) {
+        if (!super.equals(o)) {
             return false;
         }
-        if (originatingPayment != null ? !originatingPayment.equals(paymentResponse.originatingPayment) :
-                paymentResponse.originatingPayment != null) {
-            return false;
-        }
-        if (outcome != paymentResponse.outcome) {
-            return false;
-        }
-        if (failureReason != paymentResponse.failureReason) {
-            return false;
-        }
-        if (failureMessage != null ? !failureMessage.equals(paymentResponse.failureMessage) : paymentResponse.failureMessage != null) {
-            return false;
-        }
-        if (totalAmountsProcessed != null ? !totalAmountsProcessed.equals(paymentResponse.totalAmountsProcessed) :
-                paymentResponse.totalAmountsProcessed != null) {
-            return false;
-        }
-        if (transactions != null ? !transactions.equals(paymentResponse.transactions) : paymentResponse.transactions != null) {
-            return false;
-        }
-        if (executedPreFlowApp != null ? !executedPreFlowApp.equals(paymentResponse.executedPreFlowApp) :
-                paymentResponse.executedPreFlowApp != null) {
-            return false;
-        }
-        return executedPostFlowApp != null ? executedPostFlowApp.equals(paymentResponse.executedPostFlowApp) :
-                paymentResponse.executedPostFlowApp == null;
+        PaymentResponse that = (PaymentResponse) o;
+        return allTransactionsApproved == that.allTransactionsApproved &&
+                creationDateTimeMs == that.creationDateTimeMs &&
+                Objects.equals(originatingPayment, that.originatingPayment) &&
+                outcome == that.outcome &&
+                failureReason == that.failureReason &&
+                Objects.equals(failureMessage, that.failureMessage) &&
+                Objects.equals(totalAmountsProcessed, that.totalAmountsProcessed) &&
+                Objects.equals(transactions, that.transactions) &&
+                Objects.equals(executedPreFlowApp, that.executedPreFlowApp) &&
+                Objects.equals(executedPostFlowApp, that.executedPostFlowApp);
     }
 
     @Override
     public int hashCode() {
-        int result = originatingPayment != null ? originatingPayment.hashCode() : 0;
-        result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
-        result = 31 * result + (failureReason != null ? failureReason.hashCode() : 0);
-        result = 31 * result + (failureMessage != null ? failureMessage.hashCode() : 0);
-        result = 31 * result + (allTransactionsApproved ? 1 : 0);
-        result = 31 * result + (totalAmountsProcessed != null ? totalAmountsProcessed.hashCode() : 0);
-        result = 31 * result + (transactions != null ? transactions.hashCode() : 0);
-        result = 31 * result + (executedPreFlowApp != null ? executedPreFlowApp.hashCode() : 0);
-        result = 31 * result + (executedPostFlowApp != null ? executedPostFlowApp.hashCode() : 0);
-        return result;
+
+        return Objects
+                .hash(super.hashCode(), originatingPayment, outcome, failureReason, failureMessage, allTransactionsApproved, totalAmountsProcessed,
+                      transactions, creationDateTimeMs, executedPreFlowApp, executedPostFlowApp);
     }
 }

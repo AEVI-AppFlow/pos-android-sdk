@@ -2,11 +2,17 @@
   "stages": [
     {
       "appExecutionType": "SINGLE_SELECT",
-      "name": "TRANSACTION_PROCESSING"
+      "name": "TRANSACTION_PROCESSING",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+          "mandatory": true
+        }
+      ]
     }
   ],
   "type": "refund",
-  "name": "refund",
-  "description": "Simple refund flow with value added services",
+  "name": "sampleRefund",
+  "description": "Sample refund flow",
   "apiMajorVersion": 2
 }
