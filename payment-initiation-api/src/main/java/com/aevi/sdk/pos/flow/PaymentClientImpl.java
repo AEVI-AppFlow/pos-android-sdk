@@ -27,9 +27,7 @@ import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
@@ -101,30 +99,4 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     }
                 });
     }
-
-    @Override
-    @NonNull
-    public Observable<RequestStatus> subscribeToStatusUpdates(String paymentId) {
-        if (!isProcessingServiceInstalled(context)) {
-            return Observable.error(NO_FPS_EXCEPTION);
-        }
-        final ChannelClient requestStatusMessenger = getMessengerClient(REQUEST_STATUS_SERVICE_COMPONENT);
-        RequestStatus requestStatus = new RequestStatus(paymentId);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, requestStatus.toJson(), getInternalData());
-        return requestStatusMessenger
-                .sendMessage(appMessage.toJson())
-                .map(new Function<String, RequestStatus>() {
-                    @Override
-                    public RequestStatus apply(String json) throws Exception {
-                        return RequestStatus.fromJson(json);
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        requestStatusMessenger.closeConnection();
-                    }
-                });
-    }
-
 }
