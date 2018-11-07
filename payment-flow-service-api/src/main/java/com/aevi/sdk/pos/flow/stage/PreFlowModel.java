@@ -33,7 +33,10 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
- * If no data has been augmented, calling {@link #sendResponse()} will send back an empty response informing FPS that no changes were made.
+ * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
+ * effect as calling {@link #skip()}.
+ *
+ * If no changes are required, call {@link #skip()}.
  */
 public class PreFlowModel extends BaseStageModel {
 
@@ -226,6 +229,15 @@ public class PreFlowModel extends BaseStageModel {
      */
     public void sendResponse() {
         doSendResponse(getFlowResponse().toJson());
+    }
+
+    /**
+     * Call to inform FPS that processing is done and no augmentation is required.
+     *
+     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     */
+    public void skip() {
+        doSendResponse("{}");
     }
 
     @Override

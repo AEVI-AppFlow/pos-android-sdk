@@ -26,6 +26,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * Model for the post generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
  * See {@link com.aevi.sdk.flow.service.BasePostGenericService} or domain implementations for various ways of getting access to this object.
+ *
+ * Call {@link #sendResponse()} if references have been added, or {@link #skip()} if no references are required.
  */
 public class PostGenericStageModel extends BaseStageModel {
 
@@ -85,9 +87,20 @@ public class PostGenericStageModel extends BaseStageModel {
         outputResponse.getResponseData().addData(key, values);
     }
 
-    @Override
+    /**
+     * Send off the response.
+     *
+     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
+     */
     public void sendResponse() {
         doSendResponse(outputResponse.toJson());
+    }
+
+    /**
+     * Call when finished processing and no references have been added.
+     */
+    public void skip() {
+        doSendResponse("{}");
     }
 
     @Override

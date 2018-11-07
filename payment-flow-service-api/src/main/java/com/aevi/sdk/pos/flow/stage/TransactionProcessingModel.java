@@ -35,6 +35,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * The outcome of the transaction must be set in the builder before {@link #sendResponse()} is called.
+ *
+ * Note that skipping this stage is not allowed - a valid response with an outcome must be set.
  */
 public class TransactionProcessingModel extends BaseStageModel {
 
