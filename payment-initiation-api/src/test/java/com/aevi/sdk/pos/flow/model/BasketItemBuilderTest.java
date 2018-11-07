@@ -29,7 +29,8 @@ public class BasketItemBuilderTest {
 
     @Test
     public void shouldCreateCorrectBasketItem() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         assertThat(basketItem.getId()).isEqualTo("123");
         assertThat(basketItem.getLabel()).isEqualTo("banana");
         assertThat(basketItem.getCategory()).isEqualTo("fruit");
@@ -40,7 +41,8 @@ public class BasketItemBuilderTest {
 
     @Test
     public void shouldAllowCreationFromExistingItem() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         BasketItem newItem = new BasketItemBuilder(basketItem).withQuantity(4).build();
 
         assertThat(newItem.getId()).isEqualTo("123");
@@ -53,28 +55,32 @@ public class BasketItemBuilderTest {
 
     @Test
     public void shouldAllowIncrementItemQuantity() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         BasketItem newItem = new BasketItemBuilder(basketItem).incrementQuantity().build();
         assertThat(newItem.getQuantity()).isEqualTo(3);
     }
 
     @Test
     public void shouldAllowDecrementItemQuantity() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         BasketItem newItem = new BasketItemBuilder(basketItem).decrementQuantity().build();
         assertThat(newItem.getQuantity()).isEqualTo(1);
     }
 
     @Test
     public void shouldAllowOffsetPositiveItemQuantity() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         BasketItem newItem = new BasketItemBuilder(basketItem).offsetQuantityBy(2).build();
         assertThat(newItem.getQuantity()).isEqualTo(4);
     }
 
     @Test
     public void shouldAllowOffsetNegativeItemQuantity() throws Exception {
-        BasketItem basketItem = new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
         BasketItem newItem = new BasketItemBuilder(basketItem).offsetQuantityBy(-1).build();
         assertThat(newItem.getQuantity()).isEqualTo(1);
     }

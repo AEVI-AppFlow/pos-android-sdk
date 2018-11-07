@@ -22,11 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import butterknife.BindView;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.ui.library.recycler.AbstractListWithMenuAdapter;
-
-import butterknife.BindView;
 
 public abstract class BaseItemFragment<T> extends BaseFragment implements AbstractListWithMenuAdapter.OnItemSelectedListener<T> {
 

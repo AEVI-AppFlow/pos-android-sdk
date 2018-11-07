@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -31,6 +30,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  *
  * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
+ *
+ * Call {@link #processInBackground()} to tell FPS to continue in the flow or {@link #finish()} to inform FPS this service is done.
  */
 public class PostFlowModel extends BaseStageModel {
 
@@ -92,7 +93,7 @@ public class PostFlowModel extends BaseStageModel {
     /**
      * Call when finished processing.
      */
-    public void sendResponse() {
+    public void finish() {
         doSendResponse("{}");
     }
 

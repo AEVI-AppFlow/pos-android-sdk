@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.widget.Toast;
-
 import com.aevi.sdk.flow.model.Device;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.DevicesAdapter;

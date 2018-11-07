@@ -17,7 +17,6 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
@@ -200,9 +199,15 @@ public class Request extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Request request = (Request) o;
         return Objects.equals(flowName, request.flowName) &&
                 Objects.equals(requestData, request.requestData) &&

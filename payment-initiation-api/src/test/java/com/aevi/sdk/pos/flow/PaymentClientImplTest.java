@@ -2,13 +2,13 @@ package com.aevi.sdk.pos.flow;
 
 import android.content.ComponentName;
 import android.os.Build;
-
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.model.*;
-
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +18,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
-
-import io.reactivex.Observable;
-import io.reactivex.observers.TestObserver;
 
 import static com.aevi.sdk.pos.flow.TestEnvironment.pretendFpsIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -50,7 +47,7 @@ public class PaymentClientImplTest {
     }
 
     @Test
-    public void initiatePaymentShouldSendPaymentViaRequestCorrectly() throws Exception {
+    public void initiatePaymentShouldSendPaymentViaRequestCorrectly() {
         pretendFpsIsInstalled();
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
 
@@ -63,27 +60,9 @@ public class PaymentClientImplTest {
         verify(messengerClient).closeConnection();
     }
 
-
-    public void initiatePaymentShouldErrorIfNoFps() throws Exception {
+    public void initiatePaymentShouldErrorIfNoFps() {
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
         TestObserver<PaymentResponse> testObserver = paymentClient.initiatePayment(payment).test();
-        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    public void subscribeToStatusUpdatesShouldPropagateUpdatesCorrectly() throws Exception {
-        pretendFpsIsInstalled();
-        paymentClient.subscribeToStatusUpdates("123").test();
-
-        AppMessage sentAppMessage = callSendAndCaptureMessage();
-        RequestStatus requestStatus = RequestStatus.fromJson(sentAppMessage.getMessageData());
-        assertThat(requestStatus.getStatus()).isEqualTo("123");
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void subscribeToStatusUpdatesShouldErrorIfNoFps() throws Exception {
-        TestObserver<RequestStatus> testObserver = paymentClient.subscribeToStatusUpdates("").test();
         assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 

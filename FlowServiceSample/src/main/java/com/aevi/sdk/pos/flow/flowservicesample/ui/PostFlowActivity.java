@@ -16,16 +16,14 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PostFlowModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.aevi.sdk.flow.constants.FlowStages.POST_FLOW;
 
@@ -56,7 +54,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onFinish() {
-        postFlowModel.sendResponse();
+        postFlowModel.finish();
         finish();
     }
 

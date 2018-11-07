@@ -19,11 +19,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
-import com.aevi.sdk.flow.constants.PaymentMethods;
-import com.aevi.sdk.flow.constants.ReceiptKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.config.FlowConfig;
@@ -42,14 +42,15 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
+import io.reactivex.disposables.Disposable;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
-
-import static com.aevi.sdk.flow.constants.FlowTypes.*;
+import static android.content.Intent.*;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_CASH_RECEIPT_DELIVERY;
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
+import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
+import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
 
 public class GenericRequestFragment extends BaseObservableFragment {
 
@@ -65,6 +66,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
     private PaymentClient paymentClient;
     private PaymentSettings paymentSettings;
+    private Disposable initiateDisposable;
 
     @Override
     public int getLayoutResource() {
@@ -101,26 +103,26 @@ public class GenericRequestFragment extends BaseObservableFragment {
     public void onProcessRequest() {
         if (request != null) {
             Intent intent = new Intent(getContext(), GenericResultActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            paymentClient.initiateRequest(request).subscribe(response -> {
-                if (isAdded()) {
-                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                    startActivity(intent);
-                }
-            }, throwable -> {
-                Response response;
-                if (throwable instanceof MessageException) {
-                    response = new Response(request, false, ((MessageException) throwable).getCode()
-                            + " : " + throwable.getMessage());
-                } else {
-                    response = new Response(request, false, throwable.getMessage());
-                }
-                if (isAdded()) {
-                    intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                    startActivity(intent);
-                }
-            });
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT | FLAG_ACTIVITY_NO_ANIMATION);
+            initiateDisposable = paymentClient.initiateRequest(request)
+                    .subscribe(response -> {
+                        if (isAdded()) {
+                            intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                            startActivity(intent);
+                        }
+                    }, throwable -> {
+                        Response response;
+                        if (throwable instanceof MessageException) {
+                            response = new Response(request, false, ((MessageException) throwable).getCode()
+                                    + " : " + throwable.getMessage());
+                        } else {
+                            response = new Response(request, false, throwable.getMessage());
+                        }
+                        if (isAdded()) {
+                            intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                            startActivity(intent);
+                        }
+                    });
         }
     }
 
@@ -138,15 +140,16 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
                     return null;
                 }
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getLastResponse().getId());
+                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID,
+                                          lastResponse.getTransactions().get(0).getLastResponse().getId());
                 break;
             case FLOW_TYPE_CASH_RECEIPT_DELIVERY:
                 Amounts cashAmounts = new Amounts(15000, "EUR");
-                String paymentMethod = PaymentMethods.CASH;
+                String paymentMethod = PAYMENT_METHOD_CASH;
                 String outcome = TransactionResponse.Outcome.APPROVED.name();
-                request.addAdditionalData(ReceiptKeys.RECEIPT_AMOUNTS, cashAmounts);
-                request.addAdditionalData(ReceiptKeys.RECEIPT_PAYMENT_METHOD, paymentMethod);
-                request.addAdditionalData(ReceiptKeys.RECEIPT_OUTCOME, outcome);
+                request.addAdditionalData(RECEIPT_AMOUNTS, cashAmounts);
+                request.addAdditionalData(RECEIPT_PAYMENT_METHOD, paymentMethod);
+                request.addAdditionalData(RECEIPT_OUTCOME, outcome);
                 break;
             case SHOW_LOYALTY_POINTS_REQUEST:
                 request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
@@ -156,5 +159,15 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 break;
         }
         return request;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (initiateDisposable != null) {
+            initiateDisposable.dispose();
+            initiateDisposable = null;
+        }
     }
 }

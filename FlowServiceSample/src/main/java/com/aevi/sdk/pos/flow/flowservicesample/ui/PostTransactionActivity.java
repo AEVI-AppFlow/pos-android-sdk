@@ -16,7 +16,9 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -24,10 +26,6 @@ import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 

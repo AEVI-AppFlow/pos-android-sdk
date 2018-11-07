@@ -1,0 +1,77 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools" package="com.aevi.sdk.pos.flow.config.sample">
+
+    <uses-permission android:name="com.aevi.permission.CONFIGURATION"/>
+    <uses-permission android:name="com.aevi.permission.READ_PAYMENT_APP_CONFIGURATION"/>
+
+    <application
+            android:name="com.aevi.sdk.pos.flow.config.sample.SampleConfigProviderApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+                android:name="com.aevi.sdk.pos.flow.config.sample.ConfigurationActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <provider
+                android:name="com.aevi.sdk.pos.flow.config.DefaultConfigProvider"
+                android:authorities="com.aevi.sdk.config.provider.sample"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.config.ConfigProvider"/>
+            </intent-filter>
+        </provider>
+
+        <receiver
+                android:name="com.aevi.sdk.pos.flow.config.flowapps.FlowAppChangeReceiver"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_INSTALL"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="com.aevi.intent.action.PAYMENT_SERVICE_INFO_CHANGE"/>
+                <action android:name="com.aevi.intent.action.FLOW_SERVICE_INFO_CHANGE"/>
+
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.aevi.sdk.pos.flow.config.StartUpReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Legacy services and activities -->
+        <activity
+                android:name="com.aevi.payment.legacy.app.execution.LegacyConfigurationWrapperActivity"
+                android:excludeFromRecents="true"
+                android:exported="true"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+
+        <service
+                android:name="com.aevi.payment.legacy.app.execution.LegacyPaymentService"
+                android:exported="true"
+                tools:ignore="ExportedService">
+        </service>
+        <service
+                android:name="com.aevi.payment.legacy.app.execution.LegacyRequestService"
+                android:exported="true"
+                tools:ignore="ExportedService">
+        </service>
+
+    </application>
+</manifest>

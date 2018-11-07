@@ -2,7 +2,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 import com.google.gson.JsonParseException;
-
 import org.junit.Before;
 import org.junit.Test;
 

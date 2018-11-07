@@ -3,7 +3,6 @@ package com.aevi.sdk.pos.flow.sample;
 import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.pos.flow.model.*;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,9 +13,11 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class SplitBasketHelperTest {
 
-    private BasketItem ITEM_ONE_QUANTITY_ONE = new BasketItemBuilder().generateRandomId().withLabel("SingleQuantity").withCategory("Muppets").withAmount(1000).build();
+    private BasketItem ITEM_ONE_QUANTITY_ONE =
+            new BasketItemBuilder().generateRandomId().withLabel("SingleQuantity").withCategory("Muppets").withAmount(1000).build();
     private BasketItem ITEM_ONE_QUANTITY_ZERO = new BasketItemBuilder(ITEM_ONE_QUANTITY_ONE).withQuantity(0).build();
-    private BasketItem ITEM_TWO_QUANTITY_TWO = new BasketItemBuilder().generateRandomId().withLabel("DoubleQuantity").withCategory("Muppets").withAmount(1000).withQuantity(2).build();
+    private BasketItem ITEM_TWO_QUANTITY_TWO =
+            new BasketItemBuilder().generateRandomId().withLabel("DoubleQuantity").withCategory("Muppets").withAmount(1000).withQuantity(2).build();
     private BasketItem ITEM_TWO_QUANTITY_ONE = new BasketItemBuilder(ITEM_TWO_QUANTITY_TWO).withQuantity(1).build();
 
     private Basket sourceBasket = new Basket("test");
@@ -30,7 +31,8 @@ public class SplitBasketHelperTest {
                 .withAmounts(new Amounts(sourceBasket.getTotalBasketValue(), "GBP"))
                 .withBasket(sourceBasket).build();
         SplitRequest splitRequest = new SplitRequest(payment, transactions);
-        splitBasketHelper = SplitBasketHelper.createFromSplitRequest(splitRequest, retainZeroQuantityRemaining.length > 0 && retainZeroQuantityRemaining[0]);
+        splitBasketHelper =
+                SplitBasketHelper.createFromSplitRequest(splitRequest, retainZeroQuantityRemaining.length > 0 && retainZeroQuantityRemaining[0]);
     }
 
     private void setupPrevTxnPaidOffItemTwoQuantityOne() {
@@ -39,9 +41,10 @@ public class SplitBasketHelperTest {
         basket.addItems(ITEM_TWO_QUANTITY_ONE);
 
         // Add successful txn paying off one of item two
-        Transaction transaction = new Transaction(new Amounts(ITEM_TWO_QUANTITY_ONE.getIndividualAmount(), "GBP"), Arrays.asList(basket), null, additionalData);
+        Transaction transaction =
+                new Transaction(new Amounts(ITEM_TWO_QUANTITY_ONE.getIndividualAmount(), "GBP"), Arrays.asList(basket), null, additionalData);
         transaction.addTransactionResponse(new TransactionResponseBuilder("123")
-                .approve(new Amounts(ITEM_TWO_QUANTITY_ONE.getIndividualAmount(), "GBP")).build());
+                                                   .approve(new Amounts(ITEM_TWO_QUANTITY_ONE.getIndividualAmount(), "GBP")).build());
 
         // Add a failed txn to ensure it is not taken into account
         Transaction failedTxn = new Transaction(new Amounts(500, "GBP"), null, null, additionalData);
@@ -55,7 +58,8 @@ public class SplitBasketHelperTest {
     public void remainingBasketShouldBeSameAsSourceBasketForFirstSplit() throws Exception {
         sourceBasket.addItems(ITEM_ONE_QUANTITY_ONE, ITEM_TWO_QUANTITY_TWO);
         createSplitBasketHelper();
-        assertThat(splitBasketHelper.getRemainingItems().getTotalNumberOfItems()).isEqualTo(ITEM_ONE_QUANTITY_ONE.getQuantity() + ITEM_TWO_QUANTITY_TWO.getQuantity());
+        assertThat(splitBasketHelper.getRemainingItems().getTotalNumberOfItems())
+                .isEqualTo(ITEM_ONE_QUANTITY_ONE.getQuantity() + ITEM_TWO_QUANTITY_TWO.getQuantity());
         assertThat(splitBasketHelper.getRemainingItems().getBasketItems()).isEqualTo(sourceBasket.getBasketItems());
     }
 
@@ -75,7 +79,7 @@ public class SplitBasketHelperTest {
     @Test(expected = UnsupportedOperationException.class)
     public void shouldThrowUnsupportedExceptionIfNoBasket() throws Exception {
         SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withPaymentFlow(FlowTypes.FLOW_TYPE_SALE)
-                .withAmounts(new Amounts(1000, "GBP")).build(), transactions), false);
+                                                                          .withAmounts(new Amounts(1000, "GBP")).build(), transactions), false);
     }
 
     @Test
@@ -104,7 +108,8 @@ public class SplitBasketHelperTest {
         Basket remainingItems = splitBasketHelper.getRemainingItems();
         assertThat(remainingItems.getNumberOfUniqueItems()).isEqualTo(2);
         assertThat(remainingItems.getTotalNumberOfItems()).isEqualTo(1);
-        assertThat(remainingItems.getBasketItems()).containsExactlyInAnyOrder(ITEM_ONE_QUANTITY_ONE, new BasketItemBuilder(ITEM_TWO_QUANTITY_ONE).withQuantity(0).build());
+        assertThat(remainingItems.getBasketItems())
+                .containsExactlyInAnyOrder(ITEM_ONE_QUANTITY_ONE, new BasketItemBuilder(ITEM_TWO_QUANTITY_ONE).withQuantity(0).build());
 
         Basket paidItems = splitBasketHelper.getAllPaidItems();
         assertThat(paidItems.getTotalNumberOfItems()).isEqualTo(1);

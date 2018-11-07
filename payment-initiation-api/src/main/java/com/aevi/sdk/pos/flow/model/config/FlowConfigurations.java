@@ -16,16 +16,14 @@ package com.aevi.sdk.pos.flow.model.config;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.config.FlowConfig;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 /**
  * Exposes the various flows and helper methods to query for information.
@@ -64,7 +62,7 @@ public class FlowConfigurations {
      * @param flowName The flow name
      * @return The flow config
      */
-    @NonNull
+    @Nullable
     public FlowConfig getFlowConfiguration(final String flowName) {
         return fromName(flowName);
     }
@@ -170,7 +168,7 @@ public class FlowConfigurations {
         return false;
     }
 
-    @NonNull
+    @Nullable
     private FlowConfig fromName(String flowName) {
         for (FlowConfig flowConfiguration : flowConfigurations) {
             if (flowConfiguration.getName().equals(flowName)) {

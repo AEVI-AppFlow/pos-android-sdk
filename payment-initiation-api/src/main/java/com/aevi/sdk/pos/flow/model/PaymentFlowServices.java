@@ -16,14 +16,12 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.util.ComparisonUtil;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
+import io.reactivex.Observable;
 
 import java.util.*;
-
-import io.reactivex.Observable;
 
 
 /**

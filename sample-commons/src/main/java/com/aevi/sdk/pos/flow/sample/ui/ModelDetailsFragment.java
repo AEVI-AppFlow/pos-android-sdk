@@ -23,19 +23,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
-
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.R;
 import com.aevi.ui.library.BaseObservableFragment;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 import static com.aevi.sdk.pos.flow.sample.AmountFormatter.formatAmount;
 
@@ -254,10 +252,14 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
 
     private void addTransactionSection(Transaction transaction, int index) {
         List<Pair<String, String>> transactionInfo = new ArrayList<>();
-        transactionInfo.add(getStringPair(R.string.total_amount_requested, AmountFormatter.formatAmount(transaction.getRequestedAmounts().getCurrency(),
-                transaction.getRequestedAmounts().getTotalAmountValue())));
-        transactionInfo.add(getStringPair(R.string.total_amount_processed, AmountFormatter.formatAmount(transaction.getRequestedAmounts().getCurrency(),
-                transaction.getProcessedAmounts().getTotalAmountValue())));
+        transactionInfo
+                .add(getStringPair(R.string.total_amount_requested, AmountFormatter.formatAmount(transaction.getRequestedAmounts().getCurrency(),
+                                                                                                 transaction.getRequestedAmounts()
+                                                                                                         .getTotalAmountValue())));
+        transactionInfo
+                .add(getStringPair(R.string.total_amount_processed, AmountFormatter.formatAmount(transaction.getRequestedAmounts().getCurrency(),
+                                                                                                 transaction.getProcessedAmounts()
+                                                                                                         .getTotalAmountValue())));
         transactionInfo.add(getStringPair(R.string.num_responses, transaction.getTransactionResponses().size()));
         transactionInfo.add(getStringPair(R.string.num_baskets, transaction.getBaskets().size()));
         transactionInfo.add(getStringPair(R.string.customer_details, transaction.getCustomer() != null));
@@ -299,7 +301,8 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
 
         if (flowResponse.getAmountsPaid() != null) {
-            adapter.addSection(createAmountsSection(flowResponse.getAmountsPaid(), flowResponse.getAmountsPaidPaymentMethod(), R.string.paid_amounts));
+            adapter.addSection(
+                    createAmountsSection(flowResponse.getAmountsPaid(), flowResponse.getAmountsPaidPaymentMethod(), R.string.paid_amounts));
             currency = flowResponse.getAmountsPaid().getCurrency();
         }
 
@@ -369,7 +372,8 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
         if (addItems) {
             for (BasketItem basketItem : basket.getBasketItems()) {
-                String detail = basketItem.getLabel() + " (" + basketItem.getQuantity() + ") @ " + formatAmount(currency, basketItem.getIndividualAmount());
+                String detail =
+                        basketItem.getLabel() + " (" + basketItem.getQuantity() + ") @ " + formatAmount(currency, basketItem.getIndividualAmount());
                 basketInfo.add(getStringPair(R.string.item, detail));
             }
         }

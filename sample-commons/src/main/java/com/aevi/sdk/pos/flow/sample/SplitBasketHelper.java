@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.sample;
 
 
 import android.util.Log;
-
 import com.aevi.sdk.pos.flow.model.*;
 
 import java.util.ArrayList;
@@ -64,7 +63,8 @@ public class SplitBasketHelper {
      * @return An instance of SplitBasketHelper
      * @throws UnsupportedOperationException If there is no basket in the source payment
      */
-    public static SplitBasketHelper createFromSplitRequest(SplitRequest splitRequest, boolean retainZeroQuantityRemainingItems) throws UnsupportedOperationException {
+    public static SplitBasketHelper createFromSplitRequest(SplitRequest splitRequest, boolean retainZeroQuantityRemainingItems)
+            throws UnsupportedOperationException {
         Basket sourceBasket = splitRequest.getSourcePayment().getBasket();
         if (sourceBasket == null) {
             throw new UnsupportedOperationException("The source payment does not have any associated basket");

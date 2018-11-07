@@ -16,7 +16,9 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Request;
@@ -27,10 +29,6 @@ import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import java.util.Random;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity {
 

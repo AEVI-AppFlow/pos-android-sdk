@@ -169,8 +169,12 @@ public class BasketItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         BasketItem that = (BasketItem) o;
         return amount == that.amount &&
                 quantity == that.quantity &&

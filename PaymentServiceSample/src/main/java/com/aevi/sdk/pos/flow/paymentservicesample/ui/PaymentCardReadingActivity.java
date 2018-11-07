@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.Switch;
-
+import butterknife.*;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
@@ -30,8 +30,6 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
-
-import butterknife.*;
 
 public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
 
@@ -140,7 +138,6 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
         } else {
             cardReadingModel.declineTransaction("Declined via sample");
         }
-        cardReadingModel.sendResponse();
         finish();
     }
 

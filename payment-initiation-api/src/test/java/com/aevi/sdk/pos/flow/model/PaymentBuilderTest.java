@@ -2,7 +2,6 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import com.aevi.sdk.flow.model.Token;
-
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;

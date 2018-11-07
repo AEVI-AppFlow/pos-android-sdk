@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.model;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
@@ -335,8 +334,9 @@ public class PaymentFlowServiceInfoBuilder {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
         return new PaymentFlowServiceInfo(packageName, packageName, vendor, serviceVersion, apiVersion, displayName, supportsAccessibility,
-                supportedFlowTypes, customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts, defaultCurrency,
-                supportedCurrencies, paymentMethods, additionalInfo);
+                                          supportedFlowTypes, customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts,
+                                          defaultCurrency,
+                                          supportedCurrencies, paymentMethods, additionalInfo);
     }
 
     @NonNull

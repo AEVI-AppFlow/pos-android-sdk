@@ -2,13 +2,12 @@ package com.aevi.sdk.flow.service;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.MessageErrors;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
-
+import io.reactivex.subjects.BehaviorSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,13 +15,8 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-import io.reactivex.subjects.BehaviorSubject;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BaseApiServiceTest {

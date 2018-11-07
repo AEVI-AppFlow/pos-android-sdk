@@ -21,17 +21,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.aevi.android.rxmessenger.MessageException;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.aevi.android.rxmessenger.MessageException;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
-import static com.aevi.sdk.pos.flow.model.PaymentResponse.Outcome.*;
+import static com.aevi.sdk.pos.flow.model.PaymentResponse.Outcome.FAILED;
+import static com.aevi.sdk.pos.flow.model.PaymentResponse.Outcome.PARTIALLY_FULFILLED;
 
 public class PaymentResultActivity extends AppCompatActivity {
 

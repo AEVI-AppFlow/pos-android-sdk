@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.widget.Toast;
-
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -35,7 +34,7 @@ public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInf
                         showNoItemsAvailable(R.string.no_flow_services_found);
                     } else {
                         FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
-                                FlowServicesFragment.this, false);
+                                                                              FlowServicesFragment.this, false);
                         items.setAdapter(adapter);
                     }
                 }, throwable -> {

@@ -1,0 +1,87 @@
+{
+  "stages": [
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "PRE_FLOW",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
+    },
+    {
+      "appExecutionType": "SINGLE",
+      "innerFlow": {
+        "stages": [
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "PRE_TRANSACTION",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
+          },
+          {
+            "appExecutionType": "SINGLE_SELECT",
+            "name": "PAYMENT_CARD_READING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+                "mandatory": true
+              }
+            ]
+          },
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "POST_CARD_READING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
+          },
+          {
+            "appExecutionType": "SINGLE_SELECT",
+            "name": "TRANSACTION_PROCESSING",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+                "mandatory": true
+              }
+            ]
+          },
+          {
+            "appExecutionType": "MULTIPLE",
+            "name": "POST_TRANSACTION",
+            "flowApps": [
+              {
+                "id": "com.aevi.sdk.pos.flow.flowservicesample"
+              }
+            ]
+          }
+        ],
+        "type": "transaction"
+      },
+      "name": "SPLIT",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
+    },
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "POST_FLOW",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
+    }
+  ],
+  "type": "sale",
+  "name": "sampleSale",
+  "description": "Sample sale flow",
+  "apiMajorVersion": 2
+}

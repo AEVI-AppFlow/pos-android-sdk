@@ -52,7 +52,8 @@
         <activity
             android:name=".ui.SplitActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_split">
+            android:label="@string/fss_split"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_SPLIT_IN_ACTIVITY"/>
             </intent-filter>
@@ -60,7 +61,8 @@
         <activity
             android:name=".ui.PreTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_payment">
+            android:label="@string/fss_pre_payment"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_PRE_TRANSACTION_IN_ACTIVITY"/>
             </intent-filter>
@@ -68,7 +70,8 @@
         <activity
             android:name=".ui.PostCardActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_card">
+            android:label="@string/fss_post_card"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_POST_CARD_READING_IN_ACTIVITY"/>
             </intent-filter>
@@ -76,7 +79,8 @@
         <activity
             android:name=".ui.PreFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_pre_flow">
+            android:label="@string/fss_pre_flow"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_PRE_FLOW_IN_ACTIVITY"/>
             </intent-filter>
@@ -84,7 +88,8 @@
         <activity
             android:name=".ui.PostTransactionActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_payment">
+            android:label="@string/fss_post_payment"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_POST_TRANSACTION_IN_ACTIVITY"/>
             </intent-filter>
@@ -92,16 +97,15 @@
         <activity
             android:name=".ui.PostFlowActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_post_flow">
+            android:label="@string/fss_post_flow"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_POST_FLOW_IN_ACTIVITY"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
-            android:excludeFromRecents="true"
             android:label="@string/sample_settings"
-            android:noHistory="true"
             android:theme="@style/AppThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -112,7 +116,8 @@
         <activity
             android:name=".ui.LoyaltyBalanceActivity"
             android:excludeFromRecents="true"
-            android:label="@string/fss_loyalty_balance">
+            android:label="@string/fss_loyalty_balance"
+            android:resizeableActivity="false">
         </activity>
     </application>
 

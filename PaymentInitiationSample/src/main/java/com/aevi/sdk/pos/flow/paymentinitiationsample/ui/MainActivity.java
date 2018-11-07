@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 public class MainActivity extends AppCompatActivity {

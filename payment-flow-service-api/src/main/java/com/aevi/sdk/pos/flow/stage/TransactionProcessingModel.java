@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -34,6 +33,10 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  *
  * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
+ *
+ * The outcome of the transaction must be set in the builder before {@link #sendResponse()} is called.
+ *
+ * Note that skipping this stage is not allowed - a valid response with an outcome must be set.
  */
 public class TransactionProcessingModel extends BaseStageModel {
 
@@ -70,7 +73,7 @@ public class TransactionProcessingModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request         The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
      * @return An instance of {@link TransactionProcessingModel}
      */
     public static TransactionProcessingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {

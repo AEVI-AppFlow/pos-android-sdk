@@ -15,9 +15,8 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
-
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.ui.library.recycler.LabelsListAdapter;
 

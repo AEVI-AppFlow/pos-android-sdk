@@ -346,8 +346,12 @@ public class FpsSettings implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FpsSettings that = (FpsSettings) o;
         return isMultiDevice == that.isMultiDevice &&
                 isCurrencyChangeAllowed == that.isCurrencyChangeAllowed &&
@@ -365,6 +369,9 @@ public class FpsSettings implements Jsonable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds, appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError, allowAccessViaStatusBar, alwaysAllowDynamicSelect, filterServicesByFlowType);
+        return Objects
+                .hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds,
+                      appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError, allowAccessViaStatusBar,
+                      alwaysAllowDynamicSelect, filterServicesByFlowType);
     }
 }

@@ -4,10 +4,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
-
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +20,11 @@ import org.robolectric.shadows.ShadowApplication;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.observers.TestObserver;
-
 import static com.aevi.sdk.flow.TestHelper.pretendServiceIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)

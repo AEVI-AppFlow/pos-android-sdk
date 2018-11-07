@@ -15,10 +15,10 @@
 package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 
-import static com.aevi.sdk.flow.util.Preconditions.*;
+import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome;
 
 /**

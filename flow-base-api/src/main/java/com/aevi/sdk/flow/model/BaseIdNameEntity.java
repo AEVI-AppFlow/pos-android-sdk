@@ -42,9 +42,15 @@ public abstract class BaseIdNameEntity extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         BaseIdNameEntity that = (BaseIdNameEntity) o;
         return Objects.equals(name, that.name);
     }

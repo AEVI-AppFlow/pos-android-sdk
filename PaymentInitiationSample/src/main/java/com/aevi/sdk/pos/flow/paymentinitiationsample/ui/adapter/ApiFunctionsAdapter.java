@@ -16,9 +16,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 
 import android.view.View;
-
-import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
 import com.aevi.ui.library.recycler.BaseTwoLineAdapter;
 
 import java.util.List;

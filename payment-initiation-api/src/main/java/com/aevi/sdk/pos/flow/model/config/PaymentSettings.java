@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.model.config;
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.config.*;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
@@ -25,8 +24,6 @@ import com.aevi.util.json.Jsonable;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import io.reactivex.annotations.Nullable;
 
 /**
  * Represents all available payment settings, configurations and flow service information.
@@ -98,15 +95,16 @@ public class PaymentSettings implements Jsonable {
      *
      * If no applications are defined in the flow config, it is assumed any is eligible and the full list of services will be returned.
      *
+     * If there is no flow by the provided name, all services will be returned.
+     *
      * @param flowName The name of the flow configuration to filter services by
      * @return An instance of {@link PaymentFlowServices} with filtered set of services, or null if no flow config found
      */
-    // TODO needs optimisation
-    @Nullable
+    @NonNull
     public PaymentFlowServices getServicesForFlow(String flowName) {
         FlowConfig flowConfig = flowConfigurations.getFlowConfiguration(flowName);
         if (flowConfig == null) {
-            return null;
+            return allServices;
         }
 
         Set<PaymentFlowServiceInfo> paymentFlowServices = new HashSet<>();

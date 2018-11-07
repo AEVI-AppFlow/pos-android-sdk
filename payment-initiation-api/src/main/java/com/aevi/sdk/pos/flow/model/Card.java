@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.util.json.JsonConverter;
@@ -170,15 +169,27 @@ public class Card implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Card card = (Card) o;
 
-        if (maskedPan != null ? !maskedPan.equals(card.maskedPan) : card.maskedPan != null) return false;
-        if (cardholderName != null ? !cardholderName.equals(card.cardholderName) : card.cardholderName != null) return false;
-        if (expiryDate != null ? !expiryDate.equals(card.expiryDate) : card.expiryDate != null) return false;
-        if (cardToken != null ? !cardToken.equals(card.cardToken) : card.cardToken != null) return false;
+        if (maskedPan != null ? !maskedPan.equals(card.maskedPan) : card.maskedPan != null) {
+            return false;
+        }
+        if (cardholderName != null ? !cardholderName.equals(card.cardholderName) : card.cardholderName != null) {
+            return false;
+        }
+        if (expiryDate != null ? !expiryDate.equals(card.expiryDate) : card.expiryDate != null) {
+            return false;
+        }
+        if (cardToken != null ? !cardToken.equals(card.cardToken) : card.cardToken != null) {
+            return false;
+        }
         return additionalData != null ? additionalData.equals(card.additionalData) : card.additionalData == null;
     }
 

@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.service;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.FlowBaseConfig;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.GenericStageModel;

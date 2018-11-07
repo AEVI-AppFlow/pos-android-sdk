@@ -23,16 +23,14 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.ActivityEvents;
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.ClientCommunicator;
+import io.reactivex.functions.Consumer;
 
 import java.lang.ref.WeakReference;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Base model for all stage models that provide the stage specific data functions.
@@ -43,7 +41,7 @@ public abstract class BaseStageModel {
     protected ClientCommunicator clientCommunicator;
 
     /**
-     * Initialise the stage model from an activity
+     * Initialise the stage model from an activity.
      *
      * @param activity The activity initialised from
      */
@@ -54,7 +52,6 @@ public abstract class BaseStageModel {
                 registerForFinishRequest(activity.getIntent(), ((LifecycleOwner) activity).getLifecycle());
             }
         }
-
     }
 
     /*
@@ -85,31 +82,13 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Initialise the stage model from a service
+     * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
      */
     protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
         this.clientCommunicator = clientCommunicator;
     }
-
-    /**
-     * A communicator that be used to talk directly to the client
-     *
-     * Internal use only
-     *
-     * @return The client communicator
-     */
-    public ClientCommunicator getClientCommunicator() {
-        return clientCommunicator;
-    }
-
-    /**
-     * Send off the response.
-     *
-     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
-     */
-    public abstract void sendResponse();
 
     /**
      * Do send the response back to the calling client.
@@ -140,15 +119,30 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Send this model to be processed by an activity
+     * Send this model and its associated request to be processed by an activity.
      *
      * @param context       The Android context
      * @param activityClass The class of the activity to send it to
      * @return An Observable stream of lifecycle events for the activity
      */
     public ObservableActivityHelper<String> processInActivity(Context context, Class<? extends Activity> activityClass) {
+        return processInActivity(context, new Intent(context, activityClass), getRequestJson());
+    }
+
+    /**
+     * Send this model with the provided request data to the activity specified by the intent.
+     *
+     * For the majority of cases, use {@link #processInActivity(Context, Class)}. If you have a use case where you need to build the intent yourself,
+     * or need to modify the request data before passing it on, this method can be used.
+     *
+     * @param context        The Android context
+     * @param activityIntent The activity intent
+     * @param requestJson    The request json (see {@link #getRequestJson()} to retrieve the input request)
+     * @return An Observable stream of lifecycle events for the activity
+     */
+    public ObservableActivityHelper<String> processInActivity(Context context, Intent activityIntent, String requestJson) {
         ActivityHelper activityHelper =
-                new ActivityHelper(context, new Intent(context, activityClass), getClientCommunicator(), getRequestJson(), null);
+                new ActivityHelper(context, activityIntent, clientCommunicator, requestJson, null);
         if (clientCommunicator != null) {
             clientCommunicator.addActivityHelper(activityHelper);
         }

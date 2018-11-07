@@ -134,8 +134,12 @@ public class FlowStage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FlowStage flowStage = (FlowStage) o;
         return Objects.equals(name, flowStage.name) &&
                 appExecutionType == flowStage.appExecutionType &&

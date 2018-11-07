@@ -20,7 +20,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.PaymentApi;

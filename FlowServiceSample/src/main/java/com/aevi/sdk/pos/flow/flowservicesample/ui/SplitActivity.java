@@ -20,7 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.constants.SplitDataKeys;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
@@ -31,11 +33,8 @@ import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.SplitModel;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-import static com.aevi.sdk.flow.constants.SplitDataKeys.*;
+import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_AMOUNTS;
+import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_BASKET;
 
 /**
  * Sample for a split application.
@@ -129,7 +128,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
 
     private String getPreviousAmountTotalFormatted() {
         return AmountFormatter.formatAmount(splitRequest.getLastTransaction().getProcessedAmounts().getCurrency(),
-                splitRequest.getLastTransaction().getProcessedAmounts().getTotalAmountValue());
+                                            splitRequest.getLastTransaction().getProcessedAmounts().getTotalAmountValue());
     }
 
     private String getPaidForBasketItems() {
@@ -138,7 +137,8 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
         stringBuilder.append(getString(R.string.prev_paid_for_items)).append(" ").append(getPreviousAmountTotalFormatted()).append(")\n");
         for (BasketItem basketItem : paidItems.getBasketItems()) {
             stringBuilder.append(basketItem.getLabel()).append("  (").append(basketItem.getQuantity()).append(")").append(" @ ")
-                    .append(AmountFormatter.formatAmount(splitRequest.getSourcePayment().getAmounts().getCurrency(), basketItem.getIndividualAmount()))
+                    .append(AmountFormatter
+                                    .formatAmount(splitRequest.getSourcePayment().getAmounts().getCurrency(), basketItem.getIndividualAmount()))
                     .append("\n");
         }
         return stringBuilder.toString();

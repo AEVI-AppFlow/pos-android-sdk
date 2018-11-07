@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.util.json.Sendable;
 
 public abstract class BaseModel implements Sendable {
@@ -45,8 +44,12 @@ public abstract class BaseModel implements Sendable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BaseModel baseModel = (BaseModel) o;
 

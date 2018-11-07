@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.Customer;
@@ -254,9 +253,15 @@ public class TransactionRequest extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         TransactionRequest that = (TransactionRequest) o;
         return Objects.equals(transactionId, that.transactionId) &&
                 Objects.equals(flowType, that.flowType) &&
@@ -273,6 +278,7 @@ public class TransactionRequest extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), transactionId, flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience, targetPaymentAppComponent);
+        return Objects.hash(super.hashCode(), transactionId, flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience,
+                            targetPaymentAppComponent);
     }
 }

@@ -1,0 +1,27 @@
+{
+  "stages": [
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "GENERIC",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.paymentservicesample",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "appExecutionType": "SINGLE_SELECT",
+      "name": "POST_GENERIC",
+      "flowApps": [
+        {
+          "id": "com.aevi.sdk.pos.flow.flowservicesample"
+        }
+      ]
+    }
+  ],
+  "type": "tokenisation",
+  "name": "sampleTokenisation",
+  "description": "Sample tokenisation flow",
+  "apiMajorVersion": 2
+}
