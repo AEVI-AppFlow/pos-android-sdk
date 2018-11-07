@@ -47,7 +47,7 @@ public class PaymentClientImplTest {
     }
 
     @Test
-    public void initiatePaymentShouldSendPaymentViaRequestCorrectly() throws Exception {
+    public void initiatePaymentShouldSendPaymentViaRequestCorrectly() {
         pretendFpsIsInstalled();
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
 
@@ -60,27 +60,9 @@ public class PaymentClientImplTest {
         verify(messengerClient).closeConnection();
     }
 
-
-    public void initiatePaymentShouldErrorIfNoFps() throws Exception {
+    public void initiatePaymentShouldErrorIfNoFps() {
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
         TestObserver<PaymentResponse> testObserver = paymentClient.initiatePayment(payment).test();
-        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    public void subscribeToStatusUpdatesShouldPropagateUpdatesCorrectly() throws Exception {
-        pretendFpsIsInstalled();
-        paymentClient.subscribeToStatusUpdates("123").test();
-
-        AppMessage sentAppMessage = callSendAndCaptureMessage();
-        RequestStatus requestStatus = RequestStatus.fromJson(sentAppMessage.getMessageData());
-        assertThat(requestStatus.getStatus()).isEqualTo("123");
-        verify(messengerClient).closeConnection();
-    }
-
-    @Test
-    public void subscribeToStatusUpdatesShouldErrorIfNoFps() throws Exception {
-        TestObserver<RequestStatus> testObserver = paymentClient.subscribeToStatusUpdates("").test();
         assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
     }
 

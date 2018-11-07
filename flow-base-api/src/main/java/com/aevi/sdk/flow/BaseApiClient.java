@@ -47,8 +47,6 @@ public abstract class BaseApiClient {
     public static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
-    protected static final ComponentName REQUEST_STATUS_SERVICE_COMPONENT =
-            new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".RequestStatusService");
     protected static final ComponentName SYSTEM_EVENT_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
     protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT =

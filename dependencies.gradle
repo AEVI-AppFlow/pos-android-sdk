@@ -4,7 +4,7 @@ ext {
     rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.0.2'
-    rxMessengerVersion = '4.0.0-SNAPSHOT'
+    rxMessengerVersion = '4.0.0-RC1'
     configApiVersion = '1.1.0'
     archLifecycleVersion = '1.0.3'
     archLifecycleJava8Version = '1.1.0'

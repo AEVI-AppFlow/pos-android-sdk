@@ -22,7 +22,6 @@ import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
-import com.aevi.sdk.pos.flow.model.RequestStatus;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -58,24 +57,11 @@ public interface PaymentClient {
     /**
      * Initiate payment processing based on the provided {@link Payment}.
      *
-     * In order to receive processing status updates for this payment, please subscribe via {@link #subscribeToStatusUpdates(String)}.
-     *
      * @param payment The payment to process
      * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
      */
     @NonNull
     Single<PaymentResponse> initiatePayment(Payment payment);
-
-    /**
-     * Subscribe to receive status updates of a particular payment.
-     *
-     * To retrieve the latest/current status, call blockingFirst() on the returned object of this method.
-     *
-     * @param paymentId The id of the payment to listen to status updates for
-     * @return Observable emitting a stream of {@link RequestStatus} objects indicating the status of the payment processing
-     */
-    @NonNull
-    Observable<RequestStatus> subscribeToStatusUpdates(String paymentId);
 
     /**
      * Query for devices connected to the processing service, if multi-device is enabled.
