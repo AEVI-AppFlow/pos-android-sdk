@@ -120,4 +120,10 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
         intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getPrimaryColor());
         startActivity(intent);
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
+    }
 }
