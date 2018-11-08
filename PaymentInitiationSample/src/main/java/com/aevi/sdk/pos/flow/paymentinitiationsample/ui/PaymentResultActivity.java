@@ -88,4 +88,10 @@ public class PaymentResultActivity extends AppCompatActivity {
     public void onClose() {
         finish();
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
+    }
 }

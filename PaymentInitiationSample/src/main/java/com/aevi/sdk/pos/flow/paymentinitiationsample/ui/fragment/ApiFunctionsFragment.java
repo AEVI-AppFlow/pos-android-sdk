@@ -51,10 +51,12 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
                 break;
             case GENERIC_REQUEST:
                 Intent requestIntent = new Intent(getContext(), RequestInitiationActivity.class);
+                requestIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(requestIntent);
                 break;
             case INITIATE_PAYMENT:
                 Intent paymentIntent = new Intent(getContext(), PaymentInitiationActivity.class);
+                paymentIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(paymentIntent);
                 break;
         }
@@ -63,6 +65,7 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
     private void showPopup(String fragment) {
         Intent intent = new Intent(getContext(), PopupActivity.class);
         intent.putExtra(FRAGMENT_KEY, fragment);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 }
