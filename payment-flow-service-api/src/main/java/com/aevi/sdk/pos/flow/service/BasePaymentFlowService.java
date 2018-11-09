@@ -79,16 +79,16 @@ public abstract class BasePaymentFlowService extends BaseApiService {
 
                 }
             }
-        } catch (StageNotImplemented e) {
+        } catch (StageNotImplementedException e) {
             returnStageNotImplemented(clientCommunicator, e.stage);
         }
     }
 
-    private class StageNotImplemented extends RuntimeException {
+    private static class StageNotImplementedException extends RuntimeException {
 
         final String stage;
 
-        StageNotImplemented(String stage) {
+        StageNotImplementedException(String stage) {
             this.stage = stage;
         }
     }
@@ -99,7 +99,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPreFlow(PreFlowModel model) {
-        throw new StageNotImplemented(PRE_FLOW);
+        throw new StageNotImplementedException(PRE_FLOW);
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onSplit(SplitModel model) {
-        throw new StageNotImplemented(SPLIT);
+        throw new StageNotImplementedException(SPLIT);
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPreTransaction(PreTransactionModel model) {
-        throw new StageNotImplemented(PRE_TRANSACTION);
+        throw new StageNotImplementedException(PRE_TRANSACTION);
     }
 
     /**
@@ -126,7 +126,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPaymentCardReading(CardReadingModel model) {
-        throw new StageNotImplemented(PAYMENT_CARD_READING);
+        throw new StageNotImplementedException(PAYMENT_CARD_READING);
     }
 
     /**
@@ -135,7 +135,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostCardReading(PreTransactionModel model) {
-        throw new StageNotImplemented(POST_CARD_READING);
+        throw new StageNotImplementedException(POST_CARD_READING);
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onTransactionProcessing(TransactionProcessingModel model) {
-        throw new StageNotImplemented(TRANSACTION_PROCESSING);
+        throw new StageNotImplementedException(TRANSACTION_PROCESSING);
     }
 
     /**
@@ -153,7 +153,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostTransaction(PostTransactionModel model) {
-        throw new StageNotImplemented(POST_TRANSACTION);
+        throw new StageNotImplementedException(POST_TRANSACTION);
     }
 
     /**
@@ -162,7 +162,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostFlow(PostFlowModel model) {
-        throw new StageNotImplemented(POST_FLOW);
+        throw new StageNotImplementedException(POST_FLOW);
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onGeneric(GenericStageModel model) {
-        throw new StageNotImplemented(GENERIC);
+        throw new StageNotImplementedException(GENERIC);
     }
 
     /**
@@ -180,7 +180,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostGeneric(PostGenericStageModel model) {
-        throw new StageNotImplemented(POST_GENERIC);
+        throw new StageNotImplementedException(POST_GENERIC);
     }
 
     /**
@@ -193,7 +193,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param request            The request
      */
     protected void onUnknownStage(String flowStage, ClientCommunicator clientCommunicator, String request) {
-        throw new StageNotImplemented(flowStage);
+        throw new StageNotImplementedException(flowStage);
     }
 
     private void returnStageNotImplemented(ClientCommunicator clientCommunicator, String stage) {

@@ -25,7 +25,6 @@ ext {
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
     appFlowConstantsVersion = '2.0.8'
-    configProviderLibraryVersion = "1.0.0-SNAPSHOT"
 
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
@@ -43,7 +42,6 @@ ext {
 
     sampleDependencies = [
             aeviUiLibrary        : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
-            configProviderLibrary: "com.aevi.sdk.pos.flow.config:config-provider-library:$configProviderLibraryVersion",
             butterKnife          : "com.jakewharton:butterknife:$butterKnifeVersion",
             support              : "com.android.support:support-v4:$supportLibraryVersion",
             recyclerView         : "com.android.support:recyclerview-v7:$recyclerViewVersion",

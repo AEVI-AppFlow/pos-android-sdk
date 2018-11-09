@@ -1,5 +1,6 @@
 package com.aevi.sdk.flow.model;
 
+import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -22,10 +23,16 @@ public class FlowException extends Exception implements Jsonable {
         this.errorCode = errorCode;
     }
 
+    /**
+     * @return An error code indicting why the failure has occurred see {@link ErrorConstants} for details
+     */
     public String getErrorCode() {
         return errorCode;
     }
 
+    /**
+     * @return A human readable message. This should be used for debugging only and NOT be displayed to the user.
+     */
     public String getErrorMessage() {
         return errorMessage;
     }

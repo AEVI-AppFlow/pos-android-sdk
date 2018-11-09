@@ -16,10 +16,7 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.support.annotation.NonNull;
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.FlowEvent;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
@@ -48,8 +45,8 @@ public interface PaymentClient {
      *
      * Returns a single that emits a {@link Response} after processing has completed.
      *
-     * If a fatal error occurs during the flow then a {@link com.aevi.sdk.flow.model.FlowException} will be delivered to the `onError` handler. This
-     * {@link com.aevi.sdk.flow.model.FlowException} will contain an errorCode that can be used to display information to the user or to handle
+     * If a fatal error occurs during the flow then a {@link FlowException} will be delivered to the `onError` handler. This
+     * {@link FlowException} will contain an errorCode that can be used to display information to the user or to handle
      * the error appropriately
      *
      * @param request The request
@@ -61,8 +58,8 @@ public interface PaymentClient {
     /**
      * Initiate payment processing based on the provided {@link Payment}.
      *
-     * If a fatal error occurs during the flow then a {@link com.aevi.sdk.flow.model.FlowException} will be delivered to the `onError` handler. This
-     * {@link com.aevi.sdk.flow.model.FlowException} will contain an errorCode that can be used to display information to the user or to handle
+     * If a fatal error occurs during the flow then a {@link FlowException} will be delivered to the `onError` handler. This
+     * {@link FlowException} will contain an errorCode that can be used to display information to the user or to handle
      * the error appropriately
      *
      * @param payment The payment to process

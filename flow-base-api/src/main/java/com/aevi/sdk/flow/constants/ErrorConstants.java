@@ -15,17 +15,62 @@
 package com.aevi.sdk.flow.constants;
 
 public interface ErrorConstants {
-    String PROCESSING_SERVICE_NOT_INSTALLED = "notInstalled";
-    String PROCESSING_SERVICE_BUSY = "busy";
-    String PROCESSING_SERVICE_CANCEL_FAILED = "cancelFailed";
-    String PROCESSING_SERVICE_RESUME_FAILED = "resumeFailed";
-    String UNSUPPORTED_OPERATION = "unsupportedOperation";
-    String INVALID_MESSAGE_TYPE = "invalidMessageType";
-    String INVALID_REQUEST = "invalidRequest";
+
+    /**
+     * A general purpose error that will be sent for fatal failures in a flow service
+     */
     String FLOW_SERVICE_ERROR = "flowServiceError";
-    String FLOW_SERVICE_ACTIVITY_ERROR = "flowServiceActivityError";
+
+    /**
+     * Sent if the processing service if not installed
+     */
+    String PROCESSING_SERVICE_NOT_INSTALLED = "notInstalled";
+
+    /**
+     * Sent if the processing service rejects a request because it is busy processing another
+     */
+    String PROCESSING_SERVICE_BUSY = "busy";
+
+    /**
+     * Sent if the processing service fails to cancel a flow
+     */
+    String PROCESSING_SERVICE_CANCEL_FAILED = "cancelFailed";
+
+    /**
+     * Sent if the processing service fails to resume a flow
+     */
+    String PROCESSING_SERVICE_RESUME_FAILED = "resumeFailed";
+
+    /**
+     * Sent if an unknown/unsupported request type is sent to the processing service
+     */
+    String UNSUPPORTED_OPERATION = "unsupportedOperation";
+
+    /**
+     * Sent if the processing service has received an unexpected message type
+     */
+    String INVALID_MESSAGE_TYPE = "invalidMessageType";
+
+
+    String INVALID_REQUEST = "invalidRequest";
+
+    /**
+     * Sent if a flow service does not support the stage it has just been called for
+     */
     String STAGE_NOT_SUPPORTED = "stageNotSupported";
+
+    /**
+     * Sent if the processing service cannot find a handler(s) for a stage
+     */
     String CONFIG_ERROR = "configError";
+
+    /**
+     * Sent if the client is using an API that is not the same major version as the one implemented by the processing service
+     */
     String INCOMPATIBLE_API_VERSION = "incompatibleApiVersion";
+
+    /**
+     * Something unexpected happened
+     */
     String UNEXPECTED_ERROR = "unexpectedError";
 }

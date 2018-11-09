@@ -28,11 +28,13 @@ import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
+import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
-import io.reactivex.*;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 
 import java.util.List;
@@ -53,7 +55,7 @@ public abstract class BaseApiClient {
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
     protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
-    protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
+    protected static final FlowException NO_FPS_EXCEPTION = new FlowException(ErrorConstants.PROCESSING_SERVICE_NOT_INSTALLED, "Processing service is not installed");
 
     private final InternalData internalData;
     protected final Context context;
@@ -86,23 +88,29 @@ public abstract class BaseApiClient {
         }
         final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
-        return mapException(requestMessenger
-                                    .sendMessage(appMessage.toJson())
-                                    .singleOrError()
-                                    .map(new Function<String, Response>() {
-                                        @Override
-                                        public Response apply(String json) throws Exception {
-                                            Response response = Response.fromJson(json);
-                                            response.setOriginatingRequest(request);
-                                            return response;
-                                        }
-                                    })
-                                    .doFinally(new Action() {
-                                        @Override
-                                        public void run() throws Exception {
-                                            requestMessenger.closeConnection();
-                                        }
-                                    }));
+        return requestMessenger
+                .sendMessage(appMessage.toJson())
+                .singleOrError()
+                .map(new Function<String, Response>() {
+                    @Override
+                    public Response apply(String json) throws Exception {
+                        Response response = Response.fromJson(json);
+                        response.setOriginatingRequest(request);
+                        return response;
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        requestMessenger.closeConnection();
+                    }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends Response>>() {
+                    @Override
+                    public SingleSource<? extends Response> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
+                    }
+                });
     }
 
     @NonNull
@@ -112,21 +120,27 @@ public abstract class BaseApiClient {
         }
         final ChannelClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.DEVICE_INFO_REQUEST, getInternalData());
-        return mapException(deviceMessenger
-                                    .sendMessage(appMessage.toJson())
-                                    .map(new Function<String, Device>() {
-                                        @Override
-                                        public Device apply(String json) throws Exception {
-                                            return Device.fromJson(json);
-                                        }
-                                    })
-                                    .toList()
-                                    .doFinally(new Action() {
-                                        @Override
-                                        public void run() throws Exception {
-                                            deviceMessenger.closeConnection();
-                                        }
-                                    }));
+        return deviceMessenger
+                .sendMessage(appMessage.toJson())
+                .map(new Function<String, Device>() {
+                    @Override
+                    public Device apply(String json) throws Exception {
+                        return Device.fromJson(json);
+                    }
+                })
+                .toList()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        deviceMessenger.closeConnection();
+                    }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends List<Device>>>() {
+                    @Override
+                    public SingleSource<? extends List<Device>> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
+                    }
+                });
     }
 
     @NonNull
@@ -136,7 +150,7 @@ public abstract class BaseApiClient {
         }
         final ChannelClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
-        return mapException(deviceMessenger
+        return deviceMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, FlowEvent>() {
                     @Override
@@ -149,7 +163,13 @@ public abstract class BaseApiClient {
                     public void run() throws Exception {
                         deviceMessenger.closeConnection();
                     }
-                }));
+                })
+                .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends FlowEvent>>() {
+                    @Override
+                    public ObservableSource<? extends FlowEvent> apply(Throwable throwable) throws Exception {
+                        return Observable.error(createFlowException(throwable));
+                    }
+                });
     }
 
     protected ChannelClient getMessengerClient(ComponentName componentName) {
@@ -160,54 +180,7 @@ public abstract class BaseApiClient {
         }
     }
 
-    protected <T> Single<T> mapException(final Single<T> actual) {
-        return Single.create(new SingleOnSubscribe<T>() {
-            @Override
-            public void subscribe(final SingleEmitter<T> emitter) throws Exception {
-                actual.subscribe(new BiConsumer<T, Throwable>() {
-                    @Override
-                    public void accept(T object, Throwable throwable) throws Exception {
-                        if (object != null) {
-                            emitter.onSuccess(object);
-                        } else {
-                            emitter.onError(createFlowException(throwable));
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    protected <T> Observable<T> mapException(final Observable<T> actual) {
-        return Observable.create(new ObservableOnSubscribe<T>() {
-            @Override
-            public void subscribe(final ObservableEmitter<T> emitter) throws Exception {
-                actual.subscribe(new Observer<T>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(T t) {
-                        emitter.onNext(t);
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        emitter.onError(createFlowException(throwable));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        emitter.onComplete();
-                    }
-                });
-            }
-        });
-    }
-
-    private Throwable createFlowException(Throwable throwable) {
+    protected Throwable createFlowException(Throwable throwable) {
         if (throwable instanceof MessageException) {
             MessageException e = (MessageException) throwable;
             return new FlowException(e.getCode(), e.getMessage());
