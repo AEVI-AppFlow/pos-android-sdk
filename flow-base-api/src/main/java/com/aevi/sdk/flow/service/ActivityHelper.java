@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
+import com.aevi.sdk.flow.model.FlowException;
 import io.reactivex.functions.Consumer;
 
 import java.util.UUID;
@@ -87,9 +87,9 @@ public class ActivityHelper {
      * Can be overriden to handle when the activity responds with an error / exception.
      */
     private void handleActivityException(Throwable throwable, ClientCommunicator clientCommunicator) {
-        if (throwable instanceof MessageException) {
-            MessageException me = (MessageException) throwable;
-            clientCommunicator.send(me);
+        if (throwable instanceof FlowException) {
+            FlowException me = (FlowException) throwable;
+            clientCommunicator.sendResponseAsErrorAndEnd(me.getErrorCode(), me.getErrorMessage());
         } else {
             clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ACTIVITY_ERROR,
                                                          String.format("Flow service failed during activity: %s", throwable.getMessage()));

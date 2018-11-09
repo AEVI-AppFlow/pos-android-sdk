@@ -24,7 +24,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.aevi.android.rxmessenger.MessageException;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -74,14 +74,14 @@ public class PaymentResultActivity extends AppCompatActivity {
                 requestStatus.setImageResource(R.drawable.ic_error_circle);
             }
         } else if (intent.hasExtra(ERROR_KEY)) {
-            MessageException error = MessageException.fromJson(intent.getStringExtra(ERROR_KEY));
+            FlowException error = FlowException.fromJson(intent.getStringExtra(ERROR_KEY));
             showErrorResult(error);
         }
     }
 
-    private void showErrorResult(MessageException error) {
-        messageErrorCode.setText(error.getCode());
-        messageErrorDesc.setText(error.getMessage());
+    private void showErrorResult(FlowException error) {
+        messageErrorCode.setText(error.getErrorCode());
+        messageErrorDesc.setText(error.getErrorMessage());
     }
 
     @OnClick(R.id.close)

@@ -3,8 +3,8 @@ package com.aevi.sdk.flow.service;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
-import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.Observable;
 
@@ -55,13 +55,13 @@ public class ClientCommunicator {
     }
 
     /**
-     * Send an exception or error message to the client
+     * Send an error message to the client
      *
-     * @param me The {@link MessageException} to send
+     * @param flowError The {@link FlowException} to send
      */
-    public void send(MessageException me) {
+    public void send(FlowException flowError) {
         if (channelServer != null) {
-            channelServer.send(me);
+            channelServer.send(flowError.toJson());
         }
     }
 
@@ -86,7 +86,7 @@ public class ClientCommunicator {
      */
     public void sendResponseAsErrorAndEnd(@NonNull String errorCode, @NonNull String message) {
         if (channelServer != null) {
-            FlowServiceException flowServiceException = new FlowServiceException(errorCode, message);
+            FlowException flowServiceException = new FlowException(errorCode, message);
             String msg = flowServiceException.toJson();
             Log.d(TAG, "Sending error message: " + msg);
             AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, msg, internalData);

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
 import io.reactivex.subjects.BehaviorSubject;
 import org.junit.Before;
@@ -63,8 +64,8 @@ public class BaseApiServiceTest {
         apiService.throwExceptionInProcessRequest = true;
         fakeIncomingMessage(incomingAppMessage);
 
-        FlowServiceException expected =
-                new FlowServiceException(FLOW_SERVICE_ERROR, "Flow service failed with exception: Skimaroo");
+        FlowException expected =
+                new FlowException(FLOW_SERVICE_ERROR, "Flow service failed with exception: Skimaroo");
 
         verifyMessageSent(AppMessageTypes.FAILURE_MESSAGE, expected.toJson());
         verifyCommsEnded(true);

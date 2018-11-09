@@ -19,17 +19,18 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelClient;
+import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 
 public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
@@ -50,7 +51,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         }
         final ChannelClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
         AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_FLOW_CONFIG_REQUEST, getInternalData());
-        return paymentInfoMessenger
+        return mapException(paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, PaymentSettings>() {
                     @Override
@@ -64,7 +65,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     public void run() throws Exception {
                         paymentInfoMessenger.closeConnection();
                     }
-                });
+                }));
     }
 
     @Override
@@ -80,7 +81,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         Request request = new Request(payment.getFlowName(), paymentData);
         request.setDeviceId(payment.getDeviceId());
         AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
-        return transactionMessenger
+        return mapException(transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
                 .map(new Function<String, PaymentResponse>() {
@@ -97,6 +98,6 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     public void run() throws Exception {
                         transactionMessenger.closeConnection();
                     }
-                });
+                }));
     }
 }
