@@ -253,8 +253,6 @@ public class PaymentFragment extends BaseObservableFragment {
                 }, throwable -> {
                     if (throwable instanceof FlowException) {
                         intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                    } else if (throwable instanceof IllegalStateException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", "FPS not installed").toJson());
                     } else {
                         intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
                     }
