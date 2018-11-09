@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import com.aevi.android.rxmessenger.MessageException;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -251,12 +251,10 @@ public class PaymentFragment extends BaseObservableFragment {
                         startActivity(intent);
                     }
                 }, throwable -> {
-                    if (throwable instanceof MessageException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
-                    } else if (throwable instanceof IllegalStateException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
+                    if (throwable instanceof FlowException) {
+                        intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
                     } else {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
+                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
                     }
                     if (isAdded()) {
                         startActivity(intent);

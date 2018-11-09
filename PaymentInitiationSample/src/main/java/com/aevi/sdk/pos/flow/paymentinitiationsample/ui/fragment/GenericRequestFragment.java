@@ -22,8 +22,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.model.config.FlowConfig;
@@ -112,8 +112,8 @@ public class GenericRequestFragment extends BaseObservableFragment {
                         }
                     }, throwable -> {
                         Response response;
-                        if (throwable instanceof MessageException) {
-                            response = new Response(request, false, ((MessageException) throwable).getCode()
+                        if (throwable instanceof FlowException) {
+                            response = new Response(request, false, ((FlowException) throwable).getErrorCode()
                                     + " : " + throwable.getMessage());
                         } else {
                             response = new Response(request, false, throwable.getMessage());

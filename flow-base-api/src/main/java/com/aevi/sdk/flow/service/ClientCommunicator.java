@@ -3,8 +3,8 @@ package com.aevi.sdk.flow.service;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
-import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.Observable;
 
@@ -14,6 +14,7 @@ import java.util.Set;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.service.BaseApiService.BACKGROUND_PROCESSING;
+
 
 /**
  * This class can be used to communicate with clients.
@@ -54,13 +55,13 @@ public class ClientCommunicator {
     }
 
     /**
-     * Send an exception or error message to the client
+     * Send an error message to the client
      *
-     * @param me The {@link MessageException} to send
+     * @param flowError The {@link FlowException} to send
      */
-    public void send(MessageException me) {
+    public void send(FlowException flowError) {
         if (channelServer != null) {
-            channelServer.send(me);
+            channelServer.send(flowError.toJson());
         }
     }
 
@@ -75,10 +76,20 @@ public class ClientCommunicator {
         }
     }
 
-    void sendResponseAsErrorAndEnd(@NonNull String error) {
+    /**
+     * Finish your flow service with an exception.
+     *
+     * Can be used to send an errorCode back to the initiating application
+     *
+     * @param errorCode The errorCode to send back
+     * @param message   A human readable message to explain the error
+     */
+    public void sendResponseAsErrorAndEnd(@NonNull String errorCode, @NonNull String message) {
         if (channelServer != null) {
-            Log.d(TAG, "Sending error message: " + error);
-            AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, error, internalData);
+            FlowException flowServiceException = new FlowException(errorCode, message);
+            String msg = flowServiceException.toJson();
+            Log.d(TAG, "Sending error message: " + msg);
+            AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, msg, internalData);
             channelServer.send(errorMessage.toJson());
             channelServer.sendEndStream();
         }

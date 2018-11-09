@@ -29,6 +29,7 @@ import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
@@ -64,6 +65,12 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     public void run() throws Exception {
                         paymentInfoMessenger.closeConnection();
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends PaymentSettings>>() {
+                    @Override
+                    public SingleSource<? extends PaymentSettings> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
+                    }
                 });
     }
 
@@ -96,6 +103,12 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     @Override
                     public void run() throws Exception {
                         transactionMessenger.closeConnection();
+                    }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends PaymentResponse>>() {
+                    @Override
+                    public SingleSource<? extends PaymentResponse> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
                     }
                 });
     }

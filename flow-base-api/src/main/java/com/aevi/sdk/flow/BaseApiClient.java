@@ -24,12 +24,16 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.android.rxmessenger.Channels;
+import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
+import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
@@ -51,7 +55,7 @@ public abstract class BaseApiClient {
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
     protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
-    protected static final IllegalStateException NO_FPS_EXCEPTION = new IllegalStateException("Processing service is not installed");
+    protected static final FlowException NO_FPS_EXCEPTION = new FlowException(ErrorConstants.PROCESSING_SERVICE_NOT_INSTALLED, "Processing service is not installed");
 
     private final InternalData internalData;
     protected final Context context;
@@ -100,6 +104,12 @@ public abstract class BaseApiClient {
                     public void run() throws Exception {
                         requestMessenger.closeConnection();
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends Response>>() {
+                    @Override
+                    public SingleSource<? extends Response> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
+                    }
                 });
     }
 
@@ -124,6 +134,12 @@ public abstract class BaseApiClient {
                     public void run() throws Exception {
                         deviceMessenger.closeConnection();
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends List<Device>>>() {
+                    @Override
+                    public SingleSource<? extends List<Device>> apply(Throwable throwable) throws Exception {
+                        return Single.error(createFlowException(throwable));
+                    }
                 });
     }
 
@@ -147,6 +163,12 @@ public abstract class BaseApiClient {
                     public void run() throws Exception {
                         deviceMessenger.closeConnection();
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends FlowEvent>>() {
+                    @Override
+                    public ObservableSource<? extends FlowEvent> apply(Throwable throwable) throws Exception {
+                        return Observable.error(createFlowException(throwable));
+                    }
                 });
     }
 
@@ -156,6 +178,14 @@ public abstract class BaseApiClient {
         } else {
             return Channels.messenger(context, componentName);
         }
+    }
+
+    protected Throwable createFlowException(Throwable throwable) {
+        if (throwable instanceof MessageException) {
+            MessageException e = (MessageException) throwable;
+            return new FlowException(e.getCode(), e.getMessage());
+        }
+        return throwable;
     }
 
     protected static void startFps(Context context) {

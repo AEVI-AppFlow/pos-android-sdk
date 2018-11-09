@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
+import com.aevi.sdk.flow.model.FlowException;
 import io.reactivex.functions.Consumer;
 
 import java.util.UUID;
@@ -14,6 +14,7 @@ import java.util.UUID;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
 import static com.aevi.sdk.flow.constants.ActivityEvents.FINISH;
+import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 
 /**
  * A helper class that can be used to start an activity in flow services
@@ -70,12 +71,12 @@ public class ActivityHelper {
         ObservableActivityHelper<String> helper = ObservableActivityHelper.createInstance(context, activityIntent);
         helper.startObservableActivity().subscribe(new Consumer<String>() {
             @Override
-            public void accept(@NonNull String response) throws Exception {
+            public void accept(@NonNull String response) {
                 clientCommunicator.sendResponseAndEnd(response);
             }
         }, new Consumer<Throwable>() {
             @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
+            public void accept(@NonNull Throwable throwable) {
                 handleActivityException(throwable, clientCommunicator);
             }
         });
@@ -86,11 +87,12 @@ public class ActivityHelper {
      * Can be overriden to handle when the activity responds with an error / exception.
      */
     private void handleActivityException(Throwable throwable, ClientCommunicator clientCommunicator) {
-        if (throwable instanceof MessageException) {
-            MessageException me = (MessageException) throwable;
-            clientCommunicator.send(me);
+        if (throwable instanceof FlowException) {
+            FlowException me = (FlowException) throwable;
+            clientCommunicator.sendResponseAsErrorAndEnd(me.getErrorCode(), me.getErrorMessage());
         } else {
-            clientCommunicator.sendResponseAsErrorAndEnd(throwable.getMessage());
+            clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ERROR,
+                                                         String.format("Flow service failed during activity: %s", throwable.getMessage()));
         }
     }
 

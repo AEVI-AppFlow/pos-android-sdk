@@ -6,8 +6,6 @@ ext {
     jsonConverterVersion = '1.0.2'
     rxMessengerVersion = '4.0.0-RC1'
     configApiVersion = '1.1.0'
-    archLifecycleVersion = '1.0.3'
-    archLifecycleJava8Version = '1.1.0'
 
     // Test dependencies
     junitVersion = '4.12'
@@ -17,7 +15,9 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
-    // Sample dependencies
+    archLifecycleVersion = '1.0.3'
+    archLifecycleJava8Version = '1.1.0'
+
     butterKnifeVersion = '8.8.1'
     recyclerViewVersion = '28.0.0'
     supportLibraryVersion = '28.0.0'
@@ -41,16 +41,16 @@ ext {
     ]
 
     sampleDependencies = [
-            aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
-            butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibraryVersion",
-            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            cardView         : "com.android.support:cardview-v7:$supportLibraryVersion",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibraryVersion",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
-            design           : "com.android.support:design:$designLibraryVersion",
-            constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
+            aeviUiLibrary        : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
+            butterKnife          : "com.jakewharton:butterknife:$butterKnifeVersion",
+            support              : "com.android.support:support-v4:$supportLibraryVersion",
+            recyclerView         : "com.android.support:recyclerview-v7:$recyclerViewVersion",
+            cardView             : "com.android.support:cardview-v7:$supportLibraryVersion",
+            appCompat            : "com.android.support:appcompat-v7:$supportLibraryVersion",
+            supportAnnotation    : "com.android.support:support-annotations:$supportLibraryVersion",
+            design               : "com.android.support:design:$designLibraryVersion",
+            constraintLayout     : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+            appFlowConstants     : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
     ]
 
     sampleAptDependencies = [

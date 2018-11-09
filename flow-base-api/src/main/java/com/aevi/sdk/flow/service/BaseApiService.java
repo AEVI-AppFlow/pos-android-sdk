@@ -27,8 +27,8 @@ import io.reactivex.functions.Consumer;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
-import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_SERVICE_EXCEPTION;
-import static com.aevi.sdk.flow.constants.MessageErrors.ERROR_UNKNOWN_MESSAGE_TYPE;
+import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
+import static com.aevi.sdk.flow.constants.ErrorConstants.INVALID_MESSAGE_TYPE;
 
 /**
  * Base service for all API service implementations.
@@ -86,8 +86,9 @@ public abstract class BaseApiService extends AbstractChannelService {
                         onForceFinish(clientCommunicator);
                         break;
                     default:
-                        Log.e(TAG, "Unknown message type: " + appMessage.getMessageType() + ". ");
-                        clientCommunicator.sendResponseAsErrorAndEnd(ERROR_UNKNOWN_MESSAGE_TYPE);
+                        String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
+                        Log.e(TAG, msg);
+                        clientCommunicator.sendResponseAsErrorAndEnd(INVALID_MESSAGE_TYPE, msg);
                         break;
                 }
             }
@@ -117,7 +118,7 @@ public abstract class BaseApiService extends AbstractChannelService {
             clientCommunicator.sendAck();
             processRequest(clientCommunicator, messageData, flowStage);
         } catch (Throwable t) {
-            clientCommunicator.sendResponseAsErrorAndEnd(ERROR_SERVICE_EXCEPTION);
+            clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ERROR, String.format("Flow service failed with exception: %s", t.getMessage()));
             throw t;
         }
     }
