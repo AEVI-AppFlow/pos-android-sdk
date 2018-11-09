@@ -4,7 +4,6 @@ package com.aevi.sdk.flow.service;
 import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.constants.MessageErrors;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import io.reactivex.subjects.BehaviorSubject;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 
 import java.util.List;
 
+import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -63,7 +63,10 @@ public class BaseApiServiceTest {
         apiService.throwExceptionInProcessRequest = true;
         fakeIncomingMessage(incomingAppMessage);
 
-        verifyMessageSent(AppMessageTypes.FAILURE_MESSAGE, MessageErrors.ERROR_SERVICE_EXCEPTION);
+        FlowServiceException expected =
+                new FlowServiceException(FLOW_SERVICE_ERROR, "Flow service failed with exception: Skimaroo");
+
+        verifyMessageSent(AppMessageTypes.FAILURE_MESSAGE, expected.toJson());
         verifyCommsEnded(true);
     }
 

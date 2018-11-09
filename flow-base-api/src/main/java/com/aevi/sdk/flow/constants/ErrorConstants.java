@@ -15,19 +15,17 @@
 package com.aevi.sdk.flow.constants;
 
 public interface ErrorConstants {
-
-    String INVALID_STATUS = "invalidStatus";
-    String PERMISSION_DENIED = "permissionDenied";
-    String NO_TRANSACTION_FOUND = "noTransactionFound";
-    String PAYMENT_APP_FAILED = "paymentAppFailed";
-    String PAYMENT_APP_TIMED_OUT = "paymentAppTimedOut";
-    String FLOW_APP_FAILED = "flowAppFailed";
-    String FLOW_APP_TIMED_OUT = "flowAppTimedOut";
-    String SPLIT_APP_FAILED = "splitAppFailed";
-    String SPLIT_APP_CANCEL = "splitAppCancel";
+    String PROCESSING_SERVICE_NOT_INSTALLED = "notInstalled";
+    String PROCESSING_SERVICE_BUSY = "busy";
+    String PROCESSING_SERVICE_CANCEL_FAILED = "cancelFailed";
+    String PROCESSING_SERVICE_RESUME_FAILED = "resumeFailed";
     String UNSUPPORTED_OPERATION = "unsupportedOperation";
+    String INVALID_MESSAGE_TYPE = "invalidMessageType";
     String INVALID_REQUEST = "invalidRequest";
-    String UNEXPECTED_ERROR = "unexpectedError";
+    String FLOW_SERVICE_ERROR = "flowServiceError";
+    String FLOW_SERVICE_ACTIVITY_ERROR = "flowServiceActivityError";
+    String STAGE_NOT_SUPPORTED = "stageNotSupported";
     String CONFIG_ERROR = "configError";
-
+    String INCOMPATIBLE_API_VERSION = "incompatibleApiVersion";
+    String UNEXPECTED_ERROR = "unexpectedError";
 }

@@ -14,6 +14,7 @@ import java.util.UUID;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
 import static com.aevi.sdk.flow.constants.ActivityEvents.FINISH;
+import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ACTIVITY_ERROR;
 
 /**
  * A helper class that can be used to start an activity in flow services
@@ -70,12 +71,12 @@ public class ActivityHelper {
         ObservableActivityHelper<String> helper = ObservableActivityHelper.createInstance(context, activityIntent);
         helper.startObservableActivity().subscribe(new Consumer<String>() {
             @Override
-            public void accept(@NonNull String response) throws Exception {
+            public void accept(@NonNull String response) {
                 clientCommunicator.sendResponseAndEnd(response);
             }
         }, new Consumer<Throwable>() {
             @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
+            public void accept(@NonNull Throwable throwable) {
                 handleActivityException(throwable, clientCommunicator);
             }
         });
@@ -90,7 +91,8 @@ public class ActivityHelper {
             MessageException me = (MessageException) throwable;
             clientCommunicator.send(me);
         } else {
-            clientCommunicator.sendResponseAsErrorAndEnd(throwable.getMessage());
+            clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ACTIVITY_ERROR,
+                                                         String.format("Flow service failed during activity: %s", throwable.getMessage()));
         }
     }
 
