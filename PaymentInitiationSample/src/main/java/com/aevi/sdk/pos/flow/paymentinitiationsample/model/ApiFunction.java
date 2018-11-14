@@ -23,6 +23,7 @@ public class ApiFunction {
         FLOW_SERVICES,
         SUBSCRIBE_EVENTS,
         GENERIC_REQUEST,
+        RECEIPT_REQUEST,
         INITIATE_PAYMENT
     }
 

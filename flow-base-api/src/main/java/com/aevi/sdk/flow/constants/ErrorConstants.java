@@ -52,6 +52,9 @@ public interface ErrorConstants {
     String INVALID_MESSAGE_TYPE = "invalidMessageType";
 
 
+    /**
+     * The processing service has received an invalid or unreadable message. This usually indicates a message has been corrupted.
+     */
     String INVALID_REQUEST = "invalidRequest";
 
     /**
@@ -63,6 +66,16 @@ public interface ErrorConstants {
      * Sent if the processing service cannot find a handler(s) for a stage
      */
     String CONFIG_ERROR = "configError";
+
+    /**
+     * Sent if the processing service detects there is more than one config provider installed that provides flow configs
+     */
+    String MULTIPLE_CONFIG_PROVIDERS = "multipleConfigProviders";
+
+    /**
+     * Sent if the processing service detects there is no config provider installed that provides flow configs
+     */
+    String NO_CONFIG_PROVIDER = "noConfigProvider";
 
     /**
      * Sent if the client is using an API that is not the same major version as the one implemented by the processing service

@@ -22,40 +22,31 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
-import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
-import com.aevi.sdk.pos.flow.sample.CustomerProducer;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.ReceiptRequestInitiationActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
 import io.reactivex.disposables.Disposable;
 
-import java.util.List;
-
 import static android.content.Intent.*;
+import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_RECEIPT_DELIVERY;
-import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
 import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
 
-public class GenericRequestFragment extends BaseObservableFragment {
-
-    private static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
-    private static final String UNSUPPORTED_FLOW = "unsupportedFlowType";
+public class ReceiptRequestFragment extends BaseObservableFragment {
 
     @BindView(R.id.request_flow_spinner)
     DropDownSpinner requestFlowSpinner;
@@ -65,7 +56,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
     private Request request;
 
     private PaymentClient paymentClient;
-    private PaymentSettings paymentSettings;
     private Disposable initiateDisposable;
 
     @Override
@@ -76,18 +66,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
+        modelDisplay = ((ReceiptRequestInitiationActivity) getActivity()).getModelDisplay();
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
+        dropDownHelper.setupDropDown(requestFlowSpinner, R.array.receipt_flows);
         paymentClient = PaymentApi.getPaymentClient(getContext());
-
-        PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
-        paymentClient.getPaymentSettings()
-                .subscribe(paymentSettings -> {
-                    GenericRequestFragment.this.paymentSettings = paymentSettings;
-                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_GENERIC);
-                    flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
-                    dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
-                }, throwable -> dropDownHelper.setupDropDown(requestFlowSpinner, R.array.request_flows));
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -127,36 +109,23 @@ public class GenericRequestFragment extends BaseObservableFragment {
     }
 
     private Request createRequest() {
-        if (paymentSettings == null) {
-            return null; // Wait for settings to come back first
-        }
-        Request request = new Request(selectedApiRequestFlow);
+        final String redeliver = getString(R.string.receipts_redeliver);
+        String cash = getString(R.string.receipts_cash);
+
+        Request request = new Request(FLOW_TYPE_RECEIPT_DELIVERY);
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
 
         // Some types require additional information
-        switch (request.getRequestType()) {
-            case FLOW_TYPE_REVERSAL:
-                if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
-                    Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
-                    return null;
-                }
-                request.addAdditionalData(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID,
-                                          lastResponse.getTransactions().get(0).getLastResponse().getId());
-                break;
-            case FLOW_TYPE_RECEIPT_DELIVERY:
-                Amounts cashAmounts = new Amounts(15000, "EUR");
-                String paymentMethod = PAYMENT_METHOD_CASH;
-                String outcome = TransactionResponse.Outcome.APPROVED.name();
-                request.addAdditionalData(RECEIPT_AMOUNTS, cashAmounts);
-                request.addAdditionalData(RECEIPT_PAYMENT_METHOD, paymentMethod);
-                request.addAdditionalData(RECEIPT_OUTCOME, outcome);
-                break;
-            case SHOW_LOYALTY_POINTS_REQUEST:
-                request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
-                break;
-            default:
-                // No extra data required
-                break;
+        if (selectedApiRequestFlow.equals(redeliver)) {
+            if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
+                Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            request.addAdditionalData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
+        } else if (selectedApiRequestFlow.equals(cash)) {
+            request.addAdditionalData(RECEIPT_AMOUNTS, new Amounts(15000, "EUR"));
+            request.addAdditionalData(RECEIPT_PAYMENT_METHOD, PAYMENT_METHOD_CASH);
+            request.addAdditionalData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
         }
         return request;
     }
