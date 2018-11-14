@@ -16,7 +16,7 @@ package com.aevi.sdk.flow.constants;
 
 public interface ErrorConstants {
 
-    /**
+    /***
      * A general purpose error that will be sent for fatal failures in a flow service
      */
     String FLOW_SERVICE_ERROR = "flowServiceError";
@@ -52,6 +52,9 @@ public interface ErrorConstants {
     String INVALID_MESSAGE_TYPE = "invalidMessageType";
 
 
+    /**
+     * The processing service has received an invalid or unreadable message. This usually indicates a message has been corrupted.
+     */
     String INVALID_REQUEST = "invalidRequest";
 
     /**

@@ -10,6 +10,11 @@
         <item>responseRedelivery</item>
     </string-array>
 
+    <string-array name="receipt_flows">
+        <item>@string/receipts_redeliver</item>
+        <item>@string/receipts_cash</item>
+    </string-array>
+
     <string-array name="amounts">
         <item>10.00</item>
         <item>10.00, tip: 5.00</item>
