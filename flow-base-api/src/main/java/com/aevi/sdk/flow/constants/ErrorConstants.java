@@ -16,7 +16,7 @@ package com.aevi.sdk.flow.constants;
 
 public interface ErrorConstants {
 
-    /***
+    /**
      * A general purpose error that will be sent for fatal failures in a flow service
      */
     String FLOW_SERVICE_ERROR = "flowServiceError";
@@ -66,6 +66,16 @@ public interface ErrorConstants {
      * Sent if the processing service cannot find a handler(s) for a stage
      */
     String CONFIG_ERROR = "configError";
+
+    /**
+     * Sent if the processing service detects there is more than one config provider installed that provides flow configs
+     */
+    String MULTIPLE_CONFIG_PROVIDERS = "multipleConfigProviders";
+
+    /**
+     * Sent if the processing service detects there is no config provider installed that provides flow configs
+     */
+    String NO_CONFIG_PROVIDER = "noConfigProvider";
 
     /**
      * Sent if the client is using an API that is not the same major version as the one implemented by the processing service
