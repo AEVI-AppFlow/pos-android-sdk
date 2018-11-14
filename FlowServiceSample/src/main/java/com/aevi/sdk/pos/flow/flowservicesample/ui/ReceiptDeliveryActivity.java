@@ -68,7 +68,6 @@ public class ReceiptDeliveryActivity extends BaseSampleAppCompatActivity {
                 sendResponseAndFinish(new Response(request, false, "Transaction data missing"));
             }
         } else {
-
             AdditionalData receiptData = new AdditionalData();
             Amounts amounts = requestData.getValue(RECEIPT_AMOUNTS, Amounts.class);
             String paymentMethod = requestData.getStringValue(RECEIPT_PAYMENT_METHOD);

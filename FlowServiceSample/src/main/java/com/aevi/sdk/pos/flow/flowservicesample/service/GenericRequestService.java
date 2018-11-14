@@ -15,13 +15,14 @@
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
 import android.util.Log;
-import com.aevi.sdk.flow.constants.FlowTypes;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.ReceiptDeliveryActivity;
+
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_RECEIPT_DELIVERY;
 
 /**
  * Illustrates how to implement a service to handle a bespoke request type.
@@ -40,7 +41,7 @@ public class GenericRequestService extends BaseGenericService {
             case SHOW_LOYALTY_POINTS_REQUEST:
                 stageModel.processInActivity(getBaseContext(), LoyaltyBalanceActivity.class);
                 break;
-            case FlowTypes.FLOW_TYPE_RECEIPT_DELIVERY:
+            case FLOW_TYPE_RECEIPT_DELIVERY:
                 stageModel.processInActivity(getBaseContext(), ReceiptDeliveryActivity.class);
                 break;
             default:
