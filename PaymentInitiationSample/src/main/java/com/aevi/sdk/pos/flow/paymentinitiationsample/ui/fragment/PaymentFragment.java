@@ -140,7 +140,7 @@ public class PaymentFragment extends BaseObservableFragment {
             String flowType = ((String) flowSpinner.getSelectedItem());
             String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
             PaymentFlowServices servicesForFlow = paymentSettings.getServicesForFlow(flowName);
-            if (servicesForFlow == null || servicesForFlow.getAllSupportedCurrencies().isEmpty()) {
+            if (servicesForFlow.getAllSupportedCurrencies().isEmpty()) {
                 servicesForFlow = paymentSettings.getPaymentFlowServices();
             }
             dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(servicesForFlow.getAllSupportedCurrencies()), false);

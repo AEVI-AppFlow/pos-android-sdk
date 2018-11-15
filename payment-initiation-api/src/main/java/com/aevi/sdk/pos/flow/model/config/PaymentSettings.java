@@ -111,7 +111,10 @@ public class PaymentSettings implements Jsonable {
         for (FlowStage flowStage : flowConfig.getStages(true)) {
             if (flowStage.getAppExecutionType() != AppExecutionType.NONE && !flowStage.getFlowApps().isEmpty()) {
                 for (FlowApp flowApp : flowStage.getFlowApps()) {
-                    paymentFlowServices.add(allServices.getFlowServiceFromId(flowApp.getId()));
+                    PaymentFlowServiceInfo flowServiceFromId = allServices.getFlowServiceFromId(flowApp.getId());
+                    if (flowServiceFromId != null) {
+                        paymentFlowServices.add(flowServiceFromId);
+                    }
                 }
             }
         }
@@ -121,7 +124,6 @@ public class PaymentSettings implements Jsonable {
 
         return allServices;
     }
-
 
     @Override
     public String toJson() {
