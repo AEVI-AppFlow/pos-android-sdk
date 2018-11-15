@@ -16,14 +16,12 @@ package com.aevi.sdk.flow.service;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.BaseModel;
-import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import io.reactivex.functions.Consumer;
 
 import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
+import static com.aevi.sdk.flow.constants.ErrorConstants.UNEXPECTED_ERROR;
 import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
 
 /**
@@ -64,7 +62,19 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
                         if (unwrapped != null) {
                             notifyResponse(unwrapped);
                         }
+                    } else if (AppMessageTypes.FAILURE_MESSAGE.equals(appMessage.getMessageType())) {
+                        FlowException flowException = FlowException.fromJson(appMessage.getMessageData());
+                        notifyError(flowException.getErrorCode(), flowException.getErrorMessage());
                     }
+                }
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                if (throwable instanceof FlowException) {
+                    notifyError(((FlowException) throwable).getErrorCode(), ((FlowException) throwable).getErrorMessage());
+                } else {
+                    notifyError(UNEXPECTED_ERROR, throwable.getMessage());
                 }
             }
         });
@@ -82,4 +92,12 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
      * @param response The final response sent after completion of a flow
      */
     protected abstract void notifyResponse(RESPONSE response);
+
+    /**
+     * This method will be called upon unrecoverable errors in the flow.
+     *
+     * @param errorCode    The error code as per {@link com.aevi.sdk.flow.constants.ErrorConstants}
+     * @param errorMessage Error message to further outline the problem
+     */
+    protected abstract void notifyError(String errorCode, String errorMessage);
 }

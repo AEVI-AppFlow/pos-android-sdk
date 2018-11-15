@@ -78,7 +78,7 @@ public class Response extends BaseModel {
         super(requestId);
         this.success = success;
         this.outcomeMessage = outcomeMessage != null ? outcomeMessage : "";
-        this.responseData = responseData;
+        this.responseData = responseData != null ? responseData : new AdditionalData();
     }
 
     /**

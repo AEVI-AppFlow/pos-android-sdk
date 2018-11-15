@@ -2,10 +2,7 @@ package com.aevi.sdk.flow.service;
 
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import io.reactivex.subjects.BehaviorSubject;
 import org.junit.Before;
@@ -97,9 +94,20 @@ public class BaseListenerServiceTest {
         verifyCommsEnded(true);
     }
 
+    @Test
+    public void willSendErrorMessage() throws Exception {
+        InternalData internalData = new InternalData(PaymentFlowServiceApi.getApiVersion());
+        internalData.setSenderPackageName(FLOW_PROCESSING_SERVICE);
+        AppMessage errorMessage = new AppMessage(AppMessageTypes.FAILURE_MESSAGE, new FlowException("beep", "blarp").toJson(), internalData);
+        fakeIncomingMessage(errorMessage);
+        setupNewFPSClient();
+
+        assertThat(listenerService.errorCode).isEqualTo("beep");
+        assertThat(listenerService.errorMessage).isEqualTo("blarp");
+    }
+
     private void fakeIncomingMessage(AppMessage appMessage) {
         lastMessage = appMessage.toJson();
-        when(channelServer.getLastMessageBlocking()).thenReturn(lastMessage);
         incomingMessagePublisher.onNext(appMessage.toJson());
     }
 
@@ -125,6 +133,8 @@ public class BaseListenerServiceTest {
 
         Response responseReceived;
         boolean responseCalled;
+        String errorCode;
+        String errorMessage;
 
         protected TestListenerService(ChannelServer channelServer) {
             super(Response.class, "1.0.0");
@@ -135,6 +145,12 @@ public class BaseListenerServiceTest {
         protected void notifyResponse(Response response) {
             responseCalled = true;
             responseReceived = response;
+        }
+
+        @Override
+        protected void notifyError(String errorCode, String errorMessage) {
+            this.errorCode = errorCode;
+            this.errorMessage = errorMessage;
         }
 
     }

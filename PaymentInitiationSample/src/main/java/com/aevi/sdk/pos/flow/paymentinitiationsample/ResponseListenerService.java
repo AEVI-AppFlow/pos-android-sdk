@@ -37,4 +37,14 @@ public class ResponseListenerService extends BaseResponseListenerService {
         Toast.makeText(this, "Received status update response", Toast.LENGTH_SHORT).show();
         Log.d(ResponseListenerService.class.getSimpleName(), "Status update response: " + response.toJson());
     }
+
+    @Override
+    protected void notifyError(String errorCode, String errorMessage) {
+        Intent intent = new Intent(this, GenericResultActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT |
+                                FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY,
+                        new Response("N/A", false, errorCode + " : " + errorMessage, null).toJson());
+        startActivity(intent);
+    }
 }
