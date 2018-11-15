@@ -35,6 +35,14 @@
             </intent-filter>
         </service>
 
+        <service
+                android:name=".service.StatusUpdateService"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.aevi.sdk.flow.action.PROCESS_STATUS_UPDATE"/>
+            </intent-filter>
+        </service>
+
         <!--Standard flow services do not need to extend ActivityProxyService. This sample does it to enable the stage enable/disable controls.-->
         <service
                 android:name=".service.FlowActivityProxyService"

@@ -18,6 +18,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -138,8 +139,11 @@ public class PaymentFragment extends BaseObservableFragment {
             // This will trigger an update to all fields as per below
             String flowType = ((String) flowSpinner.getSelectedItem());
             String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
-            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()),
-                                         false);
+            PaymentFlowServices servicesForFlow = paymentSettings.getServicesForFlow(flowName);
+            if (servicesForFlow == null || servicesForFlow.getAllSupportedCurrencies().isEmpty()) {
+                servicesForFlow = paymentSettings.getPaymentFlowServices();
+            }
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(servicesForFlow.getAllSupportedCurrencies()), false);
         }
     }
 
@@ -238,28 +242,22 @@ public class PaymentFragment extends BaseObservableFragment {
     @OnClick(R.id.send)
     public void onSend() {
         PaymentClient paymentClient = PaymentApi.getPaymentClient(getContext());
-        final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
-                        Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-        initiateDisposable = paymentClient.initiatePayment(paymentBuilder.build())
-                .subscribe(response -> {
-                    SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-                    if (isAdded()) {
-                        intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-                        startActivity(intent);
-                    }
-                }, throwable -> {
-                    if (throwable instanceof FlowException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                    } else {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
-                    }
-                    if (isAdded()) {
-                        startActivity(intent);
-                    }
-                });
+        // Responses come in via PaymentResponseListenerService, and will launch PaymentResultActivity from there
+        paymentClient.initiatePayment(paymentBuilder.build())
+                .subscribe(() -> Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request"),
+                           throwable -> {
+                               final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
+                               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                       Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                               if (throwable instanceof FlowException) {
+                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                               } else {
+                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
+                               }
+                               if (isAdded()) {
+                                   startActivity(intent);
+                               }
+                           });
     }
 
     public Payment getPayment() {

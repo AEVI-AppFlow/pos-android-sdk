@@ -18,7 +18,9 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
@@ -30,6 +32,7 @@ import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.config.FlowConfigurations;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
@@ -51,6 +54,12 @@ public class ReceiptRequestFragment extends BaseObservableFragment {
     @BindView(R.id.request_flow_spinner)
     DropDownSpinner requestFlowSpinner;
 
+    @BindView(R.id.send)
+    Button sendButton;
+
+    @BindView(R.id.message)
+    TextView messageView;
+
     private String selectedApiRequestFlow;
     private ModelDisplay modelDisplay;
     private Request request;
@@ -70,6 +79,16 @@ public class ReceiptRequestFragment extends BaseObservableFragment {
         final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
         dropDownHelper.setupDropDown(requestFlowSpinner, R.array.receipt_flows);
         paymentClient = PaymentApi.getPaymentClient(getContext());
+
+        PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
+        paymentClient.getPaymentSettings()
+                .subscribe(paymentSettings -> {
+                    FlowConfigurations flowConfigurations = paymentSettings.getFlowConfigurations();
+                    if (!flowConfigurations.isFlowTypeSupported(FLOW_TYPE_RECEIPT_DELIVERY)) {
+                        messageView.setText("Receipt delivery is not a supported flow");
+                        setViewsEnabled(false);
+                    }
+                }, throwable -> Log.e("Receipts", "Failed", throwable));
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -79,32 +98,35 @@ public class ReceiptRequestFragment extends BaseObservableFragment {
         if (request != null && modelDisplay != null) {
             modelDisplay.showRequest(request);
         }
+        if (request != null) {
+            messageView.setText("");
+            setViewsEnabled(true);
+        } else {
+            setViewsEnabled(false);
+        }
     }
 
     @OnClick(R.id.send)
     public void onProcessRequest() {
         if (request != null) {
-            Intent intent = new Intent(getContext(), GenericResultActivity.class);
-            intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT | FLAG_ACTIVITY_NO_ANIMATION);
             initiateDisposable = paymentClient.initiateRequest(request)
-                    .subscribe(response -> {
-                        if (isAdded()) {
-                            intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                            startActivity(intent);
-                        }
-                    }, throwable -> {
-                        Response response;
-                        if (throwable instanceof FlowException) {
-                            response = new Response(request, false, ((FlowException) throwable).getErrorCode()
-                                    + " : " + throwable.getMessage());
-                        } else {
-                            response = new Response(request, false, throwable.getMessage());
-                        }
-                        if (isAdded()) {
-                            intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                            startActivity(intent);
-                        }
-                    });
+                    .subscribe(() -> messageView.setText("Receipt request accepted by FPS"),
+                               throwable -> {
+                                   Response response;
+                                   if (throwable instanceof FlowException) {
+                                       response = new Response(request, false, ((FlowException) throwable).getErrorCode()
+                                               + " : " + throwable.getMessage());
+                                   } else {
+                                       response = new Response(request, false, throwable.getMessage());
+                                   }
+                                   if (isAdded()) {
+                                       Intent intent = new Intent(getContext(), GenericResultActivity.class);
+                                       intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT |
+                                                               FLAG_ACTIVITY_NO_ANIMATION);
+                                       intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+                                       startActivity(intent);
+                                   }
+                               });
         }
     }
 
@@ -118,7 +140,7 @@ public class ReceiptRequestFragment extends BaseObservableFragment {
         // Some types require additional information
         if (selectedApiRequestFlow.equals(redeliver)) {
             if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
-                Toast.makeText(getContext(), "Please complete a successful payment before using this request type", Toast.LENGTH_SHORT).show();
+                messageView.setText("Please complete a successful payment before using this request type");
                 return null;
             }
             request.addAdditionalData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
@@ -128,6 +150,10 @@ public class ReceiptRequestFragment extends BaseObservableFragment {
             request.addAdditionalData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
         }
         return request;
+    }
+
+    private void setViewsEnabled(boolean enabled) {
+        sendButton.setEnabled(enabled);
     }
 
     @Override

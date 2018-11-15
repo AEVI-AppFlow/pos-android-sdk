@@ -61,12 +61,12 @@ public class SampleContext {
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.FLOW_SERVICES, "List flow services",
                                          "Query the API for information about available flow services"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.DEVICES, "List devices", "Query the API for a list of available devices"));
-        apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.GENERIC_REQUEST, "Initiate a non-payment request",
-                                         "Initiate a general financial request, such as reversal or tokenisation"));
-        apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.RECEIPT_REQUEST, "Initiate a receipt request",
-                                         "Choose between options to initiate a receipt request"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.INITIATE_PAYMENT, "Initiate a payment",
                                          "Choose between a wide range of options to initiate a specific payment"));
+        apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.GENERIC_REQUEST, "Initiate a non-payment request",
+                                         "Initiate a generic request, such as tokenisation, a custom request type or a status update"));
+        apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.RECEIPT_REQUEST, "Initiate a receipt request",
+                                         "Choose between options to initiate a receipt request"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.SUBSCRIBE_EVENTS, "System events", "Display received system events"));
         return apiFunctions;
     }

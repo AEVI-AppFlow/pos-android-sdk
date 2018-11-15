@@ -27,19 +27,19 @@ import com.aevi.android.rxmessenger.Channels;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
-import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
+import io.reactivex.*;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
 import java.util.List;
 
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.DEVICE_INFO_REQUEST;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
+import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTION;
+import static com.aevi.sdk.flow.constants.ResponseMechanisms.RESPONSE_SERVICE;
 
 /**
  * Base client for all API domain implementations.
@@ -55,7 +55,8 @@ public abstract class BaseApiClient {
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".SystemEventService");
     protected static final ComponentName INFO_PROVIDER_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".InfoProviderService");
-    protected static final FlowException NO_FPS_EXCEPTION = new FlowException(ErrorConstants.PROCESSING_SERVICE_NOT_INSTALLED, "Processing service is not installed");
+    protected static final FlowException NO_FPS_EXCEPTION =
+            new FlowException(ErrorConstants.PROCESSING_SERVICE_NOT_INSTALLED, "Processing service is not installed");
 
     private final InternalData internalData;
     protected final Context context;
@@ -63,6 +64,7 @@ public abstract class BaseApiClient {
 
     protected BaseApiClient(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
+        internalData.setSenderPackageName(context.getPackageName());
         this.context = context;
         checkCommsChannel(context);
     }
@@ -82,12 +84,32 @@ public abstract class BaseApiClient {
     }
 
     @NonNull
-    public Single<Response> initiateRequest(final Request request) {
+    public Completable initiateRequest(final Request request) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Completable.error(NO_FPS_EXCEPTION);
+        }
+        final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, request.toJson(), getInternalData());
+        appMessage.setResponseMechanism(RESPONSE_SERVICE);
+        return requestMessenger
+                .sendMessage(appMessage.toJson())
+                .singleOrError()
+                .ignoreElement()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        requestMessenger.closeConnection();
+                    }
+                });
+    }
+
+    protected Single<Response> initiateRequestDirect(final Request request) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, request.toJson(), getInternalData());
+        appMessage.setResponseMechanism(MESSENGER_CONNECTION);
         return requestMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
@@ -119,7 +141,7 @@ public abstract class BaseApiClient {
             return Single.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient deviceMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.DEVICE_INFO_REQUEST, getInternalData());
+        AppMessage appMessage = new AppMessage(DEVICE_INFO_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, Device>() {
@@ -149,7 +171,7 @@ public abstract class BaseApiClient {
             return Observable.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient deviceMessenger = getMessengerClient(SYSTEM_EVENT_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(AppMessageTypes.REQUEST_MESSAGE, getInternalData());
+        AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
                 .map(new Function<String, FlowEvent>() {

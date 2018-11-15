@@ -5,8 +5,11 @@ import android.os.Build;
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.Amounts;
+import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
@@ -60,10 +63,11 @@ public class PaymentClientImplTest {
         verify(messengerClient).closeConnection();
     }
 
+    @Test
     public void initiatePaymentShouldErrorIfNoFps() {
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
-        TestObserver<PaymentResponse> testObserver = paymentClient.initiatePayment(payment).test();
-        assertThat(testObserver.errors().get(0)).isInstanceOf(IllegalStateException.class);
+        TestObserver<Void> test = paymentClient.initiatePayment(payment).test();
+        assertThat(test.errors().get(0)).isInstanceOf(FlowException.class);
     }
 
     private AppMessage callSendAndCaptureMessage() {

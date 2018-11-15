@@ -8,6 +8,7 @@ import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
+import com.aevi.sdk.flow.stage.StatusUpdateModel;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.stage.*;
@@ -73,6 +74,10 @@ public abstract class BasePaymentFlowService extends BaseApiService {
                         break;
                     case POST_GENERIC:
                         onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request)));
+                        break;
+                    case STATUS_UPDATE:
+                        onStatusUpdate(StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request)));
+                        break;
                     default:
                         onUnknownStage(flowStage, clientCommunicator, request);
                         break;
@@ -180,6 +185,15 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostGeneric(PostGenericStageModel model) {
+        throw new StageNotImplementedException(POST_GENERIC);
+    }
+
+    /**
+     * Override to handle a request in the status-update stage.
+     *
+     * @param model The model relevant for this stage
+     */
+    protected void onStatusUpdate(StatusUpdateModel model) {
         throw new StageNotImplementedException(POST_GENERIC);
     }
 
