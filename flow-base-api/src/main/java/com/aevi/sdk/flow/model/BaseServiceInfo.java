@@ -29,7 +29,6 @@ public abstract class BaseServiceInfo extends BaseModel {
 
     private final String packageName;
     private final String vendor;
-    private final String logicalDeviceId;
     private final String serviceVersion;
     private final String apiVersion;
     private final String displayName;
@@ -43,17 +42,16 @@ public abstract class BaseServiceInfo extends BaseModel {
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
-        this("", "", "", "", "", "", "", false,
+        this("", "", "", "", "", "", false,
              null, null, null, null);
     }
 
-    protected BaseServiceInfo(String id, String packageName, String vendor, String logicalDeviceId, String serviceVersion, String apiVersion,
+    protected BaseServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion,
                               String displayName, boolean hasAccessibilityMode, Set<String> supportedFlowTypes, Set<String> customRequestTypes,
                               Set<String> supportedDataKeys, AdditionalData additionalInfo) {
         super(id);
         this.packageName = packageName;
         this.vendor = vendor;
-        this.logicalDeviceId = logicalDeviceId;
         this.serviceVersion = serviceVersion;
         this.apiVersion = apiVersion;
         this.displayName = displayName;
@@ -81,15 +79,6 @@ public abstract class BaseServiceInfo extends BaseModel {
     @NonNull
     public String getVendor() {
         return vendor;
-    }
-
-    /**
-     * Get the logical device id, which is the id this service uses to identify the device it is running on.
-     *
-     * @return The logical device id
-     */
-    public String getLogicalDeviceId() {
-        return logicalDeviceId;
     }
 
     /**
@@ -302,7 +291,6 @@ public abstract class BaseServiceInfo extends BaseModel {
         return hasAccessibilityMode == that.hasAccessibilityMode &&
                 Objects.equals(packageName, that.packageName) &&
                 Objects.equals(vendor, that.vendor) &&
-                Objects.equals(logicalDeviceId, that.logicalDeviceId) &&
                 Objects.equals(serviceVersion, that.serviceVersion) &&
                 Objects.equals(apiVersion, that.apiVersion) &&
                 Objects.equals(displayName, that.displayName) &&
@@ -317,7 +305,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), packageName, vendor, logicalDeviceId, serviceVersion, apiVersion, displayName, hasAccessibilityMode,
+        return Objects.hash(super.hashCode(), packageName, vendor, serviceVersion, apiVersion, displayName, hasAccessibilityMode,
                             supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, stages, flowAndStagesDefinitions);
     }
 }
