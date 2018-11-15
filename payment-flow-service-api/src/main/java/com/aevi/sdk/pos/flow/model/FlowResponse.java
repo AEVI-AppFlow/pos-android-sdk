@@ -21,6 +21,7 @@ import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Sendable;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -225,7 +226,8 @@ public class FlowResponse implements Sendable {
      * @return True if data has been augmented, false otherwisee
      */
     public boolean hasAugmentedData() {
-        return requestAdditionalData != null || updatedRequestAmounts != null || amountsPaid != null || paymentReferences != null || enableSplit;
+        return requestAdditionalData != null || updatedRequestAmounts != null || amountsPaid != null || paymentReferences != null || enableSplit
+                || basket != null || customer != null;
     }
 
     /**
@@ -283,6 +285,8 @@ public class FlowResponse implements Sendable {
         this.paymentReferences = flowResponse.paymentReferences;
         this.enableSplit = flowResponse.enableSplit;
         this.cancelTransaction = flowResponse.cancelTransaction;
+        this.basket = flowResponse.basket;
+        this.customer = flowResponse.customer;
     }
 
     private void validateAmounts() {
@@ -310,41 +314,25 @@ public class FlowResponse implements Sendable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         FlowResponse that = (FlowResponse) o;
-
-        if (enableSplit != that.enableSplit) {
-            return false;
-        }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        if (updatedRequestAmounts != null ? !updatedRequestAmounts.equals(that.updatedRequestAmounts) : that.updatedRequestAmounts != null) {
-            return false;
-        }
-        if (requestAdditionalData != null ? !requestAdditionalData.equals(that.requestAdditionalData) : that.requestAdditionalData != null) {
-            return false;
-        }
-        if (amountsPaid != null ? !amountsPaid.equals(that.amountsPaid) : that.amountsPaid != null) {
-            return false;
-        }
-        if (amountsPaidPaymentMethod != null ? !amountsPaidPaymentMethod.equals(that.amountsPaidPaymentMethod) :
-                that.amountsPaidPaymentMethod != null) {
-            return false;
-        }
-        return paymentReferences != null ? paymentReferences.equals(that.paymentReferences) : that.paymentReferences == null;
+        return enableSplit == that.enableSplit &&
+                cancelTransaction == that.cancelTransaction &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(updatedRequestAmounts, that.updatedRequestAmounts) &&
+                Objects.equals(requestAdditionalData, that.requestAdditionalData) &&
+                Objects.equals(amountsPaid, that.amountsPaid) &&
+                Objects.equals(basket, that.basket) &&
+                Objects.equals(customer, that.customer) &&
+                Objects.equals(amountsPaidPaymentMethod, that.amountsPaidPaymentMethod) &&
+                Objects.equals(paymentReferences, that.paymentReferences);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (updatedRequestAmounts != null ? updatedRequestAmounts.hashCode() : 0);
-        result = 31 * result + (requestAdditionalData != null ? requestAdditionalData.hashCode() : 0);
-        result = 31 * result + (amountsPaid != null ? amountsPaid.hashCode() : 0);
-        result = 31 * result + (amountsPaidPaymentMethod != null ? amountsPaidPaymentMethod.hashCode() : 0);
-        result = 31 * result + (paymentReferences != null ? paymentReferences.hashCode() : 0);
-        result = 31 * result + (enableSplit ? 1 : 0);
-        return result;
+
+        return Objects
+                .hash(id, updatedRequestAmounts, requestAdditionalData, amountsPaid, basket, customer, amountsPaidPaymentMethod, paymentReferences,
+                      enableSplit, cancelTransaction);
     }
 
     @Override

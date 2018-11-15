@@ -47,7 +47,6 @@ public class PaymentFlowServiceInfoBuilderTest {
                 .withCanAdjustAmounts(true)
                 .withSupportedCurrencies("GBP", "AUD")
                 .withDefaultCurrency("GBP")
-                .withLogicalDeviceId("12345")
                 .withSupportsAccessibilityMode(true)
                 .withManualEntrySupport(true)
                 .build(context);
@@ -61,7 +60,6 @@ public class PaymentFlowServiceInfoBuilderTest {
         assertThat(serviceInfo.getPaymentMethods()).containsExactlyInAnyOrder("pigeon", "rock");
         assertThat(serviceInfo.getSupportedCurrencies()).containsExactlyInAnyOrder("GBP", "AUD");
         assertThat(serviceInfo.getDefaultCurrency()).isEqualTo("GBP");
-        assertThat(serviceInfo.getLogicalDeviceId()).isEqualTo("12345");
         assertThat(serviceInfo.supportsAccessibilityMode()).isEqualTo(true);
         assertThat(serviceInfo.getAdditionalInfo().getValue("supportsManualEntry", Boolean.class)).isTrue();
     }
