@@ -20,6 +20,7 @@ import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Response;
+import io.reactivex.functions.Consumer;
 
 import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
@@ -42,28 +43,31 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     }
 
     @Override
-    protected void onNewClient(ChannelServer channelServer, String packageName) {
+    protected void onNewClient(final ChannelServer channelServer, final String packageName) {
         sendAck(channelServer);
-        String lastMessage = channelServer.getLastMessageBlocking();
-        channelServer.sendEndStream();
-        if (FLOW_PROCESSING_SERVICE.equals(packageName)) {
-            AppMessage appMessage = AppMessage.fromJson(lastMessage);
-            checkVersions(appMessage, internalData);
+        channelServer.subscribeToMessages().take(1).subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String message) throws Exception {
+                AppMessage appMessage = AppMessage.fromJson(message);
+                checkVersions(appMessage, internalData);
+                channelServer.sendEndStream();
+                if (FLOW_PROCESSING_SERVICE.equals(appMessage.getInternalData().getSenderPackageName())) {
+                    if (AppMessageTypes.RESPONSE_MESSAGE.equals(appMessage.getMessageType())) {
+                        Response response = Response.fromJson(appMessage.getMessageData());
+                        RESPONSE unwrapped = null;
+                        if (responseClass.equals(Response.class)) {
+                            unwrapped = (RESPONSE) response;
+                        } else {
+                            unwrapped = response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, responseClass);
+                        }
 
-            if (AppMessageTypes.RESPONSE_MESSAGE.equals(appMessage.getMessageType())) {
-                Response response = Response.fromJson(appMessage.getMessageData());
-                RESPONSE unwrapped = null;
-                if (responseClass.equals(Response.class)) {
-                    unwrapped = (RESPONSE) response;
-                } else {
-                    unwrapped = response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, responseClass);
-                }
-
-                if (unwrapped != null) {
-                    notifyResponse(unwrapped);
+                        if (unwrapped != null) {
+                            notifyResponse(unwrapped);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     private void sendAck(ChannelServer channelServer) {

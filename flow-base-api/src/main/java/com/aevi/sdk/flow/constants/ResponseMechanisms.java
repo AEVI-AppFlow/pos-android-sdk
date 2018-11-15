@@ -15,16 +15,9 @@
 package com.aevi.sdk.flow.constants;
 
 /**
- * Collection of message types used for communication between FPS and various apps.
+ * Collection of supported response mechanism.
  */
-public interface AppMessageTypes {
-
-    String REQUEST_MESSAGE = "request";
-    String PAYMENT_MESSAGE = "payment";
-    String RESPONSE_MESSAGE = "response";
-    String PAYMENT_FLOW_CONFIG_REQUEST = "paymentFlowConfigRequest";
-    String DEVICE_INFO_REQUEST = "deviceInfoRequest";
-    String FAILURE_MESSAGE = "failure";
-    String FORCE_FINISH_MESSAGE = "forceFinish";
-    String REQUEST_ACK_MESSAGE = "requestAck";
+public interface ResponseMechanisms {
+    String MESSENGER_CONNECTION = "messengerConnection";
+    String RESPONSE_SERVICE = "responseService";
 }

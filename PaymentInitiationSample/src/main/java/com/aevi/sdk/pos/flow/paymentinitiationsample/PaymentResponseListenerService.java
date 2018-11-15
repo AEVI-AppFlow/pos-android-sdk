@@ -13,16 +13,22 @@
  */
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
-import android.util.Log;
+import android.content.Intent;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
 
 public class PaymentResponseListenerService extends BasePaymentResponseListenerService {
 
-    private static final String TAG = PaymentResponseListenerService.class.getSimpleName();
-
     @Override
     protected void notifyResponse(PaymentResponse paymentResponse) {
-        Log.d(TAG, "Got response in payment response listener: " + paymentResponse.toJson());
+        final Intent intent = new Intent(this, PaymentResultActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
+                                Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        SampleContext.getInstance(this).setLastReceivedPaymentResponse(paymentResponse);
+        intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, paymentResponse.toJson());
+        startActivity(intent);
     }
 }

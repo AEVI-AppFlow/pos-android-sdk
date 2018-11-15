@@ -18,12 +18,11 @@ import com.aevi.sdk.pos.flow.PaymentInitiationConfig;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 
 /**
- * Extend this service in your application if you want to listen to payment responses initiated by your application.
+ * Extend this service in your application if you want to listen to payment responses initiated by your application,
+ * or if you are implementing a flow service and want to listen to the final `PaymentResponse` when the flow is complete.
  *
- * OR If you are implementing a flow service then extend this service to listen to the final `PaymentResponse` when the flow is complete.
- *
- * In either case you must extend this service in your own application and register it correctly in your manifest. The service must
- * be exported and must include the intent-filter "com.aevi.sdk.flow.listener.PAYMENT_RESPONSE"
+ * In either case you must extend this service in your application and register it correctly in your manifest. The service must
+ * be exported and must include the intent-filter "com.aevi.sdk.flow.action.PROCESS_PAYMENT_RESPONSE"
  *
  * {@code
  *
@@ -31,15 +30,12 @@ import com.aevi.sdk.pos.flow.model.PaymentResponse;
  * android:name=".PaymentResponseListenerService"
  * android:exported="true">
  * <intent-filter>
- * <action android:name="com.aevi.sdk.flow.listener.PAYMENT_RESPONSE"/>
+ * <action android:name="com.aevi.sdk.flow.action.PROCESS_PAYMENT_RESPONSE"/>
  * </intent-filter>
  * </service>
  * }
  *
  * The service will be called asynchronously by the flow processing service. Therefore, the original request may have completed before this is called.
- *
- * This service can be used to verify a response and/or recover from crashes or issues in your application that may have prevented the response being
- * received in the original initiation call.
  */
 public abstract class BasePaymentResponseListenerService extends BaseListenerService<PaymentResponse> {
 

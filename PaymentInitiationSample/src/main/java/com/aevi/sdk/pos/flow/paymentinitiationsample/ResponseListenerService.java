@@ -13,16 +13,28 @@
  */
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
+
+import static android.content.Intent.*;
 
 public class ResponseListenerService extends BaseResponseListenerService {
 
-    private static final String TAG = ResponseListenerService.class.getSimpleName();
+    @Override
+    protected void notifyGenericResponse(Response response) {
+        Intent intent = new Intent(this, GenericResultActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT | FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
+        startActivity(intent);
+    }
 
     @Override
-    protected void notifyResponse(Response response) {
-        Log.d(TAG, "Got response in listener: " + response.toJson());
+    protected void notifyStatusUpdateResponse(Response response) {
+        Toast.makeText(this, "Received status update response", Toast.LENGTH_SHORT).show();
+        Log.d(ResponseListenerService.class.getSimpleName(), "Status update response: " + response.toJson());
     }
 }

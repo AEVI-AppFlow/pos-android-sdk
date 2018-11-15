@@ -20,6 +20,8 @@ import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTION;
+
 /**
  * Application message data for use between FPS and applications it calls.
  */
@@ -29,11 +31,13 @@ public class AppMessage implements Jsonable {
 
     private final String messageType; // See AppMessageTypes
     private final String messageData; // The message data in JSON
+    private String responseMechanism; // See ResponseMechanisms
     private String internalData; // Data that may be useful for internal use, such as API version, etc
 
     public AppMessage(String messageType, String messageData, InternalData internalData) {
         this.messageType = messageType != null ? messageType : "N/A";
         this.messageData = messageData != null ? messageData : EMPTY_DATA;
+        this.responseMechanism = MESSENGER_CONNECTION;
         setInternalData(internalData);
     }
 
@@ -47,6 +51,14 @@ public class AppMessage implements Jsonable {
 
     public AppMessage(String messageType) {
         this(messageType, null, null);
+    }
+
+    public void setResponseMechanism(String responseMechanism) {
+        this.responseMechanism = responseMechanism;
+    }
+
+    public String getResponseMechanism() {
+        return responseMechanism;
     }
 
     /**

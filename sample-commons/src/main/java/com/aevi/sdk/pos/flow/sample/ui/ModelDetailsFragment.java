@@ -448,6 +448,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             Object value = additionalData.getValue(key);
             if (value != null && (value instanceof Number || value instanceof String)) {
                 itemList.add(getStringPair(key, value));
+            } else if (value instanceof Basket) {
+                itemList.add(getStringPair(key, ((Basket) value).getBasketName()));
+            } else if (value instanceof Customer) {
+                itemList.add(getStringPair(key, ((Customer) value).getFullName()));
             }
         }
     }

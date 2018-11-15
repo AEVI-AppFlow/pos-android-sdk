@@ -109,6 +109,10 @@ public abstract class BaseStageModel {
         }
     }
 
+    protected void sendEmptyResponse() {
+        doSendResponse("{}");
+    }
+
     public abstract String getRequestJson();
 
     protected Activity getActivity() {

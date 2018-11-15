@@ -51,11 +51,15 @@ public interface ErrorConstants {
      */
     String INVALID_MESSAGE_TYPE = "invalidMessageType";
 
-
     /**
      * The processing service has received an invalid or unreadable message. This usually indicates a message has been corrupted.
      */
     String INVALID_REQUEST = "invalidRequest";
+
+    /**
+     * Sent if the client application is missing a response listener service implementation
+     */
+    String MISSING_RESPONSE_LISTENER = "missingResponseListener";
 
     /**
      * Sent if a flow service does not support the stage it has just been called for

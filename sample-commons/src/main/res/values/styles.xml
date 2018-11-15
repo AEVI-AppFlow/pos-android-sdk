@@ -12,6 +12,11 @@
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
+    <style name="LargeHeader" parent="Base.TextAppearance.AppCompat.Large">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
     <style name="Header" parent="Base.TextAppearance.AppCompat.Medium">
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">5dp</item>

@@ -35,6 +35,7 @@ public class FpsSettings implements Jsonable {
     public static final int SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 1200;
     public static final int FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
     public static final int PAYMENT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
+    public static final int STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT = 10;
     public static final int USER_SELECTION_TIMEOUT_SECONDS_DEFAULT = 60;
 
     private boolean isMultiDevice = MULTI_DEVICE_ENABLED_DEFAULT;
@@ -43,6 +44,7 @@ public class FpsSettings implements Jsonable {
     private int splitResponseTimeoutSeconds = SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
     private int flowResponseTimeoutSeconds = FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
     private int paymentResponseTimeoutSeconds = PAYMENT_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
+    private int statusUpdateTimeoutSeconds = STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT;
     private int appOrDeviceSelectionTimeoutSeconds = USER_SELECTION_TIMEOUT_SECONDS_DEFAULT;
 
     private boolean shouldAbortOnFlowAppError = ABORT_ON_FLOW_APP_ERROR_DEFAULT;
@@ -185,6 +187,32 @@ public class FpsSettings implements Jsonable {
      */
     public void setPaymentResponseTimeoutSeconds(int responseTimeout) {
         paymentResponseTimeoutSeconds = responseTimeout;
+    }
+
+    /**
+     * Get the status update timeout in seconds.
+     *
+     * This instructs FPS how long to wait before timing out for status updates.
+     *
+     * See {@link #STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT} for default.
+     *
+     * @return The status update timeout in seconds
+     */
+    public int getStatusUpdateTimeoutSeconds() {
+        return statusUpdateTimeoutSeconds;
+    }
+
+    /**
+     * Set the status update timeout in seconds.
+     *
+     * This instructs FPS how long to wait before timing out for status updates.
+     *
+     * See {@link #STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT} for default.
+     *
+     * @param statusUpdateTimeoutSeconds The status update timeout in seconds
+     */
+    public void setStatusUpdateTimeoutSeconds(int statusUpdateTimeoutSeconds) {
+        this.statusUpdateTimeoutSeconds = statusUpdateTimeoutSeconds;
     }
 
     /**

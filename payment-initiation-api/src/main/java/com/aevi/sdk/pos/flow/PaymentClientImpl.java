@@ -21,6 +21,7 @@ import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
+import com.aevi.sdk.flow.constants.ResponseMechanisms;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
@@ -28,6 +29,7 @@ import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Action;
@@ -37,7 +39,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
-    PaymentClientImpl(Context context) {
+    protected PaymentClientImpl(Context context) {
         super(PaymentInitiationConfig.VERSION, context);
         startFps(context);
         Log.i(TAG, "PaymentClient initialised from " + context.getPackageName());
@@ -76,17 +78,31 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
     @Override
     @NonNull
-    public Single<PaymentResponse> initiatePayment(final Payment payment) {
+    public Completable initiatePayment(final Payment payment) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Completable.error(NO_FPS_EXCEPTION);
+        }
+        final ChannelClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
+        AppMessage appMessage = createAppMessageForPayment(payment, ResponseMechanisms.RESPONSE_SERVICE);
+
+        return transactionMessenger
+                .sendMessage(appMessage.toJson())
+                .singleOrError()
+                .ignoreElement()
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        transactionMessenger.closeConnection();
+                    }
+                });
+    }
+
+    protected Single<PaymentResponse> initiatePaymentDirect(final Payment payment) {
         if (!isProcessingServiceInstalled(context)) {
             return Single.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient transactionMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-
-        AdditionalData paymentData = new AdditionalData();
-        paymentData.addData(AppMessageTypes.PAYMENT_MESSAGE, payment);
-        Request request = new Request(payment.getFlowName(), paymentData);
-        request.setDeviceId(payment.getDeviceId());
-        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = createAppMessageForPayment(payment, ResponseMechanisms.MESSENGER_CONNECTION);
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
@@ -94,9 +110,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     @Override
                     public PaymentResponse apply(String json) throws Exception {
                         Response response = Response.fromJson(json);
-                        PaymentResponse paymentResponse = response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, PaymentResponse.class);
-                        paymentResponse.setOriginatingPayment(payment);
-                        return paymentResponse;
+                        return response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, PaymentResponse.class);
                     }
                 })
                 .doFinally(new Action() {
@@ -112,4 +126,15 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     }
                 });
     }
+
+    protected AppMessage createAppMessageForPayment(Payment payment, String responseMechanism) {
+        AdditionalData paymentData = new AdditionalData();
+        paymentData.addData(AppMessageTypes.PAYMENT_MESSAGE, payment);
+        Request request = new Request(payment.getFlowName(), paymentData);
+        request.setDeviceId(payment.getDeviceId());
+        AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_MESSAGE, request.toJson(), getInternalData());
+        appMessage.setResponseMechanism(responseMechanism);
+        return appMessage;
+    }
+
 }

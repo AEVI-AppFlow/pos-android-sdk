@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InternalData implements Jsonable {
 
     private String senderApiVersion;
+    private String senderPackageName;
     private String senderComponentName;
     private Map<String, String> additionalData = new ConcurrentHashMap<>();
 
@@ -39,6 +40,14 @@ public class InternalData implements Jsonable {
     @NonNull
     public String getSenderApiVersion() {
         return senderApiVersion;
+    }
+
+    public String getSenderPackageName() {
+        return senderPackageName;
+    }
+
+    public void setSenderPackageName(String senderPackageName) {
+        this.senderPackageName = senderPackageName;
     }
 
     @Nullable

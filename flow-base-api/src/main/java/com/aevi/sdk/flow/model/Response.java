@@ -31,6 +31,7 @@ public class Response extends BaseModel {
     private final String outcomeMessage;
     private final AdditionalData responseData;
     private String flowServiceId;
+    private boolean processedInBackground;
 
     // Default constructor for deserialisation
     Response() {
@@ -76,7 +77,7 @@ public class Response extends BaseModel {
     public Response(String requestId, boolean success, String outcomeMessage, AdditionalData responseData) {
         super(requestId);
         this.success = success;
-        this.outcomeMessage = outcomeMessage;
+        this.outcomeMessage = outcomeMessage != null ? outcomeMessage : "";
         this.responseData = responseData;
     }
 
@@ -162,6 +163,24 @@ public class Response extends BaseModel {
      */
     public void setFlowServiceId(String flowServiceId) {
         this.flowServiceId = flowServiceId;
+    }
+
+    /**
+     * Check whether the request was processed as a background flow or not.
+     *
+     * @return True if processed in the background
+     */
+    public boolean wasProcessedInBackground() {
+        return processedInBackground;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param processedInBackground Processed in background
+     */
+    public void setProcessedInBackground(boolean processedInBackground) {
+        this.processedInBackground = processedInBackground;
     }
 
     @Override
