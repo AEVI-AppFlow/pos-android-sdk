@@ -80,10 +80,6 @@ public interface PaymentClient {
      * {@link FlowException} contains an error code that can be mapped to one of the constants in {@link ErrorConstants} and an error message
      * that further describes the problem. These values are not intended to be presented directly to the merchant.
      *
-     * If a fatal error occurs during the flow then a {@link FlowException} will be delivered to the `onError` handler. This
-     * {@link FlowException} contains an error code that can be mapped to one of the constants in {@link ErrorConstants} and an error message
-     * that further describes the problem. These values are not intended to be presented directly to the merchant.
-     *
      * @param payment The payment to process
      * @return Completable that represents the acceptance of the request
      */
