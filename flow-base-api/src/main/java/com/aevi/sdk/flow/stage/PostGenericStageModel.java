@@ -28,7 +28,7 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  *
  * See {@link BasePostGenericService} or domain implementations for various ways of getting access to this object.
  *
- * Call {@link #sendResponse()} if references have been added, or {@link #skip()} if no references are required.
+ * Call {@link #sendResponse()} if references have been added, or {@link #finish()} if no references are required.
  */
 public class PostGenericStageModel extends BaseStageModel {
 

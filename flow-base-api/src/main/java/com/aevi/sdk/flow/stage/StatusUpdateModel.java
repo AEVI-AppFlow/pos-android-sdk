@@ -70,6 +70,8 @@ public class StatusUpdateModel extends BaseStageModel {
 
     /**
      * Call to finish processing and pass back a set of references to the initiating client.
+     *
+     * @param references The references to send before finishing
      */
     public void finishWithReferences(AdditionalData references) {
         doSendResponse(new Response(request, true, "", references).toJson());

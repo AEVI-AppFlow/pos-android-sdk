@@ -24,7 +24,6 @@ ext {
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
-    configProviderLibraryVersion = "1.0.0-RC1"
     appFlowConstantsVersion = '2.0.10'
 
     projectTargetSdkVersion = 28
