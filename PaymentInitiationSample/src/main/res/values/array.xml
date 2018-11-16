@@ -4,10 +4,14 @@
     <string-array name="request_flows">
         <item>tokenisation</item>
         <item>reversal</item>
+        <item>receiptDelivery</item>
         <item>showLoyaltyPointsBalance</item>
-        <item>cashReceiptDelivery</item>
-        <item>receiptRedelivery</item>
-        <item>responseRedelivery</item>
+        <item>basketStatusUpdate</item>
+    </string-array>
+
+    <string-array name="receipt_flows">
+        <item>@string/receipts_cash</item>
+        <item>@string/receipts_redeliver</item>
     </string-array>
 
     <string-array name="amounts">

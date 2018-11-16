@@ -9,22 +9,47 @@
 
 
     <TextView
-        style="@style/Header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_a_request_type"/>
+            style="@style/LargeHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_a_request_type"/>
 
     <com.aevi.ui.library.recycler.DropDownSpinner
-        android:id="@+id/request_flow_spinner"
-        style="@style/DropDownSpinner"
-        android:entries="@array/request_flows"/>
+            android:id="@+id/request_flow_spinner"
+            style="@style/DropDownSpinner"
+            android:layout_marginTop="10dp"
+            android:entries="@array/request_flows"/>
+
+    <TextView
+            android:id="@+id/subtype_header"
+            style="@style/Header"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/choose_a_request_type"/>
+
+    <com.aevi.ui.library.recycler.DropDownSpinner
+            android:id="@+id/sub_type_spinner"
+            style="@style/DropDownSpinner"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:entries="@array/request_flows"/>
+
+    <TextView
+            android:id="@+id/message"
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/send"
-        style="@style/DefaultButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/process_request"/>
+            android:id="@+id/send"
+            style="@style/DefaultButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/process_request"/>
+
 
 </LinearLayout>

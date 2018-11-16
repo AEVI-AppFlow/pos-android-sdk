@@ -33,7 +33,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
  */
 public class PaymentFlowServiceInfoBuilder {
 
-    private String logicalDeviceId;
     private String vendor;
     private String displayName;
     private boolean supportsAccessibility;
@@ -46,20 +45,6 @@ public class PaymentFlowServiceInfoBuilder {
     private boolean canAdjustAmounts;
     private boolean canPayAmounts;
     private AdditionalData additionalInfo = new AdditionalData();
-
-    /**
-     * Set the logical device id that represents how this service identifies the device it is running on.
-     *
-     * In payment contexts, this is often also referred to as terminal id.
-     *
-     * @param logicalDeviceId The logical device id
-     * @return This builder
-     */
-    @NonNull
-    public PaymentFlowServiceInfoBuilder withLogicalDeviceId(String logicalDeviceId) {
-        this.logicalDeviceId = logicalDeviceId;
-        return this;
-    }
 
     /**
      * Set the vendor name of this flow service.
@@ -334,9 +319,8 @@ public class PaymentFlowServiceInfoBuilder {
         checkNotNull(vendor, "Vendor must be set");
         checkNotNull(displayName, "Display name must be set");
         return new PaymentFlowServiceInfo(packageName, packageName, vendor, serviceVersion, apiVersion, displayName, supportsAccessibility,
-                                          supportedFlowTypes, customRequestTypes, supportedDataKeys, logicalDeviceId, canAdjustAmounts, canPayAmounts,
-                                          defaultCurrency,
-                                          supportedCurrencies, paymentMethods, additionalInfo);
+                                          supportedFlowTypes, customRequestTypes, supportedDataKeys, canAdjustAmounts, canPayAmounts,
+                                          defaultCurrency, supportedCurrencies, paymentMethods, additionalInfo);
     }
 
     @NonNull

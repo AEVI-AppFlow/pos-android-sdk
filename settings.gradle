@@ -4,5 +4,4 @@ include ':payment-flow-service-api',
         ':sample-commons',
         ':PaymentInitiationSample',
         ':PaymentServiceSample',
-        ':FlowServiceSample',
-        ':SampleConfigApp'
+        ':FlowServiceSample'

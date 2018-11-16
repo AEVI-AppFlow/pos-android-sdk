@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
@@ -42,6 +43,11 @@ public class ActivityProxyService extends BaseApiService {
 
     @Override
     protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+        if (flowStage.equals(FlowStages.STATUS_UPDATE)) {
+            Log.e(TAG, "Status update stage must be handled in a service context only - ignoring stage for: " + getPackageName());
+            clientCommunicator.finishWithNoResponse();
+            return;
+        }
         Intent activityIntent = getActivityIntent(flowStage);
         if (!isActivityDefined(activityIntent)) {
             Log.e(TAG,

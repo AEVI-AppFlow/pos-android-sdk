@@ -18,6 +18,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,7 +28,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import com.aevi.android.rxmessenger.MessageException;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -102,21 +103,28 @@ public class PaymentFragment extends BaseObservableFragment {
 
         paymentClient.getPaymentSettings()
                 .subscribe(paymentSettings -> {
-                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0) {
-                        throw new Exception("No services available");
+                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
+                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0 || flowTypes.isEmpty()) {
+                        handleNoPaymentServices();
+                        return;
                     }
                     this.paymentSettings = paymentSettings;
-                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
                     allFieldsReady = true;
                     dropDownHelper
                             .setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()),
                                            false);
                     dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
                 }, throwable -> {
-                    if (throwable instanceof IllegalStateException) {
-                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    if (throwable instanceof FlowException) {
+                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                        startActivity(errorIntent);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
+                        getActivity().finish();
                     }
-                    handleNoPaymentServices();
                 });
     }
 
@@ -138,8 +146,11 @@ public class PaymentFragment extends BaseObservableFragment {
             // This will trigger an update to all fields as per below
             String flowType = ((String) flowSpinner.getSelectedItem());
             String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
-            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getServicesForFlow(flowName).getAllSupportedCurrencies()),
-                                         false);
+            PaymentFlowServices servicesForFlow = paymentSettings.getServicesForFlow(flowName);
+            if (servicesForFlow.getAllSupportedCurrencies().isEmpty()) {
+                servicesForFlow = paymentSettings.getPaymentFlowServices();
+            }
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(servicesForFlow.getAllSupportedCurrencies()), false);
         }
     }
 
@@ -238,30 +249,25 @@ public class PaymentFragment extends BaseObservableFragment {
     @OnClick(R.id.send)
     public void onSend() {
         PaymentClient paymentClient = PaymentApi.getPaymentClient(getContext());
-        final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |
-                        Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-        initiateDisposable = paymentClient.initiatePayment(paymentBuilder.build())
-                .subscribe(response -> {
-                    SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-                    if (isAdded()) {
-                        intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-                        startActivity(intent);
-                    }
-                }, throwable -> {
-                    if (throwable instanceof MessageException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
-                    } else if (throwable instanceof IllegalStateException) {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
-                    } else {
-                        intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
-                    }
-                    if (isAdded()) {
-                        startActivity(intent);
-                    }
-                });
+        // Responses come in via PaymentResponseListenerService, and will launch PaymentResultActivity from there
+        paymentClient.initiatePayment(paymentBuilder.build())
+                .subscribe(() -> {
+                               Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request");
+                               getActivity().finish();
+                           },
+                           throwable -> {
+                               final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
+                               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                       Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                               if (throwable instanceof FlowException) {
+                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                               } else {
+                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
+                               }
+                               if (isAdded()) {
+                                   startActivity(intent);
+                               }
+                           });
     }
 
     public Payment getPayment() {

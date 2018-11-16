@@ -94,7 +94,7 @@ public class PostFlowModel extends BaseStageModel {
      * Call when finished processing.
      */
     public void finish() {
-        doSendResponse("{}");
+        sendEmptyResponse();
     }
 
     @Override

@@ -64,4 +64,8 @@
     </string>
     <string name="loyalty_balance_help">This is purely an example of how a flow application can define custom request types and be executed when some application launches a request with that type.\n\nThis particular example show cases how a third party app (maybe a POS app) might want to allow a user to view their loyalty details by launching into the loyalty application with relevant customer details.
     </string>
+
+    <string name="receipt_delivery">Receipt delivery</string>
+    <string name="add_basket">Add basket</string>
+    <string name="add_item_discount">Add basket item discount</string>
 </resources>

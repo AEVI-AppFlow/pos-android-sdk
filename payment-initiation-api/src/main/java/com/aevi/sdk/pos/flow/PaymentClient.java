@@ -16,13 +16,16 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.Device;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
+import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -38,30 +41,50 @@ public interface PaymentClient {
      *
      * This includes system settings, flow configurations, information about flow services, etc.
      *
+     * Subscribe to system events via {@link #subscribeToSystemEvents()} for updates when the state changes.
+     *
      * @return Single emitting a {@link PaymentSettings} instance
      */
     @NonNull
     Single<PaymentSettings> getPaymentSettings();
 
     /**
-     * Initiate processing of the given {@link Request}.
+     * Initiate processing of the provided {@link Request}.
      *
-     * Returns a single that emits a {@link Response} after processing has completed.
+     * Due to the nature of Android component lifecycles, AppFlow can not guarantee that your activity/service is still alive when a flow is complete,
+     * meaning it may not be able to receive the response via this rx chain. To ensure that your application receives a response in a reliable way,
+     * your application must instead implement a {@link BaseResponseListenerService}. See documentation for further info.
+     *
+     * This method returns a {@link Completable} that will complete successfully if the request is accepted, or send an error if the request is invalid.
+     *
+     * If your request is rejected or an error occurs during the flow, a {@link FlowException} will be delivered to the `onError` handler. This
+     * {@link FlowException} contains an error code that can be mapped to one of the constants in {@link ErrorConstants} and an error message
+     * that further describes the problem. These values are not intended to be presented directly to the merchant.
      *
      * @param request The request
-     * @return Single emitting a {@link Response} model
+     * @return Completable that represents the acceptance of the request
      */
     @NonNull
-    Single<Response> initiateRequest(Request request);
+    Completable initiateRequest(Request request);
 
     /**
      * Initiate payment processing based on the provided {@link Payment}.
      *
+     * Due to the nature of Android component lifecycles, AppFlow can not guarantee that your activity/service is still alive when a flow is complete,
+     * meaning it may not be able to receive the response via this rx chain. To ensure that your application receives a response in a reliable way,
+     * your application must instead implement a {@link BasePaymentResponseListenerService}. See documentation for further info.
+     *
+     * This method returns a {@link Completable} that will complete successfully if the request is accepted, or send an error if the request is invalid.
+     *
+     * If your request is rejected or an error occurs during the flow, a {@link FlowException} will be delivered to the `onError` handler. This
+     * {@link FlowException} contains an error code that can be mapped to one of the constants in {@link ErrorConstants} and an error message
+     * that further describes the problem. These values are not intended to be presented directly to the merchant.
+     *
      * @param payment The payment to process
-     * @return Single emitting a {@link PaymentResponse} object containing all the details of the processing
+     * @return Completable that represents the acceptance of the request
      */
     @NonNull
-    Single<PaymentResponse> initiatePayment(Payment payment);
+    Completable initiatePayment(Payment payment);
 
     /**
      * Query for devices connected to the processing service, if multi-device is enabled.

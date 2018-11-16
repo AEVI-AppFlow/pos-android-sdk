@@ -171,7 +171,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      * @return The request class for this flow
      */
     public String getRequestClass() {
-        return allStagesMap.keySet().contains(normaliseStageName(FlowStages.GENERIC)) ? REQUEST_CLASS_GENERIC : REQUEST_CLASS_PAYMENT;
+        return allStagesMap.keySet().contains(normaliseStageName(FlowStages.TRANSACTION_PROCESSING)) ? REQUEST_CLASS_PAYMENT : REQUEST_CLASS_GENERIC;
     }
 
     /**

@@ -2,10 +2,9 @@ package com.aevi.sdk.flow.service;
 
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
-import io.reactivex.subjects.PublishSubject;
+import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
+import io.reactivex.subjects.BehaviorSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,7 +26,7 @@ public class BaseListenerServiceTest {
     @Mock
     ChannelServer channelServer;
 
-    PublishSubject<String> incomingMessagePublisher;
+    BehaviorSubject<String> incomingMessagePublisher;
 
     String lastMessage;
 
@@ -36,9 +35,11 @@ public class BaseListenerServiceTest {
         initMocks(this);
         listenerService = new TestListenerService(channelServer);
         response = new Response(new Request("banana"), true, "Believe!");
-        incomingAppMessage = new AppMessage(AppMessageTypes.RESPONSE_MESSAGE, response.toJson());
+        InternalData internalData = new InternalData(PaymentFlowServiceApi.getApiVersion());
+        internalData.setSenderPackageName(FLOW_PROCESSING_SERVICE);
+        incomingAppMessage = new AppMessage(AppMessageTypes.RESPONSE_MESSAGE, response.toJson(), internalData);
 
-        incomingMessagePublisher = PublishSubject.create();
+        incomingMessagePublisher = BehaviorSubject.create();
         when(channelServer.subscribeToMessages()).thenReturn(incomingMessagePublisher);
     }
 
@@ -47,6 +48,10 @@ public class BaseListenerServiceTest {
     }
 
     private void setupNewEvilClient() {
+        InternalData internalData = new InternalData(PaymentFlowServiceApi.getApiVersion());
+        internalData.setSenderPackageName("blarp.bleep");
+        incomingAppMessage = new AppMessage(AppMessageTypes.RESPONSE_MESSAGE, response.toJson(), internalData);
+        fakeIncomingMessage(incomingAppMessage);
         listenerService.onNewClient(channelServer, "com.nefarious.app");
     }
 
@@ -71,7 +76,6 @@ public class BaseListenerServiceTest {
 
     @Test
     public void willIgnoreMessageFromOtherPackages() {
-        fakeIncomingMessage(incomingAppMessage);
         setupNewEvilClient();
 
         assertThat(listenerService.responseCalled).isFalse();
@@ -90,9 +94,20 @@ public class BaseListenerServiceTest {
         verifyCommsEnded(true);
     }
 
+    @Test
+    public void willSendErrorMessage() throws Exception {
+        InternalData internalData = new InternalData(PaymentFlowServiceApi.getApiVersion());
+        internalData.setSenderPackageName(FLOW_PROCESSING_SERVICE);
+        AppMessage errorMessage = new AppMessage(AppMessageTypes.FAILURE_MESSAGE, new FlowException("beep", "blarp").toJson(), internalData);
+        fakeIncomingMessage(errorMessage);
+        setupNewFPSClient();
+
+        assertThat(listenerService.errorCode).isEqualTo("beep");
+        assertThat(listenerService.errorMessage).isEqualTo("blarp");
+    }
+
     private void fakeIncomingMessage(AppMessage appMessage) {
         lastMessage = appMessage.toJson();
-        when(channelServer.getLastMessageBlocking()).thenReturn(lastMessage);
         incomingMessagePublisher.onNext(appMessage.toJson());
     }
 
@@ -118,6 +133,8 @@ public class BaseListenerServiceTest {
 
         Response responseReceived;
         boolean responseCalled;
+        String errorCode;
+        String errorMessage;
 
         protected TestListenerService(ChannelServer channelServer) {
             super(Response.class, "1.0.0");
@@ -128,6 +145,12 @@ public class BaseListenerServiceTest {
         protected void notifyResponse(Response response) {
             responseCalled = true;
             responseReceived = response;
+        }
+
+        @Override
+        protected void notifyError(String errorCode, String errorMessage) {
+            this.errorCode = errorCode;
+            this.errorMessage = errorMessage;
         }
 
     }

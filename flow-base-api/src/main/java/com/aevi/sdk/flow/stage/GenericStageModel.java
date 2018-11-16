@@ -52,7 +52,7 @@ public class GenericStageModel extends BaseStageModel {
      * Create an instance from a channel server.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string
+     * @param request            The deserialised Request provided as a string
      * @return An instance of {@link GenericStageModel}
      */
     public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request) {

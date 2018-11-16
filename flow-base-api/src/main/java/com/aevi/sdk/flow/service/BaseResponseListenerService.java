@@ -17,12 +17,10 @@ import com.aevi.sdk.flow.FlowBaseConfig;
 import com.aevi.sdk.flow.model.Response;
 
 /**
- * Extend this service in your application if you want to listen to responses for requests initiated by your application.
+ * Extend this service in your application to listen to responses for "generic" requests and status updates initiated by your application.
  *
- * OR If you are implementing a flow service then extend this service to listen to the final `Response` when the flow is complete.
- *
- * In either case you must extend this service in your own application and register it correctly in your manifest. The service must
- * be exported and must include the intent-filter "com.aevi.sdk.flow.listener.RESPONSE"
+ * You must extend this service in your application and register it correctly in your manifest. The service must
+ * be exported and must include the intent-filter "com.aevi.sdk.flow.action.PROCESS_RESPONSE"
  *
  * {@code
  *
@@ -30,19 +28,39 @@ import com.aevi.sdk.flow.model.Response;
  * android:name=".ResponseListenerService"
  * android:exported="true">
  * <intent-filter>
- * <action android:name="com.aevi.sdk.flow.listener.RESPONSE"/>
+ * <action android:name="com.aevi.sdk.flow.action.PROCESS_RESPONSE"/>
  * </intent-filter>
  * </service>
  * }
- *
- * The service will be called asynchronously by the flow processing service. Therefore, the original request may have completed before this is called.
- *
- * This service can be used to verify a response and/or recover from crashes or issues in your application that may have prevented the response being
- * received in the original initiation call.
  */
 public abstract class BaseResponseListenerService extends BaseListenerService<Response> {
 
     protected BaseResponseListenerService() {
         super(Response.class, FlowBaseConfig.VERSION);
     }
+
+    @Override
+    protected void notifyResponse(Response response) {
+        if (response.wasProcessedInBackground()) {
+            notifyStatusUpdateResponse(response);
+        } else {
+            notifyGenericResponse(response);
+        }
+    }
+
+    /**
+     * Called for responses to generic flows that are processed in the foreground, such as for tokenisation or a custom request type.
+     *
+     * @param response The generic flow response
+     */
+    protected abstract void notifyGenericResponse(Response response);
+
+    /**
+     * Called for responses to status update flows which are processed in the background.
+     *
+     * If you do not wish to handle such responses, you can just leave the implementation of this empty.
+     *
+     * @param response The status update response
+     */
+    protected abstract void notifyStatusUpdateResponse(Response response);
 }

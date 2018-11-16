@@ -12,13 +12,12 @@
  *  limitations under the License.
  */
 
-
 package com.aevi.sdk.flow.constants;
 
-
-public interface MessageErrors {
-
-    String ERROR_UNKNOWN_MESSAGE_TYPE = "unknownMessageType";
-    String ERROR_SERVICE_EXCEPTION = "serviceException";
-
+/**
+ * Collection of supported response mechanism.
+ */
+public interface ResponseMechanisms {
+    String MESSENGER_CONNECTION = "messengerConnection";
+    String RESPONSE_SERVICE = "responseService";
 }

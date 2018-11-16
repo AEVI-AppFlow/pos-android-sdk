@@ -31,10 +31,12 @@ public class FpsSettings implements Jsonable {
     public static final boolean ABORT_ON_FLOW_APP_ERROR_DEFAULT = false;
     public static final boolean ABORT_ON_PAYMENT_APP_ERROR_DEFAULT = false;
     public static final boolean FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT = true;
+    public static final boolean LEGACY_PAYMENT_APPS_ENABLED_DEFAULT = false;
 
     public static final int SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 1200;
     public static final int FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
     public static final int PAYMENT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
+    public static final int STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT = 10;
     public static final int USER_SELECTION_TIMEOUT_SECONDS_DEFAULT = 60;
 
     private boolean isMultiDevice = MULTI_DEVICE_ENABLED_DEFAULT;
@@ -43,6 +45,7 @@ public class FpsSettings implements Jsonable {
     private int splitResponseTimeoutSeconds = SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
     private int flowResponseTimeoutSeconds = FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
     private int paymentResponseTimeoutSeconds = PAYMENT_RESPONSE_TIMEOUT_SECONDS_DEFAULT;
+    private int statusUpdateTimeoutSeconds = STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT;
     private int appOrDeviceSelectionTimeoutSeconds = USER_SELECTION_TIMEOUT_SECONDS_DEFAULT;
 
     private boolean shouldAbortOnFlowAppError = ABORT_ON_FLOW_APP_ERROR_DEFAULT;
@@ -52,6 +55,8 @@ public class FpsSettings implements Jsonable {
     private boolean alwaysAllowDynamicSelect = ALWAYS_ALLOW_DYNAMIC_SELECT_DEFAULT;
 
     private boolean filterServicesByFlowType = FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT;
+
+    private boolean legacyPaymentAppsEnabled = LEGACY_PAYMENT_APPS_ENABLED_DEFAULT;
 
     /**
      * Check whether multi-device support is enabled.
@@ -185,6 +190,32 @@ public class FpsSettings implements Jsonable {
      */
     public void setPaymentResponseTimeoutSeconds(int responseTimeout) {
         paymentResponseTimeoutSeconds = responseTimeout;
+    }
+
+    /**
+     * Get the status update timeout in seconds.
+     *
+     * This instructs FPS how long to wait before timing out for status updates.
+     *
+     * See {@link #STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT} for default.
+     *
+     * @return The status update timeout in seconds
+     */
+    public int getStatusUpdateTimeoutSeconds() {
+        return statusUpdateTimeoutSeconds;
+    }
+
+    /**
+     * Set the status update timeout in seconds.
+     *
+     * This instructs FPS how long to wait before timing out for status updates.
+     *
+     * See {@link #STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT} for default.
+     *
+     * @param statusUpdateTimeoutSeconds The status update timeout in seconds
+     */
+    public void setStatusUpdateTimeoutSeconds(int statusUpdateTimeoutSeconds) {
+        this.statusUpdateTimeoutSeconds = statusUpdateTimeoutSeconds;
     }
 
     /**
@@ -333,6 +364,32 @@ public class FpsSettings implements Jsonable {
      */
     public void setFilterServicesByFlowType(boolean filterServicesByFlowType) {
         this.filterServicesByFlowType = filterServicesByFlowType;
+    }
+
+    /**
+     * Check to set if FPS should scan and support legacy payment applications.
+     *
+     * If true, legacy AEVI Public SDK implementations will be reported as a flow service application that can be used in a payment flow to
+     * process supported legacy transaction types.
+     *
+     * If false, legacy payment applications will be ignored.
+     *
+     * @return True if legacy payment applications are supported
+     */
+    public boolean legacyPaymentAppsEnabled() { return legacyPaymentAppsEnabled; }
+
+    /**
+     * Set whether or not FPS should scan and support legacy payment applications.
+     *
+     * If true, legacy AEVI Public SDK implementations will be reported as a flow service application that can be used in a payment flow to
+     * process supported legacy transaction types.
+     *
+     * If false, legacy payment applications will be ignored.
+     *
+     * @param legacyPaymentAppsEnabled True to enable legacy payment application support
+     */
+    public void setLegacyPaymentAppsEnabled(boolean legacyPaymentAppsEnabled) {
+        this.legacyPaymentAppsEnabled = legacyPaymentAppsEnabled;
     }
 
     public static FpsSettings fromJson(String json) {

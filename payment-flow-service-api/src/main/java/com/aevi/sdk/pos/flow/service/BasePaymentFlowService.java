@@ -8,10 +8,12 @@ import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
+import com.aevi.sdk.flow.stage.StatusUpdateModel;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.stage.*;
 
+import static com.aevi.sdk.flow.constants.ErrorConstants.STAGE_NOT_SUPPORTED;
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 
 /**
@@ -39,42 +41,60 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param request            The request
      */
     protected void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
-        if (flowStage != null) {
-            switch (flowStage) {
-                case PRE_FLOW:
-                    onPreFlow(PreFlowModel.fromService(clientCommunicator, Payment.fromJson(request)));
-                    break;
-                case SPLIT:
-                    onSplit(SplitModel.fromService(clientCommunicator, SplitRequest.fromJson(request)));
-                    break;
-                case PRE_TRANSACTION:
-                    onPreTransaction(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
-                    break;
-                case PAYMENT_CARD_READING:
-                    onPaymentCardReading(CardReadingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
-                    break;
-                case POST_CARD_READING:
-                    onPostCardReading(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
-                    break;
-                case TRANSACTION_PROCESSING:
-                    onTransactionProcessing(TransactionProcessingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
-                    break;
-                case POST_TRANSACTION:
-                    onPostTransaction(PostTransactionModel.fromService(clientCommunicator, TransactionSummary.fromJson(request)));
-                    break;
-                case POST_FLOW:
-                    onPostFlow(PostFlowModel.fromService(clientCommunicator, PaymentResponse.fromJson(request)));
-                    break;
-                case GENERIC:
-                    onGeneric(GenericStageModel.fromService(clientCommunicator, Request.fromJson(request)));
-                    break;
-                case POST_GENERIC:
-                    onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request)));
-                default:
-                    onUnknownStage(flowStage, clientCommunicator, request);
-                    break;
+        try {
 
+            if (flowStage != null) {
+                switch (flowStage) {
+                    case PRE_FLOW:
+                        onPreFlow(PreFlowModel.fromService(clientCommunicator, Payment.fromJson(request)));
+                        break;
+                    case SPLIT:
+                        onSplit(SplitModel.fromService(clientCommunicator, SplitRequest.fromJson(request)));
+                        break;
+                    case PRE_TRANSACTION:
+                        onPreTransaction(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        break;
+                    case PAYMENT_CARD_READING:
+                        onPaymentCardReading(CardReadingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        break;
+                    case POST_CARD_READING:
+                        onPostCardReading(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        break;
+                    case TRANSACTION_PROCESSING:
+                        onTransactionProcessing(TransactionProcessingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        break;
+                    case POST_TRANSACTION:
+                        onPostTransaction(PostTransactionModel.fromService(clientCommunicator, TransactionSummary.fromJson(request)));
+                        break;
+                    case POST_FLOW:
+                        onPostFlow(PostFlowModel.fromService(clientCommunicator, PaymentResponse.fromJson(request)));
+                        break;
+                    case GENERIC:
+                        onGeneric(GenericStageModel.fromService(clientCommunicator, Request.fromJson(request)));
+                        break;
+                    case POST_GENERIC:
+                        onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request)));
+                        break;
+                    case STATUS_UPDATE:
+                        onStatusUpdate(StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request)));
+                        break;
+                    default:
+                        onUnknownStage(flowStage, clientCommunicator, request);
+                        break;
+
+                }
             }
+        } catch (StageNotImplementedException e) {
+            returnStageNotImplemented(clientCommunicator, e.stage);
+        }
+    }
+
+    private static class StageNotImplementedException extends RuntimeException {
+
+        final String stage;
+
+        StageNotImplementedException(String stage) {
+            this.stage = stage;
         }
     }
 
@@ -84,7 +104,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPreFlow(PreFlowModel model) {
-
+        throw new StageNotImplementedException(PRE_FLOW);
     }
 
     /**
@@ -93,7 +113,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onSplit(SplitModel model) {
-
+        throw new StageNotImplementedException(SPLIT);
     }
 
     /**
@@ -102,7 +122,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPreTransaction(PreTransactionModel model) {
-
+        throw new StageNotImplementedException(PRE_TRANSACTION);
     }
 
     /**
@@ -111,7 +131,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPaymentCardReading(CardReadingModel model) {
-
+        throw new StageNotImplementedException(PAYMENT_CARD_READING);
     }
 
     /**
@@ -120,7 +140,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostCardReading(PreTransactionModel model) {
-
+        throw new StageNotImplementedException(POST_CARD_READING);
     }
 
     /**
@@ -129,7 +149,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onTransactionProcessing(TransactionProcessingModel model) {
-
+        throw new StageNotImplementedException(TRANSACTION_PROCESSING);
     }
 
     /**
@@ -138,7 +158,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostTransaction(PostTransactionModel model) {
-
+        throw new StageNotImplementedException(POST_TRANSACTION);
     }
 
     /**
@@ -147,7 +167,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostFlow(PostFlowModel model) {
-
+        throw new StageNotImplementedException(POST_FLOW);
     }
 
     /**
@@ -156,7 +176,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onGeneric(GenericStageModel model) {
-
+        throw new StageNotImplementedException(GENERIC);
     }
 
     /**
@@ -165,7 +185,16 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param model The model relevant for this stage
      */
     protected void onPostGeneric(PostGenericStageModel model) {
+        throw new StageNotImplementedException(POST_GENERIC);
+    }
 
+    /**
+     * Override to handle a request in the status-update stage.
+     *
+     * @param model The model relevant for this stage
+     */
+    protected void onStatusUpdate(StatusUpdateModel model) {
+        throw new StageNotImplementedException(POST_GENERIC);
     }
 
     /**
@@ -178,8 +207,11 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param request            The request
      */
     protected void onUnknownStage(String flowStage, ClientCommunicator clientCommunicator, String request) {
-        throw new IllegalArgumentException("Unknown stage: " + flowStage);
+        throw new StageNotImplementedException(flowStage);
     }
 
-
+    private void returnStageNotImplemented(ClientCommunicator clientCommunicator, String stage) {
+        clientCommunicator
+                .sendResponseAsErrorAndEnd(STAGE_NOT_SUPPORTED, String.format("[%s] Stage handling not implemented by this flow service.", stage));
+    }
 }

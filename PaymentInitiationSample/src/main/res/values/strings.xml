@@ -42,7 +42,7 @@
 
     <string name="close">Close</string>
     <string name="transactions_performed">Transactions performed</string>
-    <string name="payment_result">Payment completed</string>
+    <string name="payment_result">Payment flow completed</string>
     <string name="payment_error_result">Payment error</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -122,12 +122,12 @@
     <string name="system_overview">System overview</string>
     <string name="initiate_request">Initiate request</string>
     <string name="choose_a_request_type">Choose request type</string>
-    <string name="generic_result">Request processed</string>
+    <string name="generic_result">Generic flow outcome</string>
     <string name="or">or</string>
     <string name="system_events">System events</string>
     <string name="no_events">No events received. Try changing some FPS setting/flow apps.</string>
     <string name="seconds">\u0020seconds</string>
-    <string name="split_response_timeout">Split response timeout is\u0020</string>
+    <string name="split_response_timeout">Split response timeout</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="multi_device">Multi-device</string>
@@ -136,6 +136,7 @@
     <string name="payment_response_timeout">Payment response timeout</string>
     <string name="flow_response_timeout">Flow response timeout</string>
     <string name="merchant_selection_timeout">Merchant selection timeout</string>
+    <string name="status_update_timeout">Status update timeout</string>
     <string name="abort_on_flow_app_error">Abort on flow app error</string>
     <string name="abort_on_payment_app_error">Abort on payment app error</string>
     <string name="filter_services_by_flow_type">Filter services by flow type</string>
@@ -144,11 +145,27 @@
     <string name="system_settings">System settings</string>
     <string name="merchant_settings">Merchant settings</string>
     <string name="flow_configurations">Flow configurations</string>
-    <string name="there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again">There are no payment services available on this device. Please install/enable one and try again.</string>
+    <string name="there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again">There
+        are no flows and/or flow services available on this device. Please install relevant apps and try again.
+    </string>
     <string name="setup_model">Configure</string>
-    <string name="initiation_help">Unlike the generic (non-payment) requests which involves calling a single app and get a response back, the Payment scenarios are a bit more involved. Each transaction type has an associated flow, which consists of one to many stages during which applications may be called to read and/or augment transaction data.\n\nPayment initiation is the step where the Payment model is created and subsequently sent off for processing via the PaymentClient. Once the payment has been sent off, the processing service will map the transaction type to an appropriate flow and execute it, calling any defined apps along the way.\n\nIn these samples, we mainly support the sale flow, which can be viewed by pressing the flow stages icon in the toolbar.Payment initiation is typically handled by a POS application, where the merchant/operator inputs customer basket items or manual purchase amounts.\n\n
+    <string name="initiation_help">Unlike the generic (non-payment) requests which involves calling a single app and get
+        a response back, the Payment scenarios are a bit more involved. Each transaction type has an associated flow,
+        which consists of one to many stages during which applications may be called to read and/or augment transaction
+        data.\n\nPayment initiation is the step where the Payment model is created and subsequently sent off for
+        processing via the PaymentClient. Once the payment has been sent off, the processing service will map the
+        transaction type to an appropriate flow and execute it, calling any defined apps along the way.\n\nIn these
+        samples, we mainly support the sale flow, which can be viewed by pressing the flow stages icon in the
+        toolbar.Payment initiation is typically handled by a POS application, where the merchant/operator inputs
+        customer basket items or manual purchase amounts.\n\n
     </string>
     <string name="choose_a_transaction_flow">Choose a transaction flow</string>
+
+    <string name="receipts_redeliver">Redeliver</string>
+    <string name="receipts_cash">Cash Receipt</string>
+    <string name="choose_sub_type">Choose a sub type for %1$s</string>
+    <string name="request_accepted">Request accepted by FPS</string>
+    <string name="please_complete_payment_first">Please complete a successful payment before using this request type</string>
 
     <array name="flow_service_labels">
         <item>@string/service_label_id</item>
@@ -191,6 +208,7 @@
         <item>@string/split_response_timeout</item>
         <item>@string/payment_response_timeout</item>
         <item>@string/flow_response_timeout</item>
+        <item>@string/status_update_timeout</item>
         <item>@string/merchant_selection_timeout</item>
         <item>@string/abort_on_flow_app_error</item>
         <item>@string/abort_on_payment_app_error</item>

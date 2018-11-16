@@ -18,6 +18,7 @@ import android.app.Activity;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.service.BasePostGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
 import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
@@ -25,7 +26,7 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 /**
  * Model for the post generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link com.aevi.sdk.flow.service.BasePostGenericService} or domain implementations for various ways of getting access to this object.
+ * See {@link BasePostGenericService} or domain implementations for various ways of getting access to this object.
  *
  * Call {@link #sendResponse()} if references have been added, or {@link #skip()} if no references are required.
  */
@@ -55,8 +56,8 @@ public class PostGenericStageModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator A communicator that can be used to send messages and/or end the communication stream
-     * @param response           The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)} method
-     * @return An instance of {@link GenericStageModel}
+     * @param response           The deserialised Request provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)} method
+     * @return An instance of {@link PostGenericStageModel}
      */
     public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response) {
         return new PostGenericStageModel(clientCommunicator, response);
@@ -99,8 +100,8 @@ public class PostGenericStageModel extends BaseStageModel {
     /**
      * Call when finished processing and no references have been added.
      */
-    public void skip() {
-        doSendResponse("{}");
+    public void finish() {
+        sendEmptyResponse();
     }
 
     @Override

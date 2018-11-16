@@ -169,7 +169,7 @@ public class PreTransactionModel extends BaseStageModel {
      * @param basket The basket to add
      */
     public void addNewBasket(Basket basket) {
-        flowResponse.addBasket(basket);
+        flowResponse.addNewBasket(basket);
         amountsModifier.offsetBaseAmount(basket.getTotalBasketValue());
     }
 
@@ -178,20 +178,27 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * The main use case for this is to allow applications to apply discounts to existing baskets.
      *
-     * For adding "extras" to a transaction, please use {@link #addNewBasket(Basket)}.
+     * Note! If you are applying discounts here, you *must* also set amounts paid via {@link #setAmountsPaid(Amounts, String)} to reflect the amount
+     * discounted, or this augmentation will be rejected. If items are added that increases the requested amounts, the transaction amounts will
+     * be updated automatically.
      *
-     * The transaction base amount will automatically be updated to take the value of these changes into account.
+     * For adding "extras" to a transaction, please use {@link #addNewBasket(Basket)}.
      *
      * @param basketId    The id of the basket to add the items to
      * @param basketItems The basket items to add
      */
     public void addItemsToExistingBasket(String basketId, BasketItem... basketItems) {
         flowResponse.updateBasket(basketId, basketItems);
-        amountsModifier.offsetBaseAmount(flowResponse.getBasket().getTotalBasketValue());
+        long totalBasketValue = flowResponse.getModifiedBasket().getTotalBasketValue();
+        if (totalBasketValue > 0) {
+            amountsModifier.offsetBaseAmount(totalBasketValue);
+        }
     }
 
     /**
      * Pay off a portion or the full requested amounts.
+     *
+     * This can be used together with applying discount items to the basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
      *
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
@@ -210,9 +217,10 @@ public class PreTransactionModel extends BaseStageModel {
         flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
     }
 
-
     /**
      * Pay off a portion or the full requested amounts.
+     *
+     * This can be used together with applying discount items to the basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
      *
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
@@ -263,7 +271,9 @@ public class PreTransactionModel extends BaseStageModel {
      * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void sendResponse() {
-        doSendResponse(getFlowResponse().toJson());
+        FlowResponse flowResponse = getFlowResponse();
+        flowResponse.validate();
+        doSendResponse(flowResponse.toJson());
     }
 
     /**
@@ -272,7 +282,7 @@ public class PreTransactionModel extends BaseStageModel {
      * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void skip() {
-        doSendResponse("{}");
+        sendEmptyResponse();
     }
 
     @Override

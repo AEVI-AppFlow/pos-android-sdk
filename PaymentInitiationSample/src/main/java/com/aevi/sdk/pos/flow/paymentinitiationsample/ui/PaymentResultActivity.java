@@ -18,13 +18,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import com.aevi.android.rxmessenger.MessageException;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -54,7 +52,6 @@ public class PaymentResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getIntent().hasExtra(PAYMENT_RESPONSE_KEY) ? R.layout.activity_payment_approved : R.layout.activity_payment_error);
         ButterKnife.bind(this);
     }
@@ -74,18 +71,19 @@ public class PaymentResultActivity extends AppCompatActivity {
                 requestStatus.setImageResource(R.drawable.ic_error_circle);
             }
         } else if (intent.hasExtra(ERROR_KEY)) {
-            MessageException error = MessageException.fromJson(intent.getStringExtra(ERROR_KEY));
+            FlowException error = FlowException.fromJson(intent.getStringExtra(ERROR_KEY));
             showErrorResult(error);
         }
     }
 
-    private void showErrorResult(MessageException error) {
-        messageErrorCode.setText(error.getCode());
-        messageErrorDesc.setText(error.getMessage());
+    private void showErrorResult(FlowException error) {
+        messageErrorCode.setText(error.getErrorCode());
+        messageErrorDesc.setText(error.getErrorMessage());
     }
 
-    @OnClick(R.id.close)
-    public void onClose() {
-        finish();
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
     }
 }

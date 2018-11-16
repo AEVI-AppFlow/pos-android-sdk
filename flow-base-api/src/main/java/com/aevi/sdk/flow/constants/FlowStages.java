@@ -77,6 +77,11 @@ public interface FlowStages {
     String POST_GENERIC = "POST_GENERIC";
 
     /**
+     * A variant of a generic stage that allows multiple applications to be called for status update purposes.
+     */
+    String STATUS_UPDATE = "STATUS_UPDATE";
+
+    /**
      * All stages for a payment flow
      */
     String[] ALL_PAYMENT_STAGES = new String[]{PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
@@ -85,6 +90,6 @@ public interface FlowStages {
     /**
      * All defined stages
      */
-    String[] ALL_STAGES = new String[]{GENERIC, POST_GENERIC, PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING, POST_CARD_READING,
-                                       TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
+    String[] ALL_STAGES = new String[]{GENERIC, POST_GENERIC, STATUS_UPDATE, PRE_FLOW, SPLIT, PRE_TRANSACTION, PAYMENT_CARD_READING,
+                                       POST_CARD_READING, TRANSACTION_PROCESSING, POST_TRANSACTION, POST_FLOW};
 }

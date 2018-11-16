@@ -102,14 +102,10 @@ public class PaymentResponse extends BaseModel {
     }
 
     protected PaymentResponse(Payment payment) {
-        this(payment.getId(), payment.getAmounts().getCurrency());
+        super(payment.getId());
         originatingPayment = payment;
-    }
-
-    protected PaymentResponse(String paymentId, String currency) {
-        super(paymentId);
+        totalAmountsProcessed = new Amounts(0, payment.getAmounts().getCurrency());
         transactions = new CopyOnWriteArrayList<>();
-        totalAmountsProcessed = new Amounts(0, currency);
     }
 
     /**
@@ -126,9 +122,9 @@ public class PaymentResponse extends BaseModel {
     /**
      * Get the initial {@link Payment} that this response is for.
      *
-     * @return The {@link Payment}, if set.
+     * @return The {@link Payment} that initiated the flow
      */
-    @Nullable
+    @NonNull
     public Payment getOriginatingPayment() {
         return originatingPayment;
     }
@@ -239,15 +235,6 @@ public class PaymentResponse extends BaseModel {
     @Nullable
     public FlowAppInfo getExecutedPostFlowApp() {
         return executedPostFlowApp;
-    }
-
-    /**
-     * For internal use.
-     *
-     * @param originatingPayment The originating payment
-     */
-    public void setOriginatingPayment(Payment originatingPayment) {
-        this.originatingPayment = originatingPayment;
     }
 
     @Override

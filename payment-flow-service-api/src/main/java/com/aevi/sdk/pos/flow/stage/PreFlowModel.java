@@ -161,7 +161,7 @@ public class PreFlowModel extends BaseStageModel {
      * @param basket The basket to add
      */
     public void addNewBasket(Basket basket) {
-        flowResponse.addBasket(basket);
+        flowResponse.addNewBasket(basket);
         amountsModifier.offsetBaseAmount(basket.getTotalBasketValue());
     }
 
@@ -179,7 +179,7 @@ public class PreFlowModel extends BaseStageModel {
      */
     public void addItemsToExistingBasket(String basketId, BasketItem... basketItems) {
         flowResponse.updateBasket(basketId, basketItems);
-        amountsModifier.offsetBaseAmount(flowResponse.getBasket().getTotalBasketValue());
+        amountsModifier.offsetBaseAmount(flowResponse.getModifiedBasket().getTotalBasketValue());
     }
 
     /**
@@ -228,7 +228,9 @@ public class PreFlowModel extends BaseStageModel {
      * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void sendResponse() {
-        doSendResponse(getFlowResponse().toJson());
+        FlowResponse flowResponse = getFlowResponse();
+        flowResponse.validate();
+        doSendResponse(flowResponse.toJson());
     }
 
     /**
@@ -237,7 +239,7 @@ public class PreFlowModel extends BaseStageModel {
      * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void skip() {
-        doSendResponse("{}");
+        sendEmptyResponse();
     }
 
     @Override

@@ -271,11 +271,13 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showResponse(Response response) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
-        if (response.getOriginatingRequest().getFlowName() != null) {
-            responseInfo.add(getStringPair(R.string.request_flow, response.getOriginatingRequest().getFlowName()));
-        }
-        if (response.getOriginatingRequest().getRequestType() != null) {
-            responseInfo.add(getStringPair(R.string.request_type, response.getOriginatingRequest().getRequestType()));
+        if (response.getOriginatingRequest() != null) {
+            if (response.getOriginatingRequest().getFlowName() != null) {
+                responseInfo.add(getStringPair(R.string.request_flow, response.getOriginatingRequest().getFlowName()));
+            }
+            if (response.getOriginatingRequest().getRequestType() != null) {
+                responseInfo.add(getStringPair(R.string.request_type, response.getOriginatingRequest().getRequestType()));
+            }
         }
         int outcomeRes = response.wasSuccessful() ? R.string.success : R.string.failed;
         responseInfo.add(getStringPair(R.string.outcome, getString(outcomeRes)));
@@ -306,8 +308,12 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             currency = flowResponse.getAmountsPaid().getCurrency();
         }
 
-        if (flowResponse.getBasket() != null) {
-            addBasketSection(flowResponse.getBasket(), currency);
+        if (flowResponse.getAdditionalBasket() != null) {
+            addBasketSection(flowResponse.getAdditionalBasket(), currency);
+        }
+
+        if (flowResponse.getModifiedBasket() != null) {
+            addBasketSection(flowResponse.getModifiedBasket(), currency);
         }
 
         if (flowResponse.getCustomer() != null) {
@@ -448,6 +454,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             Object value = additionalData.getValue(key);
             if (value != null && (value instanceof Number || value instanceof String)) {
                 itemList.add(getStringPair(key, value));
+            } else if (value instanceof Basket) {
+                itemList.add(getStringPair(key, ((Basket) value).getBasketName()));
+            } else if (value instanceof Customer) {
+                itemList.add(getStringPair(key, ((Customer) value).getFullName()));
             }
         }
     }
