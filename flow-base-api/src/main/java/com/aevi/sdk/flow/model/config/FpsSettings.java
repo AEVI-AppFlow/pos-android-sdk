@@ -31,6 +31,7 @@ public class FpsSettings implements Jsonable {
     public static final boolean ABORT_ON_FLOW_APP_ERROR_DEFAULT = false;
     public static final boolean ABORT_ON_PAYMENT_APP_ERROR_DEFAULT = false;
     public static final boolean FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT = true;
+    public static final boolean LEGACY_PAYMENT_APPS_ENABLED_DEFAULT = false;
 
     public static final int SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 1200;
     public static final int FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
@@ -54,6 +55,8 @@ public class FpsSettings implements Jsonable {
     private boolean alwaysAllowDynamicSelect = ALWAYS_ALLOW_DYNAMIC_SELECT_DEFAULT;
 
     private boolean filterServicesByFlowType = FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT;
+
+    private boolean legacyPaymentAppsEnabled = LEGACY_PAYMENT_APPS_ENABLED_DEFAULT;
 
     /**
      * Check whether multi-device support is enabled.
@@ -361,6 +364,32 @@ public class FpsSettings implements Jsonable {
      */
     public void setFilterServicesByFlowType(boolean filterServicesByFlowType) {
         this.filterServicesByFlowType = filterServicesByFlowType;
+    }
+
+    /**
+     * Check to set if FPS should scan and support legacy payment applications.
+     *
+     * If true, legacy AEVI Public SDK implementations will be reported as a flow service application that can be used in a payment flow to
+     * process supported legacy transaction types.
+     *
+     * If false, legacy payment applications will be ignored.
+     *
+     * @return True if legacy payment applications are supported
+     */
+    public boolean legacyPaymentAppsEnabled() { return legacyPaymentAppsEnabled; }
+
+    /**
+     * Set whether or not FPS should scan and support legacy payment applications.
+     *
+     * If true, legacy AEVI Public SDK implementations will be reported as a flow service application that can be used in a payment flow to
+     * process supported legacy transaction types.
+     *
+     * If false, legacy payment applications will be ignored.
+     *
+     * @param legacyPaymentAppsEnabled True to enable legacy payment application support
+     */
+    public void setLegacyPaymentAppsEnabled(boolean legacyPaymentAppsEnabled) {
+        this.legacyPaymentAppsEnabled = legacyPaymentAppsEnabled;
     }
 
     public static FpsSettings fromJson(String json) {
