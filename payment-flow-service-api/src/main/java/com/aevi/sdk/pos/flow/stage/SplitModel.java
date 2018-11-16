@@ -123,7 +123,7 @@ public class SplitModel extends BaseStageModel {
      * @param basket The basket to process for the next transaction
      */
     public void setBasketForNextTransaction(Basket basket) {
-        flowResponse.addBasket(basket);
+        flowResponse.addNewBasket(basket);
         amountsModifier.updateBaseAmount(basket.getTotalBasketValue());
     }
 

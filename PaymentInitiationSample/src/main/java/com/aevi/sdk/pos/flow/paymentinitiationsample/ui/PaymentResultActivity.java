@@ -18,12 +18,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -54,7 +52,6 @@ public class PaymentResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getIntent().hasExtra(PAYMENT_RESPONSE_KEY) ? R.layout.activity_payment_approved : R.layout.activity_payment_error);
         ButterKnife.bind(this);
     }
@@ -82,11 +79,6 @@ public class PaymentResultActivity extends AppCompatActivity {
     private void showErrorResult(FlowException error) {
         messageErrorCode.setText(error.getErrorCode());
         messageErrorDesc.setText(error.getErrorMessage());
-    }
-
-    @OnClick(R.id.close)
-    public void onClose() {
-        finish();
     }
 
     @Override

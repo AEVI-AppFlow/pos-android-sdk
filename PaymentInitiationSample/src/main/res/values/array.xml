@@ -4,6 +4,7 @@
     <string-array name="request_flows">
         <item>tokenisation</item>
         <item>reversal</item>
+        <item>receiptDelivery</item>
         <item>showLoyaltyPointsBalance</item>
         <item>basketStatusUpdate</item>
     </string-array>

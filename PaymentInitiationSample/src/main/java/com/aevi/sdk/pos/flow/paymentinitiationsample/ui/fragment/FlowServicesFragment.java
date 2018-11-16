@@ -15,10 +15,14 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdapter;
 
@@ -38,10 +42,16 @@ public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInf
                         items.setAdapter(adapter);
                     }
                 }, throwable -> {
-                    if (throwable instanceof IllegalStateException) {
-                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    if (throwable instanceof FlowException) {
+                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                        startActivity(errorIntent);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                        Log.e(FlowServicesFragment.class.getSimpleName(), "Error", throwable);
+                        getActivity().finish();
                     }
-                    showNoItemsAvailable(R.string.no_flow_services_found);
                 });
     }
 

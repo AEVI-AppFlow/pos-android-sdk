@@ -66,4 +66,6 @@
     </string>
 
     <string name="receipt_delivery">Receipt delivery</string>
+    <string name="add_basket">Add basket</string>
+    <string name="add_item_discount">Add basket item discount</string>
 </resources>

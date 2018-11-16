@@ -103,21 +103,28 @@ public class PaymentFragment extends BaseObservableFragment {
 
         paymentClient.getPaymentSettings()
                 .subscribe(paymentSettings -> {
-                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0) {
-                        throw new Exception("No services available");
+                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
+                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0 || flowTypes.isEmpty()) {
+                        handleNoPaymentServices();
+                        return;
                     }
                     this.paymentSettings = paymentSettings;
-                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
                     allFieldsReady = true;
                     dropDownHelper
                             .setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()),
                                            false);
                     dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
                 }, throwable -> {
-                    if (throwable instanceof IllegalStateException) {
-                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    if (throwable instanceof FlowException) {
+                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                        startActivity(errorIntent);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
+                        getActivity().finish();
                     }
-                    handleNoPaymentServices();
                 });
     }
 
@@ -244,7 +251,10 @@ public class PaymentFragment extends BaseObservableFragment {
         PaymentClient paymentClient = PaymentApi.getPaymentClient(getContext());
         // Responses come in via PaymentResponseListenerService, and will launch PaymentResultActivity from there
         paymentClient.initiatePayment(paymentBuilder.build())
-                .subscribe(() -> Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request"),
+                .subscribe(() -> {
+                               Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request");
+                               getActivity().finish();
+                           },
                            throwable -> {
                                final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |

@@ -114,13 +114,15 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
             case R.string.currency_change:
                 return getYesNo(fpsSettings.isCurrencyChangeAllowed());
             case R.string.split_response_timeout:
-                return String.valueOf(fpsSettings.getSplitResponseTimeoutSeconds());
+                return toSeconds(fpsSettings.getSplitResponseTimeoutSeconds());
             case R.string.payment_response_timeout:
-                return String.valueOf(fpsSettings.getPaymentResponseTimeoutSeconds());
+                return toSeconds(fpsSettings.getPaymentResponseTimeoutSeconds());
             case R.string.flow_response_timeout:
-                return String.valueOf(fpsSettings.getFlowResponseTimeoutSeconds());
+                return toSeconds(fpsSettings.getFlowResponseTimeoutSeconds());
             case R.string.merchant_selection_timeout:
-                return String.valueOf(fpsSettings.getUserSelectionTimeoutSeconds());
+                return toSeconds(fpsSettings.getUserSelectionTimeoutSeconds());
+            case R.string.status_update_timeout:
+                return toSeconds(fpsSettings.getStatusUpdateTimeoutSeconds());
             case R.string.abort_on_flow_app_error:
                 return getYesNo(fpsSettings.shouldAbortOnFlowAppError());
             case R.string.abort_on_payment_app_error:
@@ -166,6 +168,10 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
                 return getSetValue(paymentFlowServices.getAllCustomRequestTypes());
         }
         return "";
+    }
+
+    private String toSeconds(long timeout) {
+        return timeout + " seconds";
     }
 
     @Override

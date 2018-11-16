@@ -25,9 +25,7 @@ import com.aevi.sdk.flow.constants.AmountIdentifiers;
 import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
@@ -36,8 +34,7 @@ import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_GIFT_CARD;
-import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_LOYALTY_POINTS;
+import static com.aevi.sdk.flow.constants.PaymentMethods.*;
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
 abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
@@ -76,6 +73,9 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
+        }
+        if (transactionRequest.getBaskets().isEmpty()) {
+            findViewById(R.id.discount_basket_item).setVisibility(View.GONE);
         }
     }
 
@@ -142,6 +142,34 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
             customer = CustomerProducer.getDefaultCustomer("PrePayment Sample");
         }
         preTransactionModel.addOrUpdateCustomerDetails(customer);
+        updateModel();
+        v.setEnabled(false);
+    }
+
+    @OnClick(R.id.add_basket)
+    public void addBasketData(View v) {
+        Basket basket = new Basket("sampleAdditionalBasket");
+        basket.addItems(new BasketItemBuilder().withLabel("flowItem").withAmount(200).build());
+        preTransactionModel.addNewBasket(basket);
+        updateModel();
+        v.setEnabled(false);
+    }
+
+    @OnClick(R.id.discount_basket_item)
+    public void onDiscountBasketItem(View v) {
+        if (!transactionRequest.getBaskets().isEmpty()) {
+            Basket basket = transactionRequest.getBaskets().get(0);
+            if (!basket.getBasketItems().isEmpty()) {
+                BasketItem basketItem = basket.getBasketItems().get(0);
+                long amountForDiscount = basketItem.getIndividualAmount();
+                BasketItem discountItem = new BasketItemBuilder(basketItem).withLabel("Reward - free item: " + basketItem.getLabel())
+                        .withAmount(amountForDiscount * -1).build();
+                preTransactionModel.addItemsToExistingBasket(basket.getId(), discountItem);
+                // Note, you MUST set amounts paid for any basket discounts, or the augmentation will be rejected
+                preTransactionModel
+                        .setAmountsPaid(new Amounts(amountForDiscount, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_REWARD);
+            }
+        }
         updateModel();
         v.setEnabled(false);
     }

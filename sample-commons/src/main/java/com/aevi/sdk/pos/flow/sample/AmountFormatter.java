@@ -23,7 +23,7 @@ public class AmountFormatter {
      * Format amount to a readable format, taking currency sub-unit fractions into account
      */
     public static String formatAmount(String currencyCode, long amountValue) {
-        if (currencyCode != null && amountValue > 0) {
+        if (currencyCode != null) {
             String symbol;
             int subUnitFractions;
             try {

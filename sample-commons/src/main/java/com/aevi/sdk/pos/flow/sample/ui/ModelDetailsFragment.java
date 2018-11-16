@@ -308,8 +308,12 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             currency = flowResponse.getAmountsPaid().getCurrency();
         }
 
-        if (flowResponse.getBasket() != null) {
-            addBasketSection(flowResponse.getBasket(), currency);
+        if (flowResponse.getAdditionalBasket() != null) {
+            addBasketSection(flowResponse.getAdditionalBasket(), currency);
+        }
+
+        if (flowResponse.getModifiedBasket() != null) {
+            addBasketSection(flowResponse.getModifiedBasket(), currency);
         }
 
         if (flowResponse.getCustomer() != null) {

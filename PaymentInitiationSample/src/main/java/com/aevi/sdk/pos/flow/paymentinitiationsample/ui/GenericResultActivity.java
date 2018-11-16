@@ -18,11 +18,9 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -39,7 +37,6 @@ public class GenericResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_generic_result);
         ButterKnife.bind(this);
     }
@@ -57,11 +54,6 @@ public class GenericResultActivity extends AppCompatActivity {
                 requestStatus.setImageResource(R.drawable.ic_error_circle);
             }
         }
-    }
-
-    @OnClick({R.id.close})
-    public void onClose() {
-        finish();
     }
 
     @Override

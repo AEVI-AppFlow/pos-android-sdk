@@ -15,18 +15,22 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemOverviewAdapter;
 import io.reactivex.Single;
@@ -55,11 +59,16 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
             SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
             infoItems.setAdapter(systemOverviewAdapter);
         }, throwable -> {
-            if (throwable instanceof IllegalStateException) {
-                Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+            if (throwable instanceof FlowException) {
+                Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                startActivity(errorIntent);
+                getActivity().finish();
+            } else {
+                Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                Log.e(SystemOverviewFragment.class.getSimpleName(), "Error", throwable);
+                getActivity().finish();
             }
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), new SystemOverview(), null);
-            infoItems.setAdapter(systemOverviewAdapter);
         });
     }
 

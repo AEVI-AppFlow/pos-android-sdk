@@ -18,24 +18,24 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
-import com.aevi.sdk.pos.flow.model.Basket;
-import com.aevi.sdk.pos.flow.model.BasketItemBuilder;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.model.config.FlowConfigurations;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
-import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.RequestInitiationActivity;
 import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -47,10 +47,11 @@ import io.reactivex.disposables.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.Intent.*;
+import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION;
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION_ID;
-import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_BASKET_STATUS_UPDATE;
-import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
+import static com.aevi.sdk.flow.constants.FlowTypes.*;
+import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
+import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
 import static com.aevi.sdk.flow.constants.StatusUpdateKeys.STATUS_UPDATE_BASKET_MODIFIED;
 
 public class GenericRequestFragment extends BaseObservableFragment {
@@ -61,6 +62,12 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @BindView(R.id.request_flow_spinner)
     DropDownSpinner requestFlowSpinner;
 
+    @BindView(R.id.sub_type_spinner)
+    DropDownSpinner subTypeSpinner;
+
+    @BindView(R.id.subtype_header)
+    TextView subTypeHeader;
+
     @BindView(R.id.send)
     Button sendButton;
 
@@ -68,12 +75,14 @@ public class GenericRequestFragment extends BaseObservableFragment {
     TextView messageView;
 
     private String selectedApiRequestFlow;
+    private String selectedSubType;
     private ModelDisplay modelDisplay;
     private Request genericRequest;
 
     private PaymentClient paymentClient;
     private PaymentSettings paymentSettings;
     private Disposable initiateDisposable;
+    private DropDownHelper dropDownHelper;
 
     @Override
     public int getLayoutResource() {
@@ -84,7 +93,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         modelDisplay = ((RequestInitiationActivity) getActivity()).getModelDisplay();
-        final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
+        dropDownHelper = new DropDownHelper(getActivity());
         paymentClient = PaymentApi.getPaymentClient(getContext());
 
         PaymentClient paymentClient = SampleContext.getInstance(getActivity()).getPaymentClient();
@@ -101,12 +110,16 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     }
                     flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
                     dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
-                }, throwable -> dropDownHelper.setupDropDown(requestFlowSpinner, R.array.request_flows));
+                }, this::handleError);
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
     public void onRequestTypeSelection(int position) {
         selectedApiRequestFlow = (String) requestFlowSpinner.getAdapter().getItem(position);
+        updateState(true);
+    }
+
+    private void updateState(boolean checkSubTypes) {
         this.genericRequest = createRequest();
         if (genericRequest != null && modelDisplay != null) {
             modelDisplay.showRequest(genericRequest);
@@ -116,7 +129,39 @@ public class GenericRequestFragment extends BaseObservableFragment {
             setViewsEnabled(true);
         } else {
             setViewsEnabled(false);
+            modelDisplay.showRequest(new Request(selectedApiRequestFlow));
         }
+        if (checkSubTypes) {
+            checkSubTypeSelection(selectedApiRequestFlow);
+        }
+    }
+
+    private void checkSubTypeSelection(String type) {
+        switch (type) {
+            case FLOW_TYPE_RECEIPT_DELIVERY:
+                setupSubTypes(type, R.array.receipt_flows);
+                break;
+            default:
+                hideSubTypes();
+        }
+    }
+
+    private void setupSubTypes(String type, int subTypesArray) {
+        subTypeSpinner.setVisibility(View.VISIBLE);
+        subTypeHeader.setVisibility(View.VISIBLE);
+        subTypeHeader.setText(getString(R.string.choose_sub_type, type));
+        dropDownHelper.setupDropDown(subTypeSpinner, subTypesArray, false);
+    }
+
+    @OnItemSelected(R.id.sub_type_spinner)
+    public void onSubTypeSelection(int position) {
+        selectedSubType = (String) subTypeSpinner.getAdapter().getItem(position);
+        updateState(false);
+    }
+
+    private void hideSubTypes() {
+        subTypeSpinner.setVisibility(View.GONE);
+        subTypeHeader.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.send)
@@ -125,24 +170,22 @@ public class GenericRequestFragment extends BaseObservableFragment {
             // Responses come in via ResponseListenerService, and starts the GenericResultActivity from there
             initiateDisposable = paymentClient.initiateRequest(genericRequest)
                     .subscribe(() -> {
-                                   messageView.setText("Request accepted by FPS");
-                               },
-                               throwable -> {
-                                   Intent intent = new Intent(getContext(), GenericResultActivity.class);
-                                   intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT |
-                                                           FLAG_ACTIVITY_NO_ANIMATION);
-                                   Response response;
-                                   if (throwable instanceof FlowException) {
-                                       response = new Response(genericRequest, false, ((FlowException) throwable).getErrorCode()
-                                               + " : " + throwable.getMessage());
-                                   } else {
-                                       response = new Response(genericRequest, false, throwable.getMessage());
-                                   }
-                                   if (isAdded()) {
-                                       intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
-                                       startActivity(intent);
-                                   }
-                               });
+                        messageView.setText(R.string.request_accepted);
+                        getActivity().finish();
+                    }, this::handleError);
+        }
+    }
+
+    private void handleError(Throwable throwable) {
+        if (throwable instanceof FlowException) {
+            Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+            errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+            startActivity(errorIntent);
+            getActivity().finish();
+        } else {
+            Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+            Log.e(GenericRequestFragment.class.getSimpleName(), "Error", throwable);
+            getActivity().finish();
         }
     }
 
@@ -162,10 +205,29 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 break;
             case FLOW_TYPE_REVERSAL:
                 if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
-                    messageView.setText("Please complete a successful payment before using this request type");
+                    messageView.setText(R.string.please_complete_payment_first);
                     return null;
                 }
                 request.addAdditionalData(DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getLastResponse().getId());
+                break;
+            case FLOW_TYPE_RECEIPT_DELIVERY:
+                if (selectedSubType == null) {
+                    return null;
+                }
+                String redeliver = getString(R.string.receipts_redeliver);
+                String cash = getString(R.string.receipts_cash);
+                // Some types require additional information
+                if (selectedSubType.equals(redeliver)) {
+                    if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
+                        messageView.setText(R.string.please_complete_payment_first);
+                        return null;
+                    }
+                    request.addAdditionalData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
+                } else if (selectedSubType.equals(cash)) {
+                    request.addAdditionalData(RECEIPT_AMOUNTS, new Amounts(15000, "EUR"));
+                    request.addAdditionalData(RECEIPT_PAYMENT_METHOD, PAYMENT_METHOD_CASH);
+                    request.addAdditionalData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
+                }
                 break;
             case SHOW_LOYALTY_POINTS_REQUEST:
                 request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
