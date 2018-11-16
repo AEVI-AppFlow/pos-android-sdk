@@ -14,8 +14,6 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
@@ -34,8 +32,8 @@ public class ResponseListenerService extends BaseResponseListenerService {
 
     @Override
     protected void notifyStatusUpdateResponse(Response response) {
-        Toast.makeText(this, "Received status update response", Toast.LENGTH_SHORT).show();
-        Log.d(ResponseListenerService.class.getSimpleName(), "Status update response: " + response.toJson());
+        // Here we handle it the same way as a generic response for illustration, but real client apps should most likely not present UI for these
+        notifyGenericResponse(response);
     }
 
     @Override

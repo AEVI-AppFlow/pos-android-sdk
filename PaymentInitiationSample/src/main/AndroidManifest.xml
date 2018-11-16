@@ -32,13 +32,11 @@
         </activity>
         <activity
                 android:name=".ui.PaymentResultActivity"
-                android:label="@string/payment_result"
-                android:theme="@style/Popup">
+                android:label="@string/payment_result">
         </activity>
         <activity
                 android:name=".ui.GenericResultActivity"
-                android:label="@string/payment_result"
-                android:theme="@style/Popup">
+                android:label="@string/payment_result">
         </activity>
 
         <service
