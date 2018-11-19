@@ -100,6 +100,12 @@ public abstract class BaseApiClient {
                     public void run() throws Exception {
                         requestMessenger.closeConnection();
                     }
+                })
+                .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
+                    @Override
+                    public CompletableSource apply(Throwable throwable) throws Exception {
+                        return Completable.error(createFlowException(throwable));
+                    }
                 });
     }
 
