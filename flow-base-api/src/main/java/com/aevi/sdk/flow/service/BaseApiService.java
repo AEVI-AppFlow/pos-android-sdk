@@ -45,6 +45,12 @@ public abstract class BaseApiService extends AbstractChannelService {
         internalData = new InternalData(apiVersion);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        internalData.setSenderPackageName(getPackageName());
+    }
+
     /**
      * Set whether or not this service should be stopped after the stream to the client has ended.
      *

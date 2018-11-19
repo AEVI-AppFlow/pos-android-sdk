@@ -13,6 +13,7 @@
  */
 package com.aevi.sdk.flow.service;
 
+import android.content.Context;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
@@ -38,6 +39,12 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     protected BaseListenerService(Class<RESPONSE> responseClass, String apiVersion) {
         this.responseClass = responseClass;
         internalData = new InternalData(apiVersion);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        internalData.setSenderPackageName(getPackageName());
     }
 
     @Override

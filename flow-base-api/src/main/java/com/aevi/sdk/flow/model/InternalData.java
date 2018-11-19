@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -30,7 +29,6 @@ public class InternalData implements Jsonable {
 
     private String senderApiVersion;
     private String senderPackageName;
-    private String senderComponentName;
     private Map<String, String> additionalData = new ConcurrentHashMap<>();
 
     public InternalData(String senderApiVersion) {
@@ -48,15 +46,6 @@ public class InternalData implements Jsonable {
 
     public void setSenderPackageName(String senderPackageName) {
         this.senderPackageName = senderPackageName;
-    }
-
-    @Nullable
-    public String getSenderComponentName() {
-        return senderComponentName;
-    }
-
-    public void setSenderComponentName(String senderComponentName) {
-        this.senderComponentName = senderComponentName;
     }
 
     public void addAdditionalData(String key, String value) {
