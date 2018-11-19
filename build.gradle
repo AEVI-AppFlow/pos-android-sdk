@@ -1,5 +1,5 @@
 version = "2.0.0-SNAPSHOT"
-ext.sampleVersionCode = 02000002 // semver based, MMmmppbb (major minor patch build)
+ext.sampleVersionCode = 02000003 // semver based, MMmmppbb (major minor patch build)
 
 buildscript {
     repositories {
@@ -100,7 +100,9 @@ configure(subprojects.findAll {
 
 task mergeBaseAndFlowServiceDocs(type: Javadoc) {
     source baseAndFlowService.collect { project(it).sourceSets.main.allJava }
-    classpath = files(baseAndFlowService.collect { project(it).sourceSets.main.compileClasspath }, baseAndFlowService.collect {
+    classpath = files(baseAndFlowService.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndFlowService.collect {
         project(it).sourceSets.main.runtimeClasspath
     })
     destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
@@ -118,7 +120,9 @@ task mergeBaseAndFlowServiceDocs(type: Javadoc) {
 
 task mergeBaseAndInitiationDocs(type: Javadoc) {
     source baseAndInitiation.collect { project(it).sourceSets.main.allJava }
-    classpath = files(baseAndInitiation.collect { project(it).sourceSets.main.compileClasspath }, baseAndInitiation.collect {
+    classpath = files(baseAndInitiation.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndInitiation.collect {
         project(it).sourceSets.main.runtimeClasspath
     })
     destinationDir = file('documentation/public/javadocs/payment-initiation-api')
