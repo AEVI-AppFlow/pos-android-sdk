@@ -129,7 +129,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
             setViewsEnabled(true);
         } else {
             setViewsEnabled(false);
-            modelDisplay.showRequest(new Request(selectedApiRequestFlow));
+            if (modelDisplay != null) {
+                modelDisplay.showRequest(new Request(selectedApiRequestFlow));
+            }
         }
         if (checkSubTypes) {
             checkSubTypeSelection(selectedApiRequestFlow);
