@@ -20,10 +20,11 @@ import com.aevi.sdk.flow.model.Customer;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Sendable;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 
 /**
  * Response model for augmenting the flow.
@@ -41,10 +42,10 @@ public class FlowResponse implements Sendable {
     private Basket modifiedBasket;
     private Customer customer;
     private String amountsPaidPaymentMethod;
+    private Payment updatedPayment;
 
     private AdditionalData paymentReferences;
 
-    private boolean enableSplit;
     private boolean cancelTransaction;
 
     public FlowResponse() {
@@ -85,7 +86,6 @@ public class FlowResponse implements Sendable {
      */
     public void updateRequestAmounts(Amounts modifiedRequestAmounts) {
         this.updatedRequestAmounts = modifiedRequestAmounts;
-        validateAmounts();
     }
 
     /**
@@ -117,13 +117,13 @@ public class FlowResponse implements Sendable {
     }
 
     /**
-     * Update an existing additionalBasket.
+     * Update an existing basket.
      *
-     * @param basketId    Basket id of existing additionalBasket
+     * @param basketId    Basket id of existing basket
      * @param basketItems Basket items to add
      */
-    public void updateBasket(String basketId, BasketItem... basketItems) {
-        this.modifiedBasket = new Basket(basketId, "flowBasketUpdates", Arrays.asList(basketItems));
+    public void updateBasket(String basketId, List<BasketItem> basketItems) {
+        this.modifiedBasket = new Basket(basketId, "flowBasketUpdates", basketItems);
     }
 
     /**
@@ -175,7 +175,6 @@ public class FlowResponse implements Sendable {
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
         this.amountsPaid = amountsPaid;
         this.amountsPaidPaymentMethod = paymentMethod;
-        validateAmounts();
     }
 
     /**
@@ -232,31 +231,31 @@ public class FlowResponse implements Sendable {
     }
 
     /**
+     * Get the updated payment.
+     *
+     * @return The updated payment
+     */
+    public Payment getUpdatedPayment() {
+        return updatedPayment;
+    }
+
+    /**
+     * Set the updated payment.
+     *
+     * @param updatedPayment The updated payment
+     */
+    public void setUpdatedPayment(Payment updatedPayment) {
+        this.updatedPayment = updatedPayment;
+    }
+
+    /**
      * Check whether this response has any augmented data.
      *
      * @return True if data has been augmented, false otherwisee
      */
     public boolean hasAugmentedData() {
-        return requestAdditionalData != null || updatedRequestAmounts != null || amountsPaid != null || paymentReferences != null || enableSplit
-                || additionalBasket != null || modifiedBasket != null || customer != null;
-    }
-
-    /**
-     * Check whether split should be enabled.
-     *
-     * @return True if split should be enabled
-     */
-    public boolean shouldEnableSplit() {
-        return enableSplit;
-    }
-
-    /**
-     * Enable or disable split.
-     *
-     * @param enableSplit True to enable split, false to disable it
-     */
-    public void setEnableSplit(boolean enableSplit) {
-        this.enableSplit = enableSplit;
+        return requestAdditionalData != null || updatedRequestAmounts != null || amountsPaid != null || paymentReferences != null ||
+                additionalBasket != null || modifiedBasket != null || customer != null || updatedPayment != null;
     }
 
     /**
@@ -294,7 +293,6 @@ public class FlowResponse implements Sendable {
         this.amountsPaid = flowResponse.amountsPaid;
         this.amountsPaidPaymentMethod = flowResponse.amountsPaidPaymentMethod;
         this.paymentReferences = flowResponse.paymentReferences;
-        this.enableSplit = flowResponse.enableSplit;
         this.cancelTransaction = flowResponse.cancelTransaction;
         this.additionalBasket = flowResponse.additionalBasket;
         this.modifiedBasket = flowResponse.modifiedBasket;
@@ -305,6 +303,7 @@ public class FlowResponse implements Sendable {
         if (amountsPaid != null && updatedRequestAmounts != null) {
             checkCurrencyMatch();
             checkAmountsPaidLessEqualUpdatedAmounts();
+            checkNotEmpty(amountsPaidPaymentMethod, "Payment method must be set for paid amounts");
         }
     }
 
@@ -314,12 +313,13 @@ public class FlowResponse implements Sendable {
     }
 
     private void checkCurrencyMatch() {
-        checkArgument(updatedRequestAmounts.getCurrency() == null || updatedRequestAmounts.getCurrency().equals(amountsPaid.getCurrency()),
+        checkArgument(updatedRequestAmounts.getCurrency().equals(amountsPaid.getCurrency()),
                       "Updated amounts and amounts paid currency must be the same");
     }
 
     public void validate() {
-        if (modifiedBasket != null && modifiedBasket.getTotalBasketValue() < 0) {
+        validateAmounts();
+        if (modifiedBasket != null) {
             if (amountsPaid == null || amountsPaid.getTotalAmountValue() < modifiedBasket.getTotalBasketValue()) {
                 throw new IllegalArgumentException("Amounts paid must be set when applying discounts to baskets");
             }
@@ -335,8 +335,7 @@ public class FlowResponse implements Sendable {
             return false;
         }
         FlowResponse that = (FlowResponse) o;
-        return enableSplit == that.enableSplit &&
-                cancelTransaction == that.cancelTransaction &&
+        return cancelTransaction == that.cancelTransaction &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(updatedRequestAmounts, that.updatedRequestAmounts) &&
                 Objects.equals(requestAdditionalData, that.requestAdditionalData) &&
@@ -345,15 +344,17 @@ public class FlowResponse implements Sendable {
                 Objects.equals(modifiedBasket, that.modifiedBasket) &&
                 Objects.equals(customer, that.customer) &&
                 Objects.equals(amountsPaidPaymentMethod, that.amountsPaidPaymentMethod) &&
+                Objects.equals(updatedPayment, that.updatedPayment) &&
                 Objects.equals(paymentReferences, that.paymentReferences);
     }
 
     @Override
     public int hashCode() {
+
         return Objects
                 .hash(id, updatedRequestAmounts, requestAdditionalData, amountsPaid, additionalBasket, modifiedBasket, customer,
                       amountsPaidPaymentMethod,
-                      paymentReferences, enableSplit, cancelTransaction);
+                      updatedPayment, paymentReferences, cancelTransaction);
     }
 
     @Override

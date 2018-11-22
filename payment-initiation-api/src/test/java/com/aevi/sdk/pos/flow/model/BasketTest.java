@@ -207,5 +207,20 @@ public class BasketTest {
         assertThat(drinks).hasSize(2).containsExactlyInAnyOrder(sourceBasket.getItemById("123"), sourceBasket.getItemById("456"));
     }
 
+    @Test
+    public void totalValueHandlesNegativeItemsCorrectly() throws Exception {
+        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1, null),
+                              new BasketItem("456", "Fanta", "Drinks", -500, 1, null));
 
+        long total = sourceBasket.getTotalBasketValue();
+        assertThat(total).isEqualTo(500);
+    }
+
+    @Test
+    public void totalValueHandlesNegativeItemsOnlyCorrectly() throws Exception {
+        sourceBasket.addItems(new BasketItem("456", "Fanta", "Drinks", -500, 1, null));
+
+        long total = sourceBasket.getTotalBasketValue();
+        assertThat(total).isEqualTo(-500);
+    }
 }

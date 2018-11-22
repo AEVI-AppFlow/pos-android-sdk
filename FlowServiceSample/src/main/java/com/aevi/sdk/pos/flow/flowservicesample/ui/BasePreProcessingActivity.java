@@ -31,7 +31,9 @@ import com.aevi.sdk.pos.flow.sample.CustomerProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
+import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.PaymentMethods.*;
@@ -63,19 +65,21 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         preTransactionModel = PreTransactionModel.fromActivity(this);
         transactionRequest = preTransactionModel.getTransactionRequest();
 
-        surchargeView.setText(getString(R.string.add_surcharge_fee, AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
-                                                                                                 getResources()
-                                                                                                         .getInteger(R.integer.surcharge_fee))));
-        giftCardView
-                .setText(getString(R.string.pay_portion_with_gift_card, AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
-                                                                                                     getResources().getInteger(
-                                                                                                             R.integer.pay_gift_card_value))));
+        surchargeView.setText(getString(R.string.add_surcharge_fee,
+                                        AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(), getResources()
+                                                .getInteger(R.integer.surcharge_fee))));
+        giftCardView.setText(getString(R.string.pay_portion_with_gift_card,
+                                       AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
+                                                                    getResources().getInteger(R.integer.pay_gift_card_value))));
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
         }
         if (transactionRequest.getBaskets().isEmpty()) {
             findViewById(R.id.discount_basket_item).setVisibility(View.GONE);
+        }
+        if (transactionRequest.getAmounts() == null || transactionRequest.getAmounts().getBaseAmountValue() == 0) {
+            disablePayViews();
         }
     }
 
@@ -87,7 +91,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(preTransactionModel.getFlowResponse());
+            modelDisplay.showFlowResponse(StageModelHelper.getFlowResponse(preTransactionModel));
         }
     }
 
@@ -164,10 +168,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
                 long amountForDiscount = basketItem.getIndividualAmount();
                 BasketItem discountItem = new BasketItemBuilder(basketItem).withLabel("Reward - free item: " + basketItem.getLabel())
                         .withAmount(amountForDiscount * -1).build();
-                preTransactionModel.addItemsToExistingBasket(basket.getId(), discountItem);
-                // Note, you MUST set amounts paid for any basket discounts, or the augmentation will be rejected
-                preTransactionModel
-                        .setAmountsPaid(new Amounts(amountForDiscount, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_REWARD);
+                preTransactionModel.applyDiscountsToBasket(basket.getId(), Arrays.asList(discountItem), PAYMENT_METHOD_REWARD);
             }
         }
         updateModel();
@@ -203,7 +204,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
-        return preTransactionModel.getFlowResponse().toJson();
+        return StageModelHelper.getFlowResponse(preTransactionModel).toJson();
     }
 
     @Override

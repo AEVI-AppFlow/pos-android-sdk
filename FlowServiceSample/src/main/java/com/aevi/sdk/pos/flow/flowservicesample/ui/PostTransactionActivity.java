@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
+import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
 public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 
@@ -93,7 +94,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
-        return postTransactionModel.getFlowResponse().toJson();
+        return StageModelHelper.getFlowResponse(postTransactionModel).toJson();
     }
 
     @Override

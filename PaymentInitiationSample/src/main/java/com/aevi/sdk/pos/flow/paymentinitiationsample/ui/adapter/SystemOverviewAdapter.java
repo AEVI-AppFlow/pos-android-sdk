@@ -129,6 +129,10 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
                 return getYesNo(fpsSettings.shouldAbortOnPaymentAppError());
             case R.string.filter_services_by_flow_type:
                 return getYesNo(fpsSettings.shouldFilterServicesByFlowType());
+            case R.string.always_allow_preflow:
+                return getYesNo(fpsSettings.shouldAlwaysCallPreFlow());
+            case R.string.enable_legacy_pas:
+                return getYesNo(fpsSettings.legacyPaymentAppsEnabled());
         }
         return "";
     }

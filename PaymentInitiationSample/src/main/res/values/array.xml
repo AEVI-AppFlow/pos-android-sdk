@@ -19,6 +19,7 @@
         <item>10.00, tip: 5.00</item>
         <item>10.00, cashback: 5.00</item>
         <item>10.00, tip: 5.00, cashback: 2.50</item>
+        <item>0.00</item>
     </string-array>
 
     <array name="fragment_tabs">
