@@ -30,6 +30,7 @@ import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Action;
@@ -93,6 +94,12 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                     @Override
                     public void run() throws Exception {
                         transactionMessenger.closeConnection();
+                    }
+                })
+                .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
+                    @Override
+                    public CompletableSource apply(Throwable throwable) throws Exception {
+                        return Completable.error(createFlowException(throwable));
                     }
                 });
     }

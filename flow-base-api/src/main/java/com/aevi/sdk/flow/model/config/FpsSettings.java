@@ -32,6 +32,7 @@ public class FpsSettings implements Jsonable {
     public static final boolean ABORT_ON_PAYMENT_APP_ERROR_DEFAULT = false;
     public static final boolean FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT = true;
     public static final boolean LEGACY_PAYMENT_APPS_ENABLED_DEFAULT = false;
+    public static final boolean ALWAYS_CALL_PRE_FLOW_DEFAULT = false;
 
     public static final int SPLIT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 1200;
     public static final int FLOW_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
@@ -57,6 +58,7 @@ public class FpsSettings implements Jsonable {
     private boolean filterServicesByFlowType = FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT;
 
     private boolean legacyPaymentAppsEnabled = LEGACY_PAYMENT_APPS_ENABLED_DEFAULT;
+    private boolean alwaysCallPreFlow = ALWAYS_CALL_PRE_FLOW_DEFAULT;
 
     /**
      * Check whether multi-device support is enabled.
@@ -347,6 +349,8 @@ public class FpsSettings implements Jsonable {
      *
      * If false, FPS will always call flow services even if they don't report types, or the flow type is not supported by that service.
      *
+     * See {@link #FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT} for default.
+     *
      * @return True to enable FPS filtering, false otherwise
      */
     public boolean shouldFilterServicesByFlowType() {
@@ -360,6 +364,8 @@ public class FpsSettings implements Jsonable {
      *
      * If false, FPS will always call flow services even if they don't report types, or the flow type is not supported by that service.
      *
+     * See {@link #FILTER_FLOW_SERVICES_BY_FLOW_TYPE_DEFAULT} for default.
+     *
      * @param filterServicesByFlowType True to enable FPS filtering, false otherwise
      */
     public void setFilterServicesByFlowType(boolean filterServicesByFlowType) {
@@ -367,16 +373,20 @@ public class FpsSettings implements Jsonable {
     }
 
     /**
-     * Check to set if FPS should scan and support legacy payment applications.
+     * Check whether FPS should scan and support legacy payment applications.
      *
      * If true, legacy AEVI Public SDK implementations will be reported as a flow service application that can be used in a payment flow to
      * process supported legacy transaction types.
      *
      * If false, legacy payment applications will be ignored.
      *
+     * See {@link #LEGACY_PAYMENT_APPS_ENABLED_DEFAULT} for default.
+     *
      * @return True if legacy payment applications are supported
      */
-    public boolean legacyPaymentAppsEnabled() { return legacyPaymentAppsEnabled; }
+    public boolean legacyPaymentAppsEnabled() {
+        return legacyPaymentAppsEnabled;
+    }
 
     /**
      * Set whether or not FPS should scan and support legacy payment applications.
@@ -386,10 +396,38 @@ public class FpsSettings implements Jsonable {
      *
      * If false, legacy payment applications will be ignored.
      *
+     * See {@link #LEGACY_PAYMENT_APPS_ENABLED_DEFAULT} for default.
+     *
      * @param legacyPaymentAppsEnabled True to enable legacy payment application support
      */
     public void setLegacyPaymentAppsEnabled(boolean legacyPaymentAppsEnabled) {
         this.legacyPaymentAppsEnabled = legacyPaymentAppsEnabled;
+    }
+
+    /**
+     * Check whether FPS should always call the PRE_FLOW stage or not.
+     *
+     * If false, FPS will only call PRE_FLOW when the Payment amounts are zero. If true, it will be called regardless.
+     *
+     * See {@link #ALWAYS_CALL_PRE_FLOW_DEFAULT} for default.
+     *
+     * @return True to always call PRE_FLOW, false to only call for zero based amounts
+     */
+    public boolean shouldAlwaysCallPreFlow() {
+        return alwaysCallPreFlow;
+    }
+
+    /**
+     * Set whether FPS should always call the PRE_FLOW stage or not.
+     *
+     * If false, FPS will only call PRE_FLOW when the Payment amounts are zero. If true, it will be called regardless.
+     *
+     * See {@link #ALWAYS_CALL_PRE_FLOW_DEFAULT} for default.
+     *
+     * @param alwaysCallPreFlow True to always call PRE_FLOW, false to only call for zero based amounts
+     */
+    public void setAlwaysCallPreFlow(boolean alwaysCallPreFlow) {
+        this.alwaysCallPreFlow = alwaysCallPreFlow;
     }
 
     public static FpsSettings fromJson(String json) {
@@ -415,12 +453,15 @@ public class FpsSettings implements Jsonable {
                 splitResponseTimeoutSeconds == that.splitResponseTimeoutSeconds &&
                 flowResponseTimeoutSeconds == that.flowResponseTimeoutSeconds &&
                 paymentResponseTimeoutSeconds == that.paymentResponseTimeoutSeconds &&
+                statusUpdateTimeoutSeconds == that.statusUpdateTimeoutSeconds &&
                 appOrDeviceSelectionTimeoutSeconds == that.appOrDeviceSelectionTimeoutSeconds &&
                 shouldAbortOnFlowAppError == that.shouldAbortOnFlowAppError &&
                 shouldAbortOnPaymentError == that.shouldAbortOnPaymentError &&
                 allowAccessViaStatusBar == that.allowAccessViaStatusBar &&
                 alwaysAllowDynamicSelect == that.alwaysAllowDynamicSelect &&
-                filterServicesByFlowType == that.filterServicesByFlowType;
+                filterServicesByFlowType == that.filterServicesByFlowType &&
+                legacyPaymentAppsEnabled == that.legacyPaymentAppsEnabled &&
+                alwaysCallPreFlow == that.alwaysCallPreFlow;
     }
 
     @Override
@@ -428,7 +469,7 @@ public class FpsSettings implements Jsonable {
 
         return Objects
                 .hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds,
-                      appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError, allowAccessViaStatusBar,
-                      alwaysAllowDynamicSelect, filterServicesByFlowType);
+                      statusUpdateTimeoutSeconds, appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError,
+                      allowAccessViaStatusBar, alwaysAllowDynamicSelect, filterServicesByFlowType, legacyPaymentAppsEnabled, alwaysCallPreFlow);
     }
 }

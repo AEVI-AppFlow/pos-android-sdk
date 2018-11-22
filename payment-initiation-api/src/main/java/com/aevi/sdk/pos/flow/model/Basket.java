@@ -81,7 +81,7 @@ public class Basket extends BaseModel {
     Basket(String id, String basketName, List<BasketItem> basketItems) {
         super(id);
         this.basketName = basketName;
-        this.displayItems = basketItems;
+        this.displayItems = new ArrayList<>(basketItems);
         this.additionalBasketData = new AdditionalData();
     }
 
@@ -95,7 +95,9 @@ public class Basket extends BaseModel {
     }
 
     /**
-     * Retrieve the list of basket items.
+     * Retrieve the list of basket items for reading and/or modifying.
+     *
+     * This returns the list that backs the basket - any changes made in the list will directly affect the basket.
      *
      * The list is sorted by most recent first.
      *
@@ -410,5 +412,15 @@ public class Basket extends BaseModel {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), basketName, displayItems, additionalBasketData);
+    }
+
+    /**
+     * Clone the provided basket and return a new identical instance.
+     *
+     * @param basket The basket to clone
+     * @return A cloned basket
+     */
+    public static Basket clone(Basket basket) {
+        return new Basket(basket.getId(), basket.getBasketName(), basket.getBasketItems());
     }
 }

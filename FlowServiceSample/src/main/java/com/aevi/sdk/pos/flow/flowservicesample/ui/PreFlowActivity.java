@@ -16,30 +16,40 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import com.aevi.sdk.flow.constants.AmountIdentifiers;
-import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.sdk.flow.constants.FlowStages;
-import com.aevi.sdk.flow.model.Customer;
+import com.aevi.sdk.pos.flow.PaymentApi;
+import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.model.Amounts;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.sample.CustomerProducer;
+import com.aevi.sdk.pos.flow.model.PaymentBuilder;
+import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PreFlowModel;
 
-import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
-
 public class PreFlowActivity extends BaseSampleAppCompatActivity {
 
+    private static final long AMOUNT = 1000;
+
     private PreFlowModel preFlowModel;
+    private PaymentBuilder paymentBuilder;
     private ModelDisplay modelDisplay;
+    private String chosenCurrency;
+
+    @BindView(R.id.set_amounts)
+    Button setAmounts;
+
+    @BindView(R.id.enable_split)
+    CheckBox splitCheckBox;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -50,12 +60,24 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
         setContentView(R.layout.activity_pre_flow);
         ButterKnife.bind(this);
 
+        PaymentClient paymentClient = PaymentApi.getPaymentClient(this);
+        paymentClient.getPaymentSettings().subscribe(paymentSettings -> {
+            chosenCurrency = paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies().iterator().next();
+            String amountString = AmountFormatter.formatAmount(chosenCurrency, AMOUNT);
+            setAmounts.setText("Set amounts to " + amountString);
+        }, throwable -> {
+            Toast.makeText(PreFlowActivity.this, "Failed to determine currency", Toast.LENGTH_SHORT).show();
+            setAmounts.setEnabled(false);
+        });
+
         preFlowModel = PreFlowModel.fromActivity(this);
+        paymentBuilder = preFlowModel.getPaymentBuilder();
         setupToolbar(toolbar, R.string.fss_pre_flow);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
         }
+        splitCheckBox.setChecked(preFlowModel.getPayment().isSplitEnabled());
     }
 
     @Override
@@ -66,7 +88,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(preFlowModel.getFlowResponse());
+            modelDisplay.showPayment(paymentBuilder.build());
         }
     }
 
@@ -92,7 +114,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
-        return preFlowModel.getFlowResponse().toJson();
+        return paymentBuilder.build().toJson();
     }
 
     @Override
@@ -105,34 +127,22 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
         return getString(R.string.pre_flow_help);
     }
 
-    @OnClick(R.id.add_tax)
-    public void onAddTax(View v) {
-        int taxPercentage = getResources().getInteger(R.integer.tax_percentage);
-        preFlowModel.setAdditionalAmountAsBaseFraction(AmountIdentifiers.AMOUNT_TAX, percentageToFraction(taxPercentage));
+    @OnClick(R.id.set_amounts)
+    public void onSetAmounts() {
+        paymentBuilder.withAmounts(new Amounts(AMOUNT, chosenCurrency));
         updateModel();
-        v.setEnabled(false);
     }
 
     @OnCheckedChanged(R.id.enable_split)
     public void onEnableSplit(CheckBox split) {
-        preFlowModel.setSplitEnabled(split.isChecked());
+        paymentBuilder.withSplitEnabled(split.isEnabled());
         updateModel();
     }
 
-    @OnClick(R.id.add_customer_data)
-    public void addCustomerData(View v) {
-        Customer customer;
-        Payment payment = preFlowModel.getPayment();
-        if (payment.getCustomer() != null) {
-            customer = payment.getCustomer();
-            customer.addCustomerDetails(CustomerDataKeys.CITY, "New York");
-            customer.addCustomerDetails("updatedBy", "PreFlow Sample");
-        } else {
-            customer = CustomerProducer.getDefaultCustomer("PreFlow Sample");
-        }
-        preFlowModel.addOrUpdateCustomerDetails(customer);
-        updateModel();
-        v.setEnabled(false);
+    @OnClick(R.id.cancel_transaction)
+    public void onCancel() {
+        preFlowModel.cancelFlow();
+        finish();
     }
 
     @OnClick(R.id.send_response)

@@ -49,4 +49,14 @@ public class AmountsModifierTest {
         assertThat(updated.getBaseAmountValue()).isEqualTo(50);
         assertThat(updated.getAdditionalAmountValue("cashback")).isEqualTo(12);
     }
+
+    @Test
+    public void canOffsetWithNegativeAmounts() throws Exception {
+        Amounts original = new Amounts(100, "GBP");
+        Amounts updated = new AmountsModifier(original)
+                .offsetBaseAmount(-50)
+                .build();
+
+        assertThat(updated.getBaseAmountValue()).isEqualTo(50);
+    }
 }

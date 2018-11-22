@@ -13,6 +13,8 @@
  */
 package com.aevi.sdk.flow.service;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
@@ -38,6 +40,12 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
     protected BaseListenerService(Class<RESPONSE> responseClass, String apiVersion) {
         this.responseClass = responseClass;
         internalData = new InternalData(apiVersion);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        internalData.setSenderPackageName(getPackageName());
     }
 
     @Override
@@ -91,7 +99,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
      *
      * @param response The final response sent after completion of a flow
      */
-    protected abstract void notifyResponse(RESPONSE response);
+    protected abstract void notifyResponse(@NonNull RESPONSE response);
 
     /**
      * This method will be called upon unrecoverable errors in the flow.
@@ -99,5 +107,5 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
      * @param errorCode    The error code as per {@link com.aevi.sdk.flow.constants.ErrorConstants}
      * @param errorMessage Error message to further outline the problem
      */
-    protected abstract void notifyError(String errorCode, String errorMessage);
+    protected abstract void notifyError(@NonNull String errorCode, @NonNull String errorMessage);
 }

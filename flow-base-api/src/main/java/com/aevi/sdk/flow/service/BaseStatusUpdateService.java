@@ -41,5 +41,5 @@ public abstract class BaseStatusUpdateService extends BaseApiService {
      *
      * @param stageModel The status update stage model
      */
-    protected abstract void processRequest(StatusUpdateModel stageModel);
+    protected abstract void processRequest(@NonNull StatusUpdateModel stageModel);
 }
