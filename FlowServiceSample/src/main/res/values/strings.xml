@@ -50,7 +50,7 @@
     <string name="prev_txn_declined">Previous split transaction was declined! Please try again.</string>
     <string name="bypass_split">Bypass</string>
 
-    <string name="pre_flow_help">Pre-flow is, if enabled, the first stage that gets called after payment initiation. It is called only once per payment. Applications in this stage receives the Payment request that was created by the initiation app, and can adjust request amounts, enable/disable split, add/change data, etc.\n\nMost applications will find pre-transaction or post-card-reading more relevant, as they are called on a per customer basis and may receive customer specific data, such as card token.
+    <string name="pre_flow_help">Pre-flow is, if enabled, the first stage that gets called after payment initiation. It is called only once per payment. Applications in this stage receives the Payment request that was created by the initiation app, and can update any payment data.\n\nMost applications will find pre-transaction or post-card-reading more relevant, as they are called on a per customer basis and may receive customer specific data, such as card token.
     </string>
     <string name="split_help">The split stage allows for a special type of applications, split apps, to break down the purchase amount into multiple transactions - typically one per customer. This is a common scenario in the restaurant/cafe industry where customers in a group often want to split the total bill at the end.\n\nSplit applications also have the ability to cancel the overall payment at any time, which would lead to a partially fulfilled outcome if any transactions have been completed.
     </string>
@@ -68,4 +68,6 @@
     <string name="receipt_delivery">Receipt delivery</string>
     <string name="add_basket">Add basket</string>
     <string name="add_item_discount">Add basket item discount</string>
+    <string name="pre_flow_header_text">This sample only provides the minimum controls for pre-flow. For more details, see documentation.</string>
+    <string name="set_amount">Set amount</string>
 </resources>

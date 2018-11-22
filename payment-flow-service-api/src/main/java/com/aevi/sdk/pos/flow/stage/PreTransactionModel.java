@@ -19,6 +19,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
+import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -27,7 +28,10 @@ import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
+import java.util.List;
+
 import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Model for the pre-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -110,8 +114,10 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param currency     The new ISO-4217 currency code
      * @param exchangeRate The exchange rate (from original currency to updated currency)
+     * @throws IllegalArgumentException If currency is not set
      */
     public void changeCurrency(String currency, double exchangeRate) {
+        checkNotEmpty(currency, "Currency must be set");
         amountsModifier.changeCurrency(currency, exchangeRate);
     }
 
@@ -124,8 +130,11 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param identifier The amount identifier
      * @param amount     The amount value
+     * @throws IllegalArgumentException If identifier or amount are invalid
      */
     public void setAdditionalAmount(String identifier, long amount) {
+        checkNotEmpty(identifier, "Identifier must be set");
+        checkNotNegative(amount, "Amount must be zero or greater");
         amountsModifier.setAdditionalAmount(identifier, amount);
     }
 
@@ -136,8 +145,11 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
+     * @throws IllegalArgumentException If identifier is not set
      */
     public void setAdditionalAmountAsBaseFraction(String identifier, float fraction) {
+        checkNotEmpty(identifier, "Identifier must be set");
+        checkNotNegative(fraction, "Fractions must not be negative");
         amountsModifier.setAdditionalAmountAsBaseFraction(identifier, fraction);
     }
 
@@ -151,54 +163,91 @@ public class PreTransactionModel extends BaseStageModel {
      * @param key    The key to use for this data
      * @param values A var-args input of values associated with the key
      * @param <T>    The type of object this data is an array of
+     * @throws IllegalArgumentException If key or values are not set
      */
     @SafeVarargs
     public final <T> void addRequestData(String key, T... values) {
+        checkNotNull(key, "Key must be set");
+        checkNotEmpty(values, "At least one value must be provided");
         flowResponse.addAdditionalRequestData(key, values);
     }
 
     /**
      * Add a new basket to the transaction.
      *
-     * An application can either add a new basket via this method, or add more items to an existing basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
+     * This method can be used to add extras/upsells/etc to a purchase, whereas {@link #applyDiscountsToBasket(String, List, String)} can be used
+     * to apply discounts to an existing basket.
      *
-     * This method is the recommended option to add "extras" to a purchase, whereas the other method is recommended to provide discounts, etc.
+     * Note that it is not allowed to add additional items to the primary basket - only via new baskets.
+     *
+     * Only one basket can be added. Any subsequent calls to this method will overwrite any previous baskets.
      *
      * The transaction base amount will automatically be updated to take the value of this basket into account.
      *
      * @param basket The basket to add
+     * @throws IllegalArgumentException If the total basket value is not greater than zero
      */
     public void addNewBasket(Basket basket) {
+        checkNotNull(basket, "Basket must not be null");
+        checkNotEmpty(basket.getBasketItems(), "At least one basket item must be set");
+        if (basket.getTotalBasketValue() < 0) {
+            throw new IllegalArgumentException("Total basket value must be greater than or equal zero");
+        }
         flowResponse.addNewBasket(basket);
         amountsModifier.offsetBaseAmount(basket.getTotalBasketValue());
     }
 
     /**
-     * Add items to an existing basket.
+     * Apply discounts to an existing basket.
      *
-     * The main use case for this is to allow applications to apply discounts to existing baskets.
+     * This can be used to apply rewards, points, etc for particular basket items. As an example, this can be used to provide a reward for a
+     * free coffee. If the basket contains an item "Latte" with an amount of "300", the reward can be applied by adding an item here
+     * with a negative amount of "-300" and a label such as "Reward: Free Latte".
      *
-     * Note! If you are applying discounts here, you *must* also set amounts paid via {@link #setAmountsPaid(Amounts, String)} to reflect the amount
-     * discounted, or this augmentation will be rejected. If items are added that increases the requested amounts, the transaction amounts will
-     * be updated automatically.
+     * The discounts here will automatically be recorded as amounts paid, there is no need to call {@link #setAmountsPaid(Amounts, String)}.
      *
-     * For adding "extras" to a transaction, please use {@link #addNewBasket(Basket)}.
+     * For adding extras, upsells or any form of new purchase item to a transaction, please create a new basket and add via {@link #addNewBasket(Basket)}.
      *
-     * @param basketId    The id of the basket to add the items to
-     * @param basketItems The basket items to add
+     * This method should only be called once. Any previous values set will be overwritten if the method is called again.
+     *
+     * Any relevant payment references can be set via {@link #setPaymentReferences(AdditionalData)}.
+     *
+     * @param basketId      The id of the basket from transactionRequest.getBaskets() to add the items to
+     * @param basketItems   The basket items to add
+     * @param paymentMethod The payment method used for the discounts
+     * @throws IllegalArgumentException If any basket item has a positive amount, or there are no baskets in the request
      */
-    public void addItemsToExistingBasket(String basketId, BasketItem... basketItems) {
-        flowResponse.updateBasket(basketId, basketItems);
-        long totalBasketValue = flowResponse.getModifiedBasket().getTotalBasketValue();
-        if (totalBasketValue > 0) {
-            amountsModifier.offsetBaseAmount(totalBasketValue);
+    public void applyDiscountsToBasket(String basketId, List<BasketItem> basketItems, String paymentMethod) {
+        checkNotEmpty(basketId, "Basket id must be set");
+        checkNotEmpty(basketItems, "Basket items must be set");
+        checkNotEmpty(paymentMethod, "Payment method must be set");
+        boolean foundBasket = false;
+        for (Basket basket : transactionRequest.getBaskets()) {
+            if (basket.getId().equals(basketId)) {
+                foundBasket = true;
+                break;
+            }
+        }
+        if (!foundBasket) {
+            throw new IllegalArgumentException("No basket with provided id found in TransactionRequest");
+        }
+
+        for (BasketItem basketItem : basketItems) {
+            if (basketItem.getIndividualAmount() >= 0) {
+                throw new IllegalArgumentException("Discount items must all have negative amount values");
+            }
+        }
+        if (basketItems.size() > 0) {
+            flowResponse.updateBasket(basketId, basketItems);
+            setAmountsPaid(new Amounts(Math.abs(flowResponse.getModifiedBasket().getTotalBasketValue()),
+                                       transactionRequest.getAmounts().getCurrency()), paymentMethod);
         }
     }
 
     /**
      * Pay off a portion or the full requested amounts.
      *
-     * This can be used together with applying discount items to the basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
+     * Note that if you are applying discounts to specific basket items, please use {@link #applyDiscountsToBasket(String, List, String)} instead.
      *
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
@@ -210,55 +259,56 @@ public class PreTransactionModel extends BaseStageModel {
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
      *
+     * Any relevant payment references can be set via {@link #setPaymentReferences(AdditionalData)}.
+     *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
+     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
+        checkNotNull(amountsPaid, "Amounts paid must be set");
+        checkNotEmpty(paymentMethod, "Payment method must be set");
+        if (amountsPaid.getTotalAmountValue() > transactionRequest.getAmounts().getTotalAmountValue()) {
+            throw new IllegalArgumentException("Paid amounts can not exceed requested amounts");
+        }
+        if (!amountsPaid.getCurrency().equals(transactionRequest.getAmounts().getCurrency())) {
+            throw new IllegalArgumentException("Paid currency does not match request currency");
+        }
         flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
     }
 
     /**
-     * Pay off a portion or the full requested amounts.
+     * Set payment references for use with {@link #applyDiscountsToBasket(String, List, String)} or {@link #setAmountsPaid(Amounts, String)}.
      *
-     * This can be used together with applying discount items to the basket via {@link #addItemsToExistingBasket(String, BasketItem...)}.
-     *
-     * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
-     * Examples are loyalty points, cash, etc.
-     *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
-     *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
-     *
-     * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
-     * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
-     *
-     * @param amountsPaid       The amounts paid
-     * @param paymentMethod     The method of payment
-     * @param paymentReferences Payment references associated with the payment
+     * @param paymentReferences Payment references
      */
-    public void setAmountsPaid(Amounts amountsPaid, String paymentMethod, AdditionalData paymentReferences) {
-        flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
+    public void setPaymentReferences(AdditionalData paymentReferences) {
         flowResponse.setPaymentReferences(paymentReferences);
     }
 
     /**
      * Add a customer or update existing customer details.
      *
+     * If you are updating an existing customer, use the {@link Customer} from {@link TransactionRequest#getCustomer()}, update as required and
+     * pass back via this method. Note that only {@link Customer#addToken(Token)} and {@link Customer#addCustomerDetails(String, Object[])} are taken
+     * into account for updating customer details. It is assumed that the id and name of a customer is managed by the source of the customer data.
+     *
      * @param customer The customer details
+     * @throws IllegalArgumentException If customer is null
      */
     public void addOrUpdateCustomerDetails(Customer customer) {
+        checkNotNull(customer, "Customer must be set");
         flowResponse.addOrUpdateCustomer(customer);
     }
 
     /**
      * Get the flow response that is created from this model.
      *
-     * Note that there is rarely any need to interact with this object directly, but there are cases where reading and/or updating data in the
-     * response object directly is useful.
+     * For internal use.
      *
      * @return The flow response
      */
-    public FlowResponse getFlowResponse() {
+    FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
         }

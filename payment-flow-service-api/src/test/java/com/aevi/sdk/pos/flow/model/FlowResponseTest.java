@@ -11,6 +11,7 @@ public class FlowResponseTest {
 
         flowResponse.updateRequestAmounts(new Amounts(1000, "GBP"));
         flowResponse.setAmountsPaid(new Amounts(2000, "GBP"), "cash");
+        flowResponse.validate();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -19,5 +20,6 @@ public class FlowResponseTest {
 
         flowResponse.setAmountsPaid(new Amounts(1000, "GBP"), "cash");
         flowResponse.updateRequestAmounts(new Amounts(1000, "EUR"));
+        flowResponse.validate();
     }
 }

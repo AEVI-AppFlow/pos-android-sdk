@@ -26,6 +26,8 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
+import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Model for the post-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -99,21 +101,34 @@ public class PostTransactionModel extends BaseStageModel {
      * @param key    The key to use for this data
      * @param values A var-args input of values associated with the key
      * @param <T>    The type of object this data is an array of
+     * @throws IllegalArgumentException If key or values are not set
      */
     @SafeVarargs
     public final <T> void addReferences(String key, T... values) {
+        checkNotNull(key, "Key must be set");
+        checkNotEmpty(values, "At least one value must be provided");
         flowResponse.addAdditionalRequestData(key, values);
+    }
+
+    /**
+     * Add payment references to the transaction.
+     *
+     * See {@link AdditionalData} for more info.
+     *
+     * @param references The references
+     */
+    public final void addReferences(AdditionalData references) {
+        flowResponse.setAdditionalRequestData(references);
     }
 
     /**
      * Get the flow response that is created from this model.
      *
-     * Note that there is rarely any need to interact with this object directly, but there are cases where reading and/or updating data in the
-     * response object directly is useful.
+     * For internal use.
      *
      * @return The flow response
      */
-    public FlowResponse getFlowResponse() {
+    FlowResponse getFlowResponse() {
         return flowResponse;
     }
 

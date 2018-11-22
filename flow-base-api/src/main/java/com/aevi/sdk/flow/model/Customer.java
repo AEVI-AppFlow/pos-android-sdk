@@ -209,4 +209,12 @@ public class Customer extends BaseModel {
         return nameBuilder.toString();
     }
 
+    public static Customer clone(Customer customer) {
+        Customer newCustomer = new Customer(customer.getId());
+        newCustomer.setFullName(customer.getFullName());
+        newCustomer.getTokens().addAll(customer.getTokens());
+        newCustomer.getCustomerDetails().addData(customer.getCustomerDetails(), true);
+        return newCustomer;
+    }
+
 }

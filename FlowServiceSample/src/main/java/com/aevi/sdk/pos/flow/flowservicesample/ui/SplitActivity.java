@@ -32,6 +32,7 @@ import com.aevi.sdk.pos.flow.sample.SplitBasketHelper;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.SplitModel;
+import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_AMOUNTS;
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_BASKET;
@@ -152,7 +153,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
 
     private void updateModel() {
         if (modelDisplay != null) {
-            modelDisplay.showFlowResponse(splitModel.getFlowResponse());
+            modelDisplay.showFlowResponse(StageModelHelper.getFlowResponse(splitModel));
         }
     }
 
@@ -213,7 +214,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
     public void onCancelTransaction() {
         disableSplitButtons();
         splitModel.cancelFlow();
-        onSendResponse();
+        finish();
     }
 
     @OnClick(R.id.send_response)
@@ -244,7 +245,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
-        return splitModel.getFlowResponse().toJson();
+        return StageModelHelper.getFlowResponse(splitModel).toJson();
     }
 
     @Override

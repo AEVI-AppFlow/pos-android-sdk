@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Model for the split stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -35,6 +36,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  *
  * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
  * effect as calling {@link #skip()}.
+ *
+ * For cancelling the flow, call {@link #cancelFlow()}.
  *
  * If no changes are required, call {@link #skip()}.
  */
@@ -110,19 +113,27 @@ public class SplitModel extends BaseStageModel {
      * If the payment contains a basket, using {@link #setBasketForNextTransaction(Basket)} is more suitable.
      *
      * @param baseAmount The base amount to process for the next transaction
+     * @throws IllegalArgumentException If amount is negative
      */
     public void setBaseAmountForNextTransaction(long baseAmount) {
+        checkNotNegative(baseAmount, "Amount must not be negative");
         amountsModifier.updateBaseAmount(baseAmount);
     }
 
     /**
      * Set the basket to process for the next transaction.
      *
-     * The total amount will be derived from the total basket value.
+     * The total amount will be derived from the total basket value. Calling {@link #setBaseAmountForNextTransaction(long)} is not required.
      *
      * @param basket The basket to process for the next transaction
+     * @throws IllegalArgumentException If basket is not set up correctly
      */
     public void setBasketForNextTransaction(Basket basket) {
+        checkNotNull(basket, "Basket must not be null");
+        checkNotEmpty(basket.getBasketItems(), "At least one basket item must be set");
+        if (basket.getTotalBasketValue() < 0) {
+            throw new IllegalArgumentException("Total basket value must be greater than or equal zero");
+        }
         flowResponse.addNewBasket(basket);
         amountsModifier.updateBaseAmount(basket.getTotalBasketValue());
     }
@@ -137,9 +148,12 @@ public class SplitModel extends BaseStageModel {
      * @param key    The key to use for this data
      * @param values A var-args input of values associated with the key
      * @param <T>    The type of object this data is an array of
+     * @throws IllegalArgumentException If key or values are not set
      */
     @SafeVarargs
     public final <T> void addRequestData(String key, T... values) {
+        checkNotNull(key, "Key must be set");
+        checkNotEmpty(values, "At least one value must be provided");
         flowResponse.addAdditionalRequestData(key, values);
     }
 
@@ -158,11 +172,11 @@ public class SplitModel extends BaseStageModel {
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
+     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
-        flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
+        setAmountsPaid(amountsPaid, paymentMethod, null);
     }
-
 
     /**
      * Pay off a portion or the full requested amounts.
@@ -180,28 +194,39 @@ public class SplitModel extends BaseStageModel {
      * @param amountsPaid       The amounts paid
      * @param paymentMethod     The method of payment
      * @param paymentReferences Payment references associated with the payment
+     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod, AdditionalData paymentReferences) {
+        checkNotNull(amountsPaid, "Amounts paid must be set");
+        checkNotEmpty(paymentMethod, "Payment method must be set");
+        if (amountsPaid.getTotalAmountValue() > splitRequest.getRemainingAmounts().getTotalAmountValue()) {
+            throw new IllegalArgumentException("Paid amounts can not exceed requested amounts");
+        }
+        if (!amountsPaid.getCurrency().equals(splitRequest.getRemainingAmounts().getCurrency())) {
+            throw new IllegalArgumentException("Paid currency does not match request currency");
+        }
         flowResponse.setAmountsPaid(amountsPaid, paymentMethod);
         flowResponse.setPaymentReferences(paymentReferences);
     }
 
     /**
-     * Cancel the flow.
+     * Cancel the flow and send off the response.
+     *
+     * Note that this does NOT finish any activity or stop any service. That is down to the activity/service to manage internally.
      */
     public void cancelFlow() {
         flowResponse.setCancelTransaction(true);
+        sendResponse();
     }
 
     /**
      * Get the flow response that is created from this model.
      *
-     * Note that there is rarely any need to interact with this object directly, but there are cases where reading and/or updating data in the
-     * response object directly is useful.
+     * For internal use.
      *
      * @return The flow response
      */
-    public FlowResponse getFlowResponse() {
+    FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
         }

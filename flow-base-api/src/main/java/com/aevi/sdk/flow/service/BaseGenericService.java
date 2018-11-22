@@ -42,5 +42,5 @@ public abstract class BaseGenericService extends BaseApiService {
      *
      * @param stageModel The generic stage model
      */
-    protected abstract void processRequest(GenericStageModel stageModel);
+    protected abstract void processRequest(@NonNull GenericStageModel stageModel);
 }

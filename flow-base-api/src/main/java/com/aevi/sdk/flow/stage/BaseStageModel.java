@@ -54,6 +54,15 @@ public abstract class BaseStageModel {
         }
     }
 
+    /**
+     * Initialise the stage model from a service.
+     *
+     * @param clientCommunicator The client communication channel for this model
+     */
+    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
+        this.clientCommunicator = clientCommunicator;
+    }
+
     /*
     This will register the activity to receive finish requests from the service, typically when the request has timed out.
      */
@@ -79,15 +88,6 @@ public abstract class BaseStageModel {
         } catch (NoSuchInstanceException e) {
             Log.e(getClass().getSimpleName(), "Failed to retrieve ObservableActivityHelper - was the activity started correctly?");
         }
-    }
-
-    /**
-     * Initialise the stage model from a service.
-     *
-     * @param clientCommunicator The client communication channel for this model
-     */
-    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
-        this.clientCommunicator = clientCommunicator;
     }
 
     /**

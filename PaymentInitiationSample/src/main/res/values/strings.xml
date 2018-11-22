@@ -130,9 +130,9 @@
     <string name="split_response_timeout">Split response timeout</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
-    <string name="multi_device">Multi-device</string>
+    <string name="multi_device">Multi-device enabled</string>
     <string name="split_support">Spli</string>
-    <string name="currency_change">Currency change</string>
+    <string name="currency_change">Allow currency conversion</string>
     <string name="payment_response_timeout">Payment response timeout</string>
     <string name="flow_response_timeout">Flow response timeout</string>
     <string name="merchant_selection_timeout">Merchant selection timeout</string>
@@ -140,6 +140,8 @@
     <string name="abort_on_flow_app_error">Abort on flow app error</string>
     <string name="abort_on_payment_app_error">Abort on payment app error</string>
     <string name="filter_services_by_flow_type">Filter services by flow type</string>
+    <string name="always_allow_preflow">Always allow PRE_FLOW</string>
+    <string name="enable_legacy_pas">Enable legacy payment apps</string>
     <string name="request_stages">Request stages</string>
     <string name="flow_config">Flow config</string>
     <string name="system_settings">System settings</string>
@@ -203,15 +205,17 @@
     addEnabledDisabled(stringBuilder, R.string.abort_on_payment_app_error, fpsSettings.shouldAbortOnPaymentAppError());
 
     <array name="fps_settings_labels">
-        <item>@string/multi_device</item>
-        <item>@string/currency_change</item>
         <item>@string/split_response_timeout</item>
         <item>@string/payment_response_timeout</item>
         <item>@string/flow_response_timeout</item>
         <item>@string/status_update_timeout</item>
         <item>@string/merchant_selection_timeout</item>
+        <item>@string/multi_device</item>
+        <item>@string/currency_change</item>
+        <item>@string/filter_services_by_flow_type</item>
+        <item>@string/always_allow_preflow</item>
+        <item>@string/enable_legacy_pas</item>
         <item>@string/abort_on_flow_app_error</item>
         <item>@string/abort_on_payment_app_error</item>
-        <item>@string/filter_services_by_flow_type</item>
     </array>
 </resources>

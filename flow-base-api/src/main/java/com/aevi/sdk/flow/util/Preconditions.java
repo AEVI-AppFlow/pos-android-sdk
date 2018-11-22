@@ -72,4 +72,10 @@ public final class Preconditions {
             throw new IllegalArgumentException(message);
         }
     }
+
+    public static void checkNotNegative(Number number, String message) {
+        if (Double.compare(number.doubleValue(), 0.0) < 0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }

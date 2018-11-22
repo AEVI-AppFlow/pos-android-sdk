@@ -13,6 +13,7 @@
  */
 package com.aevi.sdk.flow.service;
 
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.FlowBaseConfig;
 import com.aevi.sdk.flow.model.Response;
 
@@ -40,7 +41,7 @@ public abstract class BaseResponseListenerService extends BaseListenerService<Re
     }
 
     @Override
-    protected void notifyResponse(Response response) {
+    protected void notifyResponse(@NonNull Response response) {
         if (response.wasProcessedInBackground()) {
             notifyStatusUpdateResponse(response);
         } else {
@@ -53,7 +54,7 @@ public abstract class BaseResponseListenerService extends BaseListenerService<Re
      *
      * @param response The generic flow response
      */
-    protected abstract void notifyGenericResponse(Response response);
+    protected abstract void notifyGenericResponse(@NonNull Response response);
 
     /**
      * Called for responses to status update flows which are processed in the background.
@@ -62,5 +63,5 @@ public abstract class BaseResponseListenerService extends BaseListenerService<Re
      *
      * @param response The status update response
      */
-    protected abstract void notifyStatusUpdateResponse(Response response);
+    protected abstract void notifyStatusUpdateResponse(@NonNull Response response);
 }

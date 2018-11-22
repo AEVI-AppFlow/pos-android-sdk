@@ -292,7 +292,6 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showFlowResponse(FlowResponse flowResponse) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
-        responseInfo.add(getStringPair(R.string.split_requested, flowResponse.shouldEnableSplit()));
         responseInfo.add(getStringPair(R.string.cancel_requested, flowResponse.shouldCancelTransaction()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, responseInfo, true));
 
@@ -314,6 +313,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
 
         if (flowResponse.getModifiedBasket() != null) {
             addBasketSection(flowResponse.getModifiedBasket(), currency);
+        }
+
+        if (flowResponse.getUpdatedPayment() != null) {
+            addPaymentOverview(flowResponse.getUpdatedPayment());
         }
 
         if (flowResponse.getCustomer() != null) {
