@@ -1,45 +1,23 @@
 # AEVI AppFlow - POS Android SDK
 
-AEVI AppFlow is a solution that enables a client applications to initiate a request that is then passed to other applications at different stages of a _flow_.
- Apps within the flow can be launched in one or many flow stages, and can access information about the flow in a standardised way.
+AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called.
+A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
 
 The point of sale (POS) Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate various
-flows for common operations such as payment, refund, void etc. During the flow any number of value added services can be called such as loyalty,
-discounts, split bill, receipt delivery, as part of the process. AppFlow for POS can be configured with an initial set of flows for payment transactions,
-this also includes the definitions of various types of data that can be shared (e.g. customer, payment details and basket data).
+flows for common operations such as payments, refunds, voids etc. In addition to calling standard payment applications, any number of value added services can be called during the flow,
+such as loyalty, split bill, receipt delivery and much more. AppFlow for POS is highly configurable and flexible, allowing dynamic configuration of flows and input / output data.
 
-The APIs in this SDK also allow for client/POS, value added and payment applications to be integrated into these flows.
-The flows can be defined in advance to ensure a customer experience for all types of retail or payment processing.
+The SDK consists of two APIs - one for client/POS applications to initiate flows and one for value added services and payment applications to integrate into those flows.
 
-The SDK consists of two APIs - one for client/POS applications to initiate flows and one for app developers to implement flow services.
-
-Please see the [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki) for further information.
-
-[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
+Please see the [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki) for detailed information of how AppFlow works and development guidelines.
 
 ## Prerequisites
 
-In order to test the integration with this SDK from your application, you will need the AEVI `FPS` (`Flow Processing Service`) installed
-on your device. Please download FPS and associated binaries from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/fps-installation) for development and testing purposes.
+In order to test AppFlow and/or integrate with it, you will need to install these two AEVI provided applications;
+- AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
+- AEVI Developer Config Provider, which provides the flows and other settings for AppFlow
 
-If you require other variants of FPS, please get in touch with us at info@aevi.com.
-
-## API Feature Support
-
-Some of the features provided by this API are dependent on them being allowed and enabled in the `Flow Processing Service`.
-
-Whether or not a feature is allowed is down to the acquirer and/or merchant configuration.
-You can check whether a feature is enabled or not via the `FlowClient.getSystemSettings()` call.
-
-See `SystemSettingsFragment` in `PaymentInitiationSample` for examples.
-
-Here is a table outlining the features that are down to configuration.
-
-| Feature | System settings |
-| ------- | ------------------- |
-| Multi-device | getFpsSettings().isMultiDevice() |
-| Split | isSplitEnabled() |
-| Currency change | getFpsSettings().isCurrencyChangeAllowed() |
+Please download the latest developer bundle from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/fps-installation), which contains these applications as well as the latest samples.
 
 ## Integrate
 
@@ -61,37 +39,61 @@ These APIs require that your application is compiled with Java 8. Ensure that yo
     }
 ```
 
-And then for each project/module where you want to integrate with the APIs (replace <version> with latest release)
+Use the latest version defined below.
+
+[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
+
+**Note** - please ensure you read the [Application Guidelines](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/application-guidelines) at a minimum before attempting to create an application for AppFlow.
 
 ### Payment Initiation API
+
+For client/POS applications to initiate flows.
+
 ```
 implementation 'com.aevi.sdk.pos.flow:payment-initiation-api:<version>'
 ```
 
 ### Payment Flow Service API
+
+For value added services and payment applications to integrate into flows.
+
 ```
 implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 ```
 
-### Constants
+### API Constants
 
-API constants are stored in a separate repo here [https://github.com/AEVI-AppFlow/api-constants](https://github.com/AEVI-AppFlow/api-constants)
+The AppFlow APIs themselves are designed to facilitate communication between applications via a defined set of data structures. They are however decoupled from what the _values_ or _content_
+of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the "what" of the data is defined on the wiki and provided via a separate library.
+
+This library is stored in a separate repo [here](https://github.com/AEVI-AppFlow/api-constants). You can find the latest version details and view the defined data constants there.
 
 To include these in your project use
 ```
 implementation `com.aevi.sdk.flow:api-constants:<version>'
 ```
 
-## Sample usage
+## API Samples
 
-There are three code samples in this repository to illustrate the use of each API. Please see
-- `PaymentInitationSample` for an example of how to build an application that initiates payments via the `Payment Initation API`
-- `FlowServiceSample` for an example of how to build an application that integrates with `Payment Flow Service API` as a value added application
-- `PaymentServiceSample` for an example of how to build an application that integrates with `Payment Flow Service API` as a payment application
+There are three code samples in this repository to illustrate the use of the APIs. Please see
+- `PaymentInitiationSample` for an example of how to build an application that initiates payments via the `Payment Initiation API`
+- `FlowServiceSample` for an example of how to build a value added service that integrates with `Payment Flow Service API`
+- `PaymentServiceSample` for an example of how to build a payment application that integrates with `Payment Flow Service API`
 
-These samples can also be used to test the full SDK integration.
-If you are building a POS app, you will want to use the FlowServiceSample and PaymentServiceSample to perform end to end testing.
-In a similar manner, if you are developing a flow app or a payment app, you will want to use the PaymentInitiationSample to initiate payments.
+In addition to illustrating how the APIs can be used, these samples can also be used to test your own application.
+If you are building a POS app, you will want to use the `FlowServiceSample` and `PaymentServiceSample` to perform testing with apps in the flow.
+In a similar manner, if you are developing a flow app or a payment app, you will want to use the `PaymentInitiationSample` to initiate payments.
+
+You can of course modify these samples to suit your use cases and scenarios.
+
+## API Feature Support
+
+Some of the features provided by this API are configurable by AEVI and/or the acquirer.
+
+The `PaymentSettings` model provides access to relevant settings and can be retrieved via `PaymentClient.getPaymentSettings()`.
+See `FpsSettings` for details on all the parameters.
+
+You can check what the settings are via the `System overview` screen in the `Payment Initiation Sample`.
 
 ## Build Environment
 
@@ -127,7 +129,11 @@ and deselecting the check box.
 
 ## Bugs and Feedback
 
-For bugs, feature requests and discussion please use [GitHub Issues](https://github.com/AEVI-AppFlow/pos-android-sdk/issues)
+For bugs, feature requests and questions please use [GitHub Issues](https://github.com/AEVI-AppFlow/pos-android-sdk/issues).
+
+## Contributions
+
+Contributions to any of our repos via pull requests are welcome. We follow the [git flow](https://nvie.com/posts/a-successful-git-branching-model/) branching model.
 
 ## LICENSE
 
