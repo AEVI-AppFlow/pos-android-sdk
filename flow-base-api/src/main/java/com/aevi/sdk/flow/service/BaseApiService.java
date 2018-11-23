@@ -68,7 +68,7 @@ public abstract class BaseApiService extends AbstractChannelService {
     @Override
     protected void onNewClient(ChannelServer channelServer, String packageName) {
 
-        final ClientCommunicator clientCommunicator = getClientCommunicator(channelServer);
+        final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
         clientCommunicator.subscribeToMessages().subscribe(new Consumer<String>() {
             @Override
             public void accept(String message) throws Exception {
@@ -104,11 +104,6 @@ public abstract class BaseApiService extends AbstractChannelService {
                 Log.e(TAG, "Failed while parsing message from client", throwable);
             }
         });
-    }
-
-    @NonNull
-    protected ClientCommunicator getClientCommunicator(ChannelServer channelServer) {
-        return new ClientCommunicator(channelServer, internalData);
     }
 
     static void checkVersions(AppMessage appMessage, InternalData checkWith) {
