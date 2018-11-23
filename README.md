@@ -17,7 +17,7 @@ In order to test AppFlow and/or integrate with it, you will need to install thes
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
 - AEVI Developer Config Provider, which provides the flows and other settings for AppFlow
 
-Please download the latest developer bundle from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/fps-installation), which contains these applications as well as the latest samples.
+Please download the latest developer bundle from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/downloads), which contains these applications as well as the latest samples.
 
 ## Integrate
 
@@ -64,7 +64,7 @@ implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 ### API Constants
 
 The AppFlow APIs themselves are designed to facilitate communication between applications via a defined set of data structures. They are however decoupled from what the _values_ or _content_
-of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the "what" of the data is defined on the wiki and provided via a separate library.
+of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the data values are defined on the wiki and provided as constants via a separate library.
 
 This library is stored in a separate repo [here](https://github.com/AEVI-AppFlow/api-constants). You can find the latest version details and view the defined data constants there.
 

@@ -68,7 +68,7 @@ public class TransactionRequest extends BaseModel {
         this.transactionId = transactionId;
         this.flowStage = flowStage;
         this.flowType = flowType;
-        this.amounts = amounts;
+        this.amounts = amounts != null ? amounts : new Amounts(0, "XXX");
         this.baskets = baskets;
         this.customer = customer;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
@@ -123,11 +123,11 @@ public class TransactionRequest extends BaseModel {
     /**
      * Get the amounts to process.
      *
-     * Can be null for non-payment type of transaction.
+     * Can be zero with a currency of "XXX" in certain situations.
      *
      * @return The amounts
      */
-    @Nullable
+    @NonNull
     public Amounts getAmounts() {
         return amounts;
     }
