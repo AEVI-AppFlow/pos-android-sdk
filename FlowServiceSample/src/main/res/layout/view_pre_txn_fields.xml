@@ -54,11 +54,13 @@
     <Button
             android:id="@+id/add_basket"
             style="@style/ItemButton"
+            android:layout_marginTop="@dimen/margin_vertical_items"
             android:text="@string/add_basket"/>
 
     <Button
             android:id="@+id/discount_basket_item"
             style="@style/ItemButton"
+            android:layout_marginTop="@dimen/margin_vertical_items"
             android:text="@string/add_item_discount"/>
 
 </merge>

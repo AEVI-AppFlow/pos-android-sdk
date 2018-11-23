@@ -47,7 +47,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
     private PreTransactionModel preTransactionModel;
     private ModelDisplay modelDisplay;
 
-    @BindViews({R.id.pay_with_points, R.id.pay_with_giftcard})
+    @BindViews({R.id.pay_with_points, R.id.pay_with_giftcard, R.id.discount_basket_item})
     List<View> payViews;
 
     @BindView(R.id.add_surcharge)
@@ -68,9 +68,12 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         surchargeView.setText(getString(R.string.add_surcharge_fee,
                                         AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(), getResources()
                                                 .getInteger(R.integer.surcharge_fee))));
+        long giftCardValue = getResources().getInteger(R.integer.pay_gift_card_value);
+        if (transactionRequest.getAmounts().getBaseAmountValue() < giftCardValue) {
+            giftCardValue = transactionRequest.getAmounts().getBaseAmountValue();
+        }
         giftCardView.setText(getString(R.string.pay_portion_with_gift_card,
-                                       AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(),
-                                                                    getResources().getInteger(R.integer.pay_gift_card_value))));
+                                       AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(), giftCardValue)));
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
@@ -113,23 +116,28 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.pay_with_points)
     public void onPayWithPoints() {
-        long points = getResources().getInteger(R.integer.pay_points);
-        long pointsAmountValue = getRandomPointsValue(points);
+        // We pretend 1 point == 1 subunit
+        long pointsValue = getRandomPointsValue();
 
         preTransactionModel
-                .setAmountsPaid(new Amounts(pointsAmountValue, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_LOYALTY_POINTS);
-        preTransactionModel.addRequestData(SAMPLE_POINTS_USED_KEY, points);
+                .setAmountsPaid(new Amounts(pointsValue, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_LOYALTY_POINTS);
+        preTransactionModel.addRequestData(SAMPLE_POINTS_USED_KEY, pointsValue);
         disablePayViews();
         updateModel();
     }
 
-    private long getRandomPointsValue(long points) {
-        return (long) (points * (Math.random() * 4));
+    private long getRandomPointsValue() {
+        long max = transactionRequest.getAmounts().getBaseAmountValue();
+        long min = 1;
+        return (long) (Math.random() * ((max - min) + 1)) + min;
     }
 
     @OnClick(R.id.pay_with_giftcard)
     public void onPayWithGiftCard() {
         long giftCardValue = getResources().getInteger(R.integer.pay_gift_card_value);
+        if (transactionRequest.getAmounts().getBaseAmountValue() < giftCardValue) {
+            giftCardValue = transactionRequest.getAmounts().getBaseAmountValue();
+        }
         preTransactionModel.setAmountsPaid(new Amounts(giftCardValue, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_GIFT_CARD);
         disablePayViews();
         updateModel();
@@ -160,7 +168,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
     }
 
     @OnClick(R.id.discount_basket_item)
-    public void onDiscountBasketItem(View v) {
+    public void onDiscountBasketItem() {
         if (!transactionRequest.getBaskets().isEmpty()) {
             Basket basket = transactionRequest.getBaskets().get(0);
             if (!basket.getBasketItems().isEmpty()) {
@@ -172,7 +180,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
             }
         }
         updateModel();
-        v.setEnabled(false);
+        disablePayViews();
     }
 
     @OnClick(R.id.send_response)

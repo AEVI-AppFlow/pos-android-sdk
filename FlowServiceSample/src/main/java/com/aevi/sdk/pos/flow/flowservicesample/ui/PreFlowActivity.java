@@ -130,6 +130,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
     @OnClick(R.id.set_amounts)
     public void onSetAmounts() {
         paymentBuilder.withAmounts(new Amounts(AMOUNT, chosenCurrency));
+        setAmounts.setEnabled(false);
         updateModel();
     }
 
