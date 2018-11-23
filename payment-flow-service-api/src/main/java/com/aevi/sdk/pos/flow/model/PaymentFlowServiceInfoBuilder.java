@@ -30,6 +30,8 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Builder to construct {@link PaymentFlowServiceInfo} instances.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PaymentFlowServiceInfoBuilder {
 

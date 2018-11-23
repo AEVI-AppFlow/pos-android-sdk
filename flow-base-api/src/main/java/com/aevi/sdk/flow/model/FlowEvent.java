@@ -24,6 +24,8 @@ import java.util.Objects;
 
 /**
  * Represents an event in the flow.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/events-subscription" target="_blank">Events Docs</a>
  */
 public class FlowEvent implements Jsonable {
 

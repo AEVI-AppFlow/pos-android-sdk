@@ -20,19 +20,7 @@ import com.aevi.sdk.flow.model.Response;
 /**
  * Extend this service in your application to listen to responses for "generic" requests and status updates initiated by your application.
  *
- * You must extend this service in your application and register it correctly in your manifest. The service must
- * be exported and must include the intent-filter "com.aevi.sdk.flow.action.PROCESS_RESPONSE"
- *
- * {@code
- *
- * <service
- * android:name=".ResponseListenerService"
- * android:exported="true">
- * <intent-filter>
- * <action android:name="com.aevi.sdk.flow.action.PROCESS_RESPONSE"/>
- * </intent-filter>
- * </service>
- * }
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-response-listeners" target="_blank">Response listener docs</a>
  */
 public abstract class BaseResponseListenerService extends BaseListenerService<Response> {
 

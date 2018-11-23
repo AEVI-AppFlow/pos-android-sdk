@@ -37,6 +37,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * call {@link #sendResponse()} to send off the payment data.
  *
  * To cancel the payment flow, call {@link #cancelFlow()}, or to skip/bypass this stage, call {@link #skip()}.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PreFlowModel extends BaseStageModel {
 

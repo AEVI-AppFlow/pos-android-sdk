@@ -76,9 +76,8 @@ public class FlowAppInfo {
      *
      * Note that this simply indicates what was augmented - not to what. The {@link PaymentResponse} can be parsed to review that information.
      *
-     * See documentation for possible values.
-     *
      * @return The list of data that was augmented.
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/augmented-data" target="_blank">Augmented data docs</a>
      */
     @NonNull
     public List<String> getAugmentedData() {

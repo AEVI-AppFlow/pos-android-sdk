@@ -133,9 +133,8 @@ public class Card implements Jsonable {
     /**
      * Get any additional data available for this card.
      *
-     * See documentation for reference data.
-     *
      * @return An {@link AdditionalData} object with additional data
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/card-details" target="_blank">Card details</a>
      */
     @NonNull
     public AdditionalData getAdditionalData() {

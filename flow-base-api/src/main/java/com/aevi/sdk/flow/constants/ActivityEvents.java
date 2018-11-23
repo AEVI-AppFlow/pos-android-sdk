@@ -14,6 +14,9 @@
 
 package com.aevi.sdk.flow.constants;
 
+/**
+ * Events that may be sent to an activity.
+ */
 public interface ActivityEvents {
 
     String FINISH = "finish";

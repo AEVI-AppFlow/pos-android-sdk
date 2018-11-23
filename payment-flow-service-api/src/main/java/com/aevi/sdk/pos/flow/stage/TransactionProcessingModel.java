@@ -37,6 +37,8 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
  * The outcome of the transaction must be set in the builder before {@link #sendResponse()} is called.
  *
  * Note that skipping this stage is not allowed - a valid response with an outcome must be set.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class TransactionProcessingModel extends BaseStageModel {
 
