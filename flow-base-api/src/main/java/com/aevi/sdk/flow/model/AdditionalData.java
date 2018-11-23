@@ -36,6 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * See the wiki documentation (Reference Values section) for further information.
  *
  * Data is stored with a string based key and any arbitrary object as the value.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additionaldata-howto" target="_blank">AdditionalData Howto</a>
  */
 public class AdditionalData implements Jsonable {
 

@@ -33,6 +33,8 @@ import java.util.List;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-pos-apps" target="_blank">Implementing POS apps docs</a>
  */
 public interface PaymentClient {
 
@@ -53,7 +55,7 @@ public interface PaymentClient {
      *
      * Due to the nature of Android component lifecycles, AppFlow can not guarantee that your activity/service is still alive when a flow is complete,
      * meaning it may not be able to receive the response via this rx chain. To ensure that your application receives a response in a reliable way,
-     * your application must instead implement a {@link BaseResponseListenerService}. See documentation for further info.
+     * your application must instead implement a {@link BaseResponseListenerService}.
      *
      * This method returns a {@link Completable} that will complete successfully if the request is accepted, or send an error if the request is invalid.
      *
@@ -63,6 +65,7 @@ public interface PaymentClient {
      *
      * @param request The request
      * @return Completable that represents the acceptance of the request
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiateRequest(Request request);
@@ -72,7 +75,7 @@ public interface PaymentClient {
      *
      * Due to the nature of Android component lifecycles, AppFlow can not guarantee that your activity/service is still alive when a flow is complete,
      * meaning it may not be able to receive the response via this rx chain. To ensure that your application receives a response in a reliable way,
-     * your application must instead implement a {@link BasePaymentResponseListenerService}. See documentation for further info.
+     * your application must instead implement a {@link BasePaymentResponseListenerService}.
      *
      * This method returns a {@link Completable} that will complete successfully if the request is accepted, or send an error if the request is invalid.
      *
@@ -82,6 +85,7 @@ public interface PaymentClient {
      *
      * @param payment The payment to process
      * @return Completable that represents the acceptance of the request
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiatePayment(Payment payment);
@@ -106,9 +110,9 @@ public interface PaymentClient {
      * Subscribe to general system events.
      *
      * Examples are when there are changed to devices, applications or system settings.
-     * See documentation for a comprehensive list.
      *
      * @return A stream that will emit {@link FlowEvent} items
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/events-subscription" target="_blank">Events Docs</a>
      */
     @NonNull
     Observable<FlowEvent> subscribeToSystemEvents();

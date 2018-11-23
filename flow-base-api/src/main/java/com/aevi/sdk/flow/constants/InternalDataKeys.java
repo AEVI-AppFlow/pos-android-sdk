@@ -14,6 +14,9 @@
 
 package com.aevi.sdk.flow.constants;
 
+/**
+ * Keys for internal data.
+ */
 public interface InternalDataKeys {
 
     String FLOW_STAGE = "flowStage";

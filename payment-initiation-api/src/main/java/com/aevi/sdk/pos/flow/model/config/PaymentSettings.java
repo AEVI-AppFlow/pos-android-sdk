@@ -27,6 +27,8 @@ import java.util.Set;
 
 /**
  * Represents all available payment settings, configurations and flow service information.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-pos-apps" target="_blank">Implementing POS apps docs</a>
  */
 public class PaymentSettings implements Jsonable {
 
