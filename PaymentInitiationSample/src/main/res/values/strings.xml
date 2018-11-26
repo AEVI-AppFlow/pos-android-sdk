@@ -79,6 +79,7 @@
     <string name="service_label_api_version">API Version</string>
     <string name="service_label_payment_methods">Payment methods</string>
     <string name="service_label_flow_types">Flow types</string>
+    <string name="service_label_flow_info">Defined in flows</string>
     <string name="service_label_request_types">Custom request types</string>
     <string name="service_label_currencies">Currencies</string>
     <string name="service_label_transaction_types">Transaction types</string>
@@ -176,6 +177,7 @@
         <item>@string/service_label_api_version</item>
         <item>@string/fs_label_stages</item>
         <item>@string/service_label_flow_types</item>
+        <item>@string/service_label_flow_info</item>
         <item>@string/service_label_request_types</item>
         <item>@string/service_label_accessible_mode</item>
         <item>@string/fs_label_can_adjust_amounts</item>

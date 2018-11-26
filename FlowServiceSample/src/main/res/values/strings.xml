@@ -67,7 +67,7 @@
 
     <string name="receipt_delivery">Receipt delivery</string>
     <string name="add_basket">Add basket</string>
-    <string name="add_item_discount">Add basket item discount</string>
+    <string name="add_item_discount">Update basket with discounts</string>
     <string name="pre_flow_header_text">This sample only provides the minimum controls for pre-flow. For more details, see documentation.</string>
     <string name="set_amount">Set amount</string>
 </resources>
