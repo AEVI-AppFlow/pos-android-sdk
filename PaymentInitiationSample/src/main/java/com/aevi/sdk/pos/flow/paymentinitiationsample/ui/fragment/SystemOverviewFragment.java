@@ -17,11 +17,9 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -43,33 +41,37 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
     @BindView(R.id.title)
     TextView title;
 
+    private boolean listSetup = false;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
-        setupRecyclerView(infoItems);
-        return v;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         title.setText(R.string.system_overview);
-
-        createSystemInfo().subscribe(systemOverview -> {
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
-            infoItems.setAdapter(systemOverviewAdapter);
-        }, throwable -> {
-            if (throwable instanceof FlowException) {
-                Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
-                errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                startActivity(errorIntent);
-                getActivity().finish();
-            } else {
-                Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
-                Log.e(SystemOverviewFragment.class.getSimpleName(), "Error", throwable);
-                getActivity().finish();
-            }
-        });
+        if (!listSetup) {
+            listSetup = true;
+            setupRecyclerView(infoItems);
+            createSystemInfo().subscribe(systemOverview -> {
+                SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
+                infoItems.setAdapter(systemOverviewAdapter);
+            }, throwable -> {
+                if (throwable instanceof FlowException) {
+                    Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                    errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                    startActivity(errorIntent);
+                    getActivity().finish();
+                } else {
+                    Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                    Log.e(SystemOverviewFragment.class.getSimpleName(), "Error", throwable);
+                    getActivity().finish();
+                }
+            });
+        }
     }
 
     private Single<SystemOverview> createSystemInfo() {

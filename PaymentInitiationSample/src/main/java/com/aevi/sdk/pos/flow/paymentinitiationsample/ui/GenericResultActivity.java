@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
@@ -60,5 +61,10 @@ public class GenericResultActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0, 0);
+    }
+
+    @OnClick(R.id.button_close)
+    public void close() {
+        finish();
     }
 }
