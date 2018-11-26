@@ -67,8 +67,11 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     }
 
     private void setNoData() {
-        TextView textView = getActivity().findViewById(R.id.no_data);
-        textView.setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoData() {
+        getActivity().findViewById(R.id.no_data).setVisibility(View.GONE);
     }
 
     @Override
@@ -302,6 +305,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             setNoData();
             return;
         }
+        hideNoData();
 
         if (flowResponse.shouldCancelTransaction()) {
             responseInfo.add(getStringPair(R.string.cancel_requested, flowResponse.shouldCancelTransaction()));

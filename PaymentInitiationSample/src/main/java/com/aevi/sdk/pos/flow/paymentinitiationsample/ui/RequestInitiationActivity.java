@@ -16,6 +16,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aevi.sdk.flow.model.Request;
@@ -33,6 +35,9 @@ public class RequestInitiationActivity extends BaseSampleAppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.progress_layout)
+    FrameLayout progressLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,15 @@ public class RequestInitiationActivity extends BaseSampleAppCompatActivity {
         setupToolbar(toolbar, R.string.initiate_request);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        progressLayout.setVisibility(View.GONE);
+    }
+
+    public void showProgressOverlay() {
+        progressLayout.setVisibility(View.VISIBLE);
+    }
 
     public ModelDisplay getModelDisplay() {
         return modelDisplay;
@@ -111,4 +125,9 @@ public class RequestInitiationActivity extends BaseSampleAppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        progressLayout.setVisibility(View.GONE);
+    }
 }

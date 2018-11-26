@@ -21,7 +21,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -76,9 +75,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @BindView(R.id.message)
     TextView messageView;
 
-    @BindView(R.id.progress_layout)
-    FrameLayout progressLayout;
-
     private String selectedApiRequestFlow;
     private String selectedSubType;
     private ModelDisplay modelDisplay;
@@ -116,12 +112,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
                     dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
                 }, this::handleError);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        progressLayout.setVisibility(View.GONE);
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -184,7 +174,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             initiateDisposable = paymentClient.initiateRequest(genericRequest)
                     .subscribe(() -> {
                         messageView.setText(R.string.request_accepted);
-                        progressLayout.setVisibility(View.VISIBLE);
+                        ((RequestInitiationActivity) getActivity()).showProgressOverlay();
                     }, this::handleError);
         }
     }
