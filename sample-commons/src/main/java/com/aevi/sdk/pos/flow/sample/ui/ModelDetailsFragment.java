@@ -17,6 +17,7 @@ package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -312,7 +313,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
 
         if (flowResponse.getModifiedBasket() != null) {
-            addBasketSection(flowResponse.getModifiedBasket(), currency);
+            addDiscountSection(flowResponse.getModifiedBasket(), currency);
         }
 
         if (flowResponse.getUpdatedPayment() != null) {
@@ -347,6 +348,11 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
     }
 
+    private void addDiscountSection(Basket basket, String currency) {
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, true);
+        adapter.addSection(new RecyclerViewSection(getActivity(), "Discount items for primary basket", basketInfo, false));
+    }
+
     private void addBasketSection(Basket basket, String currency) {
         adapter.addSection(createBasketSection(basket, currency, true, 0));
     }
@@ -375,6 +381,12 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     }
 
     private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, int basketIndex) {
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, addItems);
+        return new RecyclerViewSection(getActivity(), getString(R.string.basket_title, basketIndex + 1), basketInfo, false);
+    }
+
+    @NonNull
+    private List<Pair<String, String>> getBasketInfoList(Basket basket, String currency, boolean addItems) {
         List<Pair<String, String>> basketInfo = new ArrayList<>();
         basketInfo.add(getStringPair(R.string.basket_name, basket.getBasketName()));
         basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
@@ -386,7 +398,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
                 basketInfo.add(getStringPair(R.string.item, detail));
             }
         }
-        return new RecyclerViewSection(getActivity(), getString(R.string.basket_title, basketIndex + 1), basketInfo, false);
+        return basketInfo;
     }
 
     private RecyclerViewSection createCustomerSection(Customer customer) {
