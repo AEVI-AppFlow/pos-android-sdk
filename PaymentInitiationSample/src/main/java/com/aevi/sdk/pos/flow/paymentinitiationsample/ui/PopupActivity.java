@@ -24,6 +24,8 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.*;
 
 public class PopupActivity extends AppCompatActivity {
 
+    private static final String FRAG_TAG = "fraggleRock";
+
     public static final String FRAGMENT_KEY = "fragment";
     public static final String FRAGMENT_FLOW_SERVICES = "fragment_flow_services";
     public static final String FRAGMENT_DEVICES = "fragment_devices";
@@ -39,9 +41,11 @@ public class PopupActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_popup);
         ButterKnife.bind(this);
-        String fragmentStr = getIntent().getStringExtra(FRAGMENT_KEY);
-        Fragment fragment = getFragment(fragmentStr);
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+        if (savedInstanceState == null) {
+            String fragmentStr = getIntent().getStringExtra(FRAGMENT_KEY);
+            Fragment fragment = getFragment(fragmentStr);
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment, FRAG_TAG).commit();
+        }
     }
 
     private Fragment getFragment(String fragmentValue) {
@@ -67,13 +71,13 @@ public class PopupActivity extends AppCompatActivity {
     }
 
     public void showServiceInfoFragment(String adapter, String model) {
-        transitionToFragment(new ServiceInfoFragment(adapter, model));
+        transitionToFragment(ServiceInfoFragment.create(adapter, model));
     }
 
     private void transitionToFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, fragment, FRAG_TAG)
                 .addToBackStack(null)
                 .commit();
     }

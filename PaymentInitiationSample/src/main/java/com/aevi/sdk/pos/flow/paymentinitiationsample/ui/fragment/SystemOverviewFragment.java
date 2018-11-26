@@ -41,7 +41,7 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
     @BindView(R.id.title)
     TextView title;
 
-    private boolean listSetup = false;
+    private SystemOverviewAdapter systemOverviewAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,14 +50,13 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         title.setText(R.string.system_overview);
-        if (!listSetup) {
-            listSetup = true;
-            setupRecyclerView(infoItems);
+        setupRecyclerView(infoItems);
+        if (systemOverviewAdapter == null) {
             createSystemInfo().subscribe(systemOverview -> {
-                SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
+                systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
                 infoItems.setAdapter(systemOverviewAdapter);
             }, throwable -> {
                 if (throwable instanceof FlowException) {
@@ -71,6 +70,15 @@ public class SystemOverviewFragment extends BaseFragment implements SystemOvervi
                     getActivity().finish();
                 }
             });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (systemOverviewAdapter != null) {
+            infoItems.setAdapter(systemOverviewAdapter);
+            systemOverviewAdapter.notifyDataSetChanged();
         }
     }
 
