@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
+import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
+
 public class PaymentFragment extends BaseObservableFragment {
 
     @BindView(R.id.flow_spinner)
@@ -116,16 +118,21 @@ public class PaymentFragment extends BaseObservableFragment {
                     dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
                 }, throwable -> {
                     if (throwable instanceof FlowException) {
+                        FlowException flowException = (FlowException) throwable;
                         Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
-                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, flowException.toJson());
                         startActivity(errorIntent);
                         getActivity().finish();
                     } else {
-                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
-                        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
-                        getActivity().finish();
+                        showErrorToast("Unrecoverable error occurred - see logs", throwable);
                     }
                 });
+    }
+
+    private void showErrorToast(String message, Throwable throwable) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
+        getActivity().finish();
     }
 
     private void handleNoPaymentServices() {
@@ -252,22 +259,28 @@ public class PaymentFragment extends BaseObservableFragment {
         // Responses come in via PaymentResponseListenerService, and will launch PaymentResultActivity from there
         paymentClient.initiatePayment(paymentBuilder.build())
                 .subscribe(() -> {
-                               Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request");
-                               getActivity().finish();
-                           },
-                           throwable -> {
-                               final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
-                               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                                       Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                               if (throwable instanceof FlowException) {
-                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                               } else {
-                                   intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException("Error", throwable.getMessage()).toJson());
-                               }
-                               if (isAdded()) {
-                                   startActivity(intent);
-                               }
-                           });
+                    Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request");
+                    getActivity().finish();
+                }, this::handleError);
+    }
+
+    private void handleError(Throwable throwable) {
+        if (throwable instanceof FlowException) {
+            FlowException flowException = (FlowException) throwable;
+            if (!flowException.getErrorCode().equals(PROCESSING_SERVICE_BUSY)) {
+                if (isAdded()) {
+                    final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                    startActivity(intent);
+                }
+            } else {
+                showErrorToast("Processing service busy", throwable);
+            }
+        } else {
+            showErrorToast("Unrecoverable error occurred - see logs", throwable);
+        }
     }
 
     public Payment getPayment() {
