@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -75,6 +76,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @BindView(R.id.message)
     TextView messageView;
 
+    @BindView(R.id.progress_layout)
+    FrameLayout progressLayout;
+
     private String selectedApiRequestFlow;
     private String selectedSubType;
     private ModelDisplay modelDisplay;
@@ -112,6 +116,12 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
                     dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
                 }, this::handleError);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        progressLayout.setVisibility(View.GONE);
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -174,7 +184,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             initiateDisposable = paymentClient.initiateRequest(genericRequest)
                     .subscribe(() -> {
                         messageView.setText(R.string.request_accepted);
-                        getActivity().finish();
+                        progressLayout.setVisibility(View.VISIBLE);
                     }, this::handleError);
         }
     }
@@ -186,7 +196,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
                 errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, flowException.toJson());
                 startActivity(errorIntent);
-                getActivity().finish();
             } else {
                 showErrorToast("Processing service busy", throwable);
             }
@@ -198,7 +207,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
     private void showErrorToast(String message, Throwable throwable) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
-        getActivity().finish();
     }
 
     private Request createRequest() {
@@ -253,6 +261,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
     private void setViewsEnabled(boolean enabled) {
         sendButton.setEnabled(enabled);
+    }
+
+    public Request getRequest() {
+        return genericRequest;
     }
 
     @Override
