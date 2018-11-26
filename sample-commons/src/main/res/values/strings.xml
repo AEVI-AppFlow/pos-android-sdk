@@ -42,6 +42,8 @@
     <string name="basket_total">Basket total</string>
     <string name="basket_num_items">Num unique items</string>
     <string name="overview">Overview</string>
+    <string name="basket_title_no_count">Basket</string>
+    <string name="basket_title_new_basket">New basket</string>
     <string name="basket_title">Basket #%1$d</string>
     <string name="item">Item</string>
     <string name="payment_stage">Payment stage</string>
@@ -101,5 +103,7 @@
     <string name="view_flow_stages">View flow stages</string>
     <string name="view_incoming_request">View incoming request</string>
     <string name="view_configured_data">View configured data</string>
+    <string name="no_model_data_available">No model data available</string>
+    <string name="response_data">Response data</string>
 
 </resources>

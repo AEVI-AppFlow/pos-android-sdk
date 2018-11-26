@@ -14,6 +14,11 @@
 
 package com.aevi.sdk.flow.constants;
 
+/**
+ * Defined set of error constants that may be passed back to the client.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-errors" target="_blank">Handling Errors</a>
+ */
 public interface ErrorConstants {
 
     /**

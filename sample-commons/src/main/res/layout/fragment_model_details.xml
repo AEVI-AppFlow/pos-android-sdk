@@ -5,14 +5,26 @@
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/details_title"
-        style="@style/Header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            android:id="@+id/details_title"
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_model_data_available"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/margin_horizontal"
+            android:layout_marginRight="@dimen/margin_horizontal"
+            android:layout_marginTop="@dimen/margin_horizontal"
+            android:layout_marginBottom="@dimen/margin_horizontal"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </LinearLayout>

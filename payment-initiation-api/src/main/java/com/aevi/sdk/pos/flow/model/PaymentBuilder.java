@@ -66,12 +66,13 @@ public class PaymentBuilder {
      * Ideally, for any production scenarios, use {@link #withPaymentFlow(String, String)} to specify the name of the flow as well to ensure
      * a good experience for the merchant. See docs for more clarification on this.
      *
-     * The flow will determine what stages the payment goes through and what applications get called. Please see documentation for more details.
+     * The flow will determine what stages the payment goes through and what applications get called.
      *
      * See {@link PaymentSettings} for retrieving flow information.
      *
      * @param flowType The flow type
      * @return This builder
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType) {
@@ -84,13 +85,14 @@ public class PaymentBuilder {
      *
      * This ensures that the intended flow is used in the case of multiple flows for the provided type.
      *
-     * The flow will determine what stages the payment goes through and what applications get called. Please see documentation for more details.
+     * The flow will determine what stages the payment goes through and what applications get called.
      *
      * See {@link PaymentSettings} for retrieving flow information.
      *
      * @param flowType The flow type
      * @param flowName The name of the flow to use
      * @return This builder
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType, String flowName) {
@@ -145,8 +147,8 @@ public class PaymentBuilder {
     /**
      * Set split enabled for this payment which means it *may* be broken up into multiple sub-payments.
      *
-     * It is up to the flow processing service configuration if split is allowed or not. Use {@link PaymentClient#getPaymentSettings()} to check
-     * whether it is allowed. See documentation/samples for how to retrieve the value.
+     * It is up to the flow processing service configuration if split is enabled or not. Use {@link PaymentClient#getPaymentSettings()} to get
+     * list of flow configurations and check for defined stages
      *
      * If this is not called, it is still possible that split will be enabled during the payment flow.
      *

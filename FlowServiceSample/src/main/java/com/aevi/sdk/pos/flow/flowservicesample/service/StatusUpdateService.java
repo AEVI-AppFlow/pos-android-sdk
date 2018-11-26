@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
-import android.os.Handler;
 import android.util.Log;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
@@ -45,11 +44,10 @@ public class StatusUpdateService extends BaseStatusUpdateService {
                 Log.i(TAG, "Customer received: " + customer.toJson());
                 break;
         }
-        new Handler().postDelayed(() -> {
-            AdditionalData references = new AdditionalData();
-            references.addData("exampleReference", "exampleValue");
-            stageModel.finishWithReferences(references);
-        }, 1000);
+
+        AdditionalData references = new AdditionalData();
+        references.addData("exampleReference", "exampleValue");
+        stageModel.finishWithReferences(references);
     }
 
     private void handleBasketStatusUpdate(AdditionalData requestData) {

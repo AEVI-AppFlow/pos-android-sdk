@@ -24,7 +24,6 @@
         </activity>
         <activity android:name=".ui.PaymentInitiationActivity"/>
         <activity android:name=".ui.RequestInitiationActivity"/>
-        <activity android:name=".ui.ReceiptRequestInitiationActivity"/>
         <activity
                 android:name=".ui.PopupActivity"
                 android:excludeFromRecents="true"

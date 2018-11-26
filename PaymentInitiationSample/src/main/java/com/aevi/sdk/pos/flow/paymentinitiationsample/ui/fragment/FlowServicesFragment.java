@@ -16,6 +16,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 import com.aevi.sdk.flow.model.FlowException;
@@ -28,6 +30,29 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdap
 
 public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInfo> {
 
+    private FlowServicesAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupRecyclerView(items);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            items.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void setupItems() {
         title.setText(R.string.title_select_flow_service);
@@ -37,8 +62,8 @@ public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInf
                     if (paymentFlowServices.getNumberOfFlowServices() == 0) {
                         showNoItemsAvailable(R.string.no_flow_services_found);
                     } else {
-                        FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
-                                                                              FlowServicesFragment.this, false);
+                        adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
+                                                          FlowServicesFragment.this, false);
                         items.setAdapter(adapter);
                     }
                 }, throwable -> {

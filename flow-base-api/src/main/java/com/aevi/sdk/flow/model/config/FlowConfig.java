@@ -28,6 +28,8 @@ import java.util.*;
  * Represents a flow configuration consisting of a series of stages with associated stage rules and applications.
  *
  * Use {@link FlowConfigBuilder} to instantiate programmatically.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-configurations" target="_blank">Flow Configurations Docs</a>
  */
 public class FlowConfig implements Jsonable, JsonPostProcessing {
 

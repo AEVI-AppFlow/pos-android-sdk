@@ -40,6 +40,8 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
  * For cancelling the flow, call {@link #cancelFlow()}.
  *
  * If no changes are required, call {@link #skip()}.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class SplitModel extends BaseStageModel {
 

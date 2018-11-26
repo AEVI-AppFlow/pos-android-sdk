@@ -43,6 +43,8 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
  * effect as calling {@link #skip()}.
  *
  * If no changes are required, call {@link #skip()}.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PreTransactionModel extends BaseStageModel {
 
@@ -102,8 +104,7 @@ public class PreTransactionModel extends BaseStageModel {
      * Change the currency associated with the amounts, provided that it is allowed.
      *
      * It is up to the flow processing service configuration if currency conversion is allowed or not.
-     * Use {@link PaymentClient#getPaymentSettings()} ()} to check whether it is allowed.
-     * See documentation/samples for how to retrieve the value.
+     * Use {@link PaymentClient#getPaymentSettings()} to get hold of FpsSettings to check whether it is allowed or not.
      *
      * Note that this will update all the amount values based on the provided exchange rate.
      *

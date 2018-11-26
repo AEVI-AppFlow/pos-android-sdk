@@ -36,13 +36,13 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
     private String[] fpsSettingsLabels;
     private int[] fpsSettingsResIds;
 
-    private final int numFlowConfigs;
+    private final List<FlowConfig> flowConfigs;
 
     public SystemOverviewAdapter(Context context, SystemOverview info, OnFlowConfigClickListener listener) {
         super(context, R.array.system_info_labels, info);
         this.listener = listener;
 
-        numFlowConfigs = info.getFlowConfigurations().getAll().size();
+        flowConfigs = info.getFlowConfigurations().getAll();
 
         TypedArray typedArray = context.getResources().obtainTypedArray(R.array.fps_settings_labels);
         fpsSettingsLabels = new String[typedArray.length()];
@@ -69,7 +69,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
     }
 
     private void handleHeaderLine(int position, @NonNull ViewHeaderHolder viewHolder) {
-        if (position == resIds.length) {
+        if (position == resIds.length + 1 + fpsSettingsResIds.length) {
             viewHolder.header.setText(R.string.system_overview_header_flow_configs);
         } else {
             viewHolder.header.setText(R.string.system_overview_header_fps_settings);
@@ -82,7 +82,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
             value = handleFlowConfig(position, holder, info.getFlowConfigurations().getAll());
         } else if (isFpsSetting(position)) {
             value = handleFpsSettings(position, holder, info.getFpsSettings());
-        } else {
+        } else if (isInfo(position)) {
             value = handleSystemInfo(position, holder, info.getPaymentFlowServices());
         }
 
@@ -98,15 +98,43 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
     }
 
     private boolean isFlowConfig(int position) {
-        return position > resIds.length && position <= resIds.length + 1 + numFlowConfigs;
+        return position > resIds.length + fpsSettingsResIds.length + 1;
     }
 
     private boolean isFpsSetting(int position) {
-        return position > resIds.length + 1 + numFlowConfigs;
+        return position > resIds.length && position < resIds.length + fpsSettingsResIds.length + 1;
+    }
+
+    @Override
+    protected boolean isPositionHeader(int position) {
+        return position == resIds.length || position == resIds.length + fpsSettingsResIds.length + 1;
+    }
+
+    private String handleSystemInfo(int position, @NonNull ViewHolder holder, PaymentFlowServices paymentFlowServices) {
+        holder.label.setText(labels[position]);
+        switch (resIds[position]) {
+            case R.string.system_info_label_api_version:
+                return PaymentApi.getApiVersion();
+            case R.string.system_info_label_fps_version:
+                return PaymentApi.getProcessingServiceVersion(context);
+            case R.string.system_info_label_num_flow_services:
+                return String.valueOf(paymentFlowServices.getNumberOfFlowServices());
+            case R.string.system_info_label_num_devices:
+                return String.valueOf(info.getNumDevices());
+            case R.string.system_info_label_all_currencies:
+                return getSetValue(paymentFlowServices.getAllSupportedCurrencies());
+            case R.string.system_info_label_all_data_keys:
+                return getSetValue(paymentFlowServices.getAllSupportedDataKeys());
+            case R.string.system_info_label_all_payment_methods:
+                return getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
+            case R.string.system_info_label_all_request_types:
+                return getSetValue(paymentFlowServices.getAllCustomRequestTypes());
+        }
+        return "";
     }
 
     private String handleFpsSettings(int position, ViewHolder holder, FpsSettings fpsSettings) {
-        int index = position - (resIds.length + numFlowConfigs + 2);
+        int index = position - (resIds.length + 1);
         holder.label.setText(fpsSettingsLabels[index]);
         switch (fpsSettingsResIds[index]) {
             case R.string.multi_device:
@@ -140,7 +168,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
     @NonNull
     private String handleFlowConfig(int position, @NonNull ViewHolder holder, List<FlowConfig> flowConfigs) {
         String value;
-        final FlowConfig config = flowConfigs.get(position - resIds.length - 1);
+        final FlowConfig config = flowConfigs.get(position - resIds.length - fpsSettingsResIds.length - 2);
         holder.label.setText(holder.label.getContext().getString(R.string.system_info_label_flow_names, config.getName()));
         value = config.getType();
         holder.lineLayout.setOnClickListener(view -> {
@@ -151,40 +179,12 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
         return value;
     }
 
-    private String handleSystemInfo(int position, @NonNull ViewHolder holder, PaymentFlowServices paymentFlowServices) {
-        holder.label.setText(labels[position]);
-        switch (resIds[position]) {
-            case R.string.system_info_label_api_version:
-                return PaymentApi.getApiVersion();
-            case R.string.system_info_label_fps_version:
-                return PaymentApi.getProcessingServiceVersion(context);
-            case R.string.system_info_label_num_flow_services:
-                return String.valueOf(paymentFlowServices.getNumberOfFlowServices());
-            case R.string.system_info_label_num_devices:
-                return String.valueOf(info.getNumDevices());
-            case R.string.system_info_label_all_currencies:
-                return getSetValue(paymentFlowServices.getAllSupportedCurrencies());
-            case R.string.system_info_label_all_data_keys:
-                return getSetValue(paymentFlowServices.getAllSupportedDataKeys());
-            case R.string.system_info_label_all_payment_methods:
-                return getSetValue(paymentFlowServices.getAllSupportedPaymentMethods());
-            case R.string.system_info_label_all_request_types:
-                return getSetValue(paymentFlowServices.getAllCustomRequestTypes());
-        }
-        return "";
-    }
-
     private String toSeconds(long timeout) {
         return timeout + " seconds";
     }
 
     @Override
-    protected boolean isPositionHeader(int position) {
-        return position == resIds.length || position == resIds.length + numFlowConfigs + 1;
-    }
-
-    @Override
     public int getItemCount() {
-        return super.getItemCount() + fpsSettingsLabels.length + info.getFlowConfigurations().getAll().size() + 2;
+        return super.getItemCount() + fpsSettingsLabels.length + flowConfigs.size() + 2;
     }
 }

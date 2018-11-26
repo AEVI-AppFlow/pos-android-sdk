@@ -23,6 +23,8 @@ import com.aevi.util.json.Jsonable;
  * Token that can be used to identify an entity, typically a customer.
  *
  * How the value is generated is bespoke to the application that fulfilled the request.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-card-tokens" target="_blank">Token Docs</a>
  */
 public class Token implements Jsonable {
 

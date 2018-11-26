@@ -51,6 +51,11 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
     }
 
     @Override
+    protected String getModelTitle() {
+        return getString(R.string.payment_data);
+    }
+
+    @Override
     protected boolean showViewRequestOption() {
         return false;
     }
@@ -93,5 +98,10 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
     @Override
     protected String getHelpText() {
         return getString(R.string.initiation_help);
+    }
+
+    @Override
+    protected boolean allowBack() {
+        return true;
     }
 }

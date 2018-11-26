@@ -48,7 +48,6 @@ public class AmountsModifier {
      *
      * It is up to the flow processing service configuration if currency conversion is allowed or not.
      * Use {@link PaymentClient#getPaymentSettings()} ()} to check whether it is allowed.
-     * See documentation/samples for how to retrieve the value.
      *
      * Note that this will update all the amount values based on the provided exchange rate.
      *
@@ -80,7 +79,7 @@ public class AmountsModifier {
     /**
      * Update the base request amount.
      *
-     * Note that this is only allowed during certain stages in the flow. See documentation for details.
+     * Note that this is only allowed during certain stages in the flow.
      *
      * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long)}.
      *
@@ -101,7 +100,7 @@ public class AmountsModifier {
     /**
      * Offset the base request amount with a positive or negative value.
      *
-     * Note that this is only allowed during certain stages in the flow. See documentation for details.
+     * Note that this is only allowed during certain stages in the flow.
      *
      * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long)}.
      *

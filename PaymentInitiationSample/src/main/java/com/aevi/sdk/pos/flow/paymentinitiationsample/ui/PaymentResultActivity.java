@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -85,5 +86,10 @@ public class PaymentResultActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0, 0);
+    }
+
+    @OnClick(R.id.button_close)
+    public void close() {
+        finish();
     }
 }

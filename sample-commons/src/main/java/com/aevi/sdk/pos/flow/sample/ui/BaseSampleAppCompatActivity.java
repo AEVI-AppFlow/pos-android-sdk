@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.aevi.sdk.pos.flow.sample.R;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
@@ -107,9 +108,13 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, getResponseClass().getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, getModelJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, getResponseClass().getSimpleName());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, getModelTitle());
         intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getPrimaryColor());
         startActivity(intent);
+    }
+
+    protected String getModelTitle() {
+        return getString(R.string.response_data);
     }
 
     private void onShowRequest() {
@@ -125,5 +130,18 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0, 0);
+    }
+
+    protected boolean allowBack() {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (allowBack()) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(this, "Back button disabled.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

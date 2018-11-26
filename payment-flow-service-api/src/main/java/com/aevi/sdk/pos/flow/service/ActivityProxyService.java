@@ -32,6 +32,8 @@ import static com.aevi.sdk.flow.constants.IntentActions.*;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class ActivityProxyService extends BaseApiService {
 
