@@ -80,7 +80,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             adapter.addSection(createTokenSection(payment.getCardToken()));
         }
         if (payment.getBasket() != null) {
-            addBasketSection(payment.getBasket(), payment.getAmounts().getCurrency());
+            addBasketSection(payment.getBasket(), payment.getAmounts().getCurrency(), false);
         }
         if (payment.getCustomer() != null) {
             addCustomerSection(payment.getCustomer());
@@ -165,7 +165,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
                 addTransactionSection(transaction, count++);
             }
         } else {
-            addBasketSection(splitRequest.getSourcePayment().getBasket(), splitRequest.getSourcePayment().getAmounts().getCurrency());
+            addBasketSection(splitRequest.getSourcePayment().getBasket(), splitRequest.getSourcePayment().getAmounts().getCurrency(), false);
         }
 
         setupRecyclerView(R.string.split_request_model_overview);
@@ -309,7 +309,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
 
         if (flowResponse.getAdditionalBasket() != null) {
-            addBasketSection(flowResponse.getAdditionalBasket(), currency);
+            addBasketSection(flowResponse.getAdditionalBasket(), currency, true);
         }
 
         if (flowResponse.getModifiedBasket() != null) {
@@ -344,17 +344,19 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
 
     private void addBasketSections(List<Basket> baskets, String currency) {
         for (int i = 0; i < baskets.size(); i++) {
-            adapter.addSection(createBasketSection(baskets.get(i), currency, true, i));
+            String title = getString(R.string.basket_title, i + 1);
+            adapter.addSection(createBasketSection(baskets.get(i), currency, true, title));
         }
     }
 
     private void addDiscountSection(Basket basket, String currency) {
-        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, true);
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, true, false);
         adapter.addSection(new RecyclerViewSection(getActivity(), "Discount items for primary basket", basketInfo, false));
     }
 
-    private void addBasketSection(Basket basket, String currency) {
-        adapter.addSection(createBasketSection(basket, currency, true, 0));
+    private void addBasketSection(Basket basket, String currency, boolean newlyAddedBasket) {
+        String title = newlyAddedBasket ? getString(R.string.basket_title_new_basket) : getString(R.string.basket_title_no_count);
+        adapter.addSection(createBasketSection(basket, currency, true, title));
     }
 
     private void addCustomerSection(Customer customer) {
@@ -380,17 +382,19 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
     }
 
-    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, int basketIndex) {
-        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, addItems);
-        return new RecyclerViewSection(getActivity(), getString(R.string.basket_title, basketIndex + 1), basketInfo, false);
+    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, String title) {
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, addItems, true);
+        return new RecyclerViewSection(getActivity(), title, basketInfo, false);
     }
 
     @NonNull
-    private List<Pair<String, String>> getBasketInfoList(Basket basket, String currency, boolean addItems) {
+    private List<Pair<String, String>> getBasketInfoList(Basket basket, String currency, boolean addItems, boolean addBasketInfo) {
         List<Pair<String, String>> basketInfo = new ArrayList<>();
-        basketInfo.add(getStringPair(R.string.basket_name, basket.getBasketName()));
-        basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
-        basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
+        if (addBasketInfo) {
+            basketInfo.add(getStringPair(R.string.basket_name, basket.getBasketName()));
+            basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
+            basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
+        }
         if (addItems) {
             for (BasketItem basketItem : basket.getBasketItems()) {
                 String detail =
