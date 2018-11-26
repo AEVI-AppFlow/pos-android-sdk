@@ -20,6 +20,8 @@ import android.support.v7.widget.RecyclerView;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
+import java.util.Map;
+
 public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowServiceInfo> {
 
     public FlowServiceInfoAdapter(Context context, PaymentFlowServiceInfo paymentFlowServiceInfo) {
@@ -73,6 +75,9 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
             case R.string.service_label_flow_types:
                 value = getSetValue(info.getSupportedFlowTypes());
                 break;
+            case R.string.service_label_flow_info:
+                value = getFlowAndStageInfo();
+                break;
         }
         holder.value.setText(value);
     }
@@ -82,5 +87,19 @@ public class FlowServiceInfoAdapter extends BaseServiceInfoAdapter<PaymentFlowSe
             return yes + ", via payment methods: " + getSetValue(info.getPaymentMethods());
         }
         return no;
+    }
+
+    private String getFlowAndStageInfo() {
+        StringBuilder stringBuilder = new StringBuilder();
+        Map<String, String[]> flowAndStagesDefinitions = info.getFlowAndStagesDefinitions();
+        for (String flow : flowAndStagesDefinitions.keySet()) {
+            if (stringBuilder.length() != 0) {
+                stringBuilder.append("\n");
+            }
+            stringBuilder.append(flow);
+            stringBuilder.append(" --> ");
+            stringBuilder.append(getArrayValue(flowAndStagesDefinitions.get(flow)));
+        }
+        return stringBuilder.toString();
     }
 }
