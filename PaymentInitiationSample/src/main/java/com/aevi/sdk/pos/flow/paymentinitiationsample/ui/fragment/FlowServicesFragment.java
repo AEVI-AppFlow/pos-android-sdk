@@ -30,7 +30,7 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdap
 
 public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInfo> {
 
-    private boolean listSetup = false;
+    private FlowServicesAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,33 +39,45 @@ public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInf
     }
 
     @Override
-    protected void setupItems() {
-        if (!listSetup) {
-            listSetup = true;
-            title.setText(R.string.title_select_flow_service);
-            getSampleContext().getPaymentClient().getPaymentSettings()
-                    .subscribe(paymentSettings -> {
-                        PaymentFlowServices paymentFlowServices = paymentSettings.getPaymentFlowServices();
-                        if (paymentFlowServices.getNumberOfFlowServices() == 0) {
-                            showNoItemsAvailable(R.string.no_flow_services_found);
-                        } else {
-                            FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
-                                                                                  FlowServicesFragment.this, false);
-                            items.setAdapter(adapter);
-                        }
-                    }, throwable -> {
-                        if (throwable instanceof FlowException) {
-                            Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
-                            errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                            startActivity(errorIntent);
-                            getActivity().finish();
-                        } else {
-                            Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
-                            Log.e(FlowServicesFragment.class.getSimpleName(), "Error", throwable);
-                            getActivity().finish();
-                        }
-                    });
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupRecyclerView(items);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            items.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    protected void setupItems() {
+        title.setText(R.string.title_select_flow_service);
+        getSampleContext().getPaymentClient().getPaymentSettings()
+                .subscribe(paymentSettings -> {
+                    PaymentFlowServices paymentFlowServices = paymentSettings.getPaymentFlowServices();
+                    if (paymentFlowServices.getNumberOfFlowServices() == 0) {
+                        showNoItemsAvailable(R.string.no_flow_services_found);
+                    } else {
+                        adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
+                                                          FlowServicesFragment.this, false);
+                        items.setAdapter(adapter);
+                    }
+                }, throwable -> {
+                    if (throwable instanceof FlowException) {
+                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                        startActivity(errorIntent);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                        Log.e(FlowServicesFragment.class.getSimpleName(), "Error", throwable);
+                        getActivity().finish();
+                    }
+                });
     }
 
     @Override
