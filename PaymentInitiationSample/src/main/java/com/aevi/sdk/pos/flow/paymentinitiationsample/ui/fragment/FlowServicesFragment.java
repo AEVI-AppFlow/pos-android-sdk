@@ -16,6 +16,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 import com.aevi.sdk.flow.model.FlowException;
@@ -28,31 +30,42 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.FlowServicesAdap
 
 public class FlowServicesFragment extends BaseItemFragment<PaymentFlowServiceInfo> {
 
+    private boolean listSetup = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Override
     protected void setupItems() {
-        title.setText(R.string.title_select_flow_service);
-        getSampleContext().getPaymentClient().getPaymentSettings()
-                .subscribe(paymentSettings -> {
-                    PaymentFlowServices paymentFlowServices = paymentSettings.getPaymentFlowServices();
-                    if (paymentFlowServices.getNumberOfFlowServices() == 0) {
-                        showNoItemsAvailable(R.string.no_flow_services_found);
-                    } else {
-                        FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
-                                                                              FlowServicesFragment.this, false);
-                        items.setAdapter(adapter);
-                    }
-                }, throwable -> {
-                    if (throwable instanceof FlowException) {
-                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
-                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-                        startActivity(errorIntent);
-                        getActivity().finish();
-                    } else {
-                        Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
-                        Log.e(FlowServicesFragment.class.getSimpleName(), "Error", throwable);
-                        getActivity().finish();
-                    }
-                });
+        if (!listSetup) {
+            listSetup = true;
+            title.setText(R.string.title_select_flow_service);
+            getSampleContext().getPaymentClient().getPaymentSettings()
+                    .subscribe(paymentSettings -> {
+                        PaymentFlowServices paymentFlowServices = paymentSettings.getPaymentFlowServices();
+                        if (paymentFlowServices.getNumberOfFlowServices() == 0) {
+                            showNoItemsAvailable(R.string.no_flow_services_found);
+                        } else {
+                            FlowServicesAdapter adapter = new FlowServicesAdapter(paymentFlowServices.getAll(),
+                                                                                  FlowServicesFragment.this, false);
+                            items.setAdapter(adapter);
+                        }
+                    }, throwable -> {
+                        if (throwable instanceof FlowException) {
+                            Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                            errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                            startActivity(errorIntent);
+                            getActivity().finish();
+                        } else {
+                            Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                            Log.e(FlowServicesFragment.class.getSimpleName(), "Error", throwable);
+                            getActivity().finish();
+                        }
+                    });
+        }
     }
 
     @Override

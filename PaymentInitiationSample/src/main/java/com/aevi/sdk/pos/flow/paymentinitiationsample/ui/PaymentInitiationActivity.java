@@ -94,4 +94,9 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
     protected String getHelpText() {
         return getString(R.string.initiation_help);
     }
+
+    @Override
+    protected boolean allowBack() {
+        return true;
+    }
 }
