@@ -75,6 +75,7 @@ public final class TransactionResponseBuilder {
     @NonNull
     public TransactionResponseBuilder approve() {
         this.outcome = Outcome.APPROVED;
+        this.amounts = null;
         return this;
     }
 
@@ -111,6 +112,7 @@ public final class TransactionResponseBuilder {
         checkNotNull(declineMessage, "Decline message must be set");
         this.outcome = Outcome.DECLINED;
         this.outcomeMessage = declineMessage;
+        this.amounts = null;
         return this;
     }
 

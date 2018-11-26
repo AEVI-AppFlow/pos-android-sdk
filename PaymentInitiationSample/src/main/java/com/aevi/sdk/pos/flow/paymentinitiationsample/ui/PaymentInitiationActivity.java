@@ -51,6 +51,11 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
     }
 
     @Override
+    protected String getModelTitle() {
+        return getString(R.string.payment_data);
+    }
+
+    @Override
     protected boolean showViewRequestOption() {
         return false;
     }

@@ -66,6 +66,14 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         ((TextView) getActivity().findViewById(R.id.details_title)).setText(title);
     }
 
+    private void setNoData() {
+        getActivity().findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoData() {
+        getActivity().findViewById(R.id.no_data).setVisibility(View.GONE);
+    }
+
     @Override
     public void showTitle(boolean show) {
         getActivity().findViewById(R.id.details_title).setVisibility(show ? View.VISIBLE : View.GONE);
@@ -293,8 +301,16 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public void showFlowResponse(FlowResponse flowResponse) {
         reset();
         List<Pair<String, String>> responseInfo = new ArrayList<>();
-        responseInfo.add(getStringPair(R.string.cancel_requested, flowResponse.shouldCancelTransaction()));
-        adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, responseInfo, true));
+        if (!flowResponse.hasAugmentedData()) {
+            setNoData();
+            return;
+        }
+        hideNoData();
+
+        if (flowResponse.shouldCancelTransaction()) {
+            responseInfo.add(getStringPair(R.string.cancel_requested, flowResponse.shouldCancelTransaction()));
+            adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, responseInfo, true));
+        }
 
         String currency = null;
         if (flowResponse.getUpdatedRequestAmounts() != null) {

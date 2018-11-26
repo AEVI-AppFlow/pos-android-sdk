@@ -108,9 +108,13 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ModelDetailsActivity.class);
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_TYPE, getResponseClass().getName());
         intent.putExtra(ModelDetailsActivity.KEY_MODEL_DATA, getModelJson());
-        intent.putExtra(ModelDetailsActivity.KEY_TITLE, getResponseClass().getSimpleName());
+        intent.putExtra(ModelDetailsActivity.KEY_TITLE, getModelTitle());
         intent.putExtra(ModelDetailsActivity.KEY_TITLE_BG, getPrimaryColor());
         startActivity(intent);
+    }
+
+    protected String getModelTitle() {
+        return getString(R.string.response_data);
     }
 
     private void onShowRequest() {

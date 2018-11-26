@@ -174,7 +174,7 @@ public class GenericRequestFragment extends BaseObservableFragment {
             initiateDisposable = paymentClient.initiateRequest(genericRequest)
                     .subscribe(() -> {
                         messageView.setText(R.string.request_accepted);
-                        getActivity().finish();
+                        ((RequestInitiationActivity) getActivity()).showProgressOverlay();
                     }, this::handleError);
         }
     }
@@ -186,7 +186,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
                 errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, flowException.toJson());
                 startActivity(errorIntent);
-                getActivity().finish();
             } else {
                 showErrorToast("Processing service busy", throwable);
             }
@@ -198,7 +197,6 @@ public class GenericRequestFragment extends BaseObservableFragment {
     private void showErrorToast(String message, Throwable throwable) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
-        getActivity().finish();
     }
 
     private Request createRequest() {
@@ -253,6 +251,10 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
     private void setViewsEnabled(boolean enabled) {
         sendButton.setEnabled(enabled);
+    }
+
+    public Request getRequest() {
+        return genericRequest;
     }
 
     @Override

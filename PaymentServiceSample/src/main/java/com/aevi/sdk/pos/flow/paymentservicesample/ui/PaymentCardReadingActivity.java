@@ -23,6 +23,7 @@ import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.TransactionRequest;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.sample.CardProducer;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
@@ -93,7 +94,16 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
-        return card.toJson();
+        TransactionResponseBuilder transactionResponseBuilder = new TransactionResponseBuilder(cardReadingModel.getTransactionRequest().getId());
+        if (approveSwitch.isChecked()) {
+            transactionResponseBuilder.approve();
+            transactionResponseBuilder.withOutcomeMessage("Card presented");
+            transactionResponseBuilder.withCard(card);
+        } else {
+            transactionResponseBuilder.decline("Card declined");
+        }
+
+        return transactionResponseBuilder.build().toJson();
     }
 
     @Override

@@ -103,5 +103,7 @@
     <string name="view_flow_stages">View flow stages</string>
     <string name="view_incoming_request">View incoming request</string>
     <string name="view_configured_data">View configured data</string>
+    <string name="no_model_data_available">No model data available</string>
+    <string name="response_data">Response data</string>
 
 </resources>

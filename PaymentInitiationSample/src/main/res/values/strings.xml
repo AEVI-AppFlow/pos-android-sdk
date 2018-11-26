@@ -152,15 +152,23 @@
         are no flows and/or flow services available on this device. Please install relevant apps and try again.
     </string>
     <string name="setup_model">Configure</string>
-    <string name="initiation_help">Unlike the generic (non-payment) requests which involves calling a single app and get
+    <string name="initiation_help">Unlike the generic (non-payment) requests which involves calling a single app and getting
         a response back, the Payment scenarios are a bit more involved. Each flow type has an associated flow,
         which consists of one to many stages during which applications may be called to read and/or augment transaction
         data.\n\nPayment initiation is the step where the Payment model is created and subsequently sent off for
         processing via the PaymentClient. Once the payment has been sent off, the processing service will map the
-        transaction type to an appropriate flow and execute it, calling any defined apps along the way.\n\nIn these
+        flow type to an appropriate flow and execute it, calling any defined apps along the way.\n\nIn these
         samples, we mainly support the sale flow, which can be viewed by pressing the flow stages icon in the
         toolbar.Payment initiation is typically handled by a POS application, where the merchant/operator inputs
         customer basket items or manual purchase amounts.\n\n
+    </string>
+    <string name="generic_initiation_help">The generic request and response models are designed to support virtually any
+        use case and scenario. Unlike the payment models, these models are not well-defined in code but rather
+        via sets of data definitions in the documentation. Each request type, such as reversal or tokenisation will have
+        its own set of data definitions. There are various sources of generic request types, data definitions and flows.
+        AEVI defines a base set of common scenarios via the documentation, acquirers may have bespoke scenarios, flow services
+        may advertise support for custom request types and last but not least there are status updates which is a special type
+        of generic flows.\n\n
     </string>
     <string name="choose_a_transaction_flow">Choose a payment flow</string>
 
@@ -169,6 +177,8 @@
     <string name="choose_sub_type">Choose a sub type for %1$s</string>
     <string name="request_accepted">Request accepted by FPS</string>
     <string name="please_complete_payment_first">Please complete a successful payment before using this request type</string>
+    <string name="payment_data">Payment data</string>
+    <string name="request_data">Request data</string>
 
     <array name="flow_service_labels">
         <item>@string/service_label_id</item>
