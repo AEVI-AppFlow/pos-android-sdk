@@ -49,6 +49,7 @@ import java.util.List;
 
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION;
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION_ID;
+import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
 import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
@@ -180,15 +181,24 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
     private void handleError(Throwable throwable) {
         if (throwable instanceof FlowException) {
-            Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
-            errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
-            startActivity(errorIntent);
-            getActivity().finish();
+            FlowException flowException = (FlowException) throwable;
+            if (!flowException.getErrorCode().equals(PROCESSING_SERVICE_BUSY)) {
+                Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, flowException.toJson());
+                startActivity(errorIntent);
+                getActivity().finish();
+            } else {
+                showErrorToast("Processing service busy", throwable);
+            }
         } else {
-            Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
-            Log.e(GenericRequestFragment.class.getSimpleName(), "Error", throwable);
-            getActivity().finish();
+            showErrorToast("Unrecoverable error occurred - see logs", throwable);
         }
+    }
+
+    private void showErrorToast(String message, Throwable throwable) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
+        getActivity().finish();
     }
 
     private Request createRequest() {
