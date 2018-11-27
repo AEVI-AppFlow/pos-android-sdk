@@ -103,6 +103,7 @@ jobs:
       - *build
       - *save_cache
       - *store
+      - *save_cache
       - *persist
 
   deploy-qa:
