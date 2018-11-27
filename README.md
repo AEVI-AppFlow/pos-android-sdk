@@ -43,7 +43,7 @@ These APIs require that your application is compiled with Java 8. Ensure that yo
 
 Use the latest version defined below.
 
-[ ![Download](https://api.bintray.com/packages/aevi/aevi-appflow/pos-android-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-appflow/pos-android-sdk/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/appflow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/appflow-sdk/_latestVersion)
 
 **Note** - please ensure you read the [Application Guidelines](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/application-guidelines) at a minimum before attempting to create an application for AppFlow.
 
