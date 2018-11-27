@@ -16,18 +16,15 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.aevi.sdk.pos.flow.model.Payment;
-import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment.PaymentFragment;
 import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
 import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<PaymentResponse> {
+public class PaymentInitiationActivity extends BaseSampleAppCompatActivity {
 
     private ModelDisplay modelDisplay;
 
@@ -51,6 +48,11 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<Payme
 
     public ModelDisplay getModelDisplay() {
         return modelDisplay;
+    }
+
+    @Override
+    protected String getModelTitle() {
+        return getString(R.string.payment_data);
     }
 
     @Override
@@ -96,5 +98,10 @@ public class PaymentInitiationActivity extends BaseSampleAppCompatActivity<Payme
     @Override
     protected String getHelpText() {
         return getString(R.string.initiation_help);
+    }
+
+    @Override
+    protected boolean allowBack() {
+        return true;
     }
 }

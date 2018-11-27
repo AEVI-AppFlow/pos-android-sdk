@@ -1,11 +1,13 @@
 ext {
+    // API dependencies
     gsonVersion = '2.8.0'
-    rxJavaVersion = '2.1.2'
+    rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
-    jsonConverterVersion = '1.0.1'
+    jsonConverterVersion = '1.0.2'
+    rxMessengerVersion = '4.0.0'
+    configApiVersion = '1.1.0'
 
-    rxMessengerVersion = '3.0.2'
-
+    // Test dependencies
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
     mockitoVersion = '1.10.19'
@@ -17,16 +19,14 @@ ext {
     archLifecycleJava8Version = '1.1.0'
 
     butterKnifeVersion = '8.8.1'
-    recyclerViewVersion = '27.0.2'
-    supportLibrary = '27.0.2'
-    designLibrary = '27.0.2'
+    recyclerViewVersion = '28.0.0'
+    supportLibraryVersion = '28.0.0'
+    designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
     aeviUiLibraryVersion = "1.2.0"
+    appFlowConstantsVersion = '2.0.11'
 
-    posFlowSdkConstants = '1.1.2'
-
-    androidBuildVersion = "27.0.3"
-    projectTargetSdkVersion = 26
+    projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
 
     apiDependencies = [
@@ -37,20 +37,20 @@ ext {
             archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
             archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
             jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion",
-            posFlowConstants  : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants",
+            configApi         : "com.aevi.sdk.config:config-api:$configApiVersion",
     ]
 
     sampleDependencies = [
             aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibrary",
+            support          : "com.android.support:support-v4:$supportLibraryVersion",
             recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            cardView         : "com.android.support:cardview-v7:$supportLibrary",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibrary",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
-            design           : "com.android.support:design:$designLibrary",
+            cardView         : "com.android.support:cardview-v7:$supportLibraryVersion",
+            appCompat        : "com.android.support:appcompat-v7:$supportLibraryVersion",
+            supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
+            design           : "com.android.support:design:$designLibraryVersion",
             constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            posFlowConstants : "com.aevi.sdk.flow:api-constants:$posFlowSdkConstants",
+            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
     ]
 
     sampleAptDependencies = [

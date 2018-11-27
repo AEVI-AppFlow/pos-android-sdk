@@ -10,9 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-
-import com.aevi.sdk.flow.ApiBase;
-
+import com.aevi.sdk.flow.BaseApiClient;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
@@ -23,7 +21,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class ApiTestBase extends ApiBase {
+public class ApiTestBase extends BaseApiClient {
 
     protected ApiTestBase(String version) {
         super(version, mock(Context.class));

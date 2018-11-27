@@ -16,85 +16,144 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
-import static com.aevi.sdk.pos.flow.model.PaymentStage.TRANSACTION_PROCESSING;
 
 /**
  * Request for an individual transaction to be processed by a payment app / service.
  */
 public class TransactionRequest extends BaseModel {
 
-    private final String transactionType;
+    private final String transactionId;
+    private final String flowType;
     private final Amounts amounts;
-    private final PaymentStage paymentStage;
+    private final List<Basket> baskets;
+    private final Customer customer;
+    private final String flowStage;
     private final AdditionalData additionalData;
     private final Card card;
     private DeviceAudience deviceAudience;
     private String targetPaymentAppComponent;
-    private String componentName;
 
     // Default constructor for deserialisation
     TransactionRequest() {
-        this("N/A", "", TRANSACTION_PROCESSING, new Amounts(), new AdditionalData(), null);
+        this("N/A", "N/A", "", "", new Amounts(), null, null, new AdditionalData(), null);
     }
 
     /**
      * Construct a new instance.
      *
-     * @param id              The transaction id
-     * @param transactionType The transaction type
-     * @param paymentStage    The current payment stage
-     * @param amounts         The amounts to process
-     * @param additionalData  The additional data
-     * @param card            The card details from the VAA or from the payment card reading step
+     * @param id             The request id (unique for this request)
+     * @param transactionId  The transaction id representing the overall transaction this request is generated for
+     * @param flowType       The flow type
+     * @param flowStage      The current flow stage
+     * @param amounts        The amounts to process
+     * @param baskets        The baskets
+     * @param customer       The customer details
+     * @param additionalData The additional data
+     * @param card           The card details from the VAA or from the payment card reading step
      */
-    public TransactionRequest(String id, String transactionType, PaymentStage paymentStage, Amounts amounts, AdditionalData additionalData,
-                              Card card) {
+    public TransactionRequest(String id, String transactionId, String flowType, String flowStage, Amounts amounts, List<Basket> baskets,
+                              Customer customer, AdditionalData additionalData, Card card) {
         super(id);
-        this.paymentStage = paymentStage;
-        this.transactionType = transactionType;
-        this.amounts = amounts;
+        this.transactionId = transactionId;
+        this.flowStage = flowStage;
+        this.flowType = flowType;
+        this.amounts = amounts != null ? amounts : new Amounts(0, "XXX");
+        this.baskets = baskets;
+        this.customer = customer;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.card = card != null ? card : Card.getEmptyCard();
         this.deviceAudience = DeviceAudience.MERCHANT;
         checkArgument(id != null && !id.isEmpty(), "Id must be set");
-        checkArgument(transactionType != null, "Transaction type must be set");
+        checkArgument(flowType != null, "Flow type must be set");
     }
 
     /**
-     * The transaction type.
+     * Get the unique id for this particular {@link TransactionRequest}.
+     *
+     * This id is generated uniquely for each request within a {@link Transaction}, meaning it should NOT be used to identify the current transaction.
+     *
+     * Please see {@link #getTransactionId()} for an id that represents the {@link Transaction}.
+     *
+     * @return The unique id for this particular request
+     */
+    @NonNull
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
+    /**
+     * Get the id for the {@link Transaction} this request originates from.
+     *
+     * This id will be consistent for all requests and for all stages within the transaction, and can be used by applications that are called
+     * in multiple stages to identify it as the same transaction for any saved state, etc.
+     *
+     * To retrieve the unique id for this particular request, please see {@link #getId()}.
+     *
+     * @return The transaction id that is consistent for all requests within a {@link Transaction}
+     */
+    @NonNull
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    /**
+     * Get the flow type (aka transaction type).
      *
      * Can not be null.
      *
-     * @return The transaction type.
+     * @return The flow type.
      */
     @NonNull
-    public String getTransactionType() {
-        return transactionType;
+    public String getFlowType() {
+        return flowType;
     }
 
     /**
-     * The amounts to process.
+     * Get the amounts to process.
      *
-     * Can be null for non-payment type of transaction.
+     * Can be zero with a currency of "XXX" in certain situations.
      *
      * @return The amounts
      */
-    @Nullable
+    @NonNull
     public Amounts getAmounts() {
         return amounts;
     }
 
     /**
-     * The additional data
+     * Get the baskets for this transaction.
+     *
+     * @return The baskets
+     */
+    @NonNull
+    public List<Basket> getBaskets() {
+        return baskets != null ? baskets : new ArrayList<Basket>();
+    }
+
+    /**
+     * Get the customer details for this transaction.
+     *
+     * @return The customer details, or null
+     */
+    @Nullable
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * Get the additional data
      *
      * @return The data. May be empty.
      */
@@ -106,15 +165,18 @@ public class TransactionRequest extends BaseModel {
     /**
      * Get the stage the payment is at, which will determine what data is available and what response data can be set.
      *
-     * @return The {@link PaymentStage}
-     * @deprecated This is no longer required and will be deleted in the next major API update
+     * @return The current flow stage this request was generated for
      */
     @NonNull
-    @Deprecated
-    public PaymentStage getPaymentStage() {
-        return paymentStage;
+    public String getFlowStage() {
+        return flowStage;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param deviceAudience Device audience
+     */
     public void setDeviceAudience(DeviceAudience deviceAudience) {
         this.deviceAudience = deviceAudience;
     }
@@ -152,61 +214,71 @@ public class TransactionRequest extends BaseModel {
         return JsonConverter.deserialize(json, TransactionRequest.class);
     }
 
+    /**
+     * For internal use.
+     *
+     * @return String
+     */
+    @Nullable
     public String getTargetPaymentAppComponent() {
         return targetPaymentAppComponent;
     }
 
+    /**
+     * For internal use.
+     *
+     * @param targetPaymentAppComponent String
+     */
     public void setTargetPaymentAppComponent(String targetPaymentAppComponent) {
         if (targetPaymentAppComponent != null) {
             this.targetPaymentAppComponent = targetPaymentAppComponent;
         }
     }
 
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public String getComponentNameValue() {
-        return componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
     @Override
     public String toString() {
         return "TransactionRequest{" +
-                "transactionType='" + transactionType + '\'' +
+                "transactionId='" + transactionId + '\'' +
+                ", flowType='" + flowType + '\'' +
                 ", amounts=" + amounts +
-                ", paymentStage=" + paymentStage +
+                ", baskets=" + baskets +
+                ", customer=" + customer +
+                ", flowStage='" + flowStage + '\'' +
                 ", additionalData=" + additionalData +
                 ", card=" + card +
                 ", deviceAudience=" + deviceAudience +
                 ", targetPaymentAppComponent='" + targetPaymentAppComponent + '\'' +
-                ", componentName='" + componentName + '\'' +
                 "} " + super.toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         TransactionRequest that = (TransactionRequest) o;
-        return Objects.equals(transactionType, that.transactionType) &&
+        return Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(flowType, that.flowType) &&
                 Objects.equals(amounts, that.amounts) &&
-                paymentStage == that.paymentStage &&
+                Objects.equals(baskets, that.baskets) &&
+                Objects.equals(customer, that.customer) &&
+                Objects.equals(flowStage, that.flowStage) &&
                 Objects.equals(additionalData, that.additionalData) &&
                 Objects.equals(card, that.card) &&
                 deviceAudience == that.deviceAudience &&
-                Objects.equals(targetPaymentAppComponent, that.targetPaymentAppComponent) &&
-                Objects.equals(componentName, that.componentName);
+                Objects.equals(targetPaymentAppComponent, that.targetPaymentAppComponent);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), transactionType, amounts, paymentStage, additionalData, card, deviceAudience, targetPaymentAppComponent, componentName);
+        return Objects.hash(super.hashCode(), transactionId, flowType, amounts, baskets, customer, flowStage, additionalData, card, deviceAudience,
+                            targetPaymentAppComponent);
     }
 }

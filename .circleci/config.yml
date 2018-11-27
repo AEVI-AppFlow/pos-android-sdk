@@ -3,7 +3,7 @@ version: 2
 generic:
   - &job_config
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     working_directory: ~/repo
     environment:
       _JAVA_OPTIONS: "-Xms516m -Xmx1024m"
@@ -78,7 +78,7 @@ reusable-steps:
   - &publish_to_qa
     run:
       name: Publish to QA
-      command: ./gradlew assembleRelease publishReleasePublicationToQaRepository
+      command: ./gradlew javadocs assembleRelease jar publishApiJarPublicationToQaRepository publishReleasePublicationToQaRepository publishJavadocsByVersion
   - &publish_to_snapshot
     run:
       name: Publish to Snapshot
@@ -86,7 +86,7 @@ reusable-steps:
   - &publish_to_release
     run:
       name: Publish to Release
-      command: ./gradlew javadoc assembleRelease jar publishJavadocsByVersion publishJavadocsAsLatest publishReleasePublicationToReleaseRepository bintrayUpload
+      command: ./gradlew javadocs assembleRelease jar publishJavadocsByVersion publishJavadocsAsLatest publishReleasePublicationToReleaseRepository bintrayUpload
 
 
 
@@ -101,8 +101,8 @@ jobs:
       - *download_android_deps
       - *test
       - *build
-      - *store
       - *save_cache
+      - *store
       - *persist
 
   deploy-qa:

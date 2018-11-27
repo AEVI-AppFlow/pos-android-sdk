@@ -14,28 +14,52 @@
 
 package com.aevi.sdk.flow.model.config;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.util.json.JsonConverter;
+import com.aevi.util.json.JsonPostProcessing;
 import com.aevi.util.json.Jsonable;
 
 import java.util.*;
 
 /**
  * Represents a flow configuration consisting of a series of stages with associated stage rules and applications.
+ *
+ * Use {@link FlowConfigBuilder} to instantiate programmatically.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-configurations" target="_blank">Flow Configurations Docs</a>
  */
-public class FlowConfig implements Jsonable {
+public class FlowConfig implements Jsonable, JsonPostProcessing {
 
+    public static final String REQUEST_CLASS_GENERIC = "generic";
+    public static final String REQUEST_CLASS_PAYMENT = "payment";
+
+    private final String name;
     private final String type;
+    private final int version;
+    private final int apiMajorVersion;
+    private final String description;
+    private final String restrictedToApp;
     private final List<FlowStage> stages;
+    private boolean generatedFromCustomType;
 
     private transient List<FlowStage> allStagesFlattened;
     private transient Map<String, FlowStage> allStagesMap;
 
-    public FlowConfig() {
-        this("N/A", new ArrayList<FlowStage>());
+    FlowConfig() {
+        this("N/A", "N/A", 0, 0, null, null, null);
     }
 
-    public FlowConfig(String type, List<FlowStage> stages) {
-        this.type = type.toLowerCase();
+    public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp,
+                      List<FlowStage> stages) {
+        this.name = name;
+        this.type = type;
+        this.version = version;
+        this.apiMajorVersion = apiMajorVersion;
+        this.description = description;
+        this.restrictedToApp = restrictedToApp;
         this.stages = stages != null ? stages : new ArrayList<FlowStage>();
         parseStageHierarchy();
     }
@@ -46,20 +70,132 @@ public class FlowConfig implements Jsonable {
         getDeepStages(allStagesFlattened, allStagesMap, stages);
     }
 
-    public String getType() {
-        return type.toLowerCase();
+    /**
+     * Get the name of this flow.
+     *
+     * The name is a unique identifier for a flow and is used to indicate what flow should be used when initiating a request.
+     *
+     * @return The name of the flow
+     */
+    @NonNull
+    public String getName() {
+        return name;
     }
 
-    public List<FlowStage> getStages() {
-        return stages;
+    /**
+     * Get the type of this flow.
+     *
+     * The flow type represents what function the flow fills - such as a sale/purchase or tokenisation.
+     *
+     * There is a set of defined types via the documentation. In addition, flow services can support custom types.
+     *
+     * @return The type of this flow
+     */
+    @NonNull
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Get the version counter of this flow.
+     *
+     * This is a simple counter that gets bumped every time the flow is modified.
+     *
+     * @return The version counter
+     */
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * Get the API major version this flow is compatible with.
+     *
+     * Flow configs may be incompatible between major versions, so this is used as a mechanism to ensure compatibility.
+     *
+     * @return The API major version this flow is compatible with
+     */
+    public int getApiMajorVersion() {
+        return apiMajorVersion;
+    }
+
+    /**
+     * Get the description of this flow.
+     *
+     * A flow may optionally contain a description for the flow.
+     *
+     * @return The description, or null if none set
+     */
+    @Nullable
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Check whether this flow has an app restriction defined or not.
+     *
+     * If there is an app restriction defined, this can be used to filter out configurations that should only be allowed for a certain client application.
+     *
+     * @return True if there is a filter, false otherwise
+     */
+    public boolean hasAppRestriction() {
+        return !TextUtils.isEmpty(restrictedToApp);
+    }
+
+    /**
+     * Verify whether a client app is allowed to read/initiate this flow configuration.
+     *
+     * @param clientPackageName The package name of the client application
+     * @return True if the client app is allowed, false otherwise
+     */
+    public boolean isClientAppAllowed(String clientPackageName) {
+        return !hasAppRestriction() || restrictedToApp.equals(clientPackageName);
+    }
+
+    /**
+     * Get the stages for this flow.
+     *
+     * As stages can be nested (a stage can have an inner flow), the returned list can either be top level only or all stages flattened.
+     *
+     * @param flattened Set to true to get all the stages (top level and nested) in the returned list, or false if just to get top level
+     * @return The stages for this flow
+     */
+    public List<FlowStage> getStages(boolean flattened) {
+        return flattened ? allStagesFlattened : stages;
+    }
+
+    /**
+     * Get the request class for this flow, which indicates what type of request to use with it.
+     *
+     * If this flow is to be used by a {@link com.aevi.sdk.flow.model.Request}, then the return value will be {@link #REQUEST_CLASS_GENERIC}
+     *
+     * If this flow is to be used for a payment initiation, then the return value will be {@link #REQUEST_CLASS_PAYMENT}
+     *
+     * @return The request class for this flow
+     */
+    public String getRequestClass() {
+        return allStagesMap.keySet().contains(normaliseStageName(FlowStages.TRANSACTION_PROCESSING)) ? REQUEST_CLASS_PAYMENT : REQUEST_CLASS_GENERIC;
+    }
+
+    /**
+     * Check whether this flow config was generated from a custom type as defined by a flow service.
+     *
+     * @return True if generated from custom type, false otherwise
+     */
+    public boolean isGeneratedFromCustomType() {
+        return generatedFromCustomType;
+    }
+
+    /**
+     * For internal use
+     *
+     * @param generatedFromCustomType Custom type indicator
+     */
+    public void setGeneratedFromCustomType(boolean generatedFromCustomType) {
+        this.generatedFromCustomType = generatedFromCustomType;
     }
 
     public synchronized Set<String> getAllStageNames() {
         return allStagesMap.keySet();
-    }
-
-    public synchronized List<FlowStage> getAllStages() {
-        return allStagesFlattened;
     }
 
     private synchronized void getDeepStages(List<FlowStage> allStages, Map<String, FlowStage> allStagesMap, List<FlowStage> toAdd) {
@@ -68,7 +204,7 @@ public class FlowConfig implements Jsonable {
                 allStages.add(stage);
                 allStagesMap.put(normaliseStageName(stage.getName()), stage);
                 if (stage.hasInnerFlow()) {
-                    getDeepStages(allStages, allStagesMap, stage.getInnerFlow().getStages());
+                    getDeepStages(allStages, allStagesMap, stage.getInnerFlow().getStages(false));
                 }
             }
         }
@@ -111,7 +247,7 @@ public class FlowConfig implements Jsonable {
 
     public boolean containsApp(String flowAppId) {
         boolean found = false;
-        for (FlowStage stage : getAllStages()) {
+        for (FlowStage stage : getStages(true)) {
             found |= scanAppList(stage.getFlowApps(), flowAppId);
         }
         return found;
@@ -149,7 +285,7 @@ public class FlowConfig implements Jsonable {
 
     private String normaliseStageName(String stage) {
         if (stage != null) {
-            return stage.toLowerCase();
+            return stage.toUpperCase();
         }
         return null;
     }
@@ -158,7 +294,7 @@ public class FlowConfig implements Jsonable {
         stage = normaliseStageName(stage);
         FlowStage flowStage = getStage(stage);
         if (flowStage == null) {
-            flowStage = new FlowStage(stage, FlowAppType.MULTIPLE);
+            flowStage = new FlowStage(stage, AppExecutionType.MULTIPLE);
             flowStage.setFlowApps(flowApps);
             stages.add(flowStage);
             allStagesFlattened = null;
@@ -174,9 +310,40 @@ public class FlowConfig implements Jsonable {
         return JsonConverter.serialize(this);
     }
 
+    @Override
+    public void onJsonDeserialisationCompleted() {
+        parseStageHierarchy();
+    }
+
     public static FlowConfig fromJson(String json) {
-        FlowConfig flowConfig = JsonConverter.deserialize(json, FlowConfig.class);
-        flowConfig.parseStageHierarchy();
-        return flowConfig;
+        return JsonConverter.deserialize(json, FlowConfig.class);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FlowConfig that = (FlowConfig) o;
+        return version == that.version &&
+                apiMajorVersion == that.apiMajorVersion &&
+                generatedFromCustomType == that.generatedFromCustomType &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(restrictedToApp, that.restrictedToApp) &&
+                Objects.equals(stages, that.stages) &&
+                Objects.equals(allStagesFlattened, that.allStagesFlattened) &&
+                Objects.equals(allStagesMap, that.allStagesMap);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, generatedFromCustomType, allStagesFlattened,
+                            allStagesMap);
     }
 }

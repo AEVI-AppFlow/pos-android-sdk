@@ -15,19 +15,25 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SystemOverview;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PopupActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.SystemOverviewAdapter;
-
-import butterknife.BindView;
 import io.reactivex.Single;
 
-public class SystemOverviewFragment extends BaseFragment {
+public class SystemOverviewFragment extends BaseFragment implements SystemOverviewAdapter.OnFlowConfigClickListener {
 
     @BindView(R.id.items)
     RecyclerView infoItems;
@@ -35,45 +41,72 @@ public class SystemOverviewFragment extends BaseFragment {
     @BindView(R.id.title)
     TextView title;
 
+    private SystemOverviewAdapter systemOverviewAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        title.setText(R.string.system_overview);
+        setupRecyclerView(infoItems);
+        if (systemOverviewAdapter == null) {
+            createSystemInfo().subscribe(systemOverview -> {
+                systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview, this);
+                infoItems.setAdapter(systemOverviewAdapter);
+            }, throwable -> {
+                if (throwable instanceof FlowException) {
+                    Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                    errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                    startActivity(errorIntent);
+                    getActivity().finish();
+                } else {
+                    Toast.makeText(getContext(), "Unrecoverable error occurred - see logs", Toast.LENGTH_SHORT).show();
+                    Log.e(SystemOverviewFragment.class.getSimpleName(), "Error", throwable);
+                    getActivity().finish();
+                }
+            });
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        setupRecyclerView(infoItems);
-        title.setText(R.string.system_overview);
-
-        createSystemInfo().subscribe(systemOverview -> {
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), systemOverview);
+        if (systemOverviewAdapter != null) {
             infoItems.setAdapter(systemOverviewAdapter);
-        }, throwable -> {
-            if (throwable instanceof IllegalStateException) {
-                Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
-            }
-            SystemOverviewAdapter systemOverviewAdapter = new SystemOverviewAdapter(getContext(), new SystemOverview());
-            infoItems.setAdapter(systemOverviewAdapter);
-        });
+            systemOverviewAdapter.notifyDataSetChanged();
+        }
     }
 
     private Single<SystemOverview> createSystemInfo() {
         PaymentClient paymentClient = getSampleContext().getPaymentClient();
-        return Single.zip(paymentClient.getFlowServices(), paymentClient.getPaymentServices(), paymentClient.getDevices(), paymentClient.getSupportedRequestTypes(), paymentClient.getSupportedTransactionTypes(),
-                (flowServices, paymentServices, devices, supportedRequestTypes, supportedTransactionTypes) -> {
-                    SystemOverview systemOverview = new SystemOverview();
-                    systemOverview.setNumFlowServices(flowServices.getAllFlowServices().size());
-                    systemOverview.setNumPaymentServices(paymentServices.getAllPaymentServices().size());
-                    systemOverview.setNumDevices(devices.size());
-                    systemOverview.setAllCurrencies(paymentServices.getAllSupportedCurrencies());
-                    systemOverview.addPaymentMethods(flowServices.getAllSupportedPaymentMethods());
-                    systemOverview.addPaymentMethods(paymentServices.getAllSupportedPaymentMethods());
-                    systemOverview.addDataKeys(flowServices.getAllSupportedDataKeys());
-                    systemOverview.addDataKeys(paymentServices.getAllSupportedDataKeys());
-                    systemOverview.addRequestTypes(supportedRequestTypes);
-                    systemOverview.setAllTransactionTypes(supportedTransactionTypes);
-                    return systemOverview;
-                });
+        return Single.zip(paymentClient.getPaymentSettings(), paymentClient.getDevices(),
+                          (paymentSettings, devices) -> {
+                              SystemOverview systemOverview = new SystemOverview();
+                              systemOverview.setPaymentFlowServices(paymentSettings.getPaymentFlowServices());
+                              systemOverview.setFlowConfigurations(paymentSettings.getFlowConfigurations());
+                              systemOverview.setNumDevices(devices.size());
+                              systemOverview.setFpsSettings(paymentSettings.getFpsSettings());
+                              return systemOverview;
+                          });
     }
 
     @Override
     public int getLayoutResource() {
         return R.layout.fragment_recycler_view;
     }
+
+    @Override
+    public void onClick(FlowConfig config) {
+        showJsonView(config.getName(), config.toJson());
+    }
+
+    private void showJsonView(String requestType, String json) {
+        ((PopupActivity) getActivity()).showJsonFragment(requestType, json);
+    }
+
 }

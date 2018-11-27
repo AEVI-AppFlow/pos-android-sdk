@@ -14,6 +14,7 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -48,8 +49,6 @@ public class Amounts implements Jsonable {
      *
      * Additional amounts can be set via {@link #addAdditionalAmount(String, long)}.
      *
-     * See documentation for reference identifiers for additional amounts.
-     *
      * @param baseAmount The base amount in subunit form (cents, pence, etc)
      * @param currency   The ISO-4217 currency code
      */
@@ -69,17 +68,16 @@ public class Amounts implements Jsonable {
     /**
      * Initialise with base amount, currency and additional amounts map.
      *
-     * See documentation for reference identifiers for additional amounts.
-     *
      * @param baseAmount        The base amount in subunit form (cents, pence, etc)
      * @param currency          The ISO-4217 currency code
      * @param additionalAmounts The additional amounts
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public Amounts(long baseAmount, String currency, Map<String, Long> additionalAmounts) {
         checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
         this.baseAmount = baseAmount;
         this.currency = currency;
-        this.additionalAmounts = additionalAmounts;
+        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<String, Long>();
     }
 
     /**
@@ -89,10 +87,9 @@ public class Amounts implements Jsonable {
      *
      * Examples of identifiers are "tip" and "cashback".
      *
-     * See documentation for reference identifiers.
-     *
      * @param identifier The string identifier for the amount
      * @param amount     The amount value
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public void addAdditionalAmount(String identifier, long amount) {
         checkArgument(identifier != null && amount >= 0, "Identifier must be set and value must be >= 0");
@@ -106,6 +103,7 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public void addAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         if (fraction < 0.0f || fraction > 1.0f) {
@@ -119,6 +117,7 @@ public class Amounts implements Jsonable {
      *
      * @return The ISO-4217 currency code
      */
+    @NonNull
     public String getCurrency() {
         return currency;
     }
@@ -139,6 +138,7 @@ public class Amounts implements Jsonable {
      *
      * @return Base {@link Amount}
      */
+    @NonNull
     public Amount getBaseAmount() {
         return new Amount(baseAmount, currency);
     }
@@ -150,6 +150,7 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The identifier
      * @return The amount value
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public long getAdditionalAmountValue(String identifier) {
         if (additionalAmounts.containsKey(identifier)) {
@@ -163,7 +164,9 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The identifier
      * @return The additional {@link Amount}
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
+    @NonNull
     public Amount getAdditionalAmount(String identifier) {
         return new Amount(getAdditionalAmountValue(identifier), currency);
     }
@@ -172,7 +175,9 @@ public class Amounts implements Jsonable {
      * Get the map of all the additional amounts set.
      *
      * @return The map of identifier keys mapped to amount values
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
+    @NonNull
     public Map<String, Long> getAdditionalAmounts() {
         return additionalAmounts;
     }
@@ -195,6 +200,7 @@ public class Amounts implements Jsonable {
      *
      * @return Total {@link Amount}
      */
+    @NonNull
     public Amount getTotalAmount() {
         return new Amount(getTotalAmountValue(), currency);
     }
@@ -219,6 +225,7 @@ public class Amounts implements Jsonable {
      *
      * @return The original currency
      */
+    @NonNull
     public String getOriginalCurrency() {
         return originalCurrency;
     }
@@ -284,6 +291,7 @@ public class Amounts implements Jsonable {
      * @param a2 The second amount to add with
      * @return The combined result
      */
+    @NonNull
     public static Amounts addAmounts(Amounts a1, Amounts a2) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
@@ -312,6 +320,7 @@ public class Amounts implements Jsonable {
      * @param a2 The amounts of which a1 will be reduced by
      * @return The reduced amounts
      */
+    @NonNull
     public static Amounts subtractAmounts(Amounts a1, Amounts a2) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");

@@ -15,8 +15,11 @@
 
 package com.aevi.sdk.flow.model.config;
 
+import android.support.annotation.NonNull;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
+
+import java.util.Objects;
 
 /**
  * Represents a flow application in a flow configuration.
@@ -24,13 +27,50 @@ import com.aevi.util.json.Jsonable;
 public class FlowApp implements Jsonable {
 
     private final String id;
+    private final boolean mandatory;
 
+    /**
+     * Construct with id.
+     *
+     * Mandatory field defaults to false.
+     *
+     * @param id The application id
+     */
     public FlowApp(String id) {
-        this.id = id;
+        this.id = id != null ? id : "N/A";
+        this.mandatory = false;
     }
 
+    /**
+     * Construct with id and mandatory flag.
+     *
+     * @param id        The application id
+     * @param mandatory Whether or not the app is mandatory for the flow to be valid
+     */
+    public FlowApp(String id, boolean mandatory) {
+        this.id = id != null ? id : "N/A";
+        this.mandatory = mandatory;
+    }
+
+    /**
+     * Get the application id.
+     *
+     * @return The application id
+     */
+    @NonNull
     public String getId() {
         return id;
+    }
+
+    /**
+     * Check whether this application is mandatory for the flow to be valid.
+     *
+     * If a flow app is marked as mandatory and not installed on a device, the flow will be considered invalid.
+     *
+     * @return True if the app is mandatory for the flow, false otherwise
+     */
+    public boolean isMandatory() {
+        return mandatory;
     }
 
     @Override
@@ -46,14 +86,14 @@ public class FlowApp implements Jsonable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         FlowApp flowApp = (FlowApp) o;
-
-        return id != null ? id.equals(flowApp.id) : flowApp.id == null;
+        return mandatory == flowApp.mandatory &&
+                Objects.equals(id, flowApp.id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+
+        return Objects.hash(id, mandatory);
     }
 }

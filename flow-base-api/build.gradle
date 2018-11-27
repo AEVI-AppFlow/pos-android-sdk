@@ -13,9 +13,9 @@ dependencies {
     implementation apiDependencies.jsonConverter
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
-    implementation apiDependencies.posFlowConstants
+    implementation apiDependencies.configApi
 
-    testImplementation project(":flow-service-api")
+    testImplementation project(':payment-flow-service-api')
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
@@ -39,6 +39,7 @@ javadoc {
     exclude "**/MessageErrors**"
     title = "Flow API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
+    failOnError = false
 }
 
 buildConfig {

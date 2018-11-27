@@ -22,16 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.pos.flow.model.Transaction;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
@@ -81,7 +79,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 .setAdapter(new TransactionResponseAdapter(holder.transactionResponses.getContext(), transaction.getTransactionResponses()));
 
         holder.amountCharged.setText(
-                AmountFormatter.formatAmount(transaction.getProcessedAmounts().getCurrency(), transaction.getProcessedAmounts().getTotalAmountValue()));
+                AmountFormatter
+                        .formatAmount(transaction.getProcessedAmounts().getCurrency(), transaction.getProcessedAmounts().getTotalAmountValue()));
         holder.amountCharged.setVisibility(View.VISIBLE);
 
         if (customer != null) {

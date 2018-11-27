@@ -17,20 +17,24 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.aevi.sdk.flow.FlowClient;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Generic request that contains a request type and arbitrary data bespoke to each request type.
+ * Generic request that at minimum contains a request type and optionally flow name and bespoke request data.
+ *
+ * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
+ * and one will be selected either automatically or via user interaction.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Docs</a>
  */
 public class Request extends BaseModel {
 
     private final String requestType;
     private final AdditionalData requestData;
+    private String flowName;
     private String deviceId;
     private String targetAppId;
 
@@ -42,7 +46,9 @@ public class Request extends BaseModel {
     /**
      * Initialise this request with a request type and empty data.
      *
-     * The request type indicates how the request will be processed and what data is expected.
+     * The request type will be used to assign the correct flow for this request.
+     *
+     * Please see {@link #setFlowName(String)} to explicitly specify what flow to use.
      *
      * See reference values in the documentation for possible values.
      *
@@ -55,7 +61,9 @@ public class Request extends BaseModel {
     /**
      * Initialise this request with a request type and data.
      *
-     * The request type indicates how the request will be processed and what data is expected.
+     * The request type will be used to assign the correct flow for this request.
+     *
+     * Please see {@link #setFlowName(String)} to explicitly specify what flow to use.
      *
      * See reference values in the documentation for possible values.
      *
@@ -73,13 +81,36 @@ public class Request extends BaseModel {
     }
 
     /**
-     * Get the request type which indicates how it will be processed and what data to expect.
+     * Get the request type which indicates what function this request represents.
      *
      * @return The request type
      */
     @NonNull
     public String getRequestType() {
         return requestType;
+    }
+
+    /**
+     * Explicitly set the name of the flow to process this request.
+     *
+     * This can and should be used in cases where there is more than one flow for the provided request type.
+     *
+     * @param flowName The name of the flow to use
+     */
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+    }
+
+    /**
+     * Get the name of the flow which will process this request, if any.
+     *
+     * If not set, the request type will be used to map this to a flow.
+     *
+     * @return The request flow
+     */
+    @Nullable
+    public String getFlowName() {
+        return flowName;
     }
 
     /**
@@ -95,7 +126,7 @@ public class Request extends BaseModel {
     /**
      * Optionally set what device to use for interactions with the customer.
      *
-     * The available devices can be queried via {@link FlowClient#getDevices()}.
+     * See the relevant client interface for how to retrieve the list of available devices.
      *
      * Setting this means that all customer facing activities will be run on that device.
      *
@@ -160,21 +191,29 @@ public class Request extends BaseModel {
     @Override
     public String toString() {
         return "Request{" +
-                "requestType='" + requestType + '\'' +
+                "flowName='" + flowName + '\'' +
                 ", requestData=" + requestData +
+                ", requestType='" + requestType + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", targetAppId='" + targetAppId + '\'' +
-                "} " + super.toString();
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Request request = (Request) o;
-        return Objects.equals(requestType, request.requestType) &&
+        return Objects.equals(flowName, request.flowName) &&
                 Objects.equals(requestData, request.requestData) &&
+                Objects.equals(requestType, request.requestType) &&
                 Objects.equals(deviceId, request.deviceId) &&
                 Objects.equals(targetAppId, request.targetAppId);
     }
@@ -182,7 +221,7 @@ public class Request extends BaseModel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), requestType, requestData, deviceId, targetAppId);
+        return Objects.hash(super.hashCode(), flowName, requestData, requestType, deviceId, targetAppId);
     }
 
     public static Request fromJson(String json) {
@@ -193,7 +232,7 @@ public class Request extends BaseModel {
      * For internal use.
      *
      * @param id          Id
-     * @param requestType Request type
+     * @param requestType Request flow
      * @param requestData Request data
      * @return Request
      */

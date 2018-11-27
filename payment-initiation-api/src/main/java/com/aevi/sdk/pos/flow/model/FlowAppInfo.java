@@ -14,7 +14,7 @@
 
 package com.aevi.sdk.pos.flow.model;
 
-import com.aevi.sdk.pos.flow.PaymentClient;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class FlowAppInfo {
     /**
      * Create a new FlowAppInfo instance with augmented data information.
      *
-     * @param flowAppId     The flow application id (as per {@link com.aevi.sdk.flow.model.FlowServiceInfo})
+     * @param flowAppId     The flow application id (as per {@link PaymentFlowServiceInfo})
      * @param stage         The stage at which the flow app is called
      * @param augmentedData The list of augmented data
      */
@@ -52,12 +52,11 @@ public class FlowAppInfo {
     }
 
     /**
-     * Get the flow application id, as per {@link com.aevi.sdk.flow.model.FlowServiceInfo}.
-     *
-     * This can be used to look up further details about the flow application via {@link PaymentClient#getFlowServices()}.
+     * Get the flow application id, as per {@link PaymentFlowServiceInfo}.
      *
      * @return The flow application id
      */
+    @NonNull
     public String getFlowAppId() {
         return flowAppId;
     }
@@ -67,6 +66,7 @@ public class FlowAppInfo {
      *
      * @return The flow stage
      */
+    @NonNull
     public String getStage() {
         return stage;
     }
@@ -76,10 +76,10 @@ public class FlowAppInfo {
      *
      * Note that this simply indicates what was augmented - not to what. The {@link PaymentResponse} can be parsed to review that information.
      *
-     * See documentation for possible values.
-     *
      * @return The list of data that was augmented.
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/augmented-data" target="_blank">Augmented data docs</a>
      */
+    @NonNull
     public List<String> getAugmentedData() {
         return augmentedData;
     }

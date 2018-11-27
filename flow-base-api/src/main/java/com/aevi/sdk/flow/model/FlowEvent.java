@@ -17,12 +17,16 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
 import java.util.Objects;
 
+/**
+ * Represents an event in the flow.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/events-subscription" target="_blank">Events Docs</a>
+ */
 public class FlowEvent implements Jsonable {
 
     private final String type;
@@ -45,20 +49,40 @@ public class FlowEvent implements Jsonable {
         this.eventTrigger = eventTrigger;
     }
 
+    /**
+     * Get the type of the event.
+     *
+     * @return The event type
+     */
     @NonNull
     public String getType() {
         return type;
     }
 
+    /**
+     * Get the data for the event.
+     *
+     * @return The event data
+     */
     @NonNull
     public AdditionalData getData() {
         return data;
     }
 
+    /**
+     * Set the event trigger.
+     *
+     * @param eventTrigger The event trigger
+     */
     public void setEventTrigger(String eventTrigger) {
         this.eventTrigger = eventTrigger;
     }
 
+    /**
+     * Get the event trigger.
+     *
+     * @return The event trigger
+     */
     @Nullable
     public String getEventTrigger() {
         return eventTrigger;
@@ -66,8 +90,12 @@ public class FlowEvent implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FlowEvent flowEvent = (FlowEvent) o;
         return Objects.equals(type, flowEvent.type) &&
                 Objects.equals(data, flowEvent.data) &&

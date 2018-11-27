@@ -10,7 +10,6 @@ ext.artifactGroupId = "com.aevi.sdk.pos.flow"
 
 android {
     compileSdkVersion projectTargetSdkVersion
-    buildToolsVersion "${androidBuildVersion}"
     defaultConfig {
         applicationId 'com.aevi.sdk.pos.flow.flowservicesample'
         minSdkVersion projectMinSdkVersion
@@ -51,7 +50,7 @@ dependencies {
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
     implementation sampleDependencies.aeviUiLibrary
-    implementation project(':flow-service-api')
+    implementation project(':payment-flow-service-api')
     implementation project(':sample-commons')
     implementation sampleDependencies.butterKnife
     annotationProcessor sampleAptDependencies.butterKnife

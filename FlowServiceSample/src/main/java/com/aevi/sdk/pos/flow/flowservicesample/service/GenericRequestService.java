@@ -14,26 +14,40 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
-import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
+import android.util.Log;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.BaseRequestService;
+import com.aevi.sdk.flow.service.BaseGenericService;
+import com.aevi.sdk.flow.stage.GenericStageModel;
+import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
+import com.aevi.sdk.pos.flow.flowservicesample.ui.ReceiptDeliveryActivity;
 
-public class GenericRequestService extends BaseRequestService {
+import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_RECEIPT_DELIVERY;
 
+/**
+ * Illustrates how to implement a service to handle a bespoke request type.
+ */
+public class GenericRequestService extends BaseGenericService {
+
+    private static final String TAG = GenericRequestService.class.getSimpleName();
     public static final String SHOW_LOYALTY_POINTS_REQUEST = "showLoyaltyPointsBalance";
 
     @Override
-    protected void processRequest(String clientMessageId, Request request) {
-        if (request.getRequestType().equals(SHOW_LOYALTY_POINTS_REQUEST)) {
-            launchActivity(LoyaltyBalanceActivity.class, clientMessageId, request);
-        } else {
-            finishWithResponse(clientMessageId, new Response(request, false, "Unsupported request type"));
+    protected void processRequest(GenericStageModel stageModel) {
+        Request request = stageModel.getRequest();
+        Log.d(TAG, "Got generic request: " + request.toJson());
+
+        switch (request.getRequestType()) {
+            case SHOW_LOYALTY_POINTS_REQUEST:
+                stageModel.processInActivity(getBaseContext(), LoyaltyBalanceActivity.class);
+                break;
+            case FLOW_TYPE_RECEIPT_DELIVERY:
+                stageModel.processInActivity(getBaseContext(), ReceiptDeliveryActivity.class);
+                break;
+            default:
+                stageModel.sendResponse(new Response(request, false, "Unsupported request type"));
+                break;
+
         }
-    }
-
-    @Override
-    protected void finish(String clientMessageId) {
-
     }
 }

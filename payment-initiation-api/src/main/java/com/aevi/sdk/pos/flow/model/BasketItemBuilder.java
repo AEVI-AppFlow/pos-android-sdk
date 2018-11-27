@@ -14,6 +14,10 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -22,10 +26,11 @@ import java.util.UUID;
 public class BasketItemBuilder {
 
     private String id;
-    private int count = 1;
+    private int quantity = 1;
     private String label;
     private String category;
     private long amount;
+    private Map<String, String> references;
 
     /**
      * Initialise the builder with a default random id.
@@ -41,10 +46,11 @@ public class BasketItemBuilder {
      */
     public BasketItemBuilder(BasketItem copyFrom) {
         this.id = copyFrom.getId();
-        this.count = copyFrom.getCount();
+        this.quantity = copyFrom.getQuantity();
         this.label = copyFrom.getLabel();
         this.category = copyFrom.getCategory();
         this.amount = copyFrom.getIndividualAmount();
+        this.references = copyFrom.getReferences();
     }
 
     /**
@@ -54,6 +60,7 @@ public class BasketItemBuilder {
      *
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder generateRandomId() {
         this.id = UUID.randomUUID().toString();
         return this;
@@ -65,56 +72,61 @@ public class BasketItemBuilder {
      * @param id The id
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withId(String id) {
         this.id = id;
         return this;
     }
 
     /**
-     * Set the initial count for this item.
+     * Set the initial quantity for this item.
      *
      * Defaults to 1 if not set.
      *
-     * @param count The item count
+     * @param quantity The item quantity
      * @return This builder
      */
-    public BasketItemBuilder withCount(int count) {
-        this.count = count;
+    @NonNull
+    public BasketItemBuilder withQuantity(int quantity) {
+        this.quantity = quantity;
         return this;
     }
 
     /**
-     * Increment the count by one.
+     * Increment the quantity by one.
      *
      * @return This builder
      */
-    public BasketItemBuilder incrementCount() {
-        this.count++;
+    @NonNull
+    public BasketItemBuilder incrementQuantity() {
+        this.quantity++;
         return this;
     }
 
     /**
-     * Decrements the item count by one as long as the current count is greater than zero.
+     * Decrements the item quantity by one as long as the current quantity is greater than zero.
      *
-     * If the count is already zero, this method has no effect.
+     * If the quantity is already zero, this method has no effect.
      *
      * @return This builder
      */
-    public BasketItemBuilder decrementCount() {
-        this.count--;
+    @NonNull
+    public BasketItemBuilder decrementQuantity() {
+        this.quantity--;
         return this;
     }
 
     /**
-     * Modify the current count with the provided offset.
+     * Modify the current quantity with the provided offset.
      *
-     * This effectively does count += offset, and can be used to increase or decrease the count.
+     * This effectively does quantity += offset, and can be used to increase or decrease the quantity.
      *
-     * @param offset The value to modify the current count with.
+     * @param offset The value to modify the current quantity with.
      * @return This builder
      */
-    public BasketItemBuilder offsetCountBy(int offset) {
-        this.count += offset;
+    @NonNull
+    public BasketItemBuilder offsetQuantityBy(int offset) {
+        this.quantity += offset;
         return this;
     }
 
@@ -124,6 +136,7 @@ public class BasketItemBuilder {
      * @param label The label
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withLabel(String label) {
         this.label = label;
         return this;
@@ -135,6 +148,7 @@ public class BasketItemBuilder {
      * @param category The category the item belongs to
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withCategory(String category) {
         this.category = category;
         return this;
@@ -143,22 +157,43 @@ public class BasketItemBuilder {
     /**
      * Set the item amount value.
      *
+     * Note that the amount value can be negative to represent discounts, etc.
+     *
      * @param amount The item amount value
      * @return This builder
      */
+    @NonNull
     public BasketItemBuilder withAmount(long amount) {
         this.amount = amount;
         return this;
     }
 
     /**
-     * Build the instance with a default count of 1 (if not set).
+     * Add a custom / additional reference to this basket item.
+     *
+     * This can be used to add further information about the basket item that is not covered by the primary fields.
+     *
+     * @param key   The reference key
+     * @param value The reference value
+     * @return This builder
+     */
+    public BasketItemBuilder withReference(String key, String value) {
+        if (references == null) {
+            references = new HashMap<>();
+        }
+        references.put(key, value);
+        return this;
+    }
+
+    /**
+     * Build the instance with a default quantity of 1 (if not set).
      *
      * @return A {@link BasketItem} instance
      */
+    @NonNull
     public BasketItem build() {
-        if (count < 0) {
-            throw new IllegalArgumentException("Basket item must have a count of zero or more");
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Basket item must have a quantity of zero or more");
         }
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have an id");
@@ -166,6 +201,6 @@ public class BasketItemBuilder {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have a label");
         }
-        return new BasketItem(id, label, category, amount, count);
+        return new BasketItem(id, label, category, amount, quantity, references);
     }
 }

@@ -16,11 +16,9 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
-import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
-
 import butterknife.BindView;
+import com.aevi.sdk.flow.constants.FlowStages;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
 
 /**
  * Sample activity for post-card-reading stage. See base class.
@@ -41,7 +39,7 @@ public class PostCardActivity extends BasePreProcessingActivity {
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.POST_CARD_READING.name();
+        return FlowStages.POST_CARD_READING;
     }
 
     @Override

@@ -18,17 +18,22 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.aevi.android.rxmessenger.MessageException;
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import butterknife.BindView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
+import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.pos.flow.PaymentApi;
 import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.SampleContext;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -38,20 +43,19 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.ui.library.BaseObservableFragment;
 import com.aevi.ui.library.DropDownHelper;
 import com.aevi.ui.library.recycler.DropDownSpinner;
+import io.reactivex.disposables.Disposable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
-import io.reactivex.Single;
+import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
 
 public class PaymentFragment extends BaseObservableFragment {
 
-    @BindView(R.id.transaction_type_spinner)
-    DropDownSpinner transactionTypeSpinner;
+    @BindView(R.id.flow_spinner)
+    DropDownSpinner flowSpinner;
 
     @BindView(R.id.currency_spinner)
     DropDownSpinner currencySpinner;
@@ -80,6 +84,9 @@ public class PaymentFragment extends BaseObservableFragment {
     private PaymentBuilder paymentBuilder = new PaymentBuilder();
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
+    private DropDownHelper dropDownHelper;
+    private PaymentSettings paymentSettings;
+    private Disposable initiateDisposable;
 
     @Override
     public int getLayoutResource() {
@@ -92,36 +99,45 @@ public class PaymentFragment extends BaseObservableFragment {
 
         modelDisplay = ((PaymentInitiationActivity) getActivity()).getModelDisplay();
 
-        final DropDownHelper dropDownHelper = new DropDownHelper(getActivity());
-
-        dropDownHelper.setupDropDown(transactionTypeSpinner, R.array.transaction_types);
+        dropDownHelper = new DropDownHelper(getActivity());
         dropDownHelper.setupDropDown(amountSpinner, R.array.amounts);
         PaymentClient paymentClient = SampleContext.getInstance(getContext()).getPaymentClient();
-        Single.zip(paymentClient.getPaymentServices(), paymentClient.getSupportedTransactionTypes(),
-                (paymentServices, transactionTypes) -> {
-                    if (paymentServices.getAllPaymentServices().size() > 0) {
-                        allFieldsReady = true;
-                        dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(paymentServices.getAllSupportedCurrencies()), false);
-                        if (!transactionTypes.isEmpty()) {
-                            dropDownHelper.setupDropDown(transactionTypeSpinner, transactionTypes, false);
-                        }
-                    } else {
+
+        paymentClient.getPaymentSettings()
+                .subscribe(paymentSettings -> {
+                    List<String> flowTypes = paymentSettings.getFlowConfigurations().getFlowTypes(FlowConfig.REQUEST_CLASS_PAYMENT);
+                    if (paymentSettings.getPaymentFlowServices().getNumberOfFlowServices() == 0 || flowTypes.isEmpty()) {
                         handleNoPaymentServices();
+                        return;
                     }
-                    return Single.never();
-                })
-                .doOnError(throwable -> {
-                    if (throwable instanceof IllegalStateException) {
-                        Toast.makeText(getContext(), "FPS is not installed on the device", Toast.LENGTH_SHORT).show();
+                    this.paymentSettings = paymentSettings;
+                    allFieldsReady = true;
+                    dropDownHelper
+                            .setupDropDown(currencySpinner, new ArrayList<>(paymentSettings.getPaymentFlowServices().getAllSupportedCurrencies()),
+                                           false);
+                    dropDownHelper.setupDropDown(flowSpinner, flowTypes, false);
+                }, throwable -> {
+                    if (throwable instanceof FlowException) {
+                        FlowException flowException = (FlowException) throwable;
+                        Intent errorIntent = new Intent(getContext(), PaymentResultActivity.class);
+                        errorIntent.putExtra(PaymentResultActivity.ERROR_KEY, flowException.toJson());
+                        startActivity(errorIntent);
+                        getActivity().finish();
+                    } else {
+                        showErrorToast("Unrecoverable error occurred - see logs", throwable);
                     }
-                    handleNoPaymentServices();
-                })
-                .subscribe();
+                });
+    }
+
+    private void showErrorToast(String message, Throwable throwable) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Log.e(PaymentFragment.class.getSimpleName(), "Error", throwable);
+        getActivity().finish();
     }
 
     private void handleNoPaymentServices() {
         noPaymentServices.setVisibility(View.VISIBLE);
-        transactionTypeSpinner.setEnabled(false);
+        flowSpinner.setEnabled(false);
         currencySpinner.setEnabled(false);
         addBasketBox.setEnabled(false);
         amountSpinner.setEnabled(false);
@@ -131,7 +147,21 @@ public class PaymentFragment extends BaseObservableFragment {
         send.setEnabled(false);
     }
 
-    @OnItemSelected({R.id.transaction_type_spinner, R.id.currency_spinner, R.id.amounts_spinner})
+    @OnItemSelected({R.id.flow_spinner})
+    public void onFlowSpinnerSelection() {
+        if (allFieldsReady) {
+            // This will trigger an update to all fields as per below
+            String flowType = ((String) flowSpinner.getSelectedItem());
+            String flowName = paymentSettings.getFlowConfigurations().getFlowNamesForType(flowType).get(0);
+            PaymentFlowServices servicesForFlow = paymentSettings.getServicesForFlow(flowName);
+            if (servicesForFlow.getAllSupportedCurrencies().isEmpty()) {
+                servicesForFlow = paymentSettings.getPaymentFlowServices();
+            }
+            dropDownHelper.setupDropDown(currencySpinner, new ArrayList<>(servicesForFlow.getAllSupportedCurrencies()), false);
+        }
+    }
+
+    @OnItemSelected({R.id.currency_spinner, R.id.amounts_spinner})
     public void onSpinnerSelection() {
         if (allFieldsReady) {
             readAllFields();
@@ -144,32 +174,31 @@ public class PaymentFragment extends BaseObservableFragment {
     }
 
     private void readAllFields() {
-        paymentBuilder.withTransactionType(((String) transactionTypeSpinner.getSelectedItem()).toLowerCase());
+        String flowType = ((String) flowSpinner.getSelectedItem());
+        if (flowType == null) {
+            return; // Not ready yet
+        }
+        paymentBuilder.withPaymentFlow(flowType); // Note, for production, the overloaded method that also takes a flow name should be used!
         Amounts amounts;
         if (!addBasketBox.isChecked()) {
             amountSpinner.setEnabled(true);
             amounts = getManualAmounts();
-            paymentBuilder.getCurrentAdditionalData().removeData(AdditionalDataKeys.DATA_KEY_BASKET);
+            paymentBuilder.withBasket(null);
         } else {
             amountSpinner.setEnabled(false);
             Basket basket = createBasket();
-            paymentBuilder.addAdditionalData(AdditionalDataKeys.DATA_KEY_BASKET, basket);
+            paymentBuilder.withBasket(basket);
             amounts = new Amounts(basket.getTotalBasketValue(), (String) currencySpinner.getSelectedItem());
         }
         paymentBuilder.withAmounts(amounts);
 
-        if (splitBox.isChecked()) {
-            paymentBuilder.enableSplit();
-            addCardTokenBox.setEnabled(false);
-        } else {
-            paymentBuilder.overrideSplit(false);
-            addCardTokenBox.setEnabled(true);
-        }
+        paymentBuilder.withSplitEnabled(splitBox.isChecked());
+        addCardTokenBox.setEnabled(!splitBox.isChecked());
 
         if (addCustomerBox.isChecked()) {
-            paymentBuilder.addAdditionalData(AdditionalDataKeys.DATA_KEY_CUSTOMER, CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+            paymentBuilder.withCustomer(CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
         } else {
-            paymentBuilder.getCurrentAdditionalData().removeData(AdditionalDataKeys.DATA_KEY_CUSTOMER);
+            paymentBuilder.withCustomer(null);
         }
 
         if (addCardTokenBox.isChecked()) {
@@ -188,58 +217,83 @@ public class PaymentFragment extends BaseObservableFragment {
     private Amounts getManualAmounts() {
         String amountChoice = (String) amountSpinner.getSelectedItem();
         String[] amountValues = amountChoice.split(",");
-        long baseAmount = formattedAmountToLong(amountValues[0].trim());
-        Amounts amounts = new Amounts(baseAmount, (String) currencySpinner.getSelectedItem());
+        String currency = (String) currencySpinner.getSelectedItem();
+        long baseAmount = formattedAmountToLong(amountValues[0].trim(), currency);
+        Amounts amounts = new Amounts(baseAmount, currency);
         if (amountValues.length > 1) {
             for (int i = 1; i < amountValues.length; i++) {
                 String[] additionalAmount = amountValues[i].split(":");
-                amounts.addAdditionalAmount(additionalAmount[0].trim(), formattedAmountToLong(additionalAmount[1].trim()));
+                amounts.addAdditionalAmount(additionalAmount[0].trim(), formattedAmountToLong(additionalAmount[1].trim(), currency));
             }
         }
         return amounts;
     }
 
-    public static long formattedAmountToLong(String formattedAmount) {
-        return Math.round(new BigDecimal(formattedAmount).doubleValue() * 100);
+    // Different currencies have different unit fractions - see docs for more details
+    public static long formattedAmountToLong(String formattedAmount, String currencyCode) {
+        BigDecimal bd = new BigDecimal(formattedAmount);
+        int subUnitFraction = 2;
+        try {
+            Currency currency = Currency.getInstance(currencyCode);
+            subUnitFraction = currency.getDefaultFractionDigits();
+        } catch (Exception e) {
+            // Ignore
+        }
+        return bd.movePointRight(subUnitFraction).longValue();
     }
 
     private Basket createBasket() {
-        return new Basket(
-                // You can add single count items, with label, category and amount value
-                new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
-                new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
-                // You can also specify the initial count of the item and provide your own id
-                new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withCount(3).build());
+        return new Basket("sampleBasket",
+                          // You can add single count items, with label, category and amount value
+                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
+                          new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
+                          new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
+                          // You can also specify the initial count of the item and provide your own id
+                          new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2)
+                                  .build());
     }
 
     @OnClick(R.id.send)
     public void onSend() {
         PaymentClient paymentClient = PaymentApi.getPaymentClient(getContext());
-        final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        paymentClient.initiatePayment(paymentBuilder.build()).subscribe(response -> {
-            SampleContext.getInstance(getContext()).setLastReceivedPaymentResponse(response);
-            if (isAdded()) {
-                intent.putExtra(PaymentResultActivity.PAYMENT_RESPONSE_KEY, response.toJson());
-                startActivity(intent);
-            }
-        }, throwable -> {
-            if (throwable instanceof MessageException) {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, ((MessageException) throwable).toJson());
-            } else if (throwable instanceof IllegalStateException) {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", "FPS not installed").toJson());
+        // Responses come in via PaymentResponseListenerService, and will launch PaymentResultActivity from there
+        paymentClient.initiatePayment(paymentBuilder.build())
+                .subscribe(() -> {
+                    Log.i(PaymentFragment.class.getSimpleName(), "FPS accepted Payment request");
+                    getActivity().finish();
+                }, this::handleError);
+    }
+
+    private void handleError(Throwable throwable) {
+        if (throwable instanceof FlowException) {
+            FlowException flowException = (FlowException) throwable;
+            if (!flowException.getErrorCode().equals(PROCESSING_SERVICE_BUSY)) {
+                if (isAdded()) {
+                    final Intent intent = new Intent(getContext(), PaymentResultActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtra(PaymentResultActivity.ERROR_KEY, ((FlowException) throwable).toJson());
+                    startActivity(intent);
+                }
             } else {
-                intent.putExtra(PaymentResultActivity.ERROR_KEY, new MessageException("Error", throwable.getMessage()).toJson());
+                showErrorToast("Processing service busy", throwable);
             }
-            if (isAdded()) {
-                startActivity(intent);
-            }
-        });
+        } else {
+            showErrorToast("Unrecoverable error occurred - see logs", throwable);
+        }
     }
 
     public Payment getPayment() {
         return paymentBuilder.build();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (initiateDisposable != null) {
+            initiateDisposable.dispose();
+            initiateDisposable = null;
+        }
+    }
 }

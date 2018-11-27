@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 
 import android.content.Intent;
-
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.model.ApiFunction;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentInitiationActivity;
@@ -50,18 +49,14 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
             case SUBSCRIBE_EVENTS:
                 showPopup(FRAGMENT_SYSTEM_EVENTS);
                 break;
-            case SYSTEM_SETTINGS:
-                showPopup(FRAGMENT_SYSTEM_SETTINGS);
-                break;
-            case PAYMENT_SERVICES:
-                showPopup(FRAGMENT_PAYMENT_SERVICES);
-                break;
             case GENERIC_REQUEST:
                 Intent requestIntent = new Intent(getContext(), RequestInitiationActivity.class);
+                requestIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(requestIntent);
                 break;
             case INITIATE_PAYMENT:
                 Intent paymentIntent = new Intent(getContext(), PaymentInitiationActivity.class);
+                paymentIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(paymentIntent);
                 break;
         }
@@ -70,6 +65,7 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
     private void showPopup(String fragment) {
         Intent intent = new Intent(getContext(), PopupActivity.class);
         intent.putExtra(FRAGMENT_KEY, fragment);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 }

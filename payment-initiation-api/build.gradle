@@ -15,24 +15,13 @@ dependencies {
     api apiDependencies.jsonConverter
     api apiDependencies.archLifecycle
     api apiDependencies.archLifecycleJava8
-    implementation apiDependencies.posFlowConstants
 
-    testImplementation project(':payment-service-api') // So we have access to certain builders
+    testImplementation project(':payment-flow-service-api') // So we have access to certain builders
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
     testImplementation testDependencies.robolectric
-}
-
-javadoc {
-    source = sourceSets.main.allJava
-    destinationDir = file("../documentation/public/javadocs/payment-initiation-api")
-    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
-    exclude "**/**ClientImpl**"
-    exclude "**/BasePaymentModel**"
-    title = "Payment Initiation API"
-    options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
 buildConfig {

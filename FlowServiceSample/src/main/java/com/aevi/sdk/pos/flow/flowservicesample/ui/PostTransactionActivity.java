@@ -16,24 +16,21 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.service.BaseApiService;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
-import com.aevi.sdk.pos.flow.model.FlowResponse;
-import com.aevi.sdk.pos.flow.model.PaymentStage;
-import com.aevi.sdk.pos.flow.model.TransactionSummary;
-import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
-import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.aevi.sdk.flow.constants.FlowStages;
+import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.model.FlowResponse;
+import com.aevi.sdk.pos.flow.model.TransactionSummary;
+import com.aevi.sdk.pos.flow.sample.ui.BaseSampleAppCompatActivity;
+import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
+import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
+import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
-public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowResponse> {
+public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 
-    private FlowResponse flowResponse;
-    private TransactionSummary transactionSummary;
+    private PostTransactionModel postTransactionModel;
     private ModelDisplay modelDisplay;
 
     @BindView(R.id.toolbar)
@@ -44,9 +41,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_txn);
         ButterKnife.bind(this);
-        flowResponse = new FlowResponse();
-        registerForActivityEvents();
-        transactionSummary = TransactionSummary.fromJson(getIntent().getStringExtra(BaseApiService.ACTIVITY_REQUEST_KEY));
+        postTransactionModel = PostTransactionModel.fromActivity(this);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
@@ -57,20 +52,19 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay.showTransactionSummary(transactionSummary);
+        modelDisplay.showTransactionSummary(postTransactionModel.getTransactionSummary());
     }
 
     @OnClick(R.id.add_payment_references)
     public void onAddPaymentReferences() {
-        AdditionalData paymentRefs = new AdditionalData();
-        paymentRefs.addData("someReference", "addedByPostPaymentSample");
-        flowResponse.setPaymentReferences(paymentRefs);
+        postTransactionModel.addReferences("someReference", "addedByPostPaymentSample");
         findViewById(R.id.add_payment_references).setEnabled(false);
     }
 
     @OnClick(R.id.send_response)
     public void onFinish() {
-        sendResponseAndFinish(flowResponse);
+        postTransactionModel.sendResponse();
+        finish();
     }
 
     @Override
@@ -85,7 +79,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
 
     @Override
     protected String getCurrentStage() {
-        return PaymentStage.POST_TRANSACTION.name();
+        return FlowStages.POST_TRANSACTION;
     }
 
     @Override
@@ -100,12 +94,12 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity<FlowRes
 
     @Override
     protected String getModelJson() {
-        return flowResponse.toJson();
+        return StageModelHelper.getFlowResponse(postTransactionModel).toJson();
     }
 
     @Override
     protected String getRequestJson() {
-        return transactionSummary.toJson();
+        return postTransactionModel.getTransactionSummary().toJson();
     }
 
     @Override

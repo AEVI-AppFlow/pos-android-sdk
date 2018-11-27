@@ -16,7 +16,6 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -24,6 +23,8 @@ import com.aevi.util.json.Jsonable;
  * Token that can be used to identify an entity, typically a customer.
  *
  * How the value is generated is bespoke to the application that fulfilled the request.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-card-tokens" target="_blank">Token Docs</a>
  */
 public class Token implements Jsonable {
 
@@ -110,14 +111,24 @@ public class Token implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Token token = (Token) o;
 
-        if (value != null ? !value.equals(token.value) : token.value != null) return false;
-        if (source != null ? !source.equals(token.source) : token.source != null) return false;
-        if (algorithm != null ? !algorithm.equals(token.algorithm) : token.algorithm != null) return false;
+        if (value != null ? !value.equals(token.value) : token.value != null) {
+            return false;
+        }
+        if (source != null ? !source.equals(token.source) : token.source != null) {
+            return false;
+        }
+        if (algorithm != null ? !algorithm.equals(token.algorithm) : token.algorithm != null) {
+            return false;
+        }
         return sourceAppId != null ? sourceAppId.equals(token.sourceAppId) : token.sourceAppId == null;
     }
 

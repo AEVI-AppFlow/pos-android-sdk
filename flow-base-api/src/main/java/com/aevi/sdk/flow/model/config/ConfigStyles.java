@@ -14,6 +14,7 @@
 
 package com.aevi.sdk.flow.model.config;
 
+import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -21,33 +22,70 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Config styling model.
+ * Config styling model allowing a configuration provider to style FPS.
  */
 public class ConfigStyles implements Jsonable {
 
     private final Map<String, Integer> colors = new HashMap<>();
     private final Map<String, String> styles = new HashMap<>();
 
+    /**
+     * Check whether a color with the provided key is set.
+     *
+     * @param colorKey The key for the color
+     * @return True if set, false otherwise
+     */
     public boolean hasColor(String colorKey) {
         return colors.containsKey(colorKey);
     }
 
+    /**
+     * Get the color with the provided key.
+     *
+     * @param colorKey The key for the color
+     * @return The color
+     */
     public int getColor(String colorKey) {
         return colors.get(colorKey);
     }
 
+    /**
+     * Set a color with associated key.
+     *
+     * @param colorKey The key for the color
+     * @param color    The color value
+     */
     public void setColor(String colorKey, int color) {
         colors.put(colorKey, color);
     }
 
+    /**
+     * Get the style with the provided key.
+     *
+     * @param styleKey The key for the style
+     * @return The style value
+     */
+    @Nullable
     public String getStyle(String styleKey) {
         return styles.get(styleKey);
     }
 
+    /**
+     * Set a style with associated key.
+     *
+     * @param styleKey The key of the style
+     * @param style    The style value
+     */
     public void setStyle(String styleKey, String style) {
         styles.put(styleKey, style);
     }
 
+    /**
+     * Check whether a style with the provided key is set.
+     *
+     * @param styleKey The key of the style
+     * @return True if set, false otherwise
+     */
     public boolean hasStyle(String styleKey) {
         return styles.containsKey(styleKey);
     }

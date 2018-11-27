@@ -15,10 +15,12 @@
 package com.aevi.sdk.pos.flow.model;
 
 
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.pos.flow.PaymentClient;
+import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
@@ -27,39 +29,75 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  */
 public class PaymentBuilder {
 
-    public static final String AEVI_POS_FLOW = "AEVI POS Flow";
+    public static final String AEVI_APPFLOW = "AEVI AppFlow";
 
-    private String type;
+    private String flowType;
+    private String flowName;
     private Amounts amounts;
+    private Basket basket;
+    private Customer customer;
     private boolean splitEnabled;
     private Token cardToken;
     private AdditionalData additionalData = new AdditionalData();
-    private String source = AEVI_POS_FLOW;
+    private String source = AEVI_APPFLOW;
+    private String deviceId;
 
     public PaymentBuilder() {
     }
 
     public PaymentBuilder(Payment paymentToCopyFrom) {
-        type = paymentToCopyFrom.getTransactionType();
+        flowType = paymentToCopyFrom.getFlowType();
+        flowName = paymentToCopyFrom.getFlowName();
         amounts = paymentToCopyFrom.getAmounts();
+        basket = paymentToCopyFrom.getBasket();
+        customer = paymentToCopyFrom.getCustomer();
         splitEnabled = paymentToCopyFrom.isSplitEnabled();
         cardToken = paymentToCopyFrom.getCardToken();
         additionalData = paymentToCopyFrom.getAdditionalData();
         source = paymentToCopyFrom.getSource();
+        deviceId = paymentToCopyFrom.getDeviceId();
     }
 
     /**
-     * Set the transaction type.
+     * Set what flow to use based on flow type.
      *
-     * See online documentation for more information.
+     * As AppFlow supports multiple flows per type, assigning a flow based on type only may lead to a runtime selection dialog for the merchant.
      *
-     * This parameter is mandatory.
+     * Ideally, for any production scenarios, use {@link #withPaymentFlow(String, String)} to specify the name of the flow as well to ensure
+     * a good experience for the merchant. See docs for more clarification on this.
      *
-     * @param type The transaction type
+     * The flow will determine what stages the payment goes through and what applications get called.
+     *
+     * See {@link PaymentSettings} for retrieving flow information.
+     *
+     * @param flowType The flow type
      * @return This builder
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
-    public PaymentBuilder withTransactionType(String type) {
-        this.type = type;
+    @NonNull
+    public PaymentBuilder withPaymentFlow(String flowType) {
+        this.flowType = flowType;
+        return this;
+    }
+
+    /**
+     * Set what flow to use based on flow type and name.
+     *
+     * This ensures that the intended flow is used in the case of multiple flows for the provided type.
+     *
+     * The flow will determine what stages the payment goes through and what applications get called.
+     *
+     * See {@link PaymentSettings} for retrieving flow information.
+     *
+     * @param flowType The flow type
+     * @param flowName The name of the flow to use
+     * @return This builder
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
+     */
+    @NonNull
+    public PaymentBuilder withPaymentFlow(String flowType, String flowName) {
+        this.flowType = flowType;
+        this.flowName = flowName;
         return this;
     }
 
@@ -71,33 +109,54 @@ public class PaymentBuilder {
      * @param amounts The amounts.
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withAmounts(Amounts amounts) {
         this.amounts = amounts;
         return this;
     }
 
     /**
-     * Enable split for this payment which means it *may* be broken up into multiple sub-payments.
+     * Add a basket for this payment.
      *
-     * It is up to the flow processing service configuration if split is allowed or not. Use {@link PaymentClient#getSystemSettings()} to check
-     * whether it is allowed. See documentation/samples for how to retrieve the value.
+     * Note that {@link #withAmounts(Amounts)} must be called to reflect the value of the basket. This API and the flow processing service do not
+     * take the basket data into account for any processing.
      *
-     * If this is not called, it is still possible that split will be enabled during the payment flow.
-     *
+     * @param basket The basket
      * @return This builder
      */
-    public PaymentBuilder enableSplit() {
-        this.splitEnabled = true;
+    @NonNull
+    public PaymentBuilder withBasket(Basket basket) {
+        this.basket = basket;
         return this;
     }
 
     /**
-     * Explicitly set split enabled value.
+     * Add customer details for this payment.
+     *
+     * Note that this should not be set for a split payment.
+     *
+     * @param customer Customer details
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withCustomer(Customer customer) {
+        this.customer = customer;
+        return this;
+    }
+
+    /**
+     * Set split enabled for this payment which means it *may* be broken up into multiple sub-payments.
+     *
+     * It is up to the flow processing service configuration if split is enabled or not. Use {@link PaymentClient#getPaymentSettings()} to get
+     * list of flow configurations and check for defined stages
+     *
+     * If this is not called, it is still possible that split will be enabled during the payment flow.
      *
      * @param enabled True to enable split, false to disable
      * @return This builder
      */
-    public PaymentBuilder overrideSplit(boolean enabled) {
+    @NonNull
+    public PaymentBuilder withSplitEnabled(boolean enabled) {
         this.splitEnabled = enabled;
         return this;
     }
@@ -108,6 +167,7 @@ public class PaymentBuilder {
      * @param cardToken The card {@link Token}
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder withCardToken(Token cardToken) {
         this.cardToken = cardToken;
         return this;
@@ -123,6 +183,7 @@ public class PaymentBuilder {
      * @param <T>    The type of object this data is an array of
      * @return This builder
      */
+    @NonNull
     public <T> PaymentBuilder addAdditionalData(String key, T... values) {
         additionalData.addData(key, values);
         return this;
@@ -134,6 +195,7 @@ public class PaymentBuilder {
      * @param additionalData The additional data
      * @return This builder
      */
+    @NonNull
     public PaymentBuilder addAdditionalData(AdditionalData additionalData) {
         this.additionalData = additionalData;
         return this;
@@ -144,8 +206,21 @@ public class PaymentBuilder {
      *
      * @return The additional data
      */
+    @NonNull
     public AdditionalData getCurrentAdditionalData() {
         return additionalData;
+    }
+
+    /**
+     * Set the id of the device this payment should be processed on.
+     *
+     * @param deviceId The id of the device to process this payment on
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+        return this;
     }
 
     /**
@@ -154,18 +229,16 @@ public class PaymentBuilder {
      * @return An instance of {@link Payment}
      * @throws IllegalArgumentException for invalid data or combinations of data
      */
+    @NonNull
     public Payment build() {
-        checkArgument(type != null, "Transaction type must be set");
+        checkArgument(flowType != null, "Flow type must be set");
         checkArgument(amounts != null, "Amounts must be set");
         if (cardToken != null && splitEnabled) {
             throw new IllegalArgumentException("Card token can not be set for a split payment as token relates to only one customer");
         }
-        if (additionalData.hasData(AdditionalDataKeys.DATA_KEY_BASKET)) {
-            Basket basket = additionalData.getValue(AdditionalDataKeys.DATA_KEY_BASKET, Basket.class);
-            if (basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
-                throw new IllegalArgumentException("Basket total value must match the request amount base value!");
-            }
+        if (basket != null && basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
+            throw new IllegalArgumentException("The basket total value must match base amounts value");
         }
-        return new Payment(type, amounts, splitEnabled, cardToken, additionalData, source);
+        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
     }
 }

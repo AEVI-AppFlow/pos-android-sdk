@@ -16,12 +16,9 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.aevi.sdk.flow.constants.CustomerDataKeys;
 import com.aevi.util.json.JsonConverter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -138,14 +135,24 @@ public class Customer extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Customer customer = (Customer) o;
 
-        if (fullName != null ? !fullName.equals(customer.fullName) : customer.fullName != null) return false;
-        if (customerDetails != null ? !customerDetails.equals(customer.customerDetails) : customer.customerDetails != null) return false;
+        if (fullName != null ? !fullName.equals(customer.fullName) : customer.fullName != null) {
+            return false;
+        }
+        if (customerDetails != null ? !customerDetails.equals(customer.customerDetails) : customer.customerDetails != null) {
+            return false;
+        }
         return tokens != null ? tokens.equals(customer.tokens) : customer.tokens == null;
     }
 
@@ -167,24 +174,6 @@ public class Customer extends BaseModel {
 
     public static Customer fromJson(String json) {
         return JsonConverter.deserialize(json, Customer.class);
-    }
-
-    /**
-     * Construct a full customer name from the option fields "firstName", "middleNames" and "surname" provided in the Customer details and
-     * then set the fullName field to the result.
-     *
-     * Example - "John", ["Steve"], "Doe" is set as "John Steve Doe".
-     *
-     * First name at a minimum is mandatory.
-     *
-     * @param customer Customer instance
-     */
-    public static void setFullNameFromCustomerDetails(Customer customer) {
-        String firstName = customer.getCustomerDetails().getValue(CustomerDataKeys.FIRST_NAME, String.class);
-        String surname = customer.getCustomerDetails().getValue(CustomerDataKeys.SURNAME, String.class);
-        String[] middleNames = customer.getCustomerDetails().getValue(CustomerDataKeys.MIDDLE_NAMES, String[].class);
-
-        customer.setFullName(constructFullName(firstName, middleNames, surname));
     }
 
     /**
@@ -220,41 +209,12 @@ public class Customer extends BaseModel {
         return nameBuilder.toString();
     }
 
-    /**
-     * Construct a Customer instance from the provided details.
-     *
-     * Throws IllegalArgumentException for invalid input.
-     *
-     * @param id       The id of the customer
-     * @param fullName The full name (as constructed by {@link #constructFullName(String, String[], String)} )
-     * @param tokens   The list of tokens to assign to the customer
-     * @return The Customer instance.
-     */
-    public static Customer fromFullNameAndToken(String id, String fullName, Token... tokens) {
-        String[] names = fullName.split(" ");
-        if (fullName.isEmpty() || names.length == 0) {
-            throw new IllegalArgumentException("Full name must contain a first name at a minimum");
-        }
-        if (tokens.length == 0) {
-            throw new IllegalArgumentException("Must specify at least one token");
-        }
-
-        Customer customer = new Customer(id);
-        customer.setFullName(fullName);
-        AdditionalData customerDetails = customer.getCustomerDetails();
-        customerDetails.addData(CustomerDataKeys.FIRST_NAME, names[0]);
-
-        if (names.length > 1) {
-            customerDetails.addData(CustomerDataKeys.SURNAME, names[names.length - 1]);
-        }
-
-        if (names.length > 2) {
-            String[] middleNames = new String[names.length - 2];
-            System.arraycopy(names, 1, middleNames, 0, middleNames.length);
-            customerDetails.addData(CustomerDataKeys.MIDDLE_NAMES, middleNames);
-        }
-
-        customer.getTokens().addAll(Arrays.asList(tokens));
-        return customer;
+    public static Customer clone(Customer customer) {
+        Customer newCustomer = new Customer(customer.getId());
+        newCustomer.setFullName(customer.getFullName());
+        newCustomer.getTokens().addAll(customer.getTokens());
+        newCustomer.getCustomerDetails().addData(customer.getCustomerDetails(), true);
+        return newCustomer;
     }
+
 }

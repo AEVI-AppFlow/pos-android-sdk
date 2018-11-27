@@ -19,18 +19,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.R;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
-
-import static com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment.*;
+import static com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment.createCommonTransactionResponseInfo;
+import static com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment.getStringPair;
 
 public class TransactionSection extends StatelessSection {
 
@@ -45,7 +44,7 @@ public class TransactionSection extends StatelessSection {
 
     public TransactionSection(Context context, List<Pair<String, String>> overviewInfo, List<TransactionResponse> transactionResponses, int index) {
         super(SectionParameters.builder().itemResourceId(R.layout.snippet_list_item)
-                .headerResourceId(R.layout.snippet_list_header).build());
+                      .headerResourceId(R.layout.snippet_list_header).build());
         this.context = context;
         this.overviewInfo = overviewInfo;
         this.transactionResponses = transactionResponses;
@@ -60,8 +59,8 @@ public class TransactionSection extends StatelessSection {
             List<Pair<String, String>> responseInfo = createCommonTransactionResponseInfo(context, transactionResponse);
             if (transactionResponse.getAmountsProcessed() != null) {
                 responseInfo.add(getStringPair(context, R.string.total_amount_processed,
-                        AmountFormatter.formatAmount(transactionResponse.getAmountsProcessed().getCurrency(),
-                                transactionResponse.getAmountsProcessed().getTotalAmountValue())));
+                                               AmountFormatter.formatAmount(transactionResponse.getAmountsProcessed().getCurrency(),
+                                                                            transactionResponse.getAmountsProcessed().getTotalAmountValue())));
                 responseInfo.add(getStringPair(context, R.string.payment_method, transactionResponse.getPaymentMethod()));
             } else {
                 responseInfo.add(getStringPair(context, R.string.total_amount_processed, 0));

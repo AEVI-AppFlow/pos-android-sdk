@@ -15,9 +15,8 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
-
-import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.ui.library.recycler.LabelsListAdapter;
 
@@ -41,7 +40,7 @@ public class PaymentResponseAdapter extends LabelsListAdapter {
             case R.string.transaction_type:
                 long total = response.getOriginatingPayment().getAmounts().getTotalAmountValue();
                 value = AmountFormatter.formatAmount(response.getOriginatingPayment().getAmounts().getCurrency(), total);
-                holder.label.setText(getFriendlyTypeName(response.getOriginatingPayment().getTransactionType()));
+                holder.label.setText(getFriendlyTypeName(response.getOriginatingPayment().getFlowType()));
                 break;
             case R.string.overall_status:
                 value = getYesNo(response.isAllTransactionsApproved());

@@ -20,11 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import butterknife.BindView;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.ui.library.views.JsonPrettyView;
-
-import butterknife.BindView;
 
 public class JsonDisplayFragment extends BaseFragment {
 

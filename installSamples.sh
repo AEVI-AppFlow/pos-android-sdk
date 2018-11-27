@@ -1,3 +1,4 @@
-./gradlew :PaymentServiceSample:installDebug
-./gradlew :FlowServiceSample:installDebug
-./gradlew :PaymentInitiationSample:installDebug
+./gradlew :PaymentServiceSample:installRelease
+./gradlew :FlowServiceSample:installRelease
+./gradlew :PaymentInitiationSample:installRelease
+

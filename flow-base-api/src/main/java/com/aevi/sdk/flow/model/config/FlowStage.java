@@ -16,58 +16,118 @@
 package com.aevi.sdk.flow.model.config;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a flow stage in a flow configuration.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-stages" target="_blank">Flow Stages Docs</a>
  */
 public class FlowStage {
 
     private final String name;
-    private final FlowAppType flowAppType;
+    private final AppExecutionType appExecutionType;
     private List<FlowApp> flowApps;
-
     private FlowConfig innerFlow;
 
+    /**
+     * Initialise with default values.
+     */
     public FlowStage() {
-        this("", FlowAppType.NONE);
+        this("", AppExecutionType.NONE);
     }
 
-    public FlowStage(String name, FlowAppType flowAppType) {
-        this(name, flowAppType, null);
+    /**
+     * Initialise with name and execution type.
+     *
+     * @param name             The stage name
+     * @param appExecutionType The stage app execution type
+     */
+    public FlowStage(String name, AppExecutionType appExecutionType) {
+        this(name, appExecutionType, null);
     }
 
-    public FlowStage(String name, FlowAppType flowAppType, List<FlowApp> flowApps) {
+    /**
+     * Initialise with name and execution type.
+     *
+     * @param name             The stage name
+     * @param appExecutionType The stage app execution type
+     * @param flowApps         The stage applications
+     */
+    public FlowStage(String name, AppExecutionType appExecutionType, List<FlowApp> flowApps) {
         this.name = name;
-        this.flowAppType = flowAppType;
+        this.appExecutionType = appExecutionType;
         this.flowApps = flowApps != null ? flowApps : new ArrayList<FlowApp>();
     }
 
+    /**
+     * Get the name of the stage
+     *
+     * @return The name of the stage
+     */
+    @NonNull
     public String getName() {
         return name;
     }
 
-    public FlowAppType getFlowAppType() {
-        return flowAppType;
+    /**
+     * Get the app execution type for the stage
+     *
+     * @return The app execution type for the stage
+     */
+    @NonNull
+    public AppExecutionType getAppExecutionType() {
+        return appExecutionType;
     }
 
+    /**
+     * Check whether the stage has an inner flow.
+     *
+     * @return True if inner flow, false otherwise
+     */
     public boolean hasInnerFlow() {
         return innerFlow != null;
     }
 
+    /**
+     * Get the inner flow for this stage.
+     *
+     * @return The inner flow
+     */
+    @Nullable
     public FlowConfig getInnerFlow() {
         return innerFlow;
     }
 
-    public void setInnerRequestType(FlowConfig innerFlow) {
+    /**
+     * Set the inner flow for this stage.
+     *
+     * @param innerFlow The inner flow
+     */
+    public void setInnerFlow(FlowConfig innerFlow) {
         this.innerFlow = innerFlow;
     }
 
+    /**
+     * Get the flow apps defined for this stage.
+     *
+     * @return The flow apps defined for this stage
+     */
+    @NonNull
     public List<FlowApp> getFlowApps() {
         return flowApps;
     }
 
+    /**
+     * Set the flow apps defined for this stage.
+     *
+     * @param flowApps The flow apps defined for this stage
+     */
     public void setFlowApps(List<FlowApp> flowApps) {
         if (flowApps != null) {
             this.flowApps = flowApps;
@@ -82,14 +142,16 @@ public class FlowStage {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        FlowStage that = (FlowStage) o;
-
-        return name != null ? name.equals(that.name) : that.name == null;
+        FlowStage flowStage = (FlowStage) o;
+        return Objects.equals(name, flowStage.name) &&
+                appExecutionType == flowStage.appExecutionType &&
+                Objects.equals(flowApps, flowStage.flowApps) &&
+                Objects.equals(innerFlow, flowStage.innerFlow);
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+
+        return Objects.hash(name, appExecutionType, flowApps, innerFlow);
     }
 }

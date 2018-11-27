@@ -14,6 +14,8 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * Amount represented by a value in its subunit form (such as cents or pence) and currency (ISO 4217).
  */
@@ -51,6 +53,7 @@ public class Amount {
      *
      * @return The The ISO-4217 currency code
      */
+    @NonNull
     public String getCurrency() {
         return currency;
     }

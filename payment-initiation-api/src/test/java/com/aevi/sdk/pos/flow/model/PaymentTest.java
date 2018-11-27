@@ -2,19 +2,9 @@ package com.aevi.sdk.pos.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 import com.google.gson.JsonParseException;
-import com.google.gson.stream.MalformedJsonException;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_ENTRY_METHODS;
-import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_NETWORKS;
-import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_INSERT;
-import static com.aevi.sdk.flow.constants.CardEntryMethods.CARD_ENTRY_METHOD_SWIPE;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_AMEX;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_DINERS;
-import static com.aevi.sdk.flow.constants.CardNetworks.CARD_NETWORK_GIFT;
-import static com.aevi.sdk.flow.constants.TransactionTypes.SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PaymentTest {
@@ -23,42 +13,24 @@ public class PaymentTest {
 
     @Before
     public void setup() {
-        defaultPayment = getValidRequest(1000, "GBP", SALE);
+        defaultPayment = getValidRequest(1000, "GBP", "sale");
     }
 
     @Test
     public void canBuildValidRequest() {
-        Payment payment = getValidRequest(1000, "GBP", SALE);
+        Payment payment = getValidRequest(1000, "GBP", "sale");
 
-        assertValues(payment, 1000, "GBP", SALE);
+        assertValues(payment, 1000, "GBP", "sale");
     }
 
     @Test
     public void canSerialiseAndDeserialize() {
-        Payment payment = getValidRequest(1000, "GBP", SALE);
+        Payment payment = getValidRequest(1000, "GBP", "sale");
 
         Payment result = Payment.fromJson(payment.toJson());
 
-        assertValues(result, 1000, "GBP", SALE);
+        assertValues(result, 1000, "GBP", "sale");
         assertThat(payment).isEqualTo(result);
-    }
-
-    @Test
-    public void canSetCardEntryMethods() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
-
-        Payment result = toFromJson(defaultPayment);
-
-        assertArrayOfOptions(result, CARD_ENTRY_METHODS, CARD_ENTRY_METHOD_INSERT, CARD_ENTRY_METHOD_SWIPE);
-    }
-
-    @Test
-    public void canSetCardNetworks() throws MalformedJsonException {
-        setupArrayOfOptions(defaultPayment, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
-
-        Payment result = toFromJson(defaultPayment);
-
-        assertArrayOfOptions(result, CARD_NETWORKS, CARD_NETWORK_AMEX, CARD_NETWORK_DINERS, CARD_NETWORK_GIFT);
     }
 
     @Test(expected = JsonParseException.class)
@@ -72,9 +44,9 @@ public class PaymentTest {
 
     private void assertValues(Payment payment, long amount, String currency, String type) {
         assertThat(payment).isNotNull();
-        assertThat(payment.getAmounts()).isEqualTo(new com.aevi.sdk.pos.flow.model.Amounts(amount, currency));
+        assertThat(payment.getAmounts()).isEqualTo(new Amounts(amount, currency));
         assertThat(payment.getAmounts().getCurrency()).isEqualTo(currency);
-        assertThat(payment.getTransactionType()).isEqualTo(type);
+        assertThat(payment.getFlowType()).isEqualTo(type);
     }
 
     private void assertArrayOfOptions(Payment result, String key, String... types) {
@@ -89,6 +61,6 @@ public class PaymentTest {
     }
 
     private Payment getValidRequest(long amount, String currency, String type) {
-        return new PaymentBuilder().withTransactionType(type).withAmounts(new Amounts(amount, currency)).build();
+        return new PaymentBuilder().withPaymentFlow(type).withAmounts(new Amounts(amount, currency)).build();
     }
 }

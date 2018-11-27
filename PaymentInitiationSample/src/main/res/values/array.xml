@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="request_types">
+    <string-array name="request_flows">
         <item>tokenisation</item>
         <item>reversal</item>
+        <item>receiptDelivery</item>
         <item>showLoyaltyPointsBalance</item>
-        <item>cashReceiptDelivery</item>
-        <item>receiptRedelivery</item>
-        <item>responseRedelivery</item>
+        <item>basketStatusUpdate</item>
     </string-array>
 
-    <string-array name="transaction_types">
-        <item>sale</item>
+    <string-array name="receipt_flows">
+        <item>@string/receipts_cash</item>
+        <item>@string/receipts_redeliver</item>
     </string-array>
 
     <string-array name="amounts">
@@ -19,6 +19,7 @@
         <item>10.00, tip: 5.00</item>
         <item>10.00, cashback: 5.00</item>
         <item>10.00, tip: 5.00, cashback: 2.50</item>
+        <item>0.00</item>
     </string-array>
 
     <array name="fragment_tabs">

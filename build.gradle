@@ -1,4 +1,5 @@
-version = "1.1.7"
+version = "2.0.0"
+ext.sampleVersionCode = 2000000 // semver based, MMmmppbb (major minor patch build) without leading 0 for MM
 
 buildscript {
     repositories {
@@ -9,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
     }
@@ -19,7 +20,7 @@ allprojects {
 
     project.ext {
         apiVersion = rootProject.version
-        sampleVersionCode = 8
+        sampleVersionCode = rootProject.sampleVersionCode
     }
 
     repositories {
@@ -66,26 +67,27 @@ task clean(type: Delete) {
 
 task copyApiLibs(type: Copy) {
     from 'payment-initiation-api/build/libs'
-    from 'payment-service-api/build/libs'
-    from 'flow-service-api/build/libs'
+    from 'payment-flow-service-api/build/libs'
     into 'artifacts/libs'
-}
-
-task copyApks(type: Copy) {
-    from 'PaymentInitiationSample/build/outputs/apk/debug'
-    from 'PaymentServiceSample/build/outputs/apk/debug'
-    from 'FlowServiceSample/build/outputs/apk/debug'
-    exclude 'output.json'
-    into 'artifacts/samples'
 }
 
 apply from: 'dependencies.gradle'
 
 def exportedProjects = [
         ":flow-base-api",
-        ":flow-service-api",
+        ":payment-flow-service-api",
+        ":payment-initiation-api"
+]
+
+def baseAndFlowService = [
+        ":flow-base-api",
         ":payment-initiation-api",
-        ":payment-service-api"
+        ":payment-flow-service-api"
+]
+
+def baseAndInitiation = [
+        ":flow-base-api",
+        ":payment-initiation-api"
 ]
 
 configure(subprojects.findAll {
@@ -96,10 +98,48 @@ configure(subprojects.findAll {
     apply plugin: 'idea'
 }
 
-task alljavadoc(type: Javadoc) {
-    source exportedProjects.collect { project(it).sourceSets.main.allJava }
-    classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
-    destinationDir = file('documentation/public/javadocs/merged')
+task mergeBaseAndFlowServiceDocs(type: Javadoc) {
+    source baseAndFlowService.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndFlowService.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndFlowService.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
+    title = "Payment Flow Service API"
+    exclude "**/BaseApiClient**"
+    exclude "**/PaymentClient**"
+    exclude "**/PaymentApi**"
+    exclude "**/BaseListenerService**"
+    exclude "**/config/**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task mergeBaseAndInitiationDocs(type: Javadoc) {
+    source baseAndInitiation.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndInitiation.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndInitiation.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-initiation-api')
+    title = "Payment Initiation API"
+    exclude "**/**ClientImpl**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BasePostGenericService**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BaseListenerService**"
+    exclude "**/**StageModel**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task javadocs(dependsOn: [mergeBaseAndFlowServiceDocs, mergeBaseAndInitiationDocs]) {
 }
 
 apply from: 'dist.gradle'

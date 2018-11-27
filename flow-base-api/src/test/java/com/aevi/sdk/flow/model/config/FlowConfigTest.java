@@ -1,7 +1,6 @@
 package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,12 +16,7 @@ public class FlowConfigTest {
 
     @Before
     public void setup() {
-        flowConfig = new FlowConfig("river", null);
-    }
-
-    @Test
-    public void canGetType() {
-        assertThat(flowConfig.getType()).isEqualTo("river");
+        flowConfig = new FlowConfig("blarp", "river", 1, 2, "yes", null, null);
     }
 
     @Test
@@ -40,7 +34,7 @@ public class FlowConfigTest {
         Set<String> stages = flowConfig.getAllStageNames();
         assertThat(stages).isNotNull();
         assertThat(stages).hasSize(2);
-        assertThat(stages).contains("cauliflower", "carrot");
+        assertThat(stages).contains("CAULIFLOWER", "CARROT");
     }
 
     @Test

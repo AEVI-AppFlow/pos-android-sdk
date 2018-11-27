@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion projectTargetSdkVersion
-    buildToolsVersion "${androidBuildVersion}"
 
     defaultConfig {
         minSdkVersion projectMinSdkVersion
@@ -34,7 +33,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api sampleDependencies.posFlowConstants
+    api sampleDependencies.appFlowConstants
 
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }
@@ -43,8 +42,7 @@ dependencies {
     implementation(sampleDependencies.design) { force = true }
 
     implementation project(':payment-initiation-api')
-    implementation project(':payment-service-api')
-    implementation project(':flow-service-api')
+    implementation project(':payment-flow-service-api')
     implementation sampleDependencies.aeviUiLibrary
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
 

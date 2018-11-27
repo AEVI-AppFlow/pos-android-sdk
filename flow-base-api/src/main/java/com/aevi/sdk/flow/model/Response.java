@@ -17,13 +17,14 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
 
 /**
  * Response to a generic {@link Request} that contains the outcome and bespoke response data for that request type.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request/Response Docs</a>
  */
 public class Response extends BaseModel {
 
@@ -31,6 +32,8 @@ public class Response extends BaseModel {
     private final boolean success;
     private final String outcomeMessage;
     private final AdditionalData responseData;
+    private String flowServiceId;
+    private boolean processedInBackground;
 
     // Default constructor for deserialisation
     Response() {
@@ -76,8 +79,8 @@ public class Response extends BaseModel {
     public Response(String requestId, boolean success, String outcomeMessage, AdditionalData responseData) {
         super(requestId);
         this.success = success;
-        this.outcomeMessage = outcomeMessage;
-        this.responseData = responseData;
+        this.outcomeMessage = outcomeMessage != null ? outcomeMessage : "";
+        this.responseData = responseData != null ? responseData : new AdditionalData();
     }
 
     /**
@@ -143,6 +146,45 @@ public class Response extends BaseModel {
         this.originatingRequest = originatingRequest;
     }
 
+    /**
+     * Get the id of the service that handled this request, if any,
+     *
+     * This will be null if there was no app that could handle the request or an error occurred.
+     *
+     * @return The flow service if
+     */
+    @Nullable
+    public String getFlowServiceId() {
+        return flowServiceId;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param flowServiceId The flow service id
+     */
+    public void setFlowServiceId(String flowServiceId) {
+        this.flowServiceId = flowServiceId;
+    }
+
+    /**
+     * Check whether the request was processed as a background flow or not.
+     *
+     * @return True if processed in the background
+     */
+    public boolean wasProcessedInBackground() {
+        return processedInBackground;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param processedInBackground Processed in background
+     */
+    public void setProcessedInBackground(boolean processedInBackground) {
+        this.processedInBackground = processedInBackground;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -160,9 +202,15 @@ public class Response extends BaseModel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Response response = (Response) o;
         return success == response.success &&
                 Objects.equals(originatingRequest, response.originatingRequest) &&

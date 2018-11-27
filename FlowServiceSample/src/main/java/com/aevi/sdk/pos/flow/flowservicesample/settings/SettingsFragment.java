@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
-
 import com.aevi.sdk.pos.flow.flowservicesample.R;
 
 import java.util.Arrays;
@@ -52,12 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
         Preference pref = getPreferenceScreen().findPreference(key);
-        if (pref instanceof SwitchPreference) {
-            boolean enabled = ((SwitchPreference) pref).isChecked();
-            ServiceStateHandler.enableDisableService(getActivity(), key, enabled);
-        }
         setSummary(pref);
     }
 

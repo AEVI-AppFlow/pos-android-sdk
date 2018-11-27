@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.TextView;
-
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.pos.flow.model.*;
@@ -77,8 +76,8 @@ public class ModelDetailsActivity extends AppCompatActivity {
             modelDisplay.showResponse(Response.fromJson(data));
         } else if (modelType.equals(Request.class.getName())) {
             modelDisplay.showRequest(Request.fromJson(data));
-        } else if (modelType.equals(CardResponse.class.getName())) {
-            modelDisplay.showCardResponse(JsonConverter.deserialize(data, CardResponse.class));
+        } else if (modelType.equals(Card.class.getName())) {
+            modelDisplay.showCard(JsonConverter.deserialize(data, Card.class));
         } else if (modelType.equals(TransactionResponse.class.getName())) {
             modelDisplay.showTransactionResponse(TransactionResponse.fromJson(data));
         } else if (modelType.equals(FlowResponse.class.getName())) {

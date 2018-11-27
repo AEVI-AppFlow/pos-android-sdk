@@ -18,7 +18,6 @@ package com.aevi.sdk.flow.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonOption;
 import com.aevi.util.json.Jsonable;
@@ -37,6 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * See the wiki documentation (Reference Values section) for further information.
  *
  * Data is stored with a string based key and any arbitrary object as the value.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additionaldata-howto" target="_blank">AdditionalData Howto</a>
  */
 public class AdditionalData implements Jsonable {
 
@@ -349,6 +350,17 @@ public class AdditionalData implements Jsonable {
      */
     public int getIntegerValue(String key, Integer... defaultValue) {
         return getValue(key, Integer.class, defaultValue);
+    }
+
+    /**
+     * Convenience method to retrieve a boolean based value.
+     *
+     * @param key          The data key
+     * @param defaultValue Optional var-args for setting a default value to pass back if key does not exist
+     * @return The value associated with the key if it exists. If not, uses default value if provided, or null.
+     */
+    public boolean getBooleanValue(String key, Boolean... defaultValue) {
+        return getValue(key, Boolean.class, defaultValue);
     }
 
     private <T> T getValueByType(Class<T> desiredType, Object value) {

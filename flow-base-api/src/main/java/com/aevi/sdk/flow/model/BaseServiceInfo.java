@@ -16,49 +16,51 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
-import java.util.Arrays;
+import java.util.*;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 
 /**
- * Common flags for service info models.
+ * Common flags for service info models regardless of domain.
  */
 public abstract class BaseServiceInfo extends BaseModel {
 
+    private final String packageName;
     private final String vendor;
     private final String serviceVersion;
     private final String apiVersion;
     private final String displayName;
     private final boolean hasAccessibilityMode;
-    private final String[] paymentMethods;
-    private final String[] supportedCurrencies;
-    private final String[] supportedRequestTypes;
-    private final String[] supportedTransactionTypes;
-    private final String[] supportedDataKeys;
+    private final Set<String> supportedFlowTypes;
+    private final Set<String> customRequestTypes;
+    private final Set<String> supportedDataKeys;
+    private final AdditionalData additionalInfo;
+    private Set<String> stages;
+    private Map<String, String[]> flowAndStagesDefinitions;
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
-        this("", "", "", "", "", false, null,
-                null, null, null, null);
+        this("", "", "", "", "", "", false,
+             null, null, null, null);
     }
 
-    protected BaseServiceInfo(String id, String vendor, String serviceVersion, String apiVersion, String displayName, boolean hasAccessibilityMode,
-                              String[] paymentMethods, String[] supportedCurrencies, String[] supportedRequestTypes, String[] supportedTransactionTypes,
-                              String[] supportedDataKeys) {
+    protected BaseServiceInfo(String id, String packageName, String vendor, String serviceVersion, String apiVersion,
+                              String displayName, boolean hasAccessibilityMode, Set<String> supportedFlowTypes, Set<String> customRequestTypes,
+                              Set<String> supportedDataKeys, AdditionalData additionalInfo) {
         super(id);
+        this.packageName = packageName;
         this.vendor = vendor;
         this.serviceVersion = serviceVersion;
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
-        this.paymentMethods = paymentMethods != null ? paymentMethods : new String[0];
-        this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new String[0];
-        this.supportedRequestTypes = supportedRequestTypes != null ? supportedRequestTypes : new String[0];
-        this.supportedTransactionTypes = supportedTransactionTypes != null ? supportedTransactionTypes : new String[0];
-        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new String[0];
+        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<String>();
+        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
+        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
+        this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
+        this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();
     }
 
@@ -119,61 +121,41 @@ public abstract class BaseServiceInfo extends BaseModel {
     }
 
     /**
-     * Gets an array of payment methods supported by the service.
+     * Get the list of supported pre-defined flow types.
      *
-     * See reference values in the documentation for possible values.
+     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * associated with it, if supported on the current device.
      *
-     * May be empty.
+     * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.
+     * Instead, this is used to ensure applications can handle flows they have been assigned to and for various other internal uses.
      *
-     * @return An array of supported payment methods
+     * @return The set of supported pre-defined flow types
      */
     @NonNull
-    public String[] getPaymentMethods() {
-        return paymentMethods;
+    public Set<String> getSupportedFlowTypes() {
+        return supportedFlowTypes;
     }
 
     /**
-     * Check whether this service supports the given payment method.
+     * Check whether this service supports the given flow type.
      *
-     * @param paymentMethod The payment method to check if supported
+     * @param flowType The flow type to check if supported
      * @return True if supported, false otherwise
      */
-    public boolean supportsPaymentMethod(String paymentMethod) {
-        return paymentMethods.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(paymentMethods, paymentMethod);
+    public boolean supportsFlowType(String flowType) {
+        return supportedFlowTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedFlowTypes, flowType);
     }
 
     /**
-     * Gets an array of currency codes supported by the service.
+     * Get the list of custom/bespoke request types that this service has defined.
      *
-     * May be empty.
+     * A custom request type is a type unique to a service for which a special type of generic flow is generated dynamically.
      *
-     * @return An array of String objects indicating the 3-letter ISO 4217 currencies supported by the service.
+     * @return The set of request types supported by the service
      */
     @NonNull
-    public String[] getSupportedCurrencies() {
-        return supportedCurrencies;
-    }
-
-    /**
-     * Check whether this service supports the given currency.
-     *
-     * @param currency The currency to check if supported
-     * @return True if supported, false otherwise
-     */
-    public boolean supportsCurrency(String currency) {
-        return supportedCurrencies.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedCurrencies, currency);
-    }
-
-    /**
-     * Gets an array of the supported request types, indicating what type of requests it can handle.
-     *
-     * See reference values in the documentation for possible values.
-     *
-     * @return array of request types supported by the service
-     */
-    @NonNull
-    public String[] getSupportedRequestTypes() {
-        return supportedRequestTypes;
+    public Set<String> getCustomRequestTypes() {
+        return customRequestTypes;
     }
 
     /**
@@ -182,32 +164,29 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @param requestType The request type to check if supported
      * @return True if supported, false otherwise
      */
-    public boolean supportsRequestType(String requestType) {
-        return supportedRequestTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedRequestTypes, requestType);
+    public boolean supportsCustomRequestType(String requestType) {
+        return customRequestTypes.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(customRequestTypes, requestType);
     }
 
     /**
-     * Gets an array of transaction types supported by the service.
+     * Get the stages this service operates in.
      *
-     * May be empty.
+     * For POS flow, the possible stages are defined in the FlowStages model.
      *
-     * See reference values in the documentation for possible values.
-     *
-     * @return array of transaction types supported by the service.
+     * @return The set of stages the service operates in.
      */
-    @NonNull
-    public String[] getSupportedTransactionTypes() {
-        return supportedTransactionTypes;
+    public Set<String> getStages() {
+        return stages;
     }
 
     /**
-     * Check whether this service supports the given transaction type.
+     * Check whether the flow services operates in the given stage.
      *
-     * @param transactionType The transaction type to check if supported
-     * @return True if supported, false otherwise
+     * @param stage The stage to check against
+     * @return True if the flow service operates in the given stage, false otherwise
      */
-    public boolean supportsTransactionType(String transactionType) {
-        return supportedTransactionTypes.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedTransactionTypes, transactionType);
+    public boolean containsStage(String stage) {
+        return stages.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(stages, stage);
     }
 
     /**
@@ -223,7 +202,7 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return An array of supported AdditionalData keys
      */
     @NonNull
-    public String[] getSupportedDataKeys() {
+    public Set<String> getSupportedDataKeys() {
         return supportedDataKeys;
     }
 
@@ -234,62 +213,99 @@ public abstract class BaseServiceInfo extends BaseModel {
      * @return True if supported, false otherwise
      */
     public boolean supportsDataKey(String dataKey) {
-        return supportedDataKeys.length > 0 && ComparisonUtil.stringArrayContainsIgnoreCase(supportedDataKeys, dataKey);
+        return supportedDataKeys.size() > 0 && ComparisonUtil.stringCollectionContainsIgnoreCase(supportedDataKeys, dataKey);
     }
 
-    @Override
-    public String toString() {
-        return "BaseServiceInfo{" +
-                "vendor='" + vendor + '\'' +
-                ", version='" + serviceVersion + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", hasAccessibilityMode=" + hasAccessibilityMode +
-                ", paymentMethods=" + Arrays.toString(paymentMethods) +
-                ", supportedCurrencies=" + Arrays.toString(supportedCurrencies) +
-                ", supportedRequestTypes=" + Arrays.toString(supportedRequestTypes) +
-                ", supportedTransactionTypes=" + Arrays.toString(supportedTransactionTypes) +
-                ", supportedDataKeys=" + Arrays.toString(supportedDataKeys) +
-                "} " + super.toString();
+    /**
+     * Get the additional info for this service.
+     *
+     * @return The additional info
+     */
+    public AdditionalData getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    /**
+     * Get the package name for this service.
+     *
+     * @return The service package name
+     */
+    public String getPackageName() {
+        return packageName;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param stages Stages
+     */
+    public void setStages(Set<String> stages) {
+        this.stages = stages;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param stages Stages
+     */
+    public void setStages(String... stages) {
+        this.stages = new HashSet<>(Arrays.asList(stages));
+    }
+
+    /**
+     * Retrieve information on what flows this service is used in and for what stages.
+     *
+     * The map key is the name of the flow and the values is an array of the stages the service is defined in for that flow
+     *
+     * Example: "aeviSale" maps to ["PAYMENT_CARD_READING", "TRANSACTION_PROCESSING"]
+     *
+     * @return The map of flows and stages this service is defined in
+     */
+    @NonNull
+    public Map<String, String[]> getFlowAndStagesDefinitions() {
+        return flowAndStagesDefinitions;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param flowName The flow name
+     * @param stages   The stages
+     */
+    public void addFlowAndStagesDefinition(String flowName, String[] stages) {
+        flowAndStagesDefinitions.put(flowName, stages);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         BaseServiceInfo that = (BaseServiceInfo) o;
-
-        if (hasAccessibilityMode != that.hasAccessibilityMode) return false;
-        if (vendor != null ? !vendor.equals(that.vendor) : that.vendor != null) return false;
-        if (serviceVersion != null ? !serviceVersion.equals(that.serviceVersion) : that.serviceVersion != null) return false;
-        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(paymentMethods, that.paymentMethods)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(supportedCurrencies, that.supportedCurrencies)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(supportedRequestTypes, that.supportedRequestTypes)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(supportedTransactionTypes, that.supportedTransactionTypes)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(supportedDataKeys, that.supportedDataKeys);
+        return hasAccessibilityMode == that.hasAccessibilityMode &&
+                Objects.equals(packageName, that.packageName) &&
+                Objects.equals(vendor, that.vendor) &&
+                Objects.equals(serviceVersion, that.serviceVersion) &&
+                Objects.equals(apiVersion, that.apiVersion) &&
+                Objects.equals(displayName, that.displayName) &&
+                Objects.equals(supportedFlowTypes, that.supportedFlowTypes) &&
+                Objects.equals(customRequestTypes, that.customRequestTypes) &&
+                Objects.equals(supportedDataKeys, that.supportedDataKeys) &&
+                Objects.equals(additionalInfo, that.additionalInfo) &&
+                Objects.equals(stages, that.stages) &&
+                Objects.equals(flowAndStagesDefinitions, that.flowAndStagesDefinitions);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (vendor != null ? vendor.hashCode() : 0);
-        result = 31 * result + (serviceVersion != null ? serviceVersion.hashCode() : 0);
-        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
-        result = 31 * result + (hasAccessibilityMode ? 1 : 0);
-        result = 31 * result + Arrays.hashCode(paymentMethods);
-        result = 31 * result + Arrays.hashCode(supportedCurrencies);
-        result = 31 * result + Arrays.hashCode(supportedRequestTypes);
-        result = 31 * result + Arrays.hashCode(supportedTransactionTypes);
-        result = 31 * result + Arrays.hashCode(supportedDataKeys);
-        return result;
+
+        return Objects.hash(super.hashCode(), packageName, vendor, serviceVersion, apiVersion, displayName, hasAccessibilityMode,
+                            supportedFlowTypes, customRequestTypes, supportedDataKeys, additionalInfo, stages, flowAndStagesDefinitions);
     }
-
-
 }

@@ -3,7 +3,6 @@ package com.aevi.sdk.pos.flow;
 
 import android.os.Build;
 import android.os.RemoteException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

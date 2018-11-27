@@ -15,36 +15,16 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.model;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import com.aevi.sdk.flow.model.config.FpsSettings;
+import com.aevi.sdk.pos.flow.model.PaymentFlowServices;
+import com.aevi.sdk.pos.flow.model.config.FlowConfigurations;
 
 public class SystemOverview {
 
-    private int numFlowServices;
-    private int numPaymentServices;
     private int numDevices;
-    private Collection<String> allPaymentMethods = new HashSet<>();
-    private Collection<String> allCurrencies = new ArrayList<>();
-    private Collection<String> allRequestTypes = new HashSet<>();
-    private Collection<String> allTransactionTypes = new ArrayList<>();
-    private Collection<String> allDataKeys = new HashSet<>();
-
-    public int getNumFlowServices() {
-        return numFlowServices;
-    }
-
-    public void setNumFlowServices(int numFlowServices) {
-        this.numFlowServices = numFlowServices;
-    }
-
-    public int getNumPaymentServices() {
-        return numPaymentServices;
-    }
-
-    public void setNumPaymentServices(int numPaymentServices) {
-        this.numPaymentServices = numPaymentServices;
-    }
+    private PaymentFlowServices paymentFlowServices;
+    private FlowConfigurations flowConfigurations;
+    private FpsSettings fpsSettings;
 
     public int getNumDevices() {
         return numDevices;
@@ -54,43 +34,27 @@ public class SystemOverview {
         this.numDevices = numDevices;
     }
 
-    public String[] getAllPaymentMethods() {
-        return allPaymentMethods.toArray(new String[allPaymentMethods.size()]);
+    public PaymentFlowServices getPaymentFlowServices() {
+        return paymentFlowServices;
     }
 
-    public void addPaymentMethods(Collection<String> allPaymentMethods) {
-        this.allPaymentMethods.addAll(allPaymentMethods);
+    public void setPaymentFlowServices(PaymentFlowServices paymentFlowServices) {
+        this.paymentFlowServices = paymentFlowServices;
     }
 
-    public String[] getAllCurrencies() {
-        return allCurrencies.toArray(new String[allCurrencies.size()]);
+    public void setFlowConfigurations(FlowConfigurations flowConfigurations) {
+        this.flowConfigurations = flowConfigurations;
     }
 
-    public void setAllCurrencies(Collection<String> allCurrencies) {
-        this.allCurrencies = allCurrencies;
+    public FlowConfigurations getFlowConfigurations() {
+        return flowConfigurations;
     }
 
-    public String[] getAllRequestTypes() {
-        return allRequestTypes.toArray(new String[allRequestTypes.size()]);
+    public void setFpsSettings(FpsSettings fpsSettings) {
+        this.fpsSettings = fpsSettings;
     }
 
-    public void addRequestTypes(Collection<String> allRequestTypes) {
-        this.allRequestTypes.addAll(allRequestTypes);
-    }
-
-    public String[] getAllTransactionTypes() {
-        return allTransactionTypes.toArray(new String[allTransactionTypes.size()]);
-    }
-
-    public void setAllTransactionTypes(Collection<String> allTransactionTypes) {
-        this.allTransactionTypes = allTransactionTypes;
-    }
-
-    public String[] getAllDataKeys() {
-        return allDataKeys.toArray(new String[allDataKeys.size()]);
-    }
-
-    public void addDataKeys(Collection<String> allDataKeys) {
-        this.allDataKeys.addAll(allDataKeys);
+    public FpsSettings getFpsSettings() {
+        return fpsSettings;
     }
 }

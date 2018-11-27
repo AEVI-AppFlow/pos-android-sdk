@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui.adapter;
 
 
 import android.content.Context;
-
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.ui.library.recycler.LabelsListAdapter;
 

@@ -16,16 +16,18 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.aevi.sdk.flow.constants.PaymentMethods;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseModel;
 import com.aevi.util.json.JsonConverter;
 
+import java.util.Objects;
+
 /**
- * A transaction response representing the outcome of processing by a flow app or payment app.
+ * A transaction response representing the outcome of processing a {@link TransactionRequest}.
  */
 public class TransactionResponse extends BaseModel {
+
+    static final String DEFAULT_PAYMENT_METHOD = "card";
 
     public enum Outcome {
         APPROVED,
@@ -40,8 +42,8 @@ public class TransactionResponse extends BaseModel {
     private final String paymentMethod;
     private final AdditionalData references;
 
-    private String paymentServiceId;
-    private String componentName;
+    private String flowServiceId;
+    private String flowStage;
 
     // Default constructor for deserialisation
     TransactionResponse() {
@@ -51,13 +53,13 @@ public class TransactionResponse extends BaseModel {
     TransactionResponse(String id, Card card, Outcome outcome, String outcomeMessage, Amounts amounts, String responseCode,
                         AdditionalData references, String paymentMethod) {
         super(id);
-        this.card = card;
+        this.card = card != null ? card : Card.getEmptyCard();
         this.outcome = outcome;
         this.outcomeMessage = outcomeMessage;
         this.amounts = amounts;
         this.responseCode = responseCode;
         this.references = references != null ? references : new AdditionalData();
-        this.paymentMethod = paymentMethod != null ? paymentMethod : PaymentMethods.CARD;
+        this.paymentMethod = paymentMethod != null ? paymentMethod : DEFAULT_PAYMENT_METHOD;
     }
 
     /**
@@ -117,9 +119,11 @@ public class TransactionResponse extends BaseModel {
     /**
      * Get the card details for the card used for this transaction.
      *
-     * @return The card details
+     * Note that all fields in this model are optional.
+     *
+     * @return The card details (may be empty)
      */
-    @Nullable
+    @NonNull
     public Card getCard() {
         return card;
     }
@@ -145,7 +149,8 @@ public class TransactionResponse extends BaseModel {
      * @param values An array of values for this reference
      * @param <T>    The type of object this reference is an array of
      */
-    public <T> void addReference(String key, T... values) {
+    @SafeVarargs
+    public final <T> void addReference(String key, T... values) {
         if (!references.hasData(key)) {
             references.addData(key, values);
         }
@@ -173,42 +178,43 @@ public class TransactionResponse extends BaseModel {
     }
 
     /**
-     * Get the id of the payment service that generated this response.
+     * Get the id of the flow service that generated this response.
      *
-     * Note that this will be null in cases where a flow app paid an amount.
+     * Note that this may be null for cases where a response is auto-generated (due to errors, etc)
      *
-     * @return The payment service id, if set.
+     * @return The flow service id, if set.
      */
     @Nullable
-    public String getPaymentServiceId() {
-        return paymentServiceId;
+    public String getFlowServiceId() {
+        return flowServiceId;
     }
 
     /**
      * For internal use.
      *
-     * @param paymentServiceId Payment service id
+     * @param flowServiceId Flow service id
      */
-    public void setPaymentServiceId(String paymentServiceId) {
-        this.paymentServiceId = paymentServiceId;
+    public void setFlowServiceId(String flowServiceId) {
+        this.flowServiceId = flowServiceId;
+    }
+
+    /**
+     * Get the flow stage this response was generated in.
+     *
+     * @return The flow stage this response was generated in, if set
+     */
+    @Nullable
+    public String getFlowStage() {
+        return flowStage;
     }
 
     /**
      * For internal use.
      *
-     * @return Component name
+     * @param flowStage The flow stage
      */
-    public String getComponentName() {
-        return componentName;
-    }
-
-    /**
-     * For internal use.
-     *
-     * @param componentName Component name
-     */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
+    public void setFlowStage(String flowStage) {
+        this.flowStage = flowStage;
     }
 
     @Override
@@ -230,43 +236,39 @@ public class TransactionResponse extends BaseModel {
                 ", responseCode='" + responseCode + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", references=" + references +
-                ", paymentServiceId='" + paymentServiceId + '\'' +
-                ", componentName='" + componentName + '\'' +
+                ", flowServiceId='" + flowServiceId + '\'' +
+                ", flowStage='" + flowStage + '\'' +
                 "} " + super.toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         TransactionResponse that = (TransactionResponse) o;
-
-        if (card != null ? !card.equals(that.card) : that.card != null) return false;
-        if (outcome != that.outcome) return false;
-        if (outcomeMessage != null ? !outcomeMessage.equals(that.outcomeMessage) : that.outcomeMessage != null) return false;
-        if (amounts != null ? !amounts.equals(that.amounts) : that.amounts != null) return false;
-        if (responseCode != null ? !responseCode.equals(that.responseCode) : that.responseCode != null) return false;
-        if (paymentMethod != null ? !paymentMethod.equals(that.paymentMethod) : that.paymentMethod != null) return false;
-        if (references != null ? !references.equals(that.references) : that.references != null) return false;
-        if (paymentServiceId != null ? !paymentServiceId.equals(that.paymentServiceId) : that.paymentServiceId != null) return false;
-        return componentName != null ? componentName.equals(that.componentName) : that.componentName == null;
+        return Objects.equals(card, that.card) &&
+                outcome == that.outcome &&
+                Objects.equals(outcomeMessage, that.outcomeMessage) &&
+                Objects.equals(amounts, that.amounts) &&
+                Objects.equals(responseCode, that.responseCode) &&
+                Objects.equals(paymentMethod, that.paymentMethod) &&
+                Objects.equals(references, that.references) &&
+                Objects.equals(flowServiceId, that.flowServiceId) &&
+                Objects.equals(flowStage, that.flowStage);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (card != null ? card.hashCode() : 0);
-        result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
-        result = 31 * result + (outcomeMessage != null ? outcomeMessage.hashCode() : 0);
-        result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
-        result = 31 * result + (responseCode != null ? responseCode.hashCode() : 0);
-        result = 31 * result + (paymentMethod != null ? paymentMethod.hashCode() : 0);
-        result = 31 * result + (references != null ? references.hashCode() : 0);
-        result = 31 * result + (paymentServiceId != null ? paymentServiceId.hashCode() : 0);
-        result = 31 * result + (componentName != null ? componentName.hashCode() : 0);
-        return result;
+
+        return Objects
+                .hash(super.hashCode(), card, outcome, outcomeMessage, amounts, responseCode, paymentMethod, references, flowServiceId, flowStage);
     }
 }
 

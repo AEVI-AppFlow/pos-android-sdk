@@ -2,7 +2,10 @@
     <string name="app_name">sample-commons</string>
 
     <string name="transaction_type">Transaction type</string>
+    <string name="flow_name">Flow name</string>
+    <string name="flow_type">Flow type</string>
     <string name="request_type">Request type</string>
+    <string name="request_flow">Request flow</string>
     <string name="overall_status">All transactions approved</string>
     <string name="outcome">Outcome</string>
     <string name="outcome_message">Outcome message</string>
@@ -35,10 +38,13 @@
 
     <string name="customer">Customer</string>
     <string name="split_enabled">Split enabled</string>
+    <string name="basket_name">Basket name</string>
     <string name="basket_total">Basket total</string>
     <string name="basket_num_items">Num unique items</string>
     <string name="overview">Overview</string>
-    <string name="basket_details">Basket details</string>
+    <string name="basket_title_no_count">Basket</string>
+    <string name="basket_title_new_basket">New basket</string>
+    <string name="basket_title">Basket #%1$d</string>
     <string name="item">Item</string>
     <string name="payment_stage">Payment stage</string>
     <string name="expiry_date">Expiry date</string>
@@ -68,6 +74,7 @@
     <string name="total_amount_requested">Total amount requested</string>
     <string name="total_amount_processed">Total amount processed</string>
     <string name="num_responses">Num transaction responses</string>
+    <string name="num_baskets">Number of baskets</string>
     <string name="transaction_index">Transaction #%1$d</string>
     <string name="response_index">Response #%1$d</string>
     <string name="success">SUCCESS</string>
@@ -96,5 +103,7 @@
     <string name="view_flow_stages">View flow stages</string>
     <string name="view_incoming_request">View incoming request</string>
     <string name="view_configured_data">View configured data</string>
+    <string name="no_model_data_available">No model data available</string>
+    <string name="response_data">Response data</string>
 
 </resources>
