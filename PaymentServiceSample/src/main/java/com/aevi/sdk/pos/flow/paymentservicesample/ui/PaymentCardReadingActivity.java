@@ -94,6 +94,10 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
 
     @Override
     protected String getModelJson() {
+        return buildTransactionResponse().toJson();
+    }
+
+    private TransactionResponse buildTransactionResponse() {
         TransactionResponseBuilder transactionResponseBuilder = new TransactionResponseBuilder(cardReadingModel.getTransactionRequest().getId());
         if (approveSwitch.isChecked()) {
             transactionResponseBuilder.approve();
@@ -102,8 +106,7 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
         } else {
             transactionResponseBuilder.decline("Card declined");
         }
-
-        return transactionResponseBuilder.build().toJson();
+        return transactionResponseBuilder.build();
     }
 
     @Override
@@ -133,11 +136,7 @@ public class PaymentCardReadingActivity extends BaseSampleAppCompatActivity {
     private void updateModel() {
         buildCard();
         if (modelDisplay != null) {
-            if (approveSwitch.isChecked()) {
-                modelDisplay.showCard(card);
-            } else {
-                modelDisplay.showCard(null);
-            }
+            modelDisplay.showTransactionResponse(buildTransactionResponse());
         }
     }
 
