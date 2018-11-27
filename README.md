@@ -1,5 +1,7 @@
 # AEVI AppFlow - POS Android SDK
 
+**Note** - AppFlow v2 is now released!
+
 AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called.
 A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
 
@@ -41,7 +43,7 @@ These APIs require that your application is compiled with Java 8. Ensure that yo
 
 Use the latest version defined below.
 
-[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/pos-flow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/pos-flow-sdk/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/appflow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/appflow-sdk/_latestVersion)
 
 **Note** - please ensure you read the [Application Guidelines](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/application-guidelines) at a minimum before attempting to create an application for AppFlow.
 
