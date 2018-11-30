@@ -82,6 +82,8 @@ public final class TransactionResponseBuilder {
     /**
      * Set the transaction as approved with processed amount details and optionally specify the payment method used (defaults to "card").
      *
+     * Note that the amounts breakdown (base and additionals) should match the requested amounts from the {@link TransactionRequest} where possible.
+     *
      * For cases where no amounts were processed, see {@link #approve()}.
      *
      * @param processedAmounts The processed amounts (may be zero, but must not be null)
