@@ -160,7 +160,7 @@ public class Transaction extends BaseModel {
         Amounts remaining = new Amounts(requestedAmounts);
         for (TransactionResponse transactionResponse : transactionResponses) {
             if (transactionResponse.getOutcome() == APPROVED && transactionResponse.getAmountsProcessed() != null) {
-                remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed());
+                remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed(), false);
             }
         }
         return remaining;

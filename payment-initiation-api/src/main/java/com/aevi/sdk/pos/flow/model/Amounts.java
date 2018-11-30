@@ -45,11 +45,11 @@ public class Amounts implements Jsonable {
     }
 
     /**
-     * Initialise with base amount and currency.
+     * Initialise with base amount (inclusive of tax) and currency.
      *
      * Additional amounts can be set via {@link #addAdditionalAmount(String, long)}.
      *
-     * @param baseAmount The base amount in subunit form (cents, pence, etc)
+     * @param baseAmount The base amount, inclusive of tax, in subunit form (cents, pence, etc)
      * @param currency   The ISO-4217 currency code
      */
     public Amounts(long baseAmount, String currency) {
@@ -66,9 +66,9 @@ public class Amounts implements Jsonable {
     }
 
     /**
-     * Initialise with base amount, currency and additional amounts map.
+     * Initialise with base amount (inclusive of tax), currency and additional amounts map.
      *
-     * @param baseAmount        The base amount in subunit form (cents, pence, etc)
+     * @param baseAmount        The base amount, inclusive of tax, in subunit form (cents, pence, etc)
      * @param currency          The ISO-4217 currency code
      * @param additionalAmounts The additional amounts
      * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
@@ -125,6 +125,8 @@ public class Amounts implements Jsonable {
     /**
      * Get the base amount in subunit form (cents, pence, etc).
      *
+     * The base amount is inclusive of any tax.
+     *
      * Note that base amount can be 0.
      *
      * @return The base amount in subunit form
@@ -135,6 +137,8 @@ public class Amounts implements Jsonable {
 
     /**
      * Get an {@link Amount} representation of the base amount with associated currency.
+     *
+     * The base amount is inclusive of any tax.
      *
      * @return Base {@link Amount}
      */
@@ -321,7 +325,7 @@ public class Amounts implements Jsonable {
      * @return The reduced amounts
      */
     @NonNull
-    public static Amounts subtractAmounts(Amounts a1, Amounts a2) {
+    public static Amounts subtractAmounts(Amounts a1, Amounts a2, boolean keepZeroAmountAdditionals) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
         }
@@ -330,7 +334,12 @@ public class Amounts implements Jsonable {
         Map<String, Long> a2Additionals = a2.getAdditionalAmounts();
         for (String a2Key : a2Additionals.keySet()) {
             if (newAdditionals.containsKey(a2Key)) {
-                newAdditionals.put(a2Key, Math.max(newAdditionals.get(a2Key) - a2Additionals.get(a2Key), 0));
+                long additionalRemainder = Math.max(newAdditionals.get(a2Key) - a2Additionals.get(a2Key), 0);
+                if (additionalRemainder > 0 || keepZeroAmountAdditionals) {
+                    newAdditionals.put(a2Key, additionalRemainder);
+                } else {
+                    newAdditionals.remove(a2Key);
+                }
             }
         }
 
