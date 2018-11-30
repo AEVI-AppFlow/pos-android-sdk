@@ -125,7 +125,8 @@ public class PreTransactionModel extends BaseStageModel {
     /**
      * Set or update an additional payment amount with an amount value.
      *
-     * This is typically used to add a fee/charge, charity contribution, tax/vat, etc
+     * This is typically used to add a fee/charge, charity contribution, etc. Note that this should never be used to represent the value of any
+     * goods or services.
      *
      * Must be 0 or greater.
      *
@@ -143,6 +144,7 @@ public class PreTransactionModel extends BaseStageModel {
      * Set or update an additional amount as a fraction of the base amount.
      *
      * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount.
+     * Note that this should never be used to represent the value of any goods or services.
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
@@ -250,12 +252,16 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * Note that if you are applying discounts to specific basket items, please use {@link #applyDiscountsToBasket(String, List, String)} instead.
      *
-     * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
+     * The use cases for this involves the customer paying part or all of the base amount owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
      *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
+     * Note that paying off the "additional amounts" is not supported at this time - only the base amount. The paid amounts must only set
+     * the base amount value, and it must not exceed the request base amount value. If it exceeds it, or there are additional amounts set,
+     * an exception will be thrown.
      *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
+     * If there is remaining base amounts to pay after this, the remaining amount will be processed by the payment app.
+     *
+     * If the request contains no additional amounts and this payment equals the requested amounts, the transaction will be considered fulfilled and completed.
      *
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
@@ -264,11 +270,17 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
-     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
+     * @throws IllegalArgumentException If either argument is null or the values violate the restrictions mentioned above
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
         checkNotNull(amountsPaid, "Amounts paid must be set");
         checkNotEmpty(paymentMethod, "Payment method must be set");
+        if (amountsPaid.getBaseAmountValue() > transactionRequest.getAmounts().getBaseAmountValue()) {
+            throw new IllegalArgumentException("Paid base amount value can not exceed the request base amount value");
+        }
+        if (!amountsPaid.getAdditionalAmounts().isEmpty()) {
+            throw new IllegalArgumentException("Paid additional amounts is not supported at the moment - set base amount only");
+        }
         if (amountsPaid.getTotalAmountValue() > transactionRequest.getAmounts().getTotalAmountValue()) {
             throw new IllegalArgumentException("Paid amounts can not exceed requested amounts");
         }

@@ -32,7 +32,7 @@ public class SplitModelTest {
         Payment payment = new PaymentBuilder().withAmounts(new Amounts(totalRequestValue, "GBP"))
                 .withBasket(paymentBasket).withPaymentFlow("sale").build();
         prevTransactions = new ArrayList<>();
-        splitRequest = new SplitRequest(payment, prevTransactions);
+        splitRequest = new SplitRequest(payment, payment.getAmounts(), prevTransactions);
         splitModel = SplitModel.fromService(clientCommunicator, splitRequest);
     }
 
