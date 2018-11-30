@@ -28,17 +28,26 @@ import java.util.UUID;
 public class SplitRequest extends BaseModel {
 
     private final Payment sourcePayment;
+    private final Amounts accumulatedRequestTotals;
     private final List<Transaction> transactions;
     private DeviceAudience deviceAudience;
 
     // Default constructor for deserialisation
     SplitRequest() {
-        this(new Payment(), new ArrayList<Transaction>());
+        this(new Payment(), new Amounts(0, "XXX"), new ArrayList<Transaction>());
     }
 
-    public SplitRequest(Payment sourcePayment, List<Transaction> transactions) {
+    /**
+     * Initialise the split request.
+     *
+     * @param sourcePayment            The source payment used for initiation
+     * @param accumulatedRequestTotals The up-to-date request totals, used for calculations for remaining amounts
+     * @param transactions             The list of transactions
+     */
+    public SplitRequest(Payment sourcePayment, Amounts accumulatedRequestTotals, List<Transaction> transactions) {
         super(UUID.randomUUID().toString());
         this.sourcePayment = sourcePayment;
+        this.accumulatedRequestTotals = accumulatedRequestTotals;
         this.transactions = transactions;
     }
 
@@ -87,13 +96,15 @@ public class SplitRequest extends BaseModel {
     }
 
     /**
-     * Get the amounts requested for processing.
+     * Get the total accumulated requested amounts.
      *
-     * @return The requested {@link Amounts} for processing
+     * The return value here takes into account any additional request amounts added by flow services as part of the transactions.
+     *
+     * @return The total request {@link Amounts} for processing
      */
     @NonNull
     public Amounts getRequestedAmounts() {
-        return sourcePayment.getAmounts();
+        return accumulatedRequestTotals;
     }
 
     /**
@@ -107,7 +118,7 @@ public class SplitRequest extends BaseModel {
             return getRequestedAmounts();
         }
         Amounts processed = getProcessedAmounts();
-        return Amounts.subtractAmounts(getRequestedAmounts(), processed);
+        return Amounts.subtractAmounts(getRequestedAmounts(), processed, false);
     }
 
     /**
