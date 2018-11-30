@@ -328,7 +328,7 @@ public class Basket extends BaseModel {
     }
 
     /**
-     * Get the total basket value.
+     * Get the total basket value, inclusive of tax.
      *
      * @return The total basket value
      */
