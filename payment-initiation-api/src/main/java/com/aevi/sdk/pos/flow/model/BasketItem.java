@@ -43,12 +43,12 @@ public class BasketItem {
     }
 
     /**
-     * Create a new basket item with label, category, amount and quantity.
+     * Create a new basket item with label, category, amount (inclusive of tax) and quantity.
      *
      * @param id         The identifier (SKU or similar) for this item
      * @param label      The label of the item to show to merchants/customers, such as "Red onion"
      * @param category   The category the item belongs to, such as "vegetables" or "dairy"
-     * @param amount     The purchase amount for this (individual) item
+     * @param amount     The purchase amount for this (individual) item, inclusive of tax
      * @param quantity   The number of this type of basket item (default is 1, below 0 will produce an exception)
      * @param references Custom references for this basket item
      */
@@ -92,7 +92,7 @@ public class BasketItem {
     }
 
     /**
-     * Get the cost (amount) for a single item of this type.
+     * Get the cost (amount) for a single item of this type, inclusive of tax.
      *
      * Note that the amount may be negative in the case of discounts, etc.
      *
@@ -103,7 +103,7 @@ public class BasketItem {
     }
 
     /**
-     * Get the total cost (amount) for the items of this type.
+     * Get the total cost (amount) for the items of this type, inclusive of tax.
      *
      * Note that the amount may be negative in the case of discounts, etc.
      *

@@ -26,7 +26,6 @@
     <string name="pay_portion_with_gift_card">Pay %1$s with gift card</string>
     <string name="finish">Finish</string>
     <string name="add_payment_references">Add payment references</string>
-    <string name="add_tax">Add tax</string>
     <string name="fss_loyalty_balance">Loyalty Balance</string>
     <string name="fss_pre_payment">Pre-transaction</string>
     <string name="fss_pre_flow">Pre-flow</string>

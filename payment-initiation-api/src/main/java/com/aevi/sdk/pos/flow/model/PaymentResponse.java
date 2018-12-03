@@ -37,16 +37,25 @@ public class PaymentResponse extends BaseModel {
      */
     public enum Outcome {
         /**
-         * The payment was fulfilled and the requested amount has been charged.
+         * The payment was fulfilled, meaning the processed amounts equals or exceeds the requested amounts.
+         *
+         * The {@link #getTotalAmountsProcessed()} may be more than requested if flow services added amounts or baskets. The total request amounts
+         * can be checked via #
          */
         FULFILLED,
         /**
-         * The payment was only partially fulfilled, meaning that part of the requested amount was charged.
-         * This can either be due to partial auth (payment app approved less than requested) or one of the reasons in {@link FailureReason}.
+         * The payment was partially fulfilled, meaning that the {@link #getTotalAmountsProcessed()} is less than the total requested amounts
+         * at the point when the payment service processes the transaction. Note that a flow service may have added amounts or baskets in between
+         * the initiation of the flow and the payment processing step.
+         *
+         * The most common scenarios for this are partial auth from the payment host or flow cancellation before completion.
+         *
+         * See {@link FailureReason} for any failure details.
          */
         PARTIALLY_FULFILLED,
         /**
-         * The payment was not fulfilled and no money was charged.
+         * The payment failed and no money was charged.
+         *
          * See {@link FailureReason} for the reason of failure.
          */
         FAILED
@@ -88,6 +97,7 @@ public class PaymentResponse extends BaseModel {
     protected FailureReason failureReason;
     protected String failureMessage;
     protected boolean allTransactionsApproved = true;
+    protected Amounts totalAmountsRequested;
     protected Amounts totalAmountsProcessed;
     protected List<Transaction> transactions;
     protected long creationDateTimeMs;
@@ -179,6 +189,20 @@ public class PaymentResponse extends BaseModel {
     }
 
     /**
+     * Get the total amounts requested at the end of the flow, including any amounts / baskets added by flow services as part of it.
+     *
+     * The request amounts provided in the {@link Payment} are input to the flow where other applications may add further amounts.
+     *
+     * The amounts returned here are guaranteed to be equal to or greater than the initially requested amounts.
+     *
+     * @return The total request amounts at the end of the flow
+     */
+    @NonNull
+    public Amounts getTotalAmountsRequested() {
+        return totalAmountsRequested;
+    }
+
+    /**
      * Get the total amounts processed for the transactions that were carried out.
      *
      * This may not match the initially requested amounts. Note that {@link #getOutcome()} can be used to determine whether
@@ -254,6 +278,7 @@ public class PaymentResponse extends BaseModel {
                 ", failureReason=" + failureReason +
                 ", failureMessage='" + failureMessage + '\'' +
                 ", allTransactionsApproved=" + allTransactionsApproved +
+                ", totalAmountsRequested=" + totalAmountsRequested +
                 ", totalAmountsProcessed=" + totalAmountsProcessed +
                 ", transactions=" + transactions +
                 ", creationDateTimeMs=" + creationDateTimeMs +
@@ -280,6 +305,7 @@ public class PaymentResponse extends BaseModel {
                 outcome == that.outcome &&
                 failureReason == that.failureReason &&
                 Objects.equals(failureMessage, that.failureMessage) &&
+                Objects.equals(totalAmountsRequested, that.totalAmountsRequested) &&
                 Objects.equals(totalAmountsProcessed, that.totalAmountsProcessed) &&
                 Objects.equals(transactions, that.transactions) &&
                 Objects.equals(executedPreFlowApp, that.executedPreFlowApp) &&
@@ -290,7 +316,7 @@ public class PaymentResponse extends BaseModel {
     public int hashCode() {
 
         return Objects
-                .hash(super.hashCode(), originatingPayment, outcome, failureReason, failureMessage, allTransactionsApproved, totalAmountsProcessed,
-                      transactions, creationDateTimeMs, executedPreFlowApp, executedPostFlowApp);
+                .hash(super.hashCode(), originatingPayment, outcome, failureReason, failureMessage, allTransactionsApproved, totalAmountsRequested,
+                      totalAmountsProcessed, transactions, creationDateTimeMs, executedPreFlowApp, executedPostFlowApp);
     }
 }
