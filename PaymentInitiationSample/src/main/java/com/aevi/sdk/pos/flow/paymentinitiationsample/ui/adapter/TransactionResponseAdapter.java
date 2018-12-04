@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.aevi.sdk.flow.constants.ReferenceKeys;
 import com.aevi.sdk.pos.flow.model.Card;
 import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
@@ -32,6 +31,7 @@ import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_DATA_NETWORK;
+import static com.aevi.sdk.flow.constants.ReferenceKeys.REFERENCE_KEY_PAYMENT_SERVICE;
 
 public class TransactionResponseAdapter extends RecyclerView.Adapter<TransactionResponseAdapter.ViewHolder> {
 
@@ -97,7 +97,7 @@ public class TransactionResponseAdapter extends RecyclerView.Adapter<Transaction
             holder.paymentType.setVisibility(View.VISIBLE);
         }
 
-        String paymentService = response.getReferences().getValue(ReferenceKeys.PAYMENT_SERVICE, String.class);
+        String paymentService = response.getReferences().getValue(REFERENCE_KEY_PAYMENT_SERVICE, String.class);
         if (paymentService != null) {
             holder.paymentApp.setText(paymentService);
             holder.paymentAppContainer.setVisibility(View.VISIBLE);

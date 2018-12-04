@@ -127,10 +127,10 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
                     .withResponseCode(APPROVED_RESP_CODE)
                     .withCard(getCard())
                     .withReference(INTERNAL_ID_KEY, UUID.randomUUID().toString())
-                    .withReference(MERCHANT_ID, IdProvider.getMerchantId())
-                    .withReference(MERCHANT_NAME, IdProvider.getMerchantName())
-                    .withReference(TERMINAL_ID, IdProvider.getTerminalId())
-                    .withReference(TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
+                    .withReference(REFERENCE_KEY_MERCHANT_ID, IdProvider.getMerchantId())
+                    .withReference(REFERENCE_KEY_MERCHANT_NAME, IdProvider.getMerchantName())
+                    .withReference(REFERENCE_KEY_TERMINAL_ID, IdProvider.getTerminalId())
+                    .withReference(REFERENCE_KEY_TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
                     .build();
         } else {
             transactionProcessingModel.getTransactionResponseBuilder()
