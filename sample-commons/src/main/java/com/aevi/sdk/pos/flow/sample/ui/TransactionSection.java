@@ -94,7 +94,7 @@ public class TransactionSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         LabelValueViewHolder viewHolder = (LabelValueViewHolder) holder;
-        Pair<String, String> labelValue;
+        Pair<String, String> labelValue = new Pair<>("N/A", "N/A");
         if (position < overviewInfo.size()) {
             labelValue = overviewInfo.get(position);
             setupViewForOverview(viewHolder);
@@ -108,7 +108,12 @@ public class TransactionSection extends StatelessSection {
                 labelValue = new Pair<>(context.getString(R.string.response_index, (responseIndex + 1)), "");
             } else {
                 setupViewForResponseValues(viewHolder, responseIndex);
-                labelValue = responseInfoList.get(responseIndex).get(fieldIndex - 1);
+                if (responseIndex < responseInfoList.size()) {
+                    List<Pair<String, String>> pairs = responseInfoList.get(responseIndex);
+                    if (fieldIndex - 1 < pairs.size()) {
+                        labelValue = pairs.get(fieldIndex - 1);
+                    }
+                }
             }
         }
         viewHolder.label.setText(labelValue.first);
