@@ -39,12 +39,14 @@ public class ReceiptLine {
     private final String alignment;
     private final String underline;
     private final String fontStyle;
+    private final boolean allCapitals;
 
     ReceiptLine(@Nullable String dataKey, @Nullable String label,
                 int emptyLinesAfter, @Nullable Character fillWithChar,
                 @Nullable String alignment,
                 @Nullable String underline,
-                @Nullable String fontStyle) {
+                @Nullable String fontStyle,
+                boolean allCapitals) {
         this.dataKey = dataKey;
         this.label = label;
         this.emptyLinesAfter = emptyLinesAfter;
@@ -52,6 +54,7 @@ public class ReceiptLine {
         this.alignment = alignment;
         this.underline = underline;
         this.fontStyle = fontStyle;
+        this.allCapitals = allCapitals;
     }
 
     /**
@@ -133,6 +136,15 @@ public class ReceiptLine {
     @Nullable
     public String getFontStyle() {
         return fontStyle;
+    }
+
+    /**
+     * True if the value associated with the data key should be capitalised before adding to the receipt
+     *
+     * @return True for capitals
+     */
+    public boolean isAllCapitals() {
+        return allCapitals;
     }
 
     /**

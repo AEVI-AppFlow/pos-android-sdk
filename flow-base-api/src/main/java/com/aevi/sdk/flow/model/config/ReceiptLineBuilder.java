@@ -27,6 +27,7 @@ public class ReceiptLineBuilder {
     private String alignment = null;
     private String underline = null;
     private String fontStyle = null;
+    private boolean allCapitals = false;
 
     public ReceiptLineBuilder() {
 
@@ -123,10 +124,22 @@ public class ReceiptLineBuilder {
     }
 
     /**
+     * If this line contains a data key then setting this flag will cause the data to be converted to uppercase
+     *
+     * @param allCapitals True to set the data value to uppercase
+     * @return This builder
+     */
+    public ReceiptLineBuilder withAllCapitals(boolean allCapitals) {
+        this.allCapitals = allCapitals;
+        return this;
+    }
+
+    /**
      * Build the receipt line
+     *
      * @return The receipt line
      */
     public ReceiptLine build() {
-        return new ReceiptLine(dataKey, label, emptyLinesAfter, fillWithChar, alignment, underline, fontStyle);
+        return new ReceiptLine(dataKey, label, emptyLinesAfter, fillWithChar, alignment, underline, fontStyle, allCapitals);
     }
 }
