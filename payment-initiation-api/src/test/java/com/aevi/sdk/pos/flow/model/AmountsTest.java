@@ -12,7 +12,9 @@ public class AmountsTest {
         amounts.addAdditionalAmount("one", 1500L);
         amounts.addAdditionalAmount("two", 2000L);
         assertThat(amounts.getBaseAmountValue()).isEqualTo(1000L);
+        assertThat(amounts.getBaseAmount()).isEqualTo(new Amount(1000L, "GBP"));
         assertThat(amounts.getTotalAmountValue()).isEqualTo(4500L);
+        assertThat(amounts.getTotalAmount()).isEqualTo(new Amount(4500L, "GBP"));
     }
 
     @Test
@@ -102,5 +104,16 @@ public class AmountsTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkCantSubtractAmountsDifferentCurrency() throws Exception {
         Amounts.subtractAmounts(new Amounts(10L, "GBP"), new Amounts(10L, "USD"), false);
+    }
+
+    @Test
+    public void checkCanGetTotalExcludingAmounts() throws Exception {
+        Amounts amounts = new Amounts(1000L, "GBP");
+        amounts.addAdditionalAmount("one", 1500L);
+        amounts.addAdditionalAmount("two", 2000L);
+        amounts.addAdditionalAmount("three", 3000L);
+        assertThat(amounts.getBaseAmountValue()).isEqualTo(1000L);
+        assertThat(amounts.getTotalAmountValue()).isEqualTo(7500L);
+        assertThat(amounts.getTotalExcludingAmounts("one", "two")).isEqualTo(4000L);
     }
 }
