@@ -209,11 +209,11 @@ public class PaymentResponse extends BaseModel {
      * a transaction was fulfilled, partially fulfilled or failed. This method is a convenience method to get the amount totals and not intended
      * to be used to investigate the outcome of the payment.
      *
-     * Note that this may be null or contain empty amounts for non-purchase transactions. It also may be larger than the initially requested amounts.
+     * Note that this may contain empty amounts or have amounts greater than the requested amounts.
      *
-     * @return The total processed amounts. May be null.
+     * @return The total processed amounts. May be zero.
      */
-    @Nullable
+    @NonNull
     public Amounts getTotalAmountsProcessed() {
         return totalAmountsProcessed;
     }

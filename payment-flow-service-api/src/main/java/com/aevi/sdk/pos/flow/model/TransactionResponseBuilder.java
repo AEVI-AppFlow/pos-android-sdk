@@ -25,6 +25,8 @@ import static com.aevi.sdk.pos.flow.model.TransactionResponse.Outcome;
  * Builder to create a {@link TransactionResponse} instance.
  *
  * At a minimum, the transaction outcome must be set via one of the {@link #approve()} or {@link #decline(String)} calls.
+ *
+ * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-payment-apps" target="_blank">Implementing payment apps</a>
  */
 public final class TransactionResponseBuilder {
 
@@ -82,13 +84,18 @@ public final class TransactionResponseBuilder {
     /**
      * Set the transaction as approved with processed amount details and optionally specify the payment method used (defaults to "card").
      *
-     * Note that the amounts breakdown (base and additionals) should match the requested amounts from the {@link TransactionRequest} where possible.
+     * Important - if the transaction is approved and the full amounts have been charged, it is strongly recommended that you use the request amounts
+     * from the {@link TransactionRequest} to set the amounts here to ensure the correct amounts breakdown.
+     *
+     * If the outcome is a partial auth, it is at the discretion of the payment application how to set the amounts but it is advisable that the
+     * request amounts breakdown is kept intact when possible.
      *
      * For cases where no amounts were processed, see {@link #approve()}.
      *
      * @param processedAmounts The processed amounts (may be zero, but must not be null)
      * @param paymentMethod    Optional payment method used (defaults to "card")
      * @return This builder
+     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/dealing-with-amounts" target="_blank">Dealing with amounts</a>
      */
     @NonNull
     public TransactionResponseBuilder approve(Amounts processedAmounts, String... paymentMethod) {
