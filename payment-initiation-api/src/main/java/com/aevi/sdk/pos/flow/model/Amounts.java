@@ -195,6 +195,7 @@ public class Amounts implements Jsonable {
      *
      * @return The total amount
      */
+    @JsonConverter.ExposeMethod(value = "totalAmount")
     public long getTotalAmountValue() {
         long total = baseAmount;
         for (String key : additionalAmounts.keySet()) {

@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.aevi.util.json.JsonConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,6 +110,7 @@ public class BasketItem {
      *
      * @return The total cost (amount) for the items of this type.
      */
+    @JsonConverter.ExposeMethod(value = "totalAmount")
     public long getTotalAmount() {
         return amount * quantity;
     }
