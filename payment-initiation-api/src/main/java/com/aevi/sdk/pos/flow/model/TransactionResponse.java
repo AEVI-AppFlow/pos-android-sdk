@@ -56,7 +56,6 @@ public class TransactionResponse extends BaseModel {
         this.card = card != null ? card : Card.getEmptyCard();
         this.outcome = outcome;
         this.outcomeMessage = outcomeMessage;
-        // FIXME this field should be called processedAmounts but changing it would be non-backwards compatible and requires a major version update
         this.amounts = amounts;
         this.responseCode = responseCode;
         this.references = references != null ? references : new AdditionalData();
