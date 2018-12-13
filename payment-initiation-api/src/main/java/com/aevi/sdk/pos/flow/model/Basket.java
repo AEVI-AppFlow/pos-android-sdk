@@ -319,6 +319,7 @@ public class Basket extends BaseModel {
      *
      * @return The total number of items
      */
+    @JsonConverter.ExposeMethod(value = "totalNumberOfItems")
     public int getTotalNumberOfItems() {
         int total = 0;
         for (BasketItem displayItem : displayItems) {
@@ -332,6 +333,7 @@ public class Basket extends BaseModel {
      *
      * @return The total basket value
      */
+    @JsonConverter.ExposeMethod(value = "totalBasketValue")
     public long getTotalBasketValue() {
         long total = 0;
         for (BasketItem displayItem : displayItems) {

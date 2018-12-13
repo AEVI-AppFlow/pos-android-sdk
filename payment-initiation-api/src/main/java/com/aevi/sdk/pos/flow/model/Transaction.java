@@ -156,6 +156,7 @@ public class Transaction extends BaseModel {
      * @return The remaining amounts.
      */
     @NonNull
+    @JsonConverter.ExposeMethod(value = "remainingAmounts")
     public Amounts getRemainingAmounts() {
         Amounts remaining = new Amounts(requestedAmounts);
         for (TransactionResponse transactionResponse : transactionResponses) {
@@ -174,6 +175,7 @@ public class Transaction extends BaseModel {
      * @return The amounts processed at this point in time.
      */
     @NonNull
+    @JsonConverter.ExposeMethod(value = "processedAmounts")
     public Amounts getProcessedAmounts() {
         Amounts processed = new Amounts(0, requestedAmounts.getCurrency());
         for (TransactionResponse transactionResponse : transactionResponses) {
