@@ -32,7 +32,7 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 /**
  * Model for the post-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
