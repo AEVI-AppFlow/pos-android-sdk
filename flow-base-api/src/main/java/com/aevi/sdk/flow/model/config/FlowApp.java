@@ -16,6 +16,7 @@
 package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -28,6 +29,7 @@ public class FlowApp implements Jsonable {
 
     private final String id;
     private final boolean mandatory;
+    private final String conditionalOn;
 
     /**
      * Construct with id.
@@ -39,6 +41,7 @@ public class FlowApp implements Jsonable {
     public FlowApp(String id) {
         this.id = id != null ? id : "N/A";
         this.mandatory = false;
+        this.conditionalOn = null;
     }
 
     /**
@@ -47,9 +50,10 @@ public class FlowApp implements Jsonable {
      * @param id        The application id
      * @param mandatory Whether or not the app is mandatory for the flow to be valid
      */
-    public FlowApp(String id, boolean mandatory) {
+    public FlowApp(String id, boolean mandatory, String conditionalOn) {
         this.id = id != null ? id : "N/A";
         this.mandatory = mandatory;
+        this.conditionalOn = conditionalOn;
     }
 
     /**
@@ -71,6 +75,16 @@ public class FlowApp implements Jsonable {
      */
     public boolean isMandatory() {
         return mandatory;
+    }
+
+    /**
+     * Get the condition, if any, that is required for this flow app to be eligible.
+     *
+     * @return The condition, if any, that is required for this flow app to be eligible.
+     */
+    @Nullable
+    public String getConditionalOnValue() {
+        return conditionalOn;
     }
 
     @Override
