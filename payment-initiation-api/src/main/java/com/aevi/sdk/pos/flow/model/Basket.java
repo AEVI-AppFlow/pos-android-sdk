@@ -41,6 +41,7 @@ public class Basket extends BaseModel {
     private final String basketName;
     private final List<BasketItem> displayItems;
     private final AdditionalData additionalBasketData;
+    private boolean primaryBasket;
 
     /**
      * Initialise an empty basket.
@@ -92,6 +93,17 @@ public class Basket extends BaseModel {
      */
     public String getBasketName() {
         return basketName;
+    }
+
+    /**
+     * Check whether this basket is the primary basket for the current flow.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app).
+     *
+     * @return True if this basket is the primary basket, false otherwise
+     */
+    public boolean isPrimaryBasket() {
+        return primaryBasket;
     }
 
     /**
@@ -372,6 +384,15 @@ public class Basket extends BaseModel {
             displayItems.set(displayItems.indexOf(existingItem), newItem);
         }
         return newItem;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param primaryBasket True or false
+     */
+    public void setPrimaryBasket(boolean primaryBasket) {
+        this.primaryBasket = primaryBasket;
     }
 
     @Override

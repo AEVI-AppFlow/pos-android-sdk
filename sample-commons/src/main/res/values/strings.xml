@@ -105,5 +105,6 @@
     <string name="view_configured_data">View configured data</string>
     <string name="no_model_data_available">No model data available</string>
     <string name="response_data">Response data</string>
+    <string name="basket_primary">Primary basket</string>
 
 </resources>

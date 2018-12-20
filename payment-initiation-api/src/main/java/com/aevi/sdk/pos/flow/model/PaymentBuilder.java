@@ -239,6 +239,9 @@ public class PaymentBuilder {
         if (basket != null && basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
             throw new IllegalArgumentException("The basket total value must match base amounts value");
         }
+        if (basket != null) {
+            basket.setPrimaryBasket(true);
+        }
         return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
     }
 }

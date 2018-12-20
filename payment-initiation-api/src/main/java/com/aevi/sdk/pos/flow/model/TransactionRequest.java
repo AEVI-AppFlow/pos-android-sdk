@@ -133,7 +133,43 @@ public class TransactionRequest extends BaseModel {
     }
 
     /**
+     * Check whether this transaction has a primary basket or not.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the basket if one exists.
+     *
+     * @return True if this transaction has a primary basket, false otherwise
+     */
+    public boolean hasPrimaryBasket() {
+        return baskets != null && !baskets.isEmpty() && baskets.get(0).isPrimaryBasket();
+    }
+
+    /**
+     * Get the primary basket for this transaction, if any is available.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #hasPrimaryBasket()} to check whether one exists or not.
+     *
+     * @return The primary basket, or null if none is available
+     */
+    @Nullable
+    public Basket getPrimaryBasket() {
+        if (hasPrimaryBasket()) {
+            return baskets.get(0);
+        }
+        return null;
+    }
+
+    /**
      * Get the baskets for this transaction.
+     *
+     * This may consist of baskets added by the client initiation app as well as flow services in the flow.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the primary basket specifically, if any is available.
      *
      * @return The baskets
      */
