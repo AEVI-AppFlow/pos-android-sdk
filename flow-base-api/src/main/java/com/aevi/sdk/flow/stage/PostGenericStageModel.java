@@ -15,9 +15,10 @@
 package com.aevi.sdk.flow.stage;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Response;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.BasePostGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
@@ -47,6 +48,15 @@ public class PostGenericStageModel extends BaseStageModel {
         this.outputResponse = Response.fromJson(response.toJson()); // Same data, different instance
     }
 
+    /**
+     * Create an instance from an activity context.
+     *
+     * This assumes that the activity was started via {@link BaseStageModel#processInActivity(Context, Class)}.
+     *
+     * @param activity The activity that was started via one of the means described above
+     * @return An instance of {@link PostGenericStageModel}
+     */
+    @NonNull
     public static PostGenericStageModel fromActivity(Activity activity) {
         String response = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new PostGenericStageModel(activity, Response.fromJson(response));
@@ -56,9 +66,10 @@ public class PostGenericStageModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator A communicator that can be used to send messages and/or end the communication stream
-     * @param response           The deserialised Request provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)} method
+     * @param response           The deserialised Response
      * @return An instance of {@link PostGenericStageModel}
      */
+    @NonNull
     public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response) {
         return new PostGenericStageModel(clientCommunicator, response);
     }
@@ -68,6 +79,7 @@ public class PostGenericStageModel extends BaseStageModel {
      *
      * @return The response from the main generic app
      */
+    @NonNull
     public Response getResponse() {
         return inputResponse;
     }
@@ -105,6 +117,7 @@ public class PostGenericStageModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return inputResponse.toJson();
     }

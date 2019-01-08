@@ -16,6 +16,7 @@ package com.aevi.sdk.flow.model;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -55,6 +56,12 @@ public class InternalData implements Jsonable {
     @NonNull
     public Map<String, String> getAdditionalData() {
         return additionalData;
+    }
+
+    @Nullable
+    public String getAdditionalDataValue(String key, String fallback) {
+        String value = additionalData.get(key);
+        return value != null ? value : fallback;
     }
 
     @Override
