@@ -15,7 +15,9 @@
 package com.aevi.sdk.flow.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.FlowBaseConfig;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 
@@ -31,7 +33,8 @@ public abstract class BasePostGenericService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                  @Nullable InternalData senderInternalData) {
         PostGenericStageModel postGenericStageModel = PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request));
         processResponse(postGenericStageModel);
     }

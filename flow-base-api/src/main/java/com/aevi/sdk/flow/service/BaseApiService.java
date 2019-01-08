@@ -16,10 +16,10 @@ package com.aevi.sdk.flow.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
-import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -74,19 +74,11 @@ public abstract class BaseApiService extends AbstractChannelService {
             public void accept(String message) throws Exception {
                 Log.d(TAG, "Received message: " + message);
                 AppMessage appMessage = AppMessage.fromJson(message);
-                String flowStage = null;
-                if (appMessage.getInternalData() != null && appMessage.getInternalData().getAdditionalData() != null) {
-                    flowStage = appMessage.getInternalData().getAdditionalData().get(InternalDataKeys.FLOW_STAGE);
-                }
-                if (flowStage == null) {
-                    flowStage = "UNKNOWN";
-                }
-
                 checkVersions(appMessage, internalData);
                 String messageData = appMessage.getMessageData();
                 switch (appMessage.getMessageType()) {
                     case REQUEST_MESSAGE:
-                        handleRequestMessage(clientCommunicator, messageData, flowStage);
+                        handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
                         break;
                     case FORCE_FINISH_MESSAGE:
                         onForceFinish(clientCommunicator);
@@ -119,10 +111,10 @@ public abstract class BaseApiService extends AbstractChannelService {
         }
     }
 
-    private void handleRequestMessage(ClientCommunicator clientCommunicator, String messageData, String flowStage) {
+    private void handleRequestMessage(ClientCommunicator clientCommunicator, String requestData, InternalData internalData) {
         try {
             clientCommunicator.sendAck();
-            processRequest(clientCommunicator, messageData, flowStage);
+            processRequest(clientCommunicator, requestData, internalData);
         } catch (Throwable t) {
             clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ERROR, String.format("Flow service failed with exception: %s", t.getMessage()));
             throw t;
@@ -145,9 +137,10 @@ public abstract class BaseApiService extends AbstractChannelService {
      *
      * @param clientCommunicator The client communicator for this stage
      * @param request            The request to be processed
-     * @param flowStage          The flow stage this request is being called for
+     * @param senderInternalData Associated internal data from client
      */
-    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage);
+    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                           @Nullable InternalData senderInternalData);
 
     /**
      * Called externally when your application needs to abort what it is doing and finish anything that may be running including an Activity that you may have started.

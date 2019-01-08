@@ -26,54 +26,59 @@ public class ClientCommunicator {
     private static final String TAG = ClientCommunicator.class.getSimpleName();
 
     private final ChannelServer channelServer;
-    private final InternalData internalData;
+    private final InternalData responseInternalData;
     private final Set<ActivityHelper> activityHelpers;
 
-    ClientCommunicator(ChannelServer channelServer, InternalData internalData) {
+    ClientCommunicator(ChannelServer channelServer, InternalData responseInternalData) {
         this.channelServer = channelServer;
-        this.internalData = internalData;
+        this.responseInternalData = responseInternalData;
         this.activityHelpers = new HashSet<>();
     }
 
     void sendAck() {
         Log.d(TAG, "Sending ack");
-        AppMessage appMessage = new AppMessage(REQUEST_ACK_MESSAGE, internalData);
+        AppMessage appMessage = new AppMessage(REQUEST_ACK_MESSAGE, responseInternalData);
         channelServer.send(appMessage.toJson());
     }
 
+    public InternalData getResponseInternalData() {
+        return responseInternalData;
+    }
+
     /**
-     * Send a message to the client and end the communication stream
+     * Send a message to the client.
+     *
+     * @param message The message
+     */
+    public void sendMessage(AppMessage message) {
+        if (channelServer != null) {
+            channelServer.send(message.toJson());
+        }
+    }
+
+    /**
+     * Send response to the client.
      *
      * @param response The response to send
      */
-    public void sendResponseAndEnd(@NonNull String response) {
-        if (channelServer != null) {
-            AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, response, internalData);
-            channelServer.send(appMessage.toJson());
-            channelServer.sendEndStream();
-        }
+    public void sendResponse(@NonNull String response) {
+        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, response, responseInternalData);
+        sendMessage(appMessage);
     }
 
     /**
-     * Send an error message to the client
-     *
-     * @param flowError The {@link FlowException} to send
-     */
-    public void send(FlowException flowError) {
-        if (channelServer != null) {
-            channelServer.send(flowError.toJson());
-        }
-    }
-
-    /**
-     * Finish your flow service with no response
+     * Finish your flow service with no response.
      */
     public void finishWithNoResponse() {
-        if (channelServer != null) {
-            AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, EMPTY_DATA, internalData);
-            channelServer.send(appMessage.toJson());
-            channelServer.sendEndStream();
-        }
+        AppMessage appMessage = new AppMessage(RESPONSE_MESSAGE, EMPTY_DATA, responseInternalData);
+        sendMessage(appMessage);
+    }
+
+    /**
+     * End the stream with the client.
+     */
+    public void endStream() {
+        channelServer.sendEndStream();
     }
 
     /**
@@ -85,14 +90,11 @@ public class ClientCommunicator {
      * @param message   A human readable message to explain the error
      */
     public void sendResponseAsErrorAndEnd(@NonNull String errorCode, @NonNull String message) {
-        if (channelServer != null) {
-            FlowException flowServiceException = new FlowException(errorCode, message);
-            String msg = flowServiceException.toJson();
-            Log.d(TAG, "Sending error message: " + msg);
-            AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, msg, internalData);
-            channelServer.send(errorMessage.toJson());
-            channelServer.sendEndStream();
-        }
+        FlowException flowServiceException = new FlowException(errorCode, message);
+        String msg = flowServiceException.toJson();
+        Log.d(TAG, "Sending error message: " + msg);
+        AppMessage errorMessage = new AppMessage(FAILURE_MESSAGE, msg, responseInternalData);
+        sendMessage(errorMessage);
     }
 
     /**
@@ -105,8 +107,8 @@ public class ClientCommunicator {
      */
     public void notifyBackgroundProcessing() {
         Log.d(TAG, "notifyBackgroundProcessing");
-        internalData.addAdditionalData(BACKGROUND_PROCESSING, "true");
-        sendResponseAndEnd(EMPTY_DATA);
+        responseInternalData.addAdditionalData(BACKGROUND_PROCESSING, "true");
+        sendResponse(EMPTY_DATA);
     }
 
     Observable<String> subscribeToMessages() {

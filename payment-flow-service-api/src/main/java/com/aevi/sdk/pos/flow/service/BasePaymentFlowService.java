@@ -1,7 +1,9 @@
 package com.aevi.sdk.pos.flow.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
@@ -15,6 +17,7 @@ import com.aevi.sdk.pos.flow.stage.*;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.STAGE_NOT_SUPPORTED;
 import static com.aevi.sdk.flow.constants.FlowStages.*;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
  * Base class for payment flow services that wish to handle a request in a service directly.
@@ -30,7 +33,9 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                  @Nullable InternalData senderInternalData) {
+        String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
         Log.d(BasePaymentFlowService.class.getSimpleName(), "Mapping request for flow stage: " + flowStage);
         mapStageToCallback(flowStage, clientCommunicator, request);
     }
@@ -44,7 +49,6 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      */
     protected void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
         try {
-
             if (flowStage != null) {
                 switch (flowStage) {
                     case PRE_FLOW:
@@ -88,15 +92,6 @@ public abstract class BasePaymentFlowService extends BaseApiService {
             }
         } catch (StageNotImplementedException e) {
             returnStageNotImplemented(clientCommunicator, e.stage);
-        }
-    }
-
-    private static class StageNotImplementedException extends RuntimeException {
-
-        final String stage;
-
-        StageNotImplementedException(String stage) {
-            this.stage = stage;
         }
     }
 
@@ -215,5 +210,14 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     private void returnStageNotImplemented(ClientCommunicator clientCommunicator, String stage) {
         clientCommunicator
                 .sendResponseAsErrorAndEnd(STAGE_NOT_SUPPORTED, String.format("[%s] Stage handling not implemented by this flow service.", stage));
+    }
+
+    private static class StageNotImplementedException extends RuntimeException {
+
+        final String stage;
+
+        StageNotImplementedException(String stage) {
+            this.stage = stage;
+        }
     }
 }

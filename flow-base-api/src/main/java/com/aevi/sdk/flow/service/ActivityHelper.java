@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
+import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowException;
 import io.reactivex.functions.Consumer;
 
@@ -22,6 +23,7 @@ import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 public class ActivityHelper {
 
     public static final String ACTIVITY_REQUEST_KEY = "request";
+    public static final String EXTRAS_INTERNAL_DATA_KEY = "internalData";
 
     private final ClientCommunicator clientCommunicator;
     private final Intent activityIntent;
@@ -59,7 +61,7 @@ public class ActivityHelper {
      *
      * @return An {@link ObservableActivityHelper} object that can be used to get an observable stream of events for the lifecycle of this activity
      */
-    public ObservableActivityHelper<String> launchActivity() {
+    public ObservableActivityHelper<AppMessage> launchActivity() {
         activityIntent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         if (request != null) {
             activityIntent.putExtra(ACTIVITY_REQUEST_KEY, request);
@@ -68,11 +70,11 @@ public class ActivityHelper {
         if (extras != null) {
             activityIntent.putExtras(extras);
         }
-        ObservableActivityHelper<String> helper = ObservableActivityHelper.createInstance(context, activityIntent);
-        helper.startObservableActivity().subscribe(new Consumer<String>() {
+        ObservableActivityHelper<AppMessage> helper = ObservableActivityHelper.createInstance(context, activityIntent);
+        helper.startObservableActivity().subscribe(new Consumer<AppMessage>() {
             @Override
-            public void accept(@NonNull String response) {
-                clientCommunicator.sendResponseAndEnd(response);
+            public void accept(@NonNull AppMessage responseMessage) {
+                clientCommunicator.sendMessage(responseMessage);
             }
         }, new Consumer<Throwable>() {
             @Override
@@ -83,9 +85,6 @@ public class ActivityHelper {
         return helper;
     }
 
-    /**
-     * Can be overriden to handle when the activity responds with an error / exception.
-     */
     private void handleActivityException(Throwable throwable, ClientCommunicator clientCommunicator) {
         if (throwable instanceof FlowException) {
             FlowException me = (FlowException) throwable;
@@ -103,7 +102,7 @@ public class ActivityHelper {
      */
     public void finishLaunchedActivity() {
         try {
-            ObservableActivityHelper<String> helper = ObservableActivityHelper.getInstance(activityId);
+            ObservableActivityHelper<AppMessage> helper = ObservableActivityHelper.getInstance(activityId);
             helper.sendEventToActivity(FINISH);
         } catch (NoSuchInstanceException e) {
             // Ignore

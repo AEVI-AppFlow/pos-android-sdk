@@ -19,8 +19,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.sdk.flow.constants.FlowStages;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
@@ -29,6 +31,7 @@ import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.IntentActions.*;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
@@ -44,7 +47,9 @@ public class ActivityProxyService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                  @Nullable InternalData senderInternalData) {
+        String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
         if (flowStage.equals(FlowStages.STATUS_UPDATE)) {
             Log.e(TAG, "Status update stage must be handled in a service context only - ignoring stage for: " + getPackageName());
             clientCommunicator.finishWithNoResponse();
@@ -52,8 +57,8 @@ public class ActivityProxyService extends BaseApiService {
         }
         Intent activityIntent = getActivityIntent(flowStage);
         if (!isActivityDefined(activityIntent)) {
-            Log.e(TAG,
-                  "No activity defined to handle: " + activityIntent.getAction() + " in app: " + getPackageName() + "! Finishing with no response");
+            Log.e(TAG, "No activity defined to handle: " + activityIntent.getAction()
+                    + " in app: " + getPackageName() + "! Finishing with no response");
             clientCommunicator.finishWithNoResponse();
             return;
         }
