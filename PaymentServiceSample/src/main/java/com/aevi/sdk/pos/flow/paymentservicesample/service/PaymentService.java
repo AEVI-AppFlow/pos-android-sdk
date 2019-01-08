@@ -21,6 +21,8 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
+
 /**
  * This service illustrates an explicit service implementation which gives full control over how and where to process the requests.
  *
@@ -30,16 +32,19 @@ public class PaymentService extends BasePaymentFlowService {
 
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onGeneric");
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
     }
 }

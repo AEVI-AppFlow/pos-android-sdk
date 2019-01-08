@@ -38,6 +38,7 @@ import java.util.List;
 
 import static com.aevi.sdk.flow.constants.PaymentMethods.*;
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
@@ -185,6 +186,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
+        preTransactionModel.addAuditEntry(INFO, "Just a hello from %s", getClass().getSimpleName());
         preTransactionModel.sendResponse();
         finish();
     }
