@@ -16,7 +16,7 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -66,6 +66,7 @@ public class PreFlowModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PreFlowModel}
      */
+    @NonNull
     public static PreFlowModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new PreFlowModel(activity, Payment.fromJson(request));
@@ -75,9 +76,10 @@ public class PreFlowModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised Payment
      * @return An instance of {@link PreFlowModel}
      */
+    @NonNull
     public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request) {
         return new PreFlowModel(clientCommunicator, request);
     }
@@ -87,6 +89,7 @@ public class PreFlowModel extends BaseStageModel {
      *
      * @return The payment model used to initiate the flow
      */
+    @NonNull
     public Payment getPayment() {
         return payment;
     }
@@ -99,6 +102,7 @@ public class PreFlowModel extends BaseStageModel {
      *
      * @return the payment builder that can be used to update {@link Payment} data for the flow
      */
+    @NonNull
     public PaymentBuilder getPaymentBuilder() {
         return paymentBuilder;
     }
@@ -133,6 +137,7 @@ public class PreFlowModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return payment.toJson();
     }
