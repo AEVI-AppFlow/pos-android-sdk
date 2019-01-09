@@ -16,8 +16,8 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -68,6 +68,7 @@ public class PostTransactionModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PostTransactionModel}
      */
+    @NonNull
     public static PostTransactionModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new PostTransactionModel(activity, TransactionSummary.fromJson(request));
@@ -77,9 +78,10 @@ public class PostTransactionModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionSummary
      * @return An instance of {@link PostTransactionModel}
      */
+    @NonNull
     public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request) {
         return new PostTransactionModel(clientCommunicator, request);
     }
@@ -89,6 +91,7 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @return The transaction summary
      */
+    @NonNull
     public TransactionSummary getTransactionSummary() {
         return transactionSummary;
     }
@@ -130,6 +133,7 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         return flowResponse;
     }
@@ -153,6 +157,7 @@ public class PostTransactionModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionSummary.toJson();
     }

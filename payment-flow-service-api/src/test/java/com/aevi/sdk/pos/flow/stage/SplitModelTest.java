@@ -1,5 +1,6 @@
 package com.aevi.sdk.pos.flow.stage;
 
+import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.model.*;
 import org.junit.Before;
@@ -95,8 +96,8 @@ public class SplitModelTest {
     }
 
     private FlowResponse getSentFlowResponse() {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(clientCommunicator).sendResponseAndEnd(captor.capture());
-        return FlowResponse.fromJson(captor.getValue());
+        ArgumentCaptor<AppMessage> captor = ArgumentCaptor.forClass(AppMessage.class);
+        verify(clientCommunicator).sendMessage(captor.capture());
+        return FlowResponse.fromJson(captor.getValue().getMessageData());
     }
 }

@@ -17,8 +17,8 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
@@ -72,6 +72,7 @@ public class SplitModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link SplitModel}
      */
+    @NonNull
     public static SplitModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new SplitModel(activity, SplitRequest.fromJson(request));
@@ -81,9 +82,10 @@ public class SplitModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised SplitRequest
      * @return An instance of {@link SplitModel}
      */
+    @NonNull
     public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request) {
         return new SplitModel(clientCommunicator, request);
     }
@@ -93,6 +95,7 @@ public class SplitModel extends BaseStageModel {
      *
      * @return The split request.
      */
+    @NonNull
     public SplitRequest getSplitRequest() {
         return splitRequest;
     }
@@ -242,6 +245,7 @@ public class SplitModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
@@ -268,6 +272,7 @@ public class SplitModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return splitRequest.toJson();
     }

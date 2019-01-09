@@ -28,6 +28,8 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
 import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
+
 public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 
     private PostTransactionModel postTransactionModel;
@@ -63,6 +65,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onFinish() {
+        postTransactionModel.addAuditEntry(INFO, "Just a hello from %s", getClass().getSimpleName());
         postTransactionModel.sendResponse();
         finish();
     }

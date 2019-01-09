@@ -16,8 +16,10 @@ package com.aevi.sdk.flow.stage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseStatusUpdateService;
@@ -48,6 +50,7 @@ public class StatusUpdateModel extends BaseStageModel {
      * @param request            The deserialised Payment provided as a string
      * @return An instance of {@link StatusUpdateModel}
      */
+    @NonNull
     public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request) {
         return new StatusUpdateModel(clientCommunicator, request);
     }
@@ -57,6 +60,7 @@ public class StatusUpdateModel extends BaseStageModel {
      *
      * @return The request
      */
+    @NonNull
     public Request getRequest() {
         return request;
     }
@@ -78,13 +82,15 @@ public class StatusUpdateModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return request.toJson();
     }
 
     // Status update handlers are not allowed to launch into foreground
     @Override
-    public ObservableActivityHelper<String> processInActivity(Context context, Intent activityIntent, String requestJson) {
+    @NonNull
+    public ObservableActivityHelper<AppMessage> processInActivity(Context context, Intent activityIntent, String requestJson) {
         throw new IllegalStateException("Starting activities is not allowed for status updates");
     }
 }

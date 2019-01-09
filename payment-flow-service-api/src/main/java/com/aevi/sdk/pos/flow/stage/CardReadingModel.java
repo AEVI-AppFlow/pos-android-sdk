@@ -17,7 +17,7 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.Card;
@@ -64,6 +64,7 @@ public class CardReadingModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link CardReadingModel}
      */
+    @NonNull
     public static CardReadingModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new CardReadingModel(activity, TransactionRequest.fromJson(request));
@@ -73,9 +74,10 @@ public class CardReadingModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionRequest
      * @return An instance of {@link CardReadingModel}
      */
+    @NonNull
     public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
         return new CardReadingModel(clientCommunicator, request);
     }
@@ -85,6 +87,7 @@ public class CardReadingModel extends BaseStageModel {
      *
      * @return The transaction request
      */
+    @NonNull
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
     }
@@ -142,6 +145,7 @@ public class CardReadingModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionRequest.toJson();
     }

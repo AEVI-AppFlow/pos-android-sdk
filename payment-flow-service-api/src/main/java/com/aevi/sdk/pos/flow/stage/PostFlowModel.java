@@ -16,7 +16,7 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
@@ -58,6 +58,7 @@ public class PostFlowModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PostFlowModel}
      */
+    @NonNull
     public static PostFlowModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new PostFlowModel(activity, PaymentResponse.fromJson(request));
@@ -67,9 +68,10 @@ public class PostFlowModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised PaymentResponse
      * @return An instance of {@link PostFlowModel}
      */
+    @NonNull
     public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request) {
         return new PostFlowModel(clientCommunicator, request);
     }
@@ -79,6 +81,7 @@ public class PostFlowModel extends BaseStageModel {
      *
      * @return The payment response.
      */
+    @NonNull
     public PaymentResponse getPaymentResponse() {
         return paymentResponse;
     }
@@ -100,6 +103,7 @@ public class PostFlowModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return paymentResponse.toJson();
     }

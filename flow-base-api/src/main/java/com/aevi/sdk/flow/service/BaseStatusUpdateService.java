@@ -15,7 +15,9 @@
 package com.aevi.sdk.flow.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.FlowBaseConfig;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.StatusUpdateModel;
 
@@ -31,7 +33,8 @@ public abstract class BaseStatusUpdateService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                  @Nullable InternalData senderInternalData) {
         StatusUpdateModel statusUpdateModel = StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request));
         processRequest(statusUpdateModel);
     }

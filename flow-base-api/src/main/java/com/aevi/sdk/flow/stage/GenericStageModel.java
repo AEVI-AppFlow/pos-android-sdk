@@ -15,6 +15,8 @@
 package com.aevi.sdk.flow.stage;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
@@ -25,7 +27,7 @@ import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BaseGenericService}or domain implementations for various ways of getting access to this object.
+ * See {@link BaseGenericService} or domain implementations for various ways of getting access to this object.
  *
  * Call {@link #sendResponse(Response)} to send back a response.
  */
@@ -43,6 +45,15 @@ public class GenericStageModel extends BaseStageModel {
         this.request = request;
     }
 
+    /**
+     * Create an instance from an activity context.
+     *
+     * This assumes that the activity was started via {@link BaseStageModel#processInActivity(Context, Class)}.
+     *
+     * @param activity The activity that was started via one of the means described above
+     * @return An instance of {@link GenericStageModel}
+     */
+    @NonNull
     public static GenericStageModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new GenericStageModel(activity, Request.fromJson(request));
@@ -55,6 +66,7 @@ public class GenericStageModel extends BaseStageModel {
      * @param request            The deserialised Request provided as a string
      * @return An instance of {@link GenericStageModel}
      */
+    @NonNull
     public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request) {
         return new GenericStageModel(clientCommunicator, request);
     }
@@ -64,6 +76,7 @@ public class GenericStageModel extends BaseStageModel {
      *
      * @return The request
      */
+    @NonNull
     public Request getRequest() {
         return request;
     }
@@ -80,6 +93,7 @@ public class GenericStageModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return request.toJson();
     }

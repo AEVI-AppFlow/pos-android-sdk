@@ -20,7 +20,6 @@ import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -75,6 +74,7 @@ public class PreTransactionModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PreTransactionModel}
      */
+    @NonNull
     public static PreTransactionModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
         return new PreTransactionModel(activity, TransactionRequest.fromJson(request));
@@ -84,9 +84,10 @@ public class PreTransactionModel extends BaseStageModel {
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionRequest
      * @return An instance of {@link PreTransactionModel}
      */
+    @NonNull
     public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
         return new PreTransactionModel(clientCommunicator, request);
     }
@@ -96,6 +97,7 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @return The transaction request
      */
+    @NonNull
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
     }
@@ -321,6 +323,7 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
@@ -349,6 +352,7 @@ public class PreTransactionModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionRequest.toJson();
     }
