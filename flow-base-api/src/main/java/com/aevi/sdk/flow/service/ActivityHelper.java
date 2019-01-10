@@ -3,12 +3,10 @@ package com.aevi.sdk.flow.service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowException;
-import io.reactivex.functions.Consumer;
 
 import java.util.UUID;
 
@@ -71,17 +69,8 @@ public class ActivityHelper {
             activityIntent.putExtras(extras);
         }
         ObservableActivityHelper<AppMessage> helper = ObservableActivityHelper.createInstance(context, activityIntent);
-        helper.startObservableActivity().subscribe(new Consumer<AppMessage>() {
-            @Override
-            public void accept(@NonNull AppMessage responseMessage) {
-                clientCommunicator.sendMessage(responseMessage);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) {
-                handleActivityException(throwable, clientCommunicator);
-            }
-        });
+        helper.startObservableActivity().subscribe(clientCommunicator::sendMessage,
+                                                   throwable -> handleActivityException(throwable, clientCommunicator));
         return helper;
     }
 

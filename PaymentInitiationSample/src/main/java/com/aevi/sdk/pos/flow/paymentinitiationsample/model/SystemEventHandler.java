@@ -27,9 +27,7 @@ public class SystemEventHandler {
     private List<FlowEvent> receivedFlowEvents = new ArrayList<>();
 
     public void subscribeToEvents(PaymentClient paymentClient) {
-        paymentClient.subscribeToSystemEvents().subscribe(flowEvent -> {
-            receivedFlowEvents.add(flowEvent);
-        }, throwable -> Log.e(SystemEventAdapter.class.getSimpleName(), "Failed to subscribe", throwable));
+        paymentClient.subscribeToSystemEvents().subscribe(flowEvent -> receivedFlowEvents.add(flowEvent), throwable -> Log.e(SystemEventAdapter.class.getSimpleName(), "Failed to subscribe", throwable));
     }
 
     public List<FlowEvent> getReceivedFlowEvents() {

@@ -18,8 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,18 +81,8 @@ public class FlowConfigurations {
      */
     public List<String> getFlowTypes(@Nullable final String requestClass) {
         return stream()
-                .filter(new Predicate<FlowConfig>() {
-                    @Override
-                    public boolean test(FlowConfig flowConfig) throws Exception {
-                        return requestClass == null || flowConfig.getRequestClass().equals(requestClass);
-                    }
-                })
-                .map(new Function<FlowConfig, String>() {
-                    @Override
-                    public String apply(FlowConfig flowConfig) throws Exception {
-                        return flowConfig.getType();
-                    }
-                })
+                .filter(flowConfig -> requestClass == null || flowConfig.getRequestClass().equals(requestClass))
+                .map(FlowConfig::getType)
                 .toList()
                 .blockingGet();
     }
@@ -109,12 +97,7 @@ public class FlowConfigurations {
      */
     public boolean isFlowTypeSupported(final String type) {
         return stream()
-                .filter(new Predicate<FlowConfig>() {
-                    @Override
-                    public boolean test(FlowConfig flowConfig) throws Exception {
-                        return flowConfig.getType().equals(type);
-                    }
-                })
+                .filter(flowConfig -> flowConfig.getType().equals(type))
                 .count()
                 .blockingGet() > 0;
     }

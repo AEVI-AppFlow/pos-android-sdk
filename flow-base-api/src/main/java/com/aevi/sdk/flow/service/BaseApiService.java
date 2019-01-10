@@ -69,33 +69,25 @@ public abstract class BaseApiService extends AbstractChannelService {
     protected void onNewClient(ChannelServer channelServer, String packageName) {
 
         final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
-        clientCommunicator.subscribeToMessages().subscribe(new Consumer<String>() {
-            @Override
-            public void accept(String message) throws Exception {
-                Log.d(TAG, "Received message: " + message);
-                AppMessage appMessage = AppMessage.fromJson(message);
-                checkVersions(appMessage, internalData);
-                String messageData = appMessage.getMessageData();
-                switch (appMessage.getMessageType()) {
-                    case REQUEST_MESSAGE:
-                        handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
-                        break;
-                    case FORCE_FINISH_MESSAGE:
-                        onForceFinish(clientCommunicator);
-                        break;
-                    default:
-                        String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
-                        Log.e(TAG, msg);
-                        clientCommunicator.sendResponseAsErrorAndEnd(INVALID_MESSAGE_TYPE, msg);
-                        break;
-                }
+        clientCommunicator.subscribeToMessages().subscribe(message -> {
+            Log.d(TAG, "Received message: " + message);
+            AppMessage appMessage = AppMessage.fromJson(message);
+            checkVersions(appMessage, internalData);
+            String messageData = appMessage.getMessageData();
+            switch (appMessage.getMessageType()) {
+                case REQUEST_MESSAGE:
+                    handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
+                    break;
+                case FORCE_FINISH_MESSAGE:
+                    onForceFinish(clientCommunicator);
+                    break;
+                default:
+                    String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
+                    Log.e(TAG, msg);
+                    clientCommunicator.sendResponseAsErrorAndEnd(INVALID_MESSAGE_TYPE, msg);
+                    break;
             }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Log.e(TAG, "Failed while parsing message from client", throwable);
-            }
-        });
+        }, throwable -> Log.e(TAG, "Failed while parsing message from client", throwable));
     }
 
     static void checkVersions(AppMessage appMessage, InternalData checkWith) {
