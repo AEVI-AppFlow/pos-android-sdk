@@ -49,7 +49,7 @@ public class Basket extends BaseModel {
      * @param basketName The name of the basket
      */
     public Basket(String basketName) {
-        this(basketName, new ArrayList<BasketItem>());
+        this(basketName, new ArrayList<>());
     }
 
     /**

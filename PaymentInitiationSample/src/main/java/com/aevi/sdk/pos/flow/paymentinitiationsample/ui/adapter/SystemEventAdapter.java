@@ -54,9 +54,9 @@ public class SystemEventAdapter extends AbstractListWithMenuAdapter<FlowEvent, S
     }
 
     public class ViewHolder extends AbstractListWithMenuAdapter.ViewHolder {
-        public TextView eventType;
-        public TextView eventTrigger;
-        public TextView eventData;
+        public final TextView eventType;
+        public final TextView eventTrigger;
+        public final TextView eventData;
 
         ViewHolder(View view) {
             super(view);

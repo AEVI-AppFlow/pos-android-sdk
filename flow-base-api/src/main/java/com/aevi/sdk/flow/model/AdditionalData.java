@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additionaldata-howto" target="_blank">AdditionalData Howto</a>
  */
+@SuppressWarnings({"unchecked", "ConstantConditions"})
 public class AdditionalData implements Jsonable {
 
     private final Map<String, JsonOption> data;

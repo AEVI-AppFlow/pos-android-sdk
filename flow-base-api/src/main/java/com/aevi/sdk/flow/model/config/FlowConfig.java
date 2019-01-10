@@ -60,7 +60,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         this.apiMajorVersion = apiMajorVersion;
         this.description = description;
         this.restrictedToApp = restrictedToApp;
-        this.stages = stages != null ? stages : new ArrayList<FlowStage>();
+        this.stages = stages != null ? stages : new ArrayList<>();
         parseStageHierarchy();
     }
 

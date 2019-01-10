@@ -60,8 +60,8 @@ public class Transaction extends BaseModel {
     }
 
     public Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData) {
-        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(),
-             new ArrayList<FlowAppInfo>());
+        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<>(),
+             new ArrayList<>());
     }
 
     Transaction(String id, Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,

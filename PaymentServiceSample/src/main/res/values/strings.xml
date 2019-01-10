@@ -4,9 +4,6 @@
     <string name="include_token">Include card token</string>
     <string name="include_cardholder_name">Include card holder name</string>
     <string name="include_emv_details">Include EMV details</string>
-    <string name="no_card">Decline</string>
-    <string name="with_card">Approve with card</string>
-    <string name="decline">Decline</string>
     <string name="approve">Approve</string>
     <string name="include_card_details">Include card details</string>
     <string name="no_token">Decline</string>
@@ -14,28 +11,11 @@
     <string name="select_processed_amounts">Select processed amounts</string>
     <string name="select_payment_method_used">Select payment method used</string>
 
-    <string name="type_payment">payment</string>
-    <string name="type_reversal">reversal</string>
-    <string name="type_sale">sale</string>
-    <string name="type_refund">refund</string>
-    <string name="type_tokenisation">tokenisation</string>
-    <string name="type_response_redelivery">responseRedelivery</string>
-
-    <string name="pref_default_currency">Default currency</string>
-    <string name="pref_currencies">Select currencies</string>
-    <string name="pref_request_types">Select request types</string>
-    <string name="pref_transaction_types">Select transaction types</string>
-    <string name="pref_currencies_message">Choose currencies to be supported by this payment app</string>
-    <string name="pref_supports_read_card">Support separate read card step</string>
-    <string name="pref_can_tokenize">Can tokenize</string>
     <string name="send_response">Send response</string>
-    <string name="view_request_data">View request</string>
-    <string name="card_payment_stage">Payment stage: PAYMENT_CARD_READING</string>
     <string name="defaults_to_requested_amounts">(Defaults to requested amounts)</string>
     <string name="pss_txn_processing">Transaction processing</string>
     <string name="pss_card_reading">Payment card reading</string>
     <string name="pss_select_token">Select token</string>
-    <string name="sample_settings">Payment Service Settings</string>
     <string name="tokenisation_overview">For tokenisation, a real payment app would typically read a payment card and generate a token from that. In this sample, we generate fake cards and tokens to avoid hardware dependencies. Please choose a card below.</string>
 
     <string name="card_reading_help">Payment card reading is an optional stage for payment applications to support. If it is supported, customer would present their payment card at this point and the payment application would pass back card details like scheme, tokens, etc for flow applications to use for processing.\n\nThe following post-card-reading step is executed regardless of whether this stage was called, and whether or not a payment app returns card details.

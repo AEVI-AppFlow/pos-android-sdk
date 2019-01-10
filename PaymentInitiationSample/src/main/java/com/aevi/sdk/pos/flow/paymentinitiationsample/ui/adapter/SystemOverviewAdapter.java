@@ -33,7 +33,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
 
     private final OnFlowConfigClickListener listener;
 
-    private String[] fpsSettingsLabels;
+    private final String[] fpsSettingsLabels;
     private int[] fpsSettingsResIds;
 
     private final List<FlowConfig> flowConfigs;

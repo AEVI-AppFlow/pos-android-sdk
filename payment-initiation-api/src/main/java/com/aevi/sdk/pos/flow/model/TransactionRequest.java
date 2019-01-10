@@ -175,7 +175,7 @@ public class TransactionRequest extends BaseModel {
      */
     @NonNull
     public List<Basket> getBaskets() {
-        return baskets != null ? baskets : new ArrayList<Basket>();
+        return baskets != null ? baskets : new ArrayList<>();
     }
 
     /**

@@ -497,7 +497,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addGenericDataFields(List<Pair<String, String>> itemList, AdditionalData additionalData) {
         for (String key : additionalData.getKeys()) {
             Object value = additionalData.getValue(key);
-            if (value != null && (value instanceof Number || value instanceof String)) {
+            if (value instanceof Number || value instanceof String) {
                 itemList.add(getStringPair(key, value));
             } else if (value instanceof Basket) {
                 itemList.add(getStringPair(key, ((Basket) value).getBasketName()));

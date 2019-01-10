@@ -154,7 +154,7 @@ public class BasketItem {
      */
     @NonNull
     public Map<String, String> getReferences() {
-        return references != null ? references : new HashMap<String, String>();
+        return references != null ? references : new HashMap<>();
     }
 
     @Override

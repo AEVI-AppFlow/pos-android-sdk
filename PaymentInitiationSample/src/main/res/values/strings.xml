@@ -10,20 +10,6 @@
     <string name="payment_app_used">Payment service used</string>
     <string name="num_transactions">Number of transactions</string>
 
-    <array name="payment_response_labels">
-        <item>@string/transaction_type</item>
-        <item>@string/overall_status</item>
-        <item>@string/num_transactions</item>
-        <item>@string/outcome</item>
-        <item>@string/failure_reason</item>
-    </array>
-
-    <array name="generic_response_labels">
-        <item>@string/request_type</item>
-        <item>@string/outcome</item>
-        <item>@string/outcome_message</item>
-    </array>
-
     <string name="transaction_id">Transaction id</string>
     <string name="transaction_status">Transaction status</string>
     <string name="response_code">Response code</string>
@@ -34,72 +20,37 @@
 
     <string name="customer">Customer</string>
 
-    <string name="transaction_type_sale">Sale</string>
-    <string name="transaction_type_refund">Refund</string>
-    <string name="transaction_type_reversal">Reversal</string>
-    <string name="transaction_type_preauthorisation">Pre-authorisation</string>
-    <string name="transaction_type_preauthcompletion">Completion</string>
-
     <string name="close">Close</string>
-    <string name="transactions_performed">Transactions performed</string>
     <string name="payment_result">Payment flow completed</string>
     <string name="payment_error_result">Payment error</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
-
-    <string name="check_split">Split</string>
-    <string name="total">Total</string>
-
-
-    <string name="title_status">%1$s &#8212; Status: %2$s &#8212; Failure: %3$s</string>
-    <string name="title_customer">%1$s</string>
-
-    <string name="no_customer_name">No customer used</string>
-
-    <string name="record_title">Transaction record</string>
-
-    <string name="title_select_payment_service">Select a payment service</string>
     <string name="title_select_flow_service">Select a flow service</string>
     <string name="title_select_device">Connected devices</string>
-
-    <string name="remove">Remove choice</string>
-    <string name="pay">PAY</string>
 
     <string name="choose_api_function">Choose API function</string>
     <string name="na">N/A</string>
 
     <string name="no_devices_found">No connected devices were found</string>
     <string name="no_flow_services_found">No flow services were found</string>
-    <string name="no_payment_services_found">No payment services were found</string>
 
     <string name="service_label_id">Id</string>
     <string name="service_label_vendor">Vendor</string>
     <string name="service_label_app_version">Application Version</string>
     <string name="service_label_api_version">API Version</string>
-    <string name="service_label_payment_methods">Payment methods</string>
     <string name="service_label_flow_types">Flow types</string>
     <string name="service_label_flow_info">Defined in flows</string>
     <string name="service_label_request_types">Custom request types</string>
     <string name="service_label_currencies">Currencies</string>
-    <string name="service_label_transaction_types">Transaction types</string>
     <string name="service_label_accessible_mode">Accessibility mode supported</string>
     <string name="service_label_supported_data_keys">Supported data keys</string>
 
-    <string name="ps_label_terminal_id">Terminal Id</string>
-    <string name="ps_label_merchant_ids">Merchant Ids</string>
-    <string name="ps_label_default_currency">Default currency</string>
-    <string name="ps_label_manual_entry">Allows manual entry</string>
-    <string name="ps_label_print_receipts">Will print receipts</string>
-    <string name="ps_label_card_reading">Supports flow card reading</string>
-
     <string name="fs_label_stages">Flow stages</string>
-    <string name="fs_label_req_card_token">Requires card token</string>
     <string name="fs_label_can_adjust_amounts">Can adjust amounts</string>
     <string name="fs_label_can_pay_amounts">Can pay amounts</string>
     <string name="initiate_payment">Initiate payment</string>
     <string name="process_request">Process request</string>
-    <string name="choose_a_transaction_type">Choose a transaction type</string>
     <string name="choose_a_currency">Choose a currency</string>
     <string name="add_basket_or_configure_manual_amounts">Add basket or select amounts</string>
     <string name="add_basket">Add basket</string>
@@ -124,15 +75,10 @@
     <string name="initiate_request">Initiate request</string>
     <string name="choose_a_request_type">Choose request type</string>
     <string name="generic_result">Generic flow outcome</string>
-    <string name="or">or</string>
     <string name="system_events">System events</string>
     <string name="no_events">No events received. Try changing some FPS setting/flow apps.</string>
-    <string name="seconds">\u0020seconds</string>
     <string name="split_response_timeout">Split response timeout</string>
-    <string name="enabled">enabled</string>
-    <string name="disabled">disabled</string>
     <string name="multi_device">Multi-device enabled</string>
-    <string name="split_support">Spli</string>
     <string name="currency_change">Allow currency conversion</string>
     <string name="payment_response_timeout">Payment response timeout</string>
     <string name="flow_response_timeout">Flow response timeout</string>
@@ -143,15 +89,9 @@
     <string name="filter_services_by_flow_type">Filter services by flow type</string>
     <string name="always_allow_preflow">Always allow PRE_FLOW</string>
     <string name="enable_legacy_pas">Enable legacy payment apps</string>
-    <string name="request_stages">Request stages</string>
-    <string name="flow_config">Flow config</string>
-    <string name="system_settings">System settings</string>
-    <string name="merchant_settings">Merchant settings</string>
-    <string name="flow_configurations">Flow configurations</string>
     <string name="there_are_no_payment_services_available_on_this_device_please_install_enable_one_and_try_again">There
         are no flows and/or flow services available on this device. Please install relevant apps and try again.
     </string>
-    <string name="setup_model">Configure</string>
     <string name="initiation_help">Unlike the generic (non-payment) requests which involves calling a single app and getting
         a response back, the Payment scenarios are a bit more involved. Each flow type has an associated flow,
         which consists of one to many stages during which applications may be called to read and/or augment transaction

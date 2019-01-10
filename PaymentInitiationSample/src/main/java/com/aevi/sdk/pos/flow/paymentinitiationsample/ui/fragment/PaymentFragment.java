@@ -81,7 +81,7 @@ public class PaymentFragment extends BaseObservableFragment {
     @BindView(R.id.send)
     Button send;
 
-    private PaymentBuilder paymentBuilder = new PaymentBuilder();
+    private final PaymentBuilder paymentBuilder = new PaymentBuilder();
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
     private DropDownHelper dropDownHelper;

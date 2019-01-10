@@ -22,9 +22,4 @@
         <item>0.00</item>
     </string-array>
 
-    <array name="fragment_tabs">
-        <item>@string/setup_model</item>
-        <item>@string/view_model</item>
-    </array>
-
 </resources>

@@ -34,11 +34,11 @@ public abstract class BaseServiceInfoAdapter<T> extends RecyclerView.Adapter<Rec
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    protected Context context;
+    protected final Context context;
     protected T info;
-    protected String yes, no;
-    protected String[] labels;
-    protected int[] resIds;
+    protected final String yes, no;
+    protected final String[] labels;
+    protected final int[] resIds;
 
     public BaseServiceInfoAdapter(Context context, int labelsTypedArrayResource, T info) {
         this.context = context;

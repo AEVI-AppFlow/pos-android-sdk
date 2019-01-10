@@ -47,6 +47,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
         internalData.setSenderPackageName(getPackageName());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onNewClient(final ChannelServer channelServer, final String packageName) {
         sendAck(channelServer);
@@ -57,7 +58,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
             if (FLOW_PROCESSING_SERVICE.equals(appMessage.getInternalData().getSenderPackageName())) {
                 if (AppMessageTypes.RESPONSE_MESSAGE.equals(appMessage.getMessageType())) {
                     Response response = Response.fromJson(appMessage.getMessageData());
-                    RESPONSE unwrapped = null;
+                    RESPONSE unwrapped;
                     if (responseClass.equals(Response.class)) {
                         unwrapped = (RESPONSE) response;
                     } else {
