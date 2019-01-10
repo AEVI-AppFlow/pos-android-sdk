@@ -23,7 +23,6 @@ import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.stage.BaseStageModel;
-import io.reactivex.functions.Consumer;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
