@@ -38,7 +38,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
     private Set<String> stages;
-    private Map<String, String[]> flowAndStagesDefinitions;
+    private final Map<String, String[]> flowAndStagesDefinitions;
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
@@ -56,9 +56,9 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
-        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<String>();
-        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
-        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
+        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<>();
+        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<>();
+        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();

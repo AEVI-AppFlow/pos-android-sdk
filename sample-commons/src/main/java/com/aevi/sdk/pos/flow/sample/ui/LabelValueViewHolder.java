@@ -22,8 +22,8 @@ import com.aevi.sdk.pos.flow.sample.R;
 
 public class LabelValueViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView label;
-    public TextView value;
+    public final TextView label;
+    public final TextView value;
 
     LabelValueViewHolder(View view) {
         super(view);

@@ -57,7 +57,7 @@ public class Amounts implements Jsonable {
      * @param currency   The ISO-4217 currency code
      */
     public Amounts(long baseAmount, String currency) {
-        this(baseAmount, currency, new HashMap<String, Long>());
+        this(baseAmount, currency, new HashMap<>());
     }
 
     /**
@@ -67,6 +67,8 @@ public class Amounts implements Jsonable {
      */
     public Amounts(Amounts from) {
         this(from.baseAmount, from.currency, from.additionalAmounts);
+        currencyExchangeRate = from.currencyExchangeRate;
+        originalCurrency = from.originalCurrency;
     }
 
     /**
@@ -81,7 +83,7 @@ public class Amounts implements Jsonable {
         checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
         this.baseAmount = baseAmount;
         this.currency = currency;
-        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<String, Long>();
+        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<>();
     }
 
     /**

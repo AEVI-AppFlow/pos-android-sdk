@@ -6,11 +6,9 @@
     <string name="flow_type">Flow type</string>
     <string name="request_type">Request type</string>
     <string name="request_flow">Request flow</string>
-    <string name="overall_status">All transactions approved</string>
     <string name="outcome">Outcome</string>
     <string name="outcome_message">Outcome message</string>
     <string name="failure_reason">Failure reason</string>
-    <string name="payment_app_used">Payment service used</string>
     <string name="num_transactions">Number of transactions</string>
 
     <string name="base_amount">Base amount</string>
@@ -29,14 +27,8 @@
     <string name="id">Id</string>
 
     <string name="transaction_id">Transaction id</string>
-    <string name="transaction_status">Transaction status</string>
     <string name="response_code">Response code</string>
-    <string name="amount_charged">Amount charged</string>
-    <string name="payment_type">Payment method</string>
-    <string name="card_used">Card used</string>
-    <string name="card_used_value">%1$s %2$s %3$s</string>
 
-    <string name="customer">Customer</string>
     <string name="split_enabled">Split enabled</string>
     <string name="basket_name">Basket name</string>
     <string name="basket_total">Basket total</string>
@@ -49,7 +41,6 @@
     <string name="payment_stage">Payment stage</string>
     <string name="expiry_date">Expiry date</string>
     <string name="card_details">Card details</string>
-    <string name="request_overview">Request overview</string>
     <string name="masked_pan">Masked PAN</string>
     <string name="cardholder_name">Cardholder name</string>
     <string name="payment_model_overview">Payment model data</string>
@@ -62,7 +53,6 @@
     <string name="card_response_model_overview">CardResponse model data</string>
     <string name="payment_method">Payment method</string>
     <string name="cancel_requested">Cancel requested</string>
-    <string name="split_requested">Split requested</string>
     <string name="flow_response_model_overview">FlowResponse model data</string>
     <string name="updated_request_amounts">Updated request amounts</string>
     <string name="paid_amounts">Paid amounts</string>
@@ -86,7 +76,6 @@
     <string name="help">Show help</string>
     <string name="view_request">View request</string>
     <string name="view_model">View model</string>
-    <string name="flow_stage">Flow stage</string>
     <string name="flow_stages">Flow stages</string>
     <string name="payment_initiation">Payment initiation</string>
     <string name="pre_flow">Pre flow</string>

@@ -30,11 +30,7 @@ import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Completable;
-import io.reactivex.CompletableSource;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
 
 public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
@@ -56,25 +52,10 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         AppMessage appMessage = new AppMessage(AppMessageTypes.PAYMENT_FLOW_CONFIG_REQUEST, getInternalData());
         return paymentInfoMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, PaymentSettings>() {
-                    @Override
-                    public PaymentSettings apply(String json) throws Exception {
-                        return PaymentSettings.fromJson(json);
-                    }
-                })
+                .map(PaymentSettings::fromJson)
                 .singleOrError()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        paymentInfoMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends PaymentSettings>>() {
-                    @Override
-                    public SingleSource<? extends PaymentSettings> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(paymentInfoMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     @Override
@@ -90,18 +71,8 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
                 .ignoreElement()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        transactionMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
-                    @Override
-                    public CompletableSource apply(Throwable throwable) throws Exception {
-                        return Completable.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(transactionMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Completable.error(createFlowException(throwable)));
     }
 
     protected Single<PaymentResponse> initiatePaymentDirect(final Payment payment) {
@@ -113,25 +84,12 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
         return transactionMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
-                .map(new Function<String, PaymentResponse>() {
-                    @Override
-                    public PaymentResponse apply(String json) throws Exception {
-                        Response response = Response.fromJson(json);
-                        return response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, PaymentResponse.class);
-                    }
+                .map(json -> {
+                    Response response = Response.fromJson(json);
+                    return response.getResponseData().getValue(AppMessageTypes.PAYMENT_MESSAGE, PaymentResponse.class);
                 })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        transactionMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends PaymentResponse>>() {
-                    @Override
-                    public SingleSource<? extends PaymentResponse> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(transactionMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     protected AppMessage createAppMessageForPayment(Payment payment, String responseMechanism) {

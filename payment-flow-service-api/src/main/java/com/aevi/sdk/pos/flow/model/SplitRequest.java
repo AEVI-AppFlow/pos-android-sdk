@@ -34,7 +34,7 @@ public class SplitRequest extends BaseModel {
 
     // Default constructor for deserialisation
     SplitRequest() {
-        this(new Payment(), new Amounts(0, "XXX"), new ArrayList<Transaction>());
+        this(new Payment(), new Amounts(0, "XXX"), new ArrayList<>());
     }
 
     /**

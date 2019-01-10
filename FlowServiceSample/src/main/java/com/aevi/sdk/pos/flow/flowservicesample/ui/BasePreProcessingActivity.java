@@ -37,8 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.PaymentMethods.*;
-import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
+import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
 abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 

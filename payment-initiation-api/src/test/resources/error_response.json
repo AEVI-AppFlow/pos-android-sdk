@@ -19,10 +19,8 @@
     "type": "pay"
   },
   "transactions": [
-
   ],
   "options": {
-
   },
   "errorCode": "678",
   "status": "COMPLETE"

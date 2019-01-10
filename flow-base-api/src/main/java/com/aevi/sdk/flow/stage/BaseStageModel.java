@@ -33,7 +33,6 @@ import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.util.Preconditions;
-import io.reactivex.functions.Consumer;
 
 import java.lang.ref.WeakReference;
 
@@ -91,14 +90,11 @@ public abstract class BaseStageModel {
             if (intent != null) {
                 ObservableActivityHelper<String> helper = ObservableActivityHelper.getInstance(intent);
                 helper.registerForEvents(lifecycle)
-                        .subscribe(new Consumer<String>() {
-                            @Override
-                            public void accept(String event) throws Exception {
-                                if (event.equals(ActivityEvents.FINISH)) {
-                                    Activity activity = getActivity();
-                                    if (activity != null) {
-                                        activity.finish();
-                                    }
+                        .subscribe(event -> {
+                            if (event.equals(ActivityEvents.FINISH)) {
+                                Activity activity = getActivity();
+                                if (activity != null) {
+                                    activity.finish();
                                 }
                             }
                         });

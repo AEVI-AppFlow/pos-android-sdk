@@ -27,11 +27,11 @@ import java.util.Map;
  */
 public class AmountsModifier {
 
-    private String originalCurrency;
+    private final String originalCurrency;
     private String currency;
     private double exchangeRate;
     private long baseAmount;
-    private Map<String, Long> additionalAmounts;
+    private final Map<String, Long> additionalAmounts;
     private boolean hasModifications;
 
     public AmountsModifier(Amounts originalAmounts) {

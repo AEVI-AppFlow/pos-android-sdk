@@ -62,7 +62,7 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private List<Long> processedAmountsOptions = new ArrayList<>();
+    private final List<Long> processedAmountsOptions = new ArrayList<>();
     private TransactionRequest transactionRequest;
     private TransactionProcessingModel transactionProcessingModel;
     private ModelDisplay modelDisplay;

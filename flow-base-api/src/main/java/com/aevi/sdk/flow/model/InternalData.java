@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InternalData implements Jsonable {
 
-    private String senderApiVersion;
+    private final String senderApiVersion;
     private String senderPackageName;
-    private Map<String, String> additionalData = new ConcurrentHashMap<>();
+    private final Map<String, String> additionalData = new ConcurrentHashMap<>();
 
     public InternalData(String senderApiVersion) {
         this.senderApiVersion = senderApiVersion;

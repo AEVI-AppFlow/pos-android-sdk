@@ -29,9 +29,9 @@ import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
-import io.reactivex.*;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import java.util.List;
 
@@ -95,18 +95,8 @@ public abstract class BaseApiClient {
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
                 .ignoreElement()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        requestMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
-                    @Override
-                    public CompletableSource apply(Throwable throwable) throws Exception {
-                        return Completable.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(requestMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Completable.error(createFlowException(throwable)));
     }
 
     protected Single<Response> initiateRequestDirect(final Request request) {
@@ -119,26 +109,13 @@ public abstract class BaseApiClient {
         return requestMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
-                .map(new Function<String, Response>() {
-                    @Override
-                    public Response apply(String json) throws Exception {
-                        Response response = Response.fromJson(json);
-                        response.setOriginatingRequest(request);
-                        return response;
-                    }
+                .map(json -> {
+                    Response response = Response.fromJson(json);
+                    response.setOriginatingRequest(request);
+                    return response;
                 })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        requestMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends Response>>() {
-                    @Override
-                    public SingleSource<? extends Response> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(requestMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     @NonNull
@@ -150,25 +127,10 @@ public abstract class BaseApiClient {
         AppMessage appMessage = new AppMessage(DEVICE_INFO_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, Device>() {
-                    @Override
-                    public Device apply(String json) throws Exception {
-                        return Device.fromJson(json);
-                    }
-                })
+                .map(Device::fromJson)
                 .toList()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends List<Device>>>() {
-                    @Override
-                    public SingleSource<? extends List<Device>> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(deviceMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     @NonNull
@@ -180,23 +142,10 @@ public abstract class BaseApiClient {
         AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, FlowEvent>() {
-                    @Override
-                    public FlowEvent apply(String json) throws Exception {
-                        return FlowEvent.fromJson(json);
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends FlowEvent>>() {
-                    @Override
-                    public ObservableSource<? extends FlowEvent> apply(Throwable throwable) throws Exception {
-                        return Observable.error(createFlowException(throwable));
-                    }
+                .map(FlowEvent::fromJson)
+                .doFinally(deviceMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> {
+                    return Observable.error(createFlowException(throwable));
                 });
     }
 

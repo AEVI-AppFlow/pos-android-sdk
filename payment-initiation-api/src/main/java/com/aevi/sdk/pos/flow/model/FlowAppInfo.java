@@ -48,7 +48,7 @@ public class FlowAppInfo {
      * @param stage     The stage at which the flow app is called
      */
     public FlowAppInfo(String flowAppId, String stage) {
-        this(flowAppId, stage, new ArrayList<String>());
+        this(flowAppId, stage, new ArrayList<>());
     }
 
     /**
