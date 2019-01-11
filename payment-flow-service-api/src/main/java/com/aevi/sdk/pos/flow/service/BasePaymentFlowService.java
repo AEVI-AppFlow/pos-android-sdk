@@ -33,8 +33,8 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
-                                  @Nullable InternalData senderInternalData) {
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
         String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
         Log.d(BasePaymentFlowService.class.getSimpleName(), "Mapping request for flow stage: " + flowStage);
         mapStageToCallback(flowStage, clientCommunicator, request);
@@ -47,7 +47,7 @@ public abstract class BasePaymentFlowService extends BaseApiService {
      * @param clientCommunicator The client message communicator
      * @param request            The request
      */
-    protected void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
+    private void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
         try {
             if (flowStage != null) {
                 switch (flowStage) {

@@ -33,8 +33,8 @@ public abstract class BaseStatusUpdateService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
-                                  @Nullable InternalData senderInternalData) {
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
         StatusUpdateModel statusUpdateModel = StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request));
         processRequest(statusUpdateModel);
     }

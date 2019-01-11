@@ -30,7 +30,9 @@ import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static com.aevi.sdk.flow.constants.ErrorConstants.INVALID_MESSAGE_TYPE;
 
 /**
- * Base service for all API service implementations.
+ * Base class for all API service implementations.
+ *
+ * Note that this is considered an internal class and should as such not be used directly by client applications.
  */
 public abstract class BaseApiService extends AbstractChannelService {
 
@@ -65,8 +67,7 @@ public abstract class BaseApiService extends AbstractChannelService {
     }
 
     @Override
-    protected void onNewClient(ChannelServer channelServer, String packageName) {
-
+    protected final void onNewClient(ChannelServer channelServer, String packageName) {
         final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
         clientCommunicator.subscribeToMessages().subscribe(message -> {
             Log.d(TAG, "Received message: " + message);
