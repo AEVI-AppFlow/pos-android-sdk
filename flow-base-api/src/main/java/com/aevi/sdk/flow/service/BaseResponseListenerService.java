@@ -29,7 +29,7 @@ public abstract class BaseResponseListenerService extends BaseListenerService<Re
     }
 
     @Override
-    protected void notifyResponse(@NonNull Response response) {
+    protected final void notifyResponse(@NonNull Response response) {
         if (response.wasProcessedInBackground()) {
             notifyStatusUpdateResponse(response);
         } else {

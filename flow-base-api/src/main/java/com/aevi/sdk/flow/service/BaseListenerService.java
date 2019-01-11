@@ -49,7 +49,7 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void onNewClient(final ChannelServer channelServer, final String packageName) {
+    protected final void onNewClient(final ChannelServer channelServer, final String packageName) {
         sendAck(channelServer);
         channelServer.subscribeToMessages().take(1).subscribe(message -> {
             AppMessage appMessage = AppMessage.fromJson(message);

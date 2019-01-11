@@ -47,9 +47,16 @@ public class ActivityProxyService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
-                                  @Nullable InternalData senderInternalData) {
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
         String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
+        launchActivityForStage(flowStage, request, clientCommunicator);
+    }
+
+    /*
+     * Launches the activity for a stage. A subclass can override this to implement custom/conditional activity launching.
+     */
+    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator) {
         if (flowStage.equals(FlowStages.STATUS_UPDATE)) {
             Log.e(TAG, "Status update stage must be handled in a service context only - ignoring stage for: " + getPackageName());
             clientCommunicator.finishWithNoResponse();

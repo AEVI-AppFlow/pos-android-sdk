@@ -47,8 +47,9 @@ public class FlowApp implements Jsonable {
     /**
      * Construct with id and mandatory flag.
      *
-     * @param id        The application id
-     * @param mandatory Whether or not the app is mandatory for the flow to be valid
+     * @param id            The application id
+     * @param mandatory     Whether or not the app is mandatory for the flow to be valid
+     * @param conditionalOn Condition for this flow app to be eligible
      */
     public FlowApp(String id, boolean mandatory, String conditionalOn) {
         this.id = id != null ? id : "N/A";
