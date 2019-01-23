@@ -14,6 +14,7 @@
 
 package com.aevi.sdk.pos.flow.service;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,21 +24,26 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.service.ActivityHelper;
 import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
+import com.aevi.sdk.flow.stage.ServiceComponentDelegate;
 import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.List;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEvents.FINISH_IMMEDIATELY;
+import static com.aevi.sdk.flow.constants.FlowServiceEvents.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
  *
+ * Some of the functions in this class can be overridden by subclasses to alter the default behaviour.
+ *
  * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
+@SuppressLint("Registered")
 public class ActivityProxyService extends BaseApiService {
 
     private static final String TAG = ActivityProxyService.class.getSimpleName();
@@ -69,9 +75,31 @@ public class ActivityProxyService extends BaseApiService {
             clientCommunicator.finishWithNoResponse();
             return;
         }
-        ActivityHelper activityHelper = new ActivityHelper(getBaseContext(), activityIntent, clientCommunicator, request, null);
-        clientCommunicator.addActivityHelper(activityHelper);
-        activityHelper.launchActivity();
+        ServiceComponentDelegate serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator);
+        serviceComponentDelegate.processInActivity(getBaseContext(), activityIntent, request);
+        serviceComponentDelegate.getFlowServiceMessages().subscribe(event -> {
+            switch (event) {
+                case FINISH_IMMEDIATELY:
+                    // No-op, the delegate will proxy to activity
+                    break;
+                case RESUME_USER_INTERFACE:
+                    resumeActivity(flowStage, request, clientCommunicator);
+                    break;
+                default:
+                    // Anything else, we just proxy through to the activity
+                    serviceComponentDelegate.sendMessageToActivity(event);
+                    break;
+            }
+        });
+
+    }
+
+    /*
+     * The default method for "resuming" the activity is simply restarting it, as we can not rely on any particular manifest flags, activity lifecycle
+     * implementations, etc. Subclasses can override this to implement more sophisticated behaviour.
+     */
+    protected void resumeActivity(String flowStage, String request, ClientCommunicator clientCommunicator) {
+        launchActivityForStage(flowStage, request, clientCommunicator);
     }
 
     private Intent getActivityIntent(String flowStage) {

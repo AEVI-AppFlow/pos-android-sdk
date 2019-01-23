@@ -78,6 +78,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
             modelDisplay.showTitle(false);
         }
         splitCheckBox.setChecked(preFlowModel.getPayment().isSplitEnabled());
+        subscribeToFlowServiceEvents(preFlowModel);
     }
 
     @Override

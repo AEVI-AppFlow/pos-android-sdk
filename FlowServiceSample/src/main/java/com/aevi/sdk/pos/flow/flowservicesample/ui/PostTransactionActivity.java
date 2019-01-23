@@ -49,6 +49,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity {
             modelDisplay.showTitle(false);
         }
         setupToolbar(toolbar, R.string.fss_post_payment);
+        subscribeToFlowServiceEvents(postTransactionModel);
     }
 
     @Override

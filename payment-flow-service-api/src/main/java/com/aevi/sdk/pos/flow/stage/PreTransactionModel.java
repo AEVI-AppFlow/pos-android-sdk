@@ -29,7 +29,7 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**

@@ -25,7 +25,7 @@ import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the pre-flow stage that exposes all the data functions and other utilities required for any app to process this stage.

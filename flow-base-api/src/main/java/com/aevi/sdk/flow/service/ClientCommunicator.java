@@ -8,18 +8,15 @@ import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.Observable;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
-import static com.aevi.sdk.flow.service.BaseApiService.BACKGROUND_PROCESSING;
 
 
 /**
  * This class can be used to communicate with clients.
  *
- * A communicator instance will be created for your Flow Service on connection from a client
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
  */
 public class ClientCommunicator {
 
@@ -27,12 +24,10 @@ public class ClientCommunicator {
 
     private final ChannelServer channelServer;
     private final InternalData responseInternalData;
-    private final Set<ActivityHelper> activityHelpers;
 
     ClientCommunicator(ChannelServer channelServer, InternalData responseInternalData) {
         this.channelServer = channelServer;
         this.responseInternalData = responseInternalData;
-        this.activityHelpers = new HashSet<>();
     }
 
     void sendAck() {
@@ -98,35 +93,11 @@ public class ClientCommunicator {
     }
 
     /**
-     * Send notification that this service will process in the background and won't send back any response.
+     * Subscribe to messages from the client.
      *
-     * Note that you should NOT show any UI after calling this, nor call any of the "finish...Response" methods.
-     *
-     * This is typically useful for post-transaction / post-flow services that processes the transaction information with no need
-     * to show any user interface or augment the transaction.
+     * @return An observable stream of client messages
      */
-    public void notifyBackgroundProcessing() {
-        Log.d(TAG, "notifyBackgroundProcessing");
-        responseInternalData.addAdditionalData(BACKGROUND_PROCESSING, "true");
-        sendResponse(EMPTY_DATA);
-    }
-
-    Observable<String> subscribeToMessages() {
-        return channelServer.subscribeToMessages();
-    }
-
-    void finishStartedActivities() {
-        for (ActivityHelper activityHelper : activityHelpers) {
-            activityHelper.finishLaunchedActivity();
-        }
-    }
-
-    /**
-     * Add any {@link ActivityHelper} classes used to start activities for this client connection
-     *
-     * @param activityHelper The Activity helper class to add
-     */
-    public void addActivityHelper(ActivityHelper activityHelper) {
-        activityHelpers.add(activityHelper);
+    public Observable<AppMessage> subscribeToMessages() {
+        return channelServer.subscribeToMessages().map(AppMessage::fromJson);
     }
 }

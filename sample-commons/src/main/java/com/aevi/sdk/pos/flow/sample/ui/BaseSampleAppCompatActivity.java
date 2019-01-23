@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.sample.R;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
@@ -143,5 +144,9 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Back button disabled.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    protected void subscribeToFlowServiceEvents(BaseStageModel model) {
+        model.getEvents().subscribe(event -> Toast.makeText(BaseSampleAppCompatActivity.this, "Received event: " + event, Toast.LENGTH_SHORT).show());
     }
 }

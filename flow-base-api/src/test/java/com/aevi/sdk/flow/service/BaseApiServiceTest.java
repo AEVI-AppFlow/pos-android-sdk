@@ -73,15 +73,6 @@ public class BaseApiServiceTest {
         verifyCommsEnded(false);
     }
 
-    @Test
-    public void shouldCallFinishOnFinishRequest() throws Exception {
-        AppMessage appMessage = new AppMessage(AppMessageTypes.FORCE_FINISH_MESSAGE);
-        fakeIncomingMessage(appMessage);
-
-        assertThat(apiService.finishRequestReceived).isTrue();
-        verifyCommsEnded(false);
-    }
-
     private void verifyCommsEnded(boolean ended) {
         if (ended) {
             verify(channelServer).sendEndStream();
@@ -124,10 +115,5 @@ public class BaseApiServiceTest {
             }
         }
 
-        @Override
-        protected void onForceFinish(ClientCommunicator clientCommunicator) {
-            super.onForceFinish(clientCommunicator);
-            finishRequestReceived = true;
-        }
     }
 }

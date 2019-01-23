@@ -42,7 +42,10 @@ import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTIO
 import static com.aevi.sdk.flow.constants.ResponseMechanisms.RESPONSE_SERVICE;
 
 /**
- * Base client for all API domain implementations.
+ * Internal base client for all API domain implementations.
+ *
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
  */
 public abstract class BaseApiClient {
 
