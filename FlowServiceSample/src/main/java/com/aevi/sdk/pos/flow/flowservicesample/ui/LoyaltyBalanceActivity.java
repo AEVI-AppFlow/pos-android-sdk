@@ -46,6 +46,7 @@ public class LoyaltyBalanceActivity extends BaseSampleAppCompatActivity {
         genericStageModel = GenericStageModel.fromActivity(this);
         request = genericStageModel.getRequest();
         setupToolbar(toolbar, R.string.fss_loyalty_balance);
+        subscribeToFlowServiceEvents(genericStageModel);
     }
 
     @Override

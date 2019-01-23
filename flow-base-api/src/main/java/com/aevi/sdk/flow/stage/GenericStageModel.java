@@ -22,7 +22,7 @@ import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.

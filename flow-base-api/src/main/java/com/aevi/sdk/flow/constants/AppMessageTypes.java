@@ -33,4 +33,6 @@ public interface AppMessageTypes {
 
     // Sent by FPS
     String FORCE_FINISH_MESSAGE = "forceFinish";
+    String RESPONSE_OUTCOME = "responseOutcome";
+    String RESTART_UI = "restartUserInterface";
 }

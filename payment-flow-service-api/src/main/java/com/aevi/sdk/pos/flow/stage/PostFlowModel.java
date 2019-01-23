@@ -23,7 +23,7 @@ import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the post-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -92,7 +92,7 @@ public class PostFlowModel extends BaseStageModel {
      * Typical use cases for this is analytics, reporting, etc that do not launch any UI and hence do not need to block the flow from finishing.
      */
     public void processInBackground() {
-        clientCommunicator.notifyBackgroundProcessing();
+        sendEmptyResponse();
     }
 
     /**

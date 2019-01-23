@@ -32,6 +32,12 @@ import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
+/**
+ * Implementation of payment client.
+ *
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
+ */
 public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
 
     private static final String TAG = PaymentClientImpl.class.getSimpleName();

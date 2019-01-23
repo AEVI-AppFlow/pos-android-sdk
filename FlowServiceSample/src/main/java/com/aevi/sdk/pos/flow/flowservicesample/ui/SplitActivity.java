@@ -90,6 +90,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
         }
+        subscribeToFlowServiceEvents(splitModel);
     }
 
     private void setupSplit() {

@@ -85,6 +85,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         if (transactionRequest.getAmounts() == null || transactionRequest.getAmounts().getBaseAmountValue() == 0) {
             disablePayViews();
         }
+        subscribeToFlowServiceEvents(preTransactionModel);
     }
 
     @Override

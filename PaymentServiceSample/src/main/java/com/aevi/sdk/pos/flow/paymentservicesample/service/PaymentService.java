@@ -13,6 +13,8 @@
  */
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
+import android.widget.Toast;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
@@ -34,17 +36,24 @@ public class PaymentService extends BasePaymentFlowService {
     protected void onPaymentCardReading(CardReadingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
+        subscribeToFlowServiceEvents(model);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
+        subscribeToFlowServiceEvents(model);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onGeneric");
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
+        subscribeToFlowServiceEvents(model);
+    }
+
+    protected void subscribeToFlowServiceEvents(BaseStageModel model) {
+        model.getEvents().subscribe(event -> Toast.makeText(PaymentService.this, "Received event: " + event, Toast.LENGTH_SHORT).show());
     }
 }
