@@ -32,7 +32,8 @@ import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 /**
  * Internal base class for all stage models that provide the stage specific data functions.
  *
- * This class delegates most of its logic to a component delegate which contains activity or service specific implementation.
+ * A stage model can be initialised from either a service or activity context and a {@link AndroidComponentDelegate} implementation will be chosen
+ * accordingly to manage the logic that is specific to the component the model was created from.
  *
  * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
  * class may be removed without any warning.

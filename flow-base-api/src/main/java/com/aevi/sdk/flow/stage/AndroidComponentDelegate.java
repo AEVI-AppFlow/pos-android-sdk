@@ -21,7 +21,9 @@ import com.aevi.sdk.flow.model.AppMessage;
 import io.reactivex.Observable;
 
 /**
- * Base class for delegates that are designed specifically for a type of Android component.
+ * In order to avoid having mixed service/activity logic in the stage models, this base class provides a foundation for concrete activity and service
+ * implementations supporting stage models being initiated via either component. This allows for isolation of activity or service specific code in
+ * each relevant delegate.
  */
 abstract class AndroidComponentDelegate {
 
