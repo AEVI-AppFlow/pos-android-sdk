@@ -63,9 +63,24 @@ public abstract class BaseApiService extends AbstractChannelService {
         setStopSelfOnEndOfStream(stopServiceOnEndOfStream);
     }
 
+    /**
+     * If this flag is set to true then a backup message will be sent to the flow processing service in the event of it becoming disconnected
+     * from this flow service. Flow service providers should override this flag to True here if they want to ensure there response
+     * always gets through to the FPS.
+     *
+     * Usually it is appropriate for Payment Application Flow Services to set this flag to true to ensure that TransactionResponse messages
+     * are received by FPS
+     *
+     * @return True if backup messages should be sent to FPS.
+     */
+    protected boolean allowBackupMessageOnDisconnect() {
+        return false;
+    }
+
     @Override
     protected final void onNewClient(ChannelServer channelServer, String packageName) {
-        final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
+        final ClientCommunicator clientCommunicator =
+                new ClientCommunicator(getBaseContext(), channelServer, internalData, allowBackupMessageOnDisconnect());
         // We only listen for the initial message here to set up the relevant models based on the request and after that, it's up to subclasses
         // to manage further comms
         clientCommunicator.subscribeToMessages().take(1).subscribe(appMessage -> {
