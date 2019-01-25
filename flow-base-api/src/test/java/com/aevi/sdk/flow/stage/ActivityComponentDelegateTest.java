@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.constants.ActivityEvents;
+import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowEvent;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class ActivityComponentDelegateTest {
     private ObservableActivityHelper helper;
     private ActivityComponentDelegate activityComponentDelegate;
     private PublishSubject<String> helperEventSubject = PublishSubject.create();
-    private TestObserver<String> messageObserver;
+    private TestObserver<FlowEvent> messageObserver;
 
     @Before
     public void setUp() throws Exception {
@@ -42,7 +43,7 @@ public class ActivityComponentDelegateTest {
                 return helper;
             }
         };
-        messageObserver = activityComponentDelegate.getFlowServiceMessages().test();
+        messageObserver = activityComponentDelegate.getFlowServiceEvents().test();
     }
 
     @Test
@@ -52,7 +53,7 @@ public class ActivityComponentDelegateTest {
 
     @Test
     public void shouldFinishActivityOnFinishEvent() throws Exception {
-        helperEventSubject.onNext(ActivityEvents.FINISH);
+        helperEventSubject.onNext(new FlowEvent(FlowServiceEventTypes.FINISH_IMMEDIATELY).toJson());
 
         verify(activity).finish();
         messageObserver.assertComplete();
@@ -60,9 +61,9 @@ public class ActivityComponentDelegateTest {
 
     @Test
     public void shouldProxyFlowServiceEvents() throws Exception {
-        helperEventSubject.onNext("someEvent");
+        helperEventSubject.onNext(new FlowEvent("someEvent").toJson());
 
-        messageObserver.assertValue("someEvent");
+        messageObserver.assertValue(new FlowEvent("someEvent"));
     }
 
     @Test

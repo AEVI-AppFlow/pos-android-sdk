@@ -23,8 +23,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.constants.ActivityEvents;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.util.Preconditions;
 import io.reactivex.Observable;
@@ -32,6 +32,7 @@ import io.reactivex.subjects.PublishSubject;
 
 import java.lang.ref.WeakReference;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_INTERNAL_DATA_KEY;
 
 /**
@@ -45,7 +46,7 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
 
     private static final String TAG = ActivityComponentDelegate.class.getSimpleName();
     private final WeakReference<Activity> activityReference;
-    private final PublishSubject<String> flowServiceMessageSubject;
+    private final PublishSubject<FlowEvent> flowServiceMessageSubject;
     private final InternalData responseInternalData;
 
     ActivityComponentDelegate(Activity activity) {
@@ -70,8 +71,9 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
                 helper.setLifecycle(((LifecycleOwner) activity).getLifecycle());
             }
             helper.registerForEvents().subscribe(event -> {
-                switch (event) {
-                    case ActivityEvents.FINISH:
+                FlowEvent flowEvent = FlowEvent.fromJson(event);
+                switch (flowEvent.getType()) {
+                    case FINISH_IMMEDIATELY:
                         Activity localActivity = getActivity();
                         if (localActivity != null) {
                             Log.i(TAG, "Force finishing activity");
@@ -80,7 +82,7 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
                         flowServiceMessageSubject.onComplete();
                         break;
                     default:
-                        flowServiceMessageSubject.onNext(event);
+                        flowServiceMessageSubject.onNext(flowEvent);
                         break;
                 }
             });
@@ -111,7 +113,7 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
     }
 
     @Override
-    Observable<String> getFlowServiceMessages() {
+    Observable<FlowEvent> getFlowServiceEvents() {
         return flowServiceMessageSubject;
     }
 

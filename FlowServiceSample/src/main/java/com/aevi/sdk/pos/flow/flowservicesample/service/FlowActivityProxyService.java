@@ -25,9 +25,9 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 public class FlowActivityProxyService extends ActivityProxyService {
 
     @Override
-    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator) {
+    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator, boolean isResume) {
         if (ServiceStateHandler.isStageEnabled(this, flowStage)) {
-            super.launchActivityForStage(flowStage, request, clientCommunicator);
+            super.launchActivityForStage(flowStage, request, clientCommunicator, isResume);
         } else {
             Log.i(FlowActivityProxyService.class.getSimpleName(), "Current stage not enabled in flow service sample, bypassing..");
             clientCommunicator.finishWithNoResponse();

@@ -22,6 +22,7 @@ import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.util.Preconditions;
@@ -33,11 +34,10 @@ import java.util.UUID;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
-import static com.aevi.sdk.flow.constants.ActivityEvents.FINISH;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.FLOW_SERVICE_EVENT;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.FINISH_IMMEDIATELY;
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.RESUME_USER_INTERFACE;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.*;
 
 /**
  * Provides service-based implementation for stage models.
@@ -51,7 +51,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     public static final String EXTRAS_INTERNAL_DATA_KEY = "internalData";
 
     private final ClientCommunicator clientCommunicator;
-    private final PublishSubject<String> flowServiceMessageSubject;
+    private final PublishSubject<FlowEvent> flowServiceMessageSubject;
     private Disposable messageDisposable;
     private String activityId;
 
@@ -65,17 +65,8 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     private void listenForMessages() {
         messageDisposable = clientCommunicator.subscribeToMessages().subscribe(appMessage -> {
             switch (appMessage.getMessageType()) {
-                case FORCE_FINISH_MESSAGE:
-                    sendMessageToActivity(FINISH);
-                    publishFlowServiceMessage(FINISH_IMMEDIATELY);
-                    completeMessageStream();
-                    break;
-                case RESPONSE_OUTCOME:
-                    publishFlowServiceMessage(appMessage.getMessageData());
-                    completeMessageStream();
-                    break;
-                case RESTART_UI:
-                    publishFlowServiceMessage(RESUME_USER_INTERFACE);
+                case FLOW_SERVICE_EVENT:
+                    handleFlowServiceEvent(FlowEvent.fromJson(appMessage.getMessageData()));
                     break;
                 case REQUEST_MESSAGE:
                     // no-op
@@ -87,9 +78,23 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         }, throwable -> Log.e(TAG, "Exception whilst listening for message", throwable));
     }
 
-    private void publishFlowServiceMessage(String message) {
-        Log.i(TAG, "Received message from FPS for flow service: " + message);
-        flowServiceMessageSubject.onNext(message);
+    private void handleFlowServiceEvent(FlowEvent flowEvent) {
+        publishFlowServiceMessage(flowEvent);
+        switch (flowEvent.getType()) {
+            case FINISH_IMMEDIATELY:
+                sendEventToActivity(flowEvent);
+                completeMessageStream();
+                break;
+            case RESPONSE_ACCEPTED:
+            case RESPONSE_REJECTED:
+                completeMessageStream();
+                break;
+        }
+    }
+
+    private void publishFlowServiceMessage(FlowEvent flowEvent) {
+        Log.i(TAG, "Received message from FPS for flow service: " + flowEvent.getType());
+        flowServiceMessageSubject.onNext(flowEvent);
     }
 
     private void completeMessageStream() {
@@ -128,14 +133,16 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     }
 
     /**
-     * Send message to activity previously started via {@link #processInActivity(Context, Intent, String)}.
+     * Send event to activity previously started via {@link #processInActivity(Context, Intent, String)}.
      *
-     * @param message The message
+     * You can construct custom events via defining your own event types and event data.
+     *
+     * @param event The event
      */
-    public void sendMessageToActivity(String message) {
+    public void sendEventToActivity(FlowEvent event) {
         try {
             ObservableActivityHelper<AppMessage> helper = ObservableActivityHelper.getInstance(activityId);
-            helper.sendEventToActivity(message);
+            helper.sendEventToActivity(event.toJson());
         } catch (NoSuchInstanceException e) {
             Log.w(TAG, "Failed to find OAH for sending event to activity");
         }
@@ -148,7 +155,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     }
 
     @Override
-    public Observable<String> getFlowServiceMessages() {
+    public Observable<FlowEvent> getFlowServiceEvents() {
         return flowServiceMessageSubject;
     }
 }

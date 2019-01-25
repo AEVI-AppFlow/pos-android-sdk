@@ -14,10 +14,18 @@
 
 package com.aevi.sdk.flow.constants;
 
-/**
- * Events that may be sent to an activity.
- */
-public interface ActivityEvents {
+import com.aevi.sdk.flow.model.FlowEvent;
 
-    String FINISH = "finish";
+/**
+ * Data keys for flow service event data held in the {@link FlowEvent#getData()} structure.
+ */
+public interface FlowServiceEventDataKeys {
+
+    /**
+     * In the case of a {@link FlowServiceEventTypes#RESPONSE_REJECTED} event, the reason for the rejection can be found via this data key.
+     *
+     * The reason is represented as a String.
+     */
+    String REJECTED_REASON = "rejectedReason";
+
 }

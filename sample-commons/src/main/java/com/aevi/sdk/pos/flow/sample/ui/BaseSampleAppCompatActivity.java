@@ -17,11 +17,15 @@ package com.aevi.sdk.pos.flow.sample.ui;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.sample.R;
+
+import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
 
@@ -147,6 +151,16 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
     }
 
     protected void subscribeToFlowServiceEvents(BaseStageModel model) {
-        model.getEvents().subscribe(event -> Toast.makeText(BaseSampleAppCompatActivity.this, "Received event: " + event, Toast.LENGTH_SHORT).show());
+        model.getEvents().subscribe(event -> {
+            switch (event.getType()) {
+                case RESPONSE_REJECTED:
+                    String rejectReason = event.getData().getStringValue(REJECTED_REASON);
+                    Log.w(getClass().getSimpleName(), "Response rejected: " + rejectReason);
+                    break;
+                default:
+                    Log.i(getClass().getSimpleName(), "Received flow service event: " + event.getType());
+                    break;
+            }
+        });
     }
 }

@@ -13,7 +13,7 @@
  */
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
-import android.widget.Toast;
+import android.util.Log;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
@@ -23,6 +23,8 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
@@ -54,6 +56,16 @@ public class PaymentService extends BasePaymentFlowService {
     }
 
     protected void subscribeToFlowServiceEvents(BaseStageModel model) {
-        model.getEvents().subscribe(event -> Toast.makeText(PaymentService.this, "Received event: " + event, Toast.LENGTH_SHORT).show());
+        model.getEvents().subscribe(event -> {
+            switch (event.getType()) {
+                case RESPONSE_REJECTED:
+                    String rejectReason = event.getData().getStringValue(REJECTED_REASON);
+                    Log.w("PaymentServiceSample", "Response rejected: " + rejectReason);
+                    break;
+                default:
+                    Log.i("PaymentServiceSample", "Received flow service event: " + event.getType());
+                    break;
+            }
+        });
     }
 }

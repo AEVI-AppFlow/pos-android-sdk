@@ -32,7 +32,5 @@ public interface AppMessageTypes {
     String REQUEST_ACK_MESSAGE = "requestAck";
 
     // Sent by FPS
-    String FORCE_FINISH_MESSAGE = "forceFinish";
-    String RESPONSE_OUTCOME = "responseOutcome";
-    String RESTART_UI = "restartUserInterface";
+    String FLOW_SERVICE_EVENT = "flowServiceEvent";
 }

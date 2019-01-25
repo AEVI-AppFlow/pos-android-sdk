@@ -15,18 +15,17 @@
 package com.aevi.sdk.flow.constants;
 
 /**
- * Events that may be sent to a flow service.
+ * Event types that may be sent to a flow service.
  *
- * See each individual event for information whether it will be sent to the service or an activity (if one is started).
+ * Note that these events are only propagated via a stage model initialised from a service. It is up to the service implementation to proxy them
+ * to any activity if one has been started.
  */
-public interface FlowServiceEvents {
+public interface FlowServiceEventTypes {
 
     /**
      * If a flow service activity is no longer in the background for some reason (such as home being pressed), a merchant can choose to resume
      * the flow service user interface from the AppFlow controls. In this case, this event will be sent and the flow service can resume or restart
      * the user interface as appropriate to allow the merchant to start over or continue where she left off.
-     *
-     * Sent to services only (not activities).
      */
     String RESUME_USER_INTERFACE = "resumeUserInterface";
 
@@ -34,8 +33,6 @@ public interface FlowServiceEvents {
      * Sent from the flow processing service when the flow service has not sent a response within the timeout limit or
      * something has gone wrong and the flow must progress. This event is purely intended to let the flow service (if still active)
      * know that it should stop any processing and close down any user interface immediately. No response will be accepted at this stage.
-     *
-     * Sent to services only (not activities).
      */
     String FINISH_IMMEDIATELY = "finishImmediately";
 
@@ -43,8 +40,6 @@ public interface FlowServiceEvents {
      * Sent from the flow processing service to indicate that the response sent from the flow service was accepted and any changes resulting from
      * that response have been applied to the flow successfully. Note that even if you send an empty response or call a skip function, this will
      * be sent back to confirm your choice.
-     *
-     * Sent to services only (not activities).
      */
     String RESPONSE_ACCEPTED = "responseAccepted";
 
@@ -52,7 +47,7 @@ public interface FlowServiceEvents {
      * Sent from the flow processing service to indicate that the response sent from the flow service was rejected, meaning that any changes from this
      * have NOT been applied.
      *
-     * Sent to services only (not activities).
+     * See {@link FlowServiceEventDataKeys#REJECTED_REASON} for details on why it was rejected.
      */
     String RESPONSE_REJECTED = "responseRejected";
 

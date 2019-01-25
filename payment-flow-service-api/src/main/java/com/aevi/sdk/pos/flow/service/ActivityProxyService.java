@@ -31,8 +31,8 @@ import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.FINISH_IMMEDIATELY;
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.RESUME_USER_INTERFACE;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
@@ -79,8 +79,8 @@ public class ActivityProxyService extends BaseApiService {
         }
         ServiceComponentDelegate serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator);
         serviceComponentDelegate.processInActivity(getBaseContext(), activityIntent, request);
-        serviceComponentDelegate.getFlowServiceMessages().subscribe(event -> {
-            switch (event) {
+        serviceComponentDelegate.getFlowServiceEvents().subscribe(event -> {
+            switch (event.getType()) {
                 case FINISH_IMMEDIATELY:
                     // No-op, the delegate will proxy to activity
                     break;
@@ -89,7 +89,7 @@ public class ActivityProxyService extends BaseApiService {
                     break;
                 default:
                     // Anything else, we just proxy through to the activity
-                    serviceComponentDelegate.sendMessageToActivity(event);
+                    serviceComponentDelegate.sendEventToActivity(event);
                     break;
             }
         });
