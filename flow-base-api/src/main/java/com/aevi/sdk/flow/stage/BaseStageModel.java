@@ -20,8 +20,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
+import com.aevi.sdk.flow.constants.FlowServiceEventDataKeys;
+import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AuditEntry;
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import io.reactivex.Observable;
 
@@ -73,17 +76,17 @@ public abstract class BaseStageModel {
     }
 
     /**
-     * Returns a stream of events from the flow processing service.
+     * Returns a stream of events relevant for this service from the flow processing service.
      *
-     * It is important that your flow service listens to these and reacts appropriately.
+     * It is important that your flow service listens to these events and handle them appropriately.
      *
-     * See {@link com.aevi.sdk.flow.constants.FlowServiceEvents} for possible values and information on whether they apply to service or activity
-     * clients.
+     * See {@link FlowServiceEventTypes} for possible event types and {@link FlowServiceEventDataKeys} for keys
+     * associated with event data.
      *
-     * @return a stream of events for the flow service
+     * @return a stream of {@link FlowEvent} for the flow service
      */
-    public Observable<String> getEvents() {
-        return androidComponentDelegate.getFlowServiceMessages();
+    public Observable<FlowEvent> getEvents() {
+        return androidComponentDelegate.getFlowServiceEvents();
     }
 
     /**

@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.FlowEvent;
 import io.reactivex.Observable;
 
 /**
@@ -35,11 +36,11 @@ abstract class AndroidComponentDelegate {
     abstract void sendMessage(AppMessage appMessage);
 
     /**
-     * Get the stream of flow service messages sent by FPS.
+     * Get the stream of flow service events sent by FPS.
      *
-     * @return Stream of flow service messages
+     * @return Stream of flow service events
      */
-    abstract Observable<String> getFlowServiceMessages();
+    abstract Observable<FlowEvent> getFlowServiceEvents();
 
     /**
      * Process request in an activity.

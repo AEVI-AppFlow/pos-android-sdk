@@ -31,8 +31,8 @@ import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.FINISH_IMMEDIATELY;
-import static com.aevi.sdk.flow.constants.FlowServiceEvents.RESUME_USER_INTERFACE;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
@@ -47,6 +47,7 @@ import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 public class ActivityProxyService extends BaseApiService {
 
     private static final String TAG = ActivityProxyService.class.getSimpleName();
+    public static final String KEY_IS_RESUMED = "isResumed";
 
     public ActivityProxyService() {
         super(PaymentFlowServiceApi.getApiVersion());
@@ -56,19 +57,20 @@ public class ActivityProxyService extends BaseApiService {
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
         String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
-        launchActivityForStage(flowStage, request, clientCommunicator);
+        launchActivityForStage(flowStage, request, clientCommunicator, false);
     }
 
     /*
      * Launches the activity for a stage. A subclass can override this to implement custom/conditional activity launching.
      */
-    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator) {
+    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator, boolean isResume) {
         if (flowStage.equals(FlowStages.STATUS_UPDATE)) {
             Log.e(TAG, "Status update stage must be handled in a service context only - ignoring stage for: " + getPackageName());
             clientCommunicator.finishWithNoResponse();
             return;
         }
         Intent activityIntent = getActivityIntent(flowStage);
+        activityIntent.putExtra(KEY_IS_RESUMED, isResume);
         if (!isActivityDefined(activityIntent)) {
             Log.e(TAG, "No activity defined to handle: " + activityIntent.getAction()
                     + " in app: " + getPackageName() + "! Finishing with no response");
@@ -77,8 +79,8 @@ public class ActivityProxyService extends BaseApiService {
         }
         ServiceComponentDelegate serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator);
         serviceComponentDelegate.processInActivity(getBaseContext(), activityIntent, request);
-        serviceComponentDelegate.getFlowServiceMessages().subscribe(event -> {
-            switch (event) {
+        serviceComponentDelegate.getFlowServiceEvents().subscribe(event -> {
+            switch (event.getType()) {
                 case FINISH_IMMEDIATELY:
                     // No-op, the delegate will proxy to activity
                     break;
@@ -87,7 +89,7 @@ public class ActivityProxyService extends BaseApiService {
                     break;
                 default:
                     // Anything else, we just proxy through to the activity
-                    serviceComponentDelegate.sendMessageToActivity(event);
+                    serviceComponentDelegate.sendEventToActivity(event);
                     break;
             }
         });
@@ -99,7 +101,7 @@ public class ActivityProxyService extends BaseApiService {
      * implementations, etc. Subclasses can override this to implement more sophisticated behaviour.
      */
     protected void resumeActivity(String flowStage, String request, ClientCommunicator clientCommunicator) {
-        launchActivityForStage(flowStage, request, clientCommunicator);
+        launchActivityForStage(flowStage, request, clientCommunicator, true);
     }
 
     private Intent getActivityIntent(String flowStage) {
