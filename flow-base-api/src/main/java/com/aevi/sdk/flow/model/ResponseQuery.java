@@ -7,6 +7,8 @@ import com.aevi.util.json.Jsonable;
 /**
  * An internal object used to serialise the query data for
  * Response requests via {@link BaseApiClient#queryResponses(ResponseQuery)}
+ *
+ * See {@link ResponseQueryBuilder} to build a query
  */
 public final class ResponseQuery implements Jsonable {
 
