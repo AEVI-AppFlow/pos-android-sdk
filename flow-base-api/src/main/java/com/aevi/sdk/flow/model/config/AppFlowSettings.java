@@ -19,6 +19,8 @@ import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_MESSENGER;
@@ -186,6 +188,17 @@ public class AppFlowSettings implements Jsonable {
      */
     public void setCommsChannel(String commsChannel) {
         this.commsChannel = commsChannel;
+    }
+
+    /**
+     * Convenience function for retrieving a combined date and time formatter..
+     *
+     * The formatter uses a pattern of {@link #getDateFormat()} + " " + {@link #getTimeFormat()}.
+     *
+     * @return Date and time formatter
+     */
+    public SimpleDateFormat getDateTimeFormat() {
+        return new SimpleDateFormat(String.format("%s %s", dateFormat, timeFormat), Locale.getDefault());
     }
 
     @Override
