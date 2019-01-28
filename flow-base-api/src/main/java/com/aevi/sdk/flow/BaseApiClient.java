@@ -27,11 +27,14 @@ import com.aevi.android.rxmessenger.Channels;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
+import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 import java.util.List;
 
@@ -100,6 +103,24 @@ public abstract class BaseApiClient {
                 .ignoreElement()
                 .doFinally(requestMessenger::closeConnection)
                 .onErrorResumeNext(throwable -> Completable.error(createFlowException(throwable)));
+    }
+
+    @NonNull
+    public Observable<Response> queryResponses(@NonNull ResponseQuery responseQuery) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Observable.error(NO_FPS_EXCEPTION);
+        }
+
+        responseQuery.setResponseType(Response.class.getName());
+
+        final ChannelClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.RESPONSES_REQUEST, responseQuery.toJson(), getInternalData());
+        return paymentInfoMessenger
+                .sendMessage(appMessage.toJson())
+                .map(Response::fromJson)
+                .doFinally(paymentInfoMessenger::closeConnection)
+                .onErrorResumeNext((Function<Throwable, ObservableSource<? extends Response>>) throwable -> Observable
+                        .error(createFlowException(throwable)));
     }
 
     protected Single<Response> initiateRequestDirect(final Request request) {

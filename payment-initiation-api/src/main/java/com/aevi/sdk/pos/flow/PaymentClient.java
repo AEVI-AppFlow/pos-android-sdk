@@ -17,12 +17,10 @@ package com.aevi.sdk.pos.flow;
 
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.constants.ErrorConstants;
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.FlowEvent;
-import com.aevi.sdk.flow.model.FlowException;
-import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
 import io.reactivex.Completable;
@@ -89,6 +87,32 @@ public interface PaymentClient {
      */
     @NonNull
     Completable initiatePayment(Payment payment);
+
+    /**
+     * Returns a stream of completed PaymentResponses for the given parameters.
+     *
+     * This query will <strong>only</strong> return {@link PaymentResponse} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
+     *
+     * @param responseQuery An object representing some parameters to limit the query by
+     * @return An Observable stream of payment responses
+     */
+    @NonNull
+    Observable<PaymentResponse> queryPaymentResponses(@NonNull ResponseQuery responseQuery);
+
+    /**
+     * Returns a stream of completed Responses for the given parameters
+     *
+     * This query will <strong>only</strong> return {@link Response} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
+     *
+     * @param responseQuery An object representing some parameters to limit the query by
+     * @return An Observable stream of responses
+     */
+    @NonNull
+    Observable<Response> queryResponses(@NonNull ResponseQuery responseQuery);
 
     /**
      * Query for devices connected to the processing service, if multi-device is enabled.

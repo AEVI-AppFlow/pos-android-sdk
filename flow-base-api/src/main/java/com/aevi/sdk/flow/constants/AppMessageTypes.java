@@ -23,6 +23,7 @@ public interface AppMessageTypes {
     String REQUEST_MESSAGE = "request";
     String PAYMENT_MESSAGE = "payment";
     String PAYMENT_FLOW_CONFIG_REQUEST = "paymentFlowConfigRequest";
+    String RESPONSES_REQUEST = "responsesRequest";
     String DEVICE_INFO_REQUEST = "deviceInfoRequest";
 
     // Sent from flow services
