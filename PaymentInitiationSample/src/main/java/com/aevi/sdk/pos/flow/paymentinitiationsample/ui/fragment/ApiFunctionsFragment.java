@@ -46,6 +46,9 @@ public class ApiFunctionsFragment extends BaseItemFragment<ApiFunction> {
             case FLOW_SERVICES:
                 showPopup(FRAGMENT_FLOW_SERVICES);
                 break;
+            case PAYMENT_RESPONSES:
+                showPopup(FRAGMENT_PAYMENT_RESPONSES);
+                break;
             case SUBSCRIBE_EVENTS:
                 showPopup(FRAGMENT_SYSTEM_EVENTS);
                 break;

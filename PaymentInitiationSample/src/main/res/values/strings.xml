@@ -28,11 +28,13 @@
 
     <string name="title_select_flow_service">Select a flow service</string>
     <string name="title_select_device">Connected devices</string>
+    <string name="title_payment_responses">Payment responses</string>
 
     <string name="choose_api_function">Choose API function</string>
     <string name="na">N/A</string>
 
     <string name="no_devices_found">No connected devices were found</string>
+    <string name="no_payment_responses_found">No payment responses were found</string>
     <string name="no_flow_services_found">No flow services were found</string>
 
     <string name="service_label_id">Id</string>
@@ -61,6 +63,9 @@
 
     <string name="system_overview_header_flow_configs">Flow configs (click for details)</string>
     <string name="system_overview_header_fps_settings">Fps Settings</string>
+
+    <string name="payment_response_title">%1$s - %2$s</string>
+    <string name="payment_response_totals">Base: %1$s Tip: %2$s Cashback: %3$s</string>
 
     <string name="system_info_label_api_version">Payment Initiation API version</string>
     <string name="system_info_label_fps_version">Flow Processing Service version</string>
