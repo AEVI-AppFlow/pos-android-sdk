@@ -89,7 +89,11 @@ public interface PaymentClient {
     Completable initiatePayment(Payment payment);
 
     /**
-     * Returns a stream of completed PaymentResponses for the given parameters
+     * Returns a stream of completed PaymentResponses for the given parameters.
+     *
+     * This query will <strong>only</strong> return {@link PaymentResponse} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
      *
      * @param responseQuery An object representing some parameters to limit the query by
      * @return An Observable stream of payment responses
@@ -99,6 +103,10 @@ public interface PaymentClient {
 
     /**
      * Returns a stream of completed Responses for the given parameters
+     *
+     * This query will <strong>only</strong> return {@link Response} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
      *
      * @param responseQuery An object representing some parameters to limit the query by
      * @return An Observable stream of responses

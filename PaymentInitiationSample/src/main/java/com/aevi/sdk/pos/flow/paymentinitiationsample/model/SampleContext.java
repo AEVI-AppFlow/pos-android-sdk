@@ -62,7 +62,7 @@ public class SampleContext {
                                          "Query the API for information about available flow services"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.DEVICES, "List devices", "Query the API for a list of available devices"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.PAYMENT_RESPONSES, "Payment responses",
-                                         "Query the API for a set of previous payment responses from the last 48hrs"));
+                                         "Query the API for a set of previous payment responses. Will return the last 100 responses, for requests made by this app"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.INITIATE_PAYMENT, "Initiate a payment",
                                          "Choose between a wide range of options to initiate a specific payment"));
         apiFunctions.add(new ApiFunction(ApiFunction.ApiMethod.GENERIC_REQUEST, "Initiate a non-payment request",
