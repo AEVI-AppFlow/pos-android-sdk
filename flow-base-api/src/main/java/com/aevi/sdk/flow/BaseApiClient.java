@@ -30,6 +30,7 @@ import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.config.AppFlowSettings;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -38,6 +39,7 @@ import io.reactivex.functions.Function;
 
 import java.util.List;
 
+import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_MESSENGER;
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.DEVICE_INFO_REQUEST;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
@@ -52,8 +54,7 @@ import static com.aevi.sdk.flow.constants.ResponseMechanisms.RESPONSE_SERVICE;
  */
 public abstract class BaseApiClient {
 
-    private static final String APPFLOW_COMMS_CHANNEL = "appFlowCommsChannel";
-
+    private static final String KEY_APPFLOW_SETTINGS = "appflowSettings";
     public static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
@@ -66,7 +67,7 @@ public abstract class BaseApiClient {
 
     private final InternalData internalData;
     protected final Context context;
-    private boolean useWebsocket = false;
+    private String commsChannel;
 
     protected BaseApiClient(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
@@ -79,10 +80,11 @@ public abstract class BaseApiClient {
         // here we only check the channel once and once only for each instance of this client
         // once setup the client will use the same comm channel until it is disposed of and re-created
         ConfigClient configClient = ConfigApi.getConfigClient(context);
-        String channel = configClient.getConfigValue(APPFLOW_COMMS_CHANNEL);
-        if (CHANNEL_WEBSOCKET.equals(channel)) {
-            useWebsocket = true;
+        AppFlowSettings appFlowSettings = AppFlowSettings.fromJson(configClient.getConfigValue(KEY_APPFLOW_SETTINGS));
+        if (appFlowSettings == null) {
+            appFlowSettings = new AppFlowSettings();
         }
+        commsChannel = appFlowSettings.getCommsChannel();
     }
 
     protected InternalData getInternalData() {
@@ -174,10 +176,12 @@ public abstract class BaseApiClient {
     }
 
     protected ChannelClient getMessengerClient(ComponentName componentName) {
-        if (useWebsocket) {
-            return Channels.webSocket(context, componentName);
-        } else {
-            return Channels.messenger(context, componentName);
+        switch (commsChannel) {
+            case CHANNEL_WEBSOCKET:
+                return Channels.webSocket(context, componentName);
+            case CHANNEL_MESSENGER:
+            default:
+                return Channels.messenger(context, componentName);
         }
     }
 
