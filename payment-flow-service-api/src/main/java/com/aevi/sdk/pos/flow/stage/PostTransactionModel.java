@@ -25,7 +25,7 @@ import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 

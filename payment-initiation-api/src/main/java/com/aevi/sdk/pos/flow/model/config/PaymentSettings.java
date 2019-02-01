@@ -35,14 +35,16 @@ public class PaymentSettings implements Jsonable {
     private final FlowConfigurations flowConfigurations;
     private final PaymentFlowServices allServices;
     private final FpsSettings fpsSettings;
+    private final AppFlowSettings appFlowSettings;
     private final AdditionalData additionalSettings;
 
     public PaymentSettings(FlowConfigurations flowConfigurations, PaymentFlowServices paymentFlowServices,
-                           FpsSettings fpsSettings, AdditionalData additionalSettings) {
+                           FpsSettings fpsSettings, AppFlowSettings appFlowSettings, AdditionalData additionalSettings) {
         this.flowConfigurations = flowConfigurations;
         this.allServices = paymentFlowServices;
-        this.fpsSettings = fpsSettings;
-        this.additionalSettings = additionalSettings;
+        this.fpsSettings = fpsSettings != null ? fpsSettings : new FpsSettings();
+        this.appFlowSettings = appFlowSettings != null ? appFlowSettings : new AppFlowSettings();
+        this.additionalSettings = additionalSettings != null ? additionalSettings : new AdditionalData();
     }
 
     /**
@@ -55,6 +57,18 @@ public class PaymentSettings implements Jsonable {
     @NonNull
     public FpsSettings getFpsSettings() {
         return fpsSettings;
+    }
+
+    /**
+     * Retrieve the current AppFlow settings that are generally applicable to any application integrated with AppFlow.
+     *
+     * These settings are typically controlled by the acquirer and/or merchant.
+     *
+     * @return The AppFlow settings
+     */
+    @NonNull
+    public AppFlowSettings getAppFlowSettings() {
+        return appFlowSettings;
     }
 
     /**

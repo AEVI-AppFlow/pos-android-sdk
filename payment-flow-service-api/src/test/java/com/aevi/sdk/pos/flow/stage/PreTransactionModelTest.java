@@ -5,6 +5,7 @@ import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.model.*;
+import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,13 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class PreTransactionModelTest {
 
     private PreTransactionModel preTransactionModel;
     private ClientCommunicator clientCommunicator;
+    private PublishSubject<AppMessage> messageSubject = PublishSubject.create();
     private TransactionRequest transactionRequest;
     private List<Basket> requestBaskets;
     private Customer customer;
@@ -31,6 +32,7 @@ public class PreTransactionModelTest {
     @Before
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
+        when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
         customer = new Customer("custId");
         requestBaskets = new ArrayList<>();
         additionalData = new AdditionalData();

@@ -22,19 +22,18 @@ import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.stage.BaseStageModel;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static com.aevi.sdk.flow.constants.ErrorConstants.INVALID_MESSAGE_TYPE;
 
 /**
- * Base service for all API service implementations.
+ * Internal base class for all API service implementations.
+ *
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
  */
 public abstract class BaseApiService extends AbstractChannelService {
-
-    public static final String BACKGROUND_PROCESSING = "backgroundProcessing";
 
     private final String TAG = getClass().getSimpleName(); // Use class name of implementing service
 
@@ -65,20 +64,17 @@ public abstract class BaseApiService extends AbstractChannelService {
     }
 
     @Override
-    protected void onNewClient(ChannelServer channelServer, String packageName) {
-
+    protected final void onNewClient(ChannelServer channelServer, String packageName) {
         final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
-        clientCommunicator.subscribeToMessages().subscribe(message -> {
-            Log.d(TAG, "Received message: " + message);
-            AppMessage appMessage = AppMessage.fromJson(message);
+        // We only listen for the initial message here to set up the relevant models based on the request and after that, it's up to subclasses
+        // to manage further comms
+        clientCommunicator.subscribeToMessages().take(1).subscribe(appMessage -> {
+            Log.d(TAG, "Received message: " + appMessage.getMessageType());
             checkVersions(appMessage, internalData);
             String messageData = appMessage.getMessageData();
             switch (appMessage.getMessageType()) {
                 case REQUEST_MESSAGE:
                     handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
-                    break;
-                case FORCE_FINISH_MESSAGE:
-                    onForceFinish(clientCommunicator);
                     break;
                 default:
                     String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
@@ -132,15 +128,4 @@ public abstract class BaseApiService extends AbstractChannelService {
      */
     protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                            @Nullable InternalData senderInternalData);
-
-    /**
-     * Called externally when your application needs to abort what it is doing and finish anything that may be running including an Activity that you may have started.
-     *
-     * Any activities started using the {@link BaseStageModel#processInActivity(Context, Class)} method will be automatically finished for you
-     *
-     * If you are overriding this method ensure that you include the super call to it here
-     */
-    protected void onForceFinish(ClientCommunicator clientCommunicator) {
-        clientCommunicator.finishStartedActivities();
-    }
 }

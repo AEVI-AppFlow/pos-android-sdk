@@ -45,6 +45,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
         postFlowModel = PostFlowModel.fromActivity(this);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         modelDisplay.showTitle(false);
+        subscribeToFlowServiceEvents(postFlowModel);
     }
 
     @Override

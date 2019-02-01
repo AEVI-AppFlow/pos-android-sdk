@@ -13,6 +13,8 @@
  */
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
+import android.util.Log;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
@@ -21,6 +23,8 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
@@ -34,17 +38,34 @@ public class PaymentService extends BasePaymentFlowService {
     protected void onPaymentCardReading(CardReadingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
+        subscribeToFlowServiceEvents(model);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
+        subscribeToFlowServiceEvents(model);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onGeneric");
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
+        subscribeToFlowServiceEvents(model);
+    }
+
+    protected void subscribeToFlowServiceEvents(BaseStageModel model) {
+        model.getEvents().subscribe(event -> {
+            switch (event.getType()) {
+                case RESPONSE_REJECTED:
+                    String rejectReason = event.getData().getStringValue(REJECTED_REASON);
+                    Log.w("PaymentServiceSample", "Response rejected: " + rejectReason);
+                    break;
+                default:
+                    Log.i("PaymentServiceSample", "Received flow service event: " + event.getType());
+                    break;
+            }
+        });
     }
 }

@@ -52,6 +52,7 @@ public class ReceiptDeliveryActivity extends BaseSampleAppCompatActivity {
         genericStageModel = GenericStageModel.fromActivity(this);
         request = genericStageModel.getRequest();
         setupToolbar(toolbar, R.string.receipt_delivery);
+        subscribeToFlowServiceEvents(genericStageModel);
     }
 
     @Override

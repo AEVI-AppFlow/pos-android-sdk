@@ -21,6 +21,10 @@ import java.util.Objects;
 
 /**
  * Represents FPS (Flow Processing Service) settings that can be configured via a configuration provider.
+ *
+ * These are available for review by external applications for information purposes on what FPS supports and how it will behave.
+ *
+ * For general AppFlow related settings, see {@link AppFlowSettings}.
  */
 public class FpsSettings implements Jsonable {
 
@@ -39,6 +43,8 @@ public class FpsSettings implements Jsonable {
     public static final int PAYMENT_RESPONSE_TIMEOUT_SECONDS_DEFAULT = 120;
     public static final int STATUS_UPDATE_TIMEOUT_SECONDS_DEFAULT = 10;
     public static final int USER_SELECTION_TIMEOUT_SECONDS_DEFAULT = 60;
+
+    public static final int DATABASE_ROW_LIMIT_DEFAULT = 1000;
 
     private boolean isMultiDevice = MULTI_DEVICE_ENABLED_DEFAULT;
     private boolean isCurrencyChangeAllowed = CURRENCY_CHANGE_ALLOWED_DEFAULT;
@@ -59,6 +65,7 @@ public class FpsSettings implements Jsonable {
 
     private boolean legacyPaymentAppsEnabled = LEGACY_PAYMENT_APPS_ENABLED_DEFAULT;
     private boolean alwaysCallPreFlow = ALWAYS_CALL_PRE_FLOW_DEFAULT;
+    private int databaseRowLimit = DATABASE_ROW_LIMIT_DEFAULT;
 
     /**
      * Check whether multi-device support is enabled.
@@ -430,6 +437,28 @@ public class FpsSettings implements Jsonable {
         this.alwaysCallPreFlow = alwaysCallPreFlow;
     }
 
+    /**
+     * Get the limit for how many database rows FPS should keep before overwriting the oldest ones.
+     *
+     * See {@link #DATABASE_ROW_LIMIT_DEFAULT} for default.
+     *
+     * @return The database row limit
+     */
+    public int getDatabaseRowLimit() {
+        return databaseRowLimit;
+    }
+
+    /**
+     * Set the limit for how many database rows FPS should keep before overwriting the oldest ones.
+     *
+     * See {@link #DATABASE_ROW_LIMIT_DEFAULT} for default.
+     *
+     * @param databaseRowLimit The database row limit
+     */
+    public void setDatabaseRowLimit(int databaseRowLimit) {
+        this.databaseRowLimit = databaseRowLimit;
+    }
+
     public static FpsSettings fromJson(String json) {
         return JsonConverter.deserialize(json, FpsSettings.class);
     }
@@ -438,6 +467,7 @@ public class FpsSettings implements Jsonable {
     public String toJson() {
         return JsonConverter.serialize(this);
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -461,15 +491,16 @@ public class FpsSettings implements Jsonable {
                 alwaysAllowDynamicSelect == that.alwaysAllowDynamicSelect &&
                 filterServicesByFlowType == that.filterServicesByFlowType &&
                 legacyPaymentAppsEnabled == that.legacyPaymentAppsEnabled &&
-                alwaysCallPreFlow == that.alwaysCallPreFlow;
+                alwaysCallPreFlow == that.alwaysCallPreFlow &&
+                databaseRowLimit == that.databaseRowLimit;
     }
 
     @Override
     public int hashCode() {
-
         return Objects
                 .hash(isMultiDevice, isCurrencyChangeAllowed, splitResponseTimeoutSeconds, flowResponseTimeoutSeconds, paymentResponseTimeoutSeconds,
                       statusUpdateTimeoutSeconds, appOrDeviceSelectionTimeoutSeconds, shouldAbortOnFlowAppError, shouldAbortOnPaymentError,
-                      allowAccessViaStatusBar, alwaysAllowDynamicSelect, filterServicesByFlowType, legacyPaymentAppsEnabled, alwaysCallPreFlow);
+                      allowAccessViaStatusBar, alwaysAllowDynamicSelect, filterServicesByFlowType, legacyPaymentAppsEnabled, alwaysCallPreFlow,
+                      databaseRowLimit);
     }
 }
