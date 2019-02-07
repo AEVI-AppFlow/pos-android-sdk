@@ -25,7 +25,6 @@ import com.aevi.sdk.flow.model.InternalData;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
-import static com.aevi.sdk.flow.constants.ErrorConstants.INVALID_MESSAGE_TYPE;
 
 /**
  * Internal base class for all API service implementations.
@@ -65,24 +64,25 @@ public abstract class BaseApiService extends AbstractChannelService {
 
     @Override
     protected final void onNewClient(ChannelServer channelServer, String packageName) {
+        Log.d(TAG, "onNewClient: " + packageName);
         final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
-        // We only listen for the initial message here to set up the relevant models based on the request and after that, it's up to subclasses
-        // to manage further comms
-        clientCommunicator.subscribeToMessages().take(1).subscribe(appMessage -> {
-            Log.d(TAG, "Received message: " + appMessage.getMessageType());
-            checkVersions(appMessage, internalData);
-            String messageData = appMessage.getMessageData();
-            switch (appMessage.getMessageType()) {
-                case REQUEST_MESSAGE:
-                    handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
-                    break;
-                default:
-                    String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
-                    Log.e(TAG, msg);
-                    clientCommunicator.sendResponseAsErrorAndEnd(INVALID_MESSAGE_TYPE, msg);
-                    break;
-            }
-        }, throwable -> Log.e(TAG, "Failed while parsing message from client", throwable));
+        clientCommunicator.subscribeToMessages()
+                .takeUntil(appMessage -> {
+                    return appMessage.getMessageType().equals(REQUEST_MESSAGE);
+                })
+                .subscribe(appMessage -> {
+                    Log.d(TAG, "Received message: " + appMessage.getMessageType());
+                    checkVersions(appMessage, internalData);
+                    String messageData = appMessage.getMessageData();
+                    switch (appMessage.getMessageType()) {
+                        case REQUEST_MESSAGE:
+                            handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
+                            break;
+                        default:
+                            Log.w(TAG, String.format("Ignoring message type: %s", appMessage.getMessageType()));
+                            break;
+                    }
+                }, throwable -> Log.e(TAG, "Failed while parsing message from client", throwable));
     }
 
     static void checkVersions(AppMessage appMessage, InternalData checkWith) {
