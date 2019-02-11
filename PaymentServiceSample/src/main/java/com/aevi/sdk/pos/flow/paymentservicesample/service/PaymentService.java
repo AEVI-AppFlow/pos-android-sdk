@@ -13,6 +13,7 @@
  */
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
+import android.app.Activity;
 import android.util.Log;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
@@ -25,6 +26,7 @@ import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
@@ -38,26 +40,29 @@ public class PaymentService extends BasePaymentFlowService {
     protected void onPaymentCardReading(CardReadingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
-        subscribeToFlowServiceEvents(model);
+        subscribeToFlowServiceEvents(model, PaymentCardReadingActivity.class);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
-        subscribeToFlowServiceEvents(model);
+        subscribeToFlowServiceEvents(model, TransactionProcessingActivity.class);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onGeneric");
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
-        subscribeToFlowServiceEvents(model);
     }
 
-    protected void subscribeToFlowServiceEvents(BaseStageModel model) {
+    protected void subscribeToFlowServiceEvents(BaseStageModel model, Class<? extends Activity> activityToRestart) {
         model.getEvents().subscribe(event -> {
             switch (event.getType()) {
+                case RESUME_USER_INTERFACE:
+                    // In this sample, we simply restart the activity as it contains no state
+                    model.processInActivity(getBaseContext(), activityToRestart);
+                    break;
                 case RESPONSE_REJECTED:
                     String rejectReason = event.getData().getStringValue(REJECTED_REASON);
                     Log.w("PaymentServiceSample", "Response rejected: " + rejectReason);

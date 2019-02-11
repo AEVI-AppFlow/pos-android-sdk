@@ -23,6 +23,7 @@ import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TokenisationActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_TOKENISATION;
 
@@ -36,6 +37,13 @@ public class GenericStageHandler {
                 break;
             case FLOW_TYPE_TOKENISATION:
                 genericStageModel.processInActivity(context, TokenisationActivity.class);
+                genericStageModel.getEvents().subscribe(flowEvent -> {
+                    switch (flowEvent.getType()) {
+                        case RESUME_USER_INTERFACE:
+                            genericStageModel.processInActivity(context, TokenisationActivity.class);
+                            break;
+                    }
+                });
                 break;
             default:
                 genericStageModel.sendResponse(new Response(request, false, "Unsupported request: " + request.getRequestType()));
