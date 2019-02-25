@@ -227,6 +227,7 @@ public class Transaction extends BaseModel {
      *
      * @return True if the amounts have been fully processed, false otherwise.
      */
+    @JsonConverter.ExposeMethod(value = "hasProcessedRequestedAmounts")
     public boolean hasProcessedRequestedAmounts() {
         return getRemainingAmounts().getTotalAmountValue() == 0;
     }
