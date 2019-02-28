@@ -21,9 +21,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import com.aevi.sdk.flow.model.FlowException;
@@ -74,6 +76,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
 
     @BindView(R.id.message)
     TextView messageView;
+
+    @BindView(R.id.process_background)
+    CheckBox processInBackground;
 
     private String selectedApiRequestFlow;
     private String selectedSubType;
@@ -162,6 +167,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
         updateState(false);
     }
 
+    @OnCheckedChanged(R.id.process_background)
+    public void onProcessBackgroundStateChanged(CheckBox checkBox, boolean processInBackground) {
+        updateState(false);
+    }
+
     private void hideSubTypes() {
         subTypeSpinner.setVisibility(View.GONE);
         subTypeHeader.setVisibility(View.GONE);
@@ -204,6 +214,8 @@ public class GenericRequestFragment extends BaseObservableFragment {
             return null; // Wait for settings to come back first
         }
         Request request = new Request(selectedApiRequestFlow);
+        // Indicate whether or not to process request in background - make sure to read docs to understand implications of this
+        request.setProcessInBackground(processInBackground.isChecked());
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
 
         // Some types require additional information
