@@ -123,6 +123,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         if (request.getRequestType() != null) {
             requestInfo.add(getStringPair(R.string.request_type, request.getRequestType()));
         }
+        requestInfo.add(getStringPair(R.string.process_in_background, request.shouldProcessInBackground()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));
 
         addDataSections(request.getRequestData(), null);
@@ -297,6 +298,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         int outcomeRes = response.wasSuccessful() ? R.string.success : R.string.failed;
         responseInfo.add(getStringPair(R.string.outcome, getString(outcomeRes)));
         responseInfo.add(getStringPair(R.string.outcome_message, response.getOutcomeMessage()));
+        responseInfo.add(getStringPair(R.string.was_processed_in_background, response.wasProcessedInBackground()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, responseInfo, true));
 
         addDataSections(response.getResponseData(), null);

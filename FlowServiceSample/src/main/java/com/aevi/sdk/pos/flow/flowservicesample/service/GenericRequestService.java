@@ -37,6 +37,12 @@ public class GenericRequestService extends BaseGenericService {
         Request request = stageModel.getRequest();
         Log.d(TAG, "Got generic request: " + request.toJson());
 
+        // The requests we handle here require foreground processing (showing UI)
+        if (request.shouldProcessInBackground()) {
+            stageModel.sendResponse(new Response(request, false, "Can not handle this request in the background"));
+            return;
+        }
+
         switch (request.getRequestType()) {
             case SHOW_LOYALTY_POINTS_REQUEST:
                 stageModel.processInActivity(getBaseContext(), LoyaltyBalanceActivity.class);

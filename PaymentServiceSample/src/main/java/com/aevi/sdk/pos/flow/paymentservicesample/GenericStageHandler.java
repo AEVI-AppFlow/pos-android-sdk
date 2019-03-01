@@ -36,6 +36,10 @@ public class GenericStageHandler {
                 handleReversal(request, genericStageModel);
                 break;
             case FLOW_TYPE_TOKENISATION:
+                if (request.shouldProcessInBackground()) {
+                    genericStageModel.sendResponse(new Response(request, false, "Can not perform tokenisation in the background"));
+                    return;
+                }
                 genericStageModel.processInActivity(context, TokenisationActivity.class);
                 genericStageModel.getEvents().subscribe(flowEvent -> {
                     switch (flowEvent.getType()) {
