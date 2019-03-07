@@ -103,12 +103,12 @@ public class FlowApp implements Jsonable {
         }
         FlowApp flowApp = (FlowApp) o;
         return mandatory == flowApp.mandatory &&
-                Objects.equals(id, flowApp.id);
+                Objects.equals(id, flowApp.id) &&
+                Objects.equals(conditionalOn, flowApp.conditionalOn);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, mandatory);
+        return Objects.hash(id, mandatory, conditionalOn);
     }
 }

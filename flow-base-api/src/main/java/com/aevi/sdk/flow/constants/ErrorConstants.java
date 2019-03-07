@@ -87,6 +87,16 @@ public interface ErrorConstants {
     String NO_CONFIG_PROVIDER = "noConfigProvider";
 
     /**
+     * Sent if there are no flow services installed on the device that can handle any requests
+     */
+    String NO_FLOW_SERVICES = "noFlowServices";
+
+    /**
+     * Sent if there are no flows configured and/or accepted by FPS
+     */
+    String NO_AVAILABLE_FLOWS = "noAvailableFlows";
+
+    /**
      * Sent if the client is using an API that is not the same major version as the one implemented by the processing service
      */
     String INCOMPATIBLE_API_VERSION = "incompatibleApiVersion";
