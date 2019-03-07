@@ -83,6 +83,10 @@ public abstract class BaseStageModel {
      * See {@link FlowServiceEventTypes} for possible event types and {@link FlowServiceEventDataKeys} for keys
      * associated with event data.
      *
+     * Note that by default these events are ONLY sent to a subscribed service, not activity. The exception is when using the
+     * ActivityProxyService which forwards all events to the handling activity. If your service start an activity and you want to forward
+     * the events, you can do so via the {@link ObservableActivityHelper} that is returned from {@link #processInActivity(Context, Class)}.
+     *
      * @return a stream of {@link FlowEvent} for the flow service
      */
     public Observable<FlowEvent> getEvents() {
