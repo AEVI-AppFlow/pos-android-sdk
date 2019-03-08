@@ -1,19 +1,12 @@
 <resources>
     <string name="app_name">FlowServiceSample</string>
     <string name="enable_split">Enable split</string>
-    <string name="pref_preflow">pref_supports_stage_preflow</string>
-    <string name="pref_split">pref_supports_stage_split</string>
-    <string name="pref_prepayment">pref_supports_stage_prepayment</string>
-    <string name="pref_postcard">pref_supports_stage_postcard</string>
-    <string name="pref_postpayment">pref_supports_stage_postpayment</string>
-    <string name="pref_postflow">pref_supports_stage_postflow</string>
     <string name="pre_flow">Pre flow</string>
     <string name="split">Split</string>
     <string name="pre_payment">Pre transaction</string>
     <string name="post_payment">Post transaction</string>
     <string name="post_card">Post card reading</string>
     <string name="post_flow">Post flow</string>
-    <string name="sample_settings">Flow Service Settings</string>
     <string name="add_amounts">Add additional amounts to transaction</string>
     <string name="pay_portion">Pay portion of amounts</string>
     <string name="add_data_to_transaction">Add data to transaction</string>
