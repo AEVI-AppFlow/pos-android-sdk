@@ -45,7 +45,7 @@ public class GenericStageHandler {
     private static void handleReversal(Request request, GenericStageModel genericStageModel) {
         String transactionId = request.getRequestData().getStringValue(INTERNAL_ID_KEY);
         TransactionResponse lastTransactionResponse = InMemoryStore.getInstance().getLastTransactionResponseGenerated();
-        if (lastTransactionResponse != null && lastTransactionResponse.getReferences().getStringValue(INTERNAL_ID_KEY).equals(transactionId)) {
+        if (lastTransactionResponse != null && transactionId != null && transactionId.equals(lastTransactionResponse.getReferences().getStringValue(INTERNAL_ID_KEY))) {
             genericStageModel.sendResponse(new Response(request, true, "Reversed transaction: " + transactionId));
         } else {
             genericStageModel.sendResponse(new Response(request, false, "Was unable to perform reversal"));
