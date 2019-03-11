@@ -263,6 +263,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 // No extra data required
                 break;
         }
+
+        if (request != null) {
+            // Indicate whether or not to process request in background - make sure to read docs to understand implications of this
+            request.setProcessInBackground(processInBackground.isChecked());
+        }
         return request;
     }
 
