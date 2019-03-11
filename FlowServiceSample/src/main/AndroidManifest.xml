@@ -47,9 +47,8 @@
             </intent-filter>
         </service>
 
-        <!--Standard flow services do not need to extend ActivityProxyService. This sample does it to enable the stage enable/disable controls.-->
         <service
-                android:name=".service.FlowActivityProxyService"
+                android:name="com.aevi.sdk.pos.flow.service.ActivityProxyService"
                 android:exported="true">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_PRE_FLOW"/>
@@ -113,16 +112,6 @@
                 android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="com.aevi.sdk.flow.action.PROCESS_POST_FLOW_IN_ACTIVITY"/>
-            </intent-filter>
-        </activity>
-        <activity
-                android:name=".settings.SettingsActivity"
-                android:label="@string/sample_settings"
-                android:theme="@style/AppThemeActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
