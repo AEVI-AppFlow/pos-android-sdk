@@ -205,6 +205,15 @@ public final class TransactionResponseBuilder {
     }
 
     /**
+     * Returns true if the data setup in the builder so far will build a valid {@link TransactionResponse}
+     *
+     * @return True if this builder has been setup correctly i.e. an outcome has been set
+     */
+    public boolean isValid() {
+        return id != null && !id.isEmpty() && outcome != null;
+    }
+
+    /**
      * Build an instance of {@link TransactionResponse} with the provided parameters.
      *
      * @return The TransactionResponse instance

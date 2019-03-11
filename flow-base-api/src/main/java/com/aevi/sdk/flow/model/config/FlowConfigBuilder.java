@@ -34,6 +34,7 @@ public class FlowConfigBuilder {
     private int apiMajorVersion = getMajorVersionNumber();
     private String description;
     private String restrictedToApp;
+    private boolean processInBackground;
     private List<FlowStage> stages = new ArrayList<>();
 
     /**
@@ -137,6 +138,21 @@ public class FlowConfigBuilder {
     }
 
     /**
+     * Specify that this flow should be executed in the background (invisible to users).
+     *
+     * If true, the relevant flag in the {@link com.aevi.sdk.flow.model.Request} will be set to inform applications in the flow.
+     *
+     * Note that this is only supported for flows that are initiated with a Request - and not for payment flows.
+     *
+     * @param processInBackground True to process in background, false otherwise
+     * @return This builder
+     */
+    public FlowConfigBuilder withProcessInBackground(boolean processInBackground) {
+        this.processInBackground = processInBackground;
+        return this;
+    }
+
+    /**
      * Build a flow config instance.
      *
      * @return The flow config
@@ -144,7 +160,7 @@ public class FlowConfigBuilder {
     public FlowConfig build() {
         checkNotEmpty(name, "Name must be set");
         checkNotEmpty(type, "Type must be set");
-        return new FlowConfig(name, type, version, apiMajorVersion, description, restrictedToApp, stages);
+        return new FlowConfig(name, type, version, apiMajorVersion, description, restrictedToApp, stages, processInBackground);
     }
 
     private static int getMajorVersionNumber() {

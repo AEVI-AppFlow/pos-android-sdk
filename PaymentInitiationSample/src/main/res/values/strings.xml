@@ -124,6 +124,7 @@
     <string name="please_complete_payment_first">Please complete a successful payment before using this request type</string>
     <string name="payment_data">Payment data</string>
     <string name="request_data">Request data</string>
+    <string name="process_request_background">Process request in a background flow</string>
 
     <array name="flow_service_labels">
         <item>@string/service_label_id</item>

@@ -36,6 +36,12 @@
             android:visibility="gone"
             android:entries="@array/request_flows"/>
 
+    <CheckBox
+            android:id="@+id/process_background"
+            style="@style/CheckBox"
+            android:layout_marginTop="10dp"
+            android:text="@string/process_request_background"/>
+
     <TextView
             android:id="@+id/message"
             style="@style/Header"

@@ -1,37 +1,7 @@
 apply plugin: 'com.jfrog.bintray'
 
-def siteUrl = 'https://github.com/Aevi-UK/appflow-sdk'
-def gitUrl = 'https://github.com/Aevi-UK/appflow-sdk.git'
-
-// Create the pom configuration:
-def pomConfig = {
-    name 'AppFlowSDK'
-    url siteUrl
-    licenses {
-        license {
-            name 'The Apache Software License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-        }
-    }
-    developers {
-        developer {
-            id 'brettwold'
-            name 'Brett Cherrington'
-            email 'brett@annalytics.co.uk'
-        }
-        developer {
-            id 'andreas-borglin'
-            name 'Andreas Borglin'
-            email 'andreas@jakoon.co.uk'
-        }
-    }
-    scm {
-        connection gitUrl
-        developerConnection gitUrl
-        url siteUrl
-    }
-}
-
+def siteUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk'
+def gitUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk.git'
 
 bintray {
     if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
@@ -50,7 +20,7 @@ bintray {
         licenses = ['Apache-2.0']
         labels = ['payment', 'POS', 'flow', 'android']
         websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/Aevi-UK/appflow-sdk/issues'
+        issueTrackerUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk/issues'
         vcsUrl = gitUrl
         publicDownloadNumbers = true
     }

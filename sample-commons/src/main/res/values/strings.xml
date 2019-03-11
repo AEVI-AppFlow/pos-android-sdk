@@ -95,5 +95,7 @@
     <string name="no_model_data_available">No model data available</string>
     <string name="response_data">Response data</string>
     <string name="basket_primary">Primary basket</string>
+    <string name="process_in_background">Process in background</string>
+    <string name="was_processed_in_background">Processed in background</string>
 
 </resources>
