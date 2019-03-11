@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION;
-import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION_ID;
 import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
@@ -213,52 +212,67 @@ public class GenericRequestFragment extends BaseObservableFragment {
         if (paymentSettings == null) {
             return null; // Wait for settings to come back first
         }
-        Request request = new Request(selectedApiRequestFlow);
-        // Indicate whether or not to process request in background - make sure to read docs to understand implications of this
-        request.setProcessInBackground(processInBackground.isChecked());
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
 
         // Some types require additional information
-        switch (request.getRequestType()) {
-            case FLOW_TYPE_BASKET_STATUS_UPDATE:
+        Request request = null;
+        switch (selectedApiRequestFlow) {
+            case FLOW_TYPE_BASKET_STATUS_UPDATE: {
+                request = new Request(selectedApiRequestFlow);
                 Basket basket = new Basket("sampleBasket");
                 basket.addItems(new BasketItemBuilder().withLabel("item").withAmount(200).build());
                 request.addAdditionalData(STATUS_UPDATE_BASKET_MODIFIED, basket);
                 break;
-            case FLOW_TYPE_REVERSAL:
-                if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
-                    messageView.setText(R.string.please_complete_payment_first);
+            }
+            case FLOW_TYPE_REVERSAL: {
+                TransactionResponse paymentAppResponse = checkForPaymentAppResponse(lastResponse);
+                if (paymentAppResponse == null) {
                     return null;
                 }
-                request.addAdditionalData(DATA_KEY_TRANSACTION_ID, lastResponse.getTransactions().get(0).getLastResponse().getId());
+                request = new Request(selectedApiRequestFlow, paymentAppResponse.getReferences());
                 break;
-            case FLOW_TYPE_RECEIPT_DELIVERY:
+            }
+            case FLOW_TYPE_RECEIPT_DELIVERY: {
                 if (selectedSubType == null) {
+                    return null;
+                }
+                TransactionResponse paymentAppResponse = checkForPaymentAppResponse(lastResponse);
+                if (paymentAppResponse == null) {
                     return null;
                 }
                 String redeliver = getString(R.string.receipts_redeliver);
                 String cash = getString(R.string.receipts_cash);
                 // Some types require additional information
                 if (selectedSubType.equals(redeliver)) {
-                    if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()) {
-                        messageView.setText(R.string.please_complete_payment_first);
-                        return null;
-                    }
+                    request = new Request(selectedApiRequestFlow);
                     request.addAdditionalData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
                 } else if (selectedSubType.equals(cash)) {
+                    request = new Request(selectedApiRequestFlow);
                     request.addAdditionalData(RECEIPT_AMOUNTS, new Amounts(15000, "EUR"));
                     request.addAdditionalData(RECEIPT_PAYMENT_METHOD, PAYMENT_METHOD_CASH);
                     request.addAdditionalData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
                 }
                 break;
-            case SHOW_LOYALTY_POINTS_REQUEST:
+            }
+            case SHOW_LOYALTY_POINTS_REQUEST: {
+                request = new Request(selectedApiRequestFlow);
                 request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
                 break;
+            }
             default:
                 // No extra data required
                 break;
         }
         return request;
+    }
+
+    private TransactionResponse checkForPaymentAppResponse(PaymentResponse lastResponse) {
+        if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()
+                || lastResponse.getTransactions().get(0).getPaymentAppResponse() == null) {
+            messageView.setText(R.string.please_complete_payment_first);
+            return null;
+        }
+        return lastResponse.getTransactions().get(0).getPaymentAppResponse();
     }
 
     private void setViewsEnabled(boolean enabled) {
