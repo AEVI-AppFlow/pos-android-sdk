@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 import android.content.Context;
-import com.aevi.sdk.flow.constants.AdditionalDataKeys;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.stage.GenericStageModel;
@@ -26,6 +25,7 @@ import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_REVERSAL;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_TOKENISATION;
+import static com.aevi.sdk.pos.flow.paymentservicesample.ui.TransactionProcessingActivity.INTERNAL_ID_KEY;
 
 public class GenericStageHandler {
 
@@ -55,9 +55,9 @@ public class GenericStageHandler {
     }
 
     private static void handleReversal(Request request, GenericStageModel genericStageModel) {
-        String transactionId = request.getRequestData().getStringValue(AdditionalDataKeys.DATA_KEY_TRANSACTION_ID);
+        String transactionId = request.getRequestData().getStringValue(INTERNAL_ID_KEY);
         TransactionResponse lastTransactionResponse = InMemoryStore.getInstance().getLastTransactionResponseGenerated();
-        if (lastTransactionResponse != null && lastTransactionResponse.getId().equals(transactionId)) {
+        if (lastTransactionResponse != null && transactionId != null && transactionId.equals(lastTransactionResponse.getReferences().getStringValue(INTERNAL_ID_KEY))) {
             genericStageModel.sendResponse(new Response(request, true, "Reversed transaction: " + transactionId));
         } else {
             genericStageModel.sendResponse(new Response(request, false, "Was unable to perform reversal"));
