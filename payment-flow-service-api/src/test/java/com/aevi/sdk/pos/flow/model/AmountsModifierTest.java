@@ -13,12 +13,12 @@ public class AmountsModifierTest {
 
         Amounts updated = new AmountsModifier(original)
                 .updateBaseAmount(50)
-                .setAdditionalAmount("cashback", 20, false)
+                .setAdditionalAmount("cashback", 30, false)
                 .setAdditionalAmount("tip", 15, false)
                 .build();
 
         assertThat(updated.getBaseAmountValue()).isEqualTo(50);
-        assertThat(updated.getAdditionalAmountValue("cashback")).isEqualTo(20);
+        assertThat(updated.getAdditionalAmountValue("cashback")).isEqualTo(30);
         assertThat(updated.getAdditionalAmountValue("tip")).isEqualTo(15);
     }
 
@@ -49,7 +49,7 @@ public class AmountsModifierTest {
         original.addAdditionalAmount("cashback", 100);
 
         Amounts updated = new AmountsModifier(original).setAdditionalAmount("cashback", 50, true).build();
-        assertThat(updated.getAdditionalAmount("cashback")).isEqualTo(50);
+        assertThat(updated.getAdditionalAmount("cashback").getValue()).isEqualTo(50);
     }
 
     @Test
