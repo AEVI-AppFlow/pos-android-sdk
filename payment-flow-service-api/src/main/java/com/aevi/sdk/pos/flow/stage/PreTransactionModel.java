@@ -125,21 +125,21 @@ public class PreTransactionModel extends BaseStageModel {
     }
 
     /**
-     * Set or update an additional payment amount with an amount value.
+     * Add or update an additional amount with an amount value.
      *
      * This is typically used to add a fee/charge, charity contribution, etc. Note that this should never be used to represent the value of any
      * goods or services.
      *
-     * Must be 0 or greater.
+     * Must be 0 or greater and existing amounts may only be increased, not decreased.
      *
      * @param identifier The amount identifier
      * @param amount     The amount value
-     * @throws IllegalArgumentException If identifier or amount are invalid
+     * @throws IllegalArgumentException If identifier or amount are invalid or existing amount is being decreased
      */
     public void setAdditionalAmount(String identifier, long amount) {
         checkNotEmpty(identifier, "Identifier must be set");
         checkNotNegative(amount, "Amount must be zero or greater");
-        amountsModifier.setAdditionalAmount(identifier, amount);
+        amountsModifier.setAdditionalAmount(identifier, amount, false);
     }
 
     /**
@@ -148,9 +148,11 @@ public class PreTransactionModel extends BaseStageModel {
      * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount.
      * Note that this should never be used to represent the value of any goods or services.
      *
+     * Note that any existing amount may only be increased, not decreased.
+     *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
-     * @throws IllegalArgumentException If identifier is not set
+     * @throws IllegalArgumentException If identifier is not set or existing amount is decreased
      */
     public void setAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         checkNotEmpty(identifier, "Identifier must be set");
