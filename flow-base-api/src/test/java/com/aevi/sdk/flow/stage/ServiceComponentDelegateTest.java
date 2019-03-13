@@ -2,6 +2,7 @@ package com.aevi.sdk.flow.stage;
 
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.PublishSubject;
@@ -20,12 +21,14 @@ public class ServiceComponentDelegateTest {
     private PublishSubject<AppMessage> messageSubject = PublishSubject.create();
     private TestObserver<FlowEvent> messageObserver;
     private boolean sentToActivity;
+    private InternalData senderInternalData;
 
     @Before
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
+        senderInternalData = mock(InternalData.class);
         when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
-        serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator, "com.something") {
+        serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator, senderInternalData) {
             @Override
             public void sendEventToActivity(FlowEvent event) {
                 sentToActivity = true;

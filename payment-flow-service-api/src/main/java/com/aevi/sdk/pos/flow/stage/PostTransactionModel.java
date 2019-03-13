@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -25,8 +26,8 @@ import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
@@ -48,14 +49,14 @@ public class PostTransactionModel extends BaseStageModel {
     private final TransactionSummary transactionSummary;
     private final FlowResponse flowResponse;
 
-    private PostTransactionModel(Activity activity, TransactionSummary transactionSummary, String flowInitiator) {
-        super(activity, flowInitiator);
+    private PostTransactionModel(Activity activity, TransactionSummary transactionSummary, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
 
-    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary, String flowInitiator) {
-        super(clientCommunicator,flowInitiator);
+    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
@@ -71,9 +72,8 @@ public class PostTransactionModel extends BaseStageModel {
      */
     @NonNull
     public static PostTransactionModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new PostTransactionModel(activity, TransactionSummary.fromJson(request), flowInitiator);
+        return new PostTransactionModel(activity, TransactionSummary.fromJson(getActivityRequestJson(activity)),
+                                        getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -81,12 +81,13 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionSummary
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PostTransactionModel}
      */
     @NonNull
-    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request, String flowInitiator) {
-        return new PostTransactionModel(clientCommunicator, request, flowInitiator);
+    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request,
+                                                   InternalData senderInternalData) {
+        return new PostTransactionModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

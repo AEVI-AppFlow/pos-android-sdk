@@ -17,14 +17,15 @@ package com.aevi.sdk.pos.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 
 /**
  * Model for the post-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -40,13 +41,13 @@ public class PostFlowModel extends BaseStageModel {
 
     private final PaymentResponse paymentResponse;
 
-    private PostFlowModel(Activity activity, PaymentResponse paymentResponse, String flowInitiator) {
-        super(activity, flowInitiator);
+    private PostFlowModel(Activity activity, PaymentResponse paymentResponse, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.paymentResponse = paymentResponse;
     }
 
-    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.paymentResponse = paymentResponse;
     }
 
@@ -61,9 +62,7 @@ public class PostFlowModel extends BaseStageModel {
      */
     @NonNull
     public static PostFlowModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new PostFlowModel(activity, PaymentResponse.fromJson(request), flowInitiator);
+        return new PostFlowModel(activity, PaymentResponse.fromJson(getActivityRequestJson(activity)), getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -71,12 +70,12 @@ public class PostFlowModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised PaymentResponse
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PostFlowModel}
      */
     @NonNull
-    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request, String flowInitiator) {
-        return new PostFlowModel(clientCommunicator, request, flowInitiator);
+    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request, InternalData senderInternalData) {
+        return new PostFlowModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

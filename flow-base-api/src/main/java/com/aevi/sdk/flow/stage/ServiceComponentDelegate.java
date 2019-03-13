@@ -14,16 +14,19 @@
 
 package com.aevi.sdk.flow.stage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.util.Preconditions;
 import io.reactivex.Observable;
@@ -56,8 +59,8 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     private Disposable messageDisposable;
     private String activityId;
 
-    public ServiceComponentDelegate(ClientCommunicator clientCommunicator, String flowInitiator) {
-        super(flowInitiator);
+    public ServiceComponentDelegate(ClientCommunicator clientCommunicator, InternalData senderInternalData) {
+        super(senderInternalData);
         Preconditions.checkNotNull(clientCommunicator, "clientCommunicator can not be null");
         this.clientCommunicator = clientCommunicator;
         this.flowServiceMessageSubject = PublishSubject.create();
@@ -115,7 +118,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         if (requestJson != null) {
             activityIntent.putExtra(ACTIVITY_REQUEST_KEY, requestJson);
         }
-        activityIntent.putExtra(EXTRAS_FLOW_INITIATOR, getFlowInitiator());
+        activityIntent.putExtra(EXTRAS_FLOW_INITIATOR, getsenderInternalData().toJson());
         this.activityId = UUID.randomUUID().toString();
         activityIntent.putExtra(ObservableActivityHelper.INTENT_ID, activityId);
         activityIntent.putExtras(extras);
@@ -123,6 +126,20 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         helper.startObservableActivity().subscribe(clientCommunicator::sendMessage,
                                                    throwable -> handleActivityException(throwable, clientCommunicator));
         return helper;
+    }
+
+    @Nullable
+    public static String getActivityRequestJson(Activity activity) {
+        return activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
+    }
+
+    @Nullable
+    public static InternalData getFlowInitiatorInternalData(Activity activity) {
+        String json = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        if(json != null) {
+            return InternalData.fromJson(json);
+        }
+        return null;
     }
 
     private void handleActivityException(Throwable throwable, ClientCommunicator clientCommunicator) {

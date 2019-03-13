@@ -17,13 +17,14 @@ package com.aevi.sdk.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -36,13 +37,13 @@ public class GenericStageModel extends BaseStageModel {
 
     private final Request request;
 
-    private GenericStageModel(Activity activity, Request request, String flowInitiator) {
-        super(activity, flowInitiator);
+    private GenericStageModel(Activity activity, Request request, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.request = request;
     }
 
-    private GenericStageModel(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private GenericStageModel(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.request = request;
     }
 
@@ -56,9 +57,7 @@ public class GenericStageModel extends BaseStageModel {
      */
     @NonNull
     public static GenericStageModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new GenericStageModel(activity, Request.fromJson(request), flowInitiator);
+        return new GenericStageModel(activity, Request.fromJson(getActivityRequestJson(activity)), getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -66,12 +65,12 @@ public class GenericStageModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Request provided as a string
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link GenericStageModel}
      */
     @NonNull
-    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
-        return new GenericStageModel(clientCommunicator, request, flowInitiator);
+    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        return new GenericStageModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

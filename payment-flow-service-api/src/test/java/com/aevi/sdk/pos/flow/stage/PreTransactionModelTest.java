@@ -3,6 +3,7 @@ package com.aevi.sdk.pos.flow.stage;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.Customer;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.model.*;
 import io.reactivex.subjects.PublishSubject;
@@ -28,10 +29,12 @@ public class PreTransactionModelTest {
     private AdditionalData additionalData;
     private Card card;
     private long baseAmountValue;
+    private InternalData internalData;
 
     @Before
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
+        internalData = mock(InternalData.class);
         when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
         customer = new Customer("custId");
         requestBaskets = new ArrayList<>();
@@ -41,7 +44,7 @@ public class PreTransactionModelTest {
         requestBaskets.add(new Basket("basket", new BasketItemBuilder().withLabel("item").withAmount(baseAmountValue).build()));
         transactionRequest = new TransactionRequest("myId", "txnId", "sale", "PRE_TRANSACTION",
                                                     new Amounts(baseAmountValue, "GBP"), requestBaskets, customer, additionalData, card);
-        preTransactionModel = PreTransactionModel.fromService(clientCommunicator, transactionRequest, "com.something");
+        preTransactionModel = PreTransactionModel.fromService(clientCommunicator, transactionRequest, internalData);
     }
 
     @Test

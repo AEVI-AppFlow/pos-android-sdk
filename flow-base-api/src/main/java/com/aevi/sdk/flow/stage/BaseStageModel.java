@@ -25,11 +25,13 @@ import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AuditEntry;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import io.reactivex.Observable;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.AUDIT_ENTRY;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 
 /**
@@ -60,21 +62,21 @@ public abstract class BaseStageModel {
     /**
      * Initialise the stage model from an activity.
      *
-     * @param activity      The flow service activity
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param activity          The flow service activity
+     * @param senderInternalData The InternalData of the app calling this stage
      */
-    protected BaseStageModel(@Nullable Activity activity, String flowInitiator) {
-        this(new ActivityComponentDelegate(activity, flowInitiator));
+    protected BaseStageModel(@Nullable Activity activity, InternalData senderInternalData) {
+        this(new ActivityComponentDelegate(activity, senderInternalData));
     }
 
     /**
      * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
-     * @param flowInitiator      The packageName of the app that started this flow
+     * @param senderInternalData  The InternalData of the app calling this stage
      */
-    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator, String flowInitiator) {
-        this(new ServiceComponentDelegate(clientCommunicator, flowInitiator));
+    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator, InternalData senderInternalData) {
+        this(new ServiceComponentDelegate(clientCommunicator, senderInternalData));
     }
 
     /**
@@ -82,8 +84,12 @@ public abstract class BaseStageModel {
      *
      * @return A package name or "UNKNOWN" if not known for some reason
      */
-    public String getFlowInitiator() {
-        return androidComponentDelegate.getFlowInitiator();
+    public String getFlowInitiatorPackage() {
+        return getInternalData(androidComponentDelegate.getsenderInternalData(), FLOW_INITIATOR);
+    }
+
+    protected String getInternalData(@Nullable InternalData senderInternalData, String flowStage) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(flowStage, "UNKNOWN") : "UNKNOWN";
     }
 
     /**

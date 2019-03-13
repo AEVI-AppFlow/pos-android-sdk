@@ -18,10 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.model.AppMessage;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.service.BaseStatusUpdateService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
@@ -38,8 +35,8 @@ public class StatusUpdateModel extends BaseStageModel {
 
     private final Request request;
 
-    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.request = request;
     }
 
@@ -48,12 +45,12 @@ public class StatusUpdateModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Request provided as a string
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link StatusUpdateModel}
      */
     @NonNull
-    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
-        return new StatusUpdateModel(clientCommunicator, request, flowInitiator);
+    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        return new StatusUpdateModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

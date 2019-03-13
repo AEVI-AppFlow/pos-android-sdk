@@ -18,12 +18,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BasePostGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 
 /**
  * Model for the post generic stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -37,14 +38,14 @@ public class PostGenericStageModel extends BaseStageModel {
     private final Response inputResponse;
     private final Response outputResponse;
 
-    private PostGenericStageModel(Activity activity, Response response, String flowInitiator) {
-        super(activity, flowInitiator);
+    private PostGenericStageModel(Activity activity, Response response, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.inputResponse = response;
         this.outputResponse = Response.fromJson(response.toJson()); // Same data, different instance
     }
 
-    private PostGenericStageModel(ClientCommunicator clientCommunicator, Response response, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private PostGenericStageModel(ClientCommunicator clientCommunicator, Response response, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.inputResponse = response;
         this.outputResponse = Response.fromJson(response.toJson()); // Same data, different instance
     }
@@ -59,9 +60,7 @@ public class PostGenericStageModel extends BaseStageModel {
      */
     @NonNull
     public static PostGenericStageModel fromActivity(Activity activity) {
-        String response = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new PostGenericStageModel(activity, Response.fromJson(response), flowInitiator);
+        return new PostGenericStageModel(activity, Response.fromJson(getActivityRequestJson(activity)), getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -69,12 +68,12 @@ public class PostGenericStageModel extends BaseStageModel {
      *
      * @param clientCommunicator A communicator that can be used to send messages and/or end the communication stream
      * @param response           The deserialised Response
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link PostGenericStageModel}
      */
     @NonNull
-    public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response, String flowInitiator) {
-        return new PostGenericStageModel(clientCommunicator, response, flowInitiator);
+    public static PostGenericStageModel fromService(ClientCommunicator clientCommunicator, Response response, InternalData senderInternalData) {
+        return new PostGenericStageModel(clientCommunicator, response, senderInternalData);
     }
 
     /**

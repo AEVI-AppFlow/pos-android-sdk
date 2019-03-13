@@ -19,6 +19,7 @@ import android.content.Intent;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.Observable;
 
 /**
@@ -28,19 +29,19 @@ import io.reactivex.Observable;
  */
 abstract class AndroidComponentDelegate {
 
-    private final String flowInitiator;
+    private final InternalData senderInternalData;
 
-    protected AndroidComponentDelegate(String flowInitiator) {
-        this.flowInitiator = flowInitiator;
+    AndroidComponentDelegate(InternalData senderInternalData) {
+        this.senderInternalData = senderInternalData;
     }
 
     /**
-     * returns the packagename of the client application that initiated this flow in the first place
+     * Returns the InternalData of the client application that initiated this flow in the first place
      *
-     * @return A package name or "UNKNOWN" if not known for some reason
+     * @return A {@link InternalData} object
      */
-    public String getFlowInitiator() {
-        return flowInitiator;
+    public InternalData getsenderInternalData() {
+        return senderInternalData;
     }
 
     /**

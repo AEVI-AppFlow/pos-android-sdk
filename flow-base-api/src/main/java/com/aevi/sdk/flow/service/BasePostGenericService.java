@@ -21,8 +21,6 @@ import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 
-import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
-
 /**
  * Base service for handling post-generic stages which receive the response from the main generic stage.
  *
@@ -37,9 +35,8 @@ public abstract class BasePostGenericService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        String flowInitiator = getInternalData(senderInternalData, FLOW_INITIATOR);
         PostGenericStageModel postGenericStageModel =
-                PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request), flowInitiator);
+                PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request), senderInternalData);
         processResponse(postGenericStageModel);
     }
 

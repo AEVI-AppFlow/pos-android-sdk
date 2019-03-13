@@ -11,6 +11,7 @@ import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
@@ -24,6 +25,7 @@ public class ActivityComponentDelegateTest {
     private Lifecycle lifecycle;
     private Activity activity;
     private Intent intent;
+    private InternalData senderInternalData;
     private ObservableActivityHelper helper;
     private ActivityComponentDelegate activityComponentDelegate;
     private PublishSubject<String> helperEventSubject = PublishSubject.create();
@@ -34,10 +36,11 @@ public class ActivityComponentDelegateTest {
         lifecycle = mock(Lifecycle.class);
         activity = spy(new FakeActivity());
         intent = mock(Intent.class);
+        senderInternalData = mock(InternalData.class);
         when(intent.getExtras()).thenReturn(new Bundle());
         helper = mock(ObservableActivityHelper.class);
         when(helper.registerForEvents()).thenReturn(helperEventSubject);
-        activityComponentDelegate = new ActivityComponentDelegate(activity, "com.something") {
+        activityComponentDelegate = new ActivityComponentDelegate(activity, senderInternalData) {
             @Override
             protected ObservableActivityHelper<String> getHelperFromActivity(Activity activity) throws NoSuchInstanceException {
                 return helper;

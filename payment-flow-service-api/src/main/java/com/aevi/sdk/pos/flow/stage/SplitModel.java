@@ -19,14 +19,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -50,15 +51,15 @@ public class SplitModel extends BaseStageModel {
     private final AmountsModifier amountsModifier;
     private final FlowResponse flowResponse;
 
-    private SplitModel(Activity activity, SplitRequest splitRequest, String flowInitiator) {
-        super(activity, flowInitiator);
+    private SplitModel(Activity activity, SplitRequest splitRequest, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
     }
 
-    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
@@ -75,9 +76,7 @@ public class SplitModel extends BaseStageModel {
      */
     @NonNull
     public static SplitModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new SplitModel(activity, SplitRequest.fromJson(request), flowInitiator);
+        return new SplitModel(activity, SplitRequest.fromJson(getActivityRequestJson(activity)), getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -85,12 +84,12 @@ public class SplitModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised SplitRequest
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link SplitModel}
      */
     @NonNull
-    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request, String flowInitiator) {
-        return new SplitModel(clientCommunicator, request, flowInitiator);
+    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request, InternalData senderInternalData) {
+        return new SplitModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

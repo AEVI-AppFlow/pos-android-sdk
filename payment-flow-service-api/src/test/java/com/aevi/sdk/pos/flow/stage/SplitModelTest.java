@@ -1,6 +1,7 @@
 package com.aevi.sdk.pos.flow.stage;
 
 import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.model.*;
 import io.reactivex.subjects.PublishSubject;
@@ -24,10 +25,12 @@ public class SplitModelTest {
     private long totalRequestValue;
     private Basket paymentBasket;
     private List<Transaction> prevTransactions;
+    private InternalData internalData;
 
     @Before
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
+        internalData = mock(InternalData.class);
         when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
         totalRequestValue = 1000;
         paymentBasket = new Basket("basket", new BasketItemBuilder().withLabel("item")
@@ -36,7 +39,7 @@ public class SplitModelTest {
                 .withBasket(paymentBasket).withPaymentFlow("sale").build();
         prevTransactions = new ArrayList<>();
         splitRequest = new SplitRequest(payment, payment.getAmounts(), prevTransactions);
-        splitModel = SplitModel.fromService(clientCommunicator, splitRequest, "com.something");
+        splitModel = SplitModel.fromService(clientCommunicator, splitRequest, internalData);
     }
 
     @Test

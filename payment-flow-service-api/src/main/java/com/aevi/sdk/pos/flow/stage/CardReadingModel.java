@@ -18,6 +18,7 @@ package com.aevi.sdk.pos.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.Card;
@@ -26,8 +27,8 @@ import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 
 /**
  * Model for the card-reading stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -44,14 +45,14 @@ public class CardReadingModel extends BaseStageModel {
     private final TransactionRequest transactionRequest;
     private final TransactionResponseBuilder transactionResponseBuilder;
 
-    private CardReadingModel(Activity activity, TransactionRequest request, String flowInitiator) {
-        super(activity, flowInitiator);
+    private CardReadingModel(Activity activity, TransactionRequest request, InternalData senderInternalData) {
+        super(activity, senderInternalData);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
 
-    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
-        super(clientCommunicator, flowInitiator);
+    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
@@ -67,9 +68,7 @@ public class CardReadingModel extends BaseStageModel {
      */
     @NonNull
     public static CardReadingModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
-        return new CardReadingModel(activity, TransactionRequest.fromJson(request), flowInitiator);
+        return new CardReadingModel(activity, TransactionRequest.fromJson(getActivityRequestJson(activity)), getFlowInitiatorInternalData(activity));
     }
 
     /**
@@ -77,12 +76,12 @@ public class CardReadingModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionRequest
-     * @param flowInitiator The packageName of the app that started this flow
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link CardReadingModel}
      */
     @NonNull
-    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
-        return new CardReadingModel(clientCommunicator, request, flowInitiator);
+    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+        return new CardReadingModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
