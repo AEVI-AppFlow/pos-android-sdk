@@ -81,7 +81,7 @@ public class AmountsModifier {
      *
      * Note that this is only allowed during certain stages in the flow.
      *
-     * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long)}.
+     * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long, boolean)}.
      *
      * Must be 0 or greater.
      *
@@ -102,7 +102,7 @@ public class AmountsModifier {
      *
      * Note that this is only allowed during certain stages in the flow.
      *
-     * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long)}.
+     * For the common case of adding a fee, charity contribution, etc, please use {@link #setAdditionalAmount(String, long, boolean)}.
      *
      * @param baseAmountOffset The amount to offset with. Positive to increase, negative to decrease.
      * @return This builder
@@ -122,13 +122,18 @@ public class AmountsModifier {
      *
      * Must be 0 or greater.
      *
-     * @param identifier The amount identifier
-     * @param amount     The amount value
+     * @param identifier     The amount identifier
+     * @param amount         The amount value
+     * @param allowReduction Whether or not to allow reducing any existing value
      * @return This builder
      */
     @NonNull
-    public AmountsModifier setAdditionalAmount(String identifier, long amount) {
+    public AmountsModifier setAdditionalAmount(String identifier, long amount, boolean allowReduction) {
         if (amount >= 0) {
+            Long existingValue = additionalAmounts.get(identifier);
+            if (existingValue != null && amount < existingValue && !allowReduction) {
+                throw new IllegalArgumentException("Reducing an existing amount is not allowed");
+            }
             additionalAmounts.put(identifier, amount);
             hasModifications = true;
         }
@@ -149,7 +154,7 @@ public class AmountsModifier {
         if (fraction < 0.0f || fraction > 1.0f) {
             throw new IllegalArgumentException("Fraction must be between 0.0 and 1.0");
         }
-        setAdditionalAmount(identifier, (long) (baseAmount * fraction));
+        setAdditionalAmount(identifier, (long) (baseAmount * fraction), false);
         return this;
     }
 
