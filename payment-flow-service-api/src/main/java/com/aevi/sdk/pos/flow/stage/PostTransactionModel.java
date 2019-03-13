@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
@@ -47,14 +48,14 @@ public class PostTransactionModel extends BaseStageModel {
     private final TransactionSummary transactionSummary;
     private final FlowResponse flowResponse;
 
-    private PostTransactionModel(Activity activity, TransactionSummary transactionSummary) {
-        super(activity);
+    private PostTransactionModel(Activity activity, TransactionSummary transactionSummary, String flowInitiator) {
+        super(activity, flowInitiator);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
 
-    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary) {
-        super(clientCommunicator);
+    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary, String flowInitiator) {
+        super(clientCommunicator,flowInitiator);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
@@ -71,7 +72,8 @@ public class PostTransactionModel extends BaseStageModel {
     @NonNull
     public static PostTransactionModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PostTransactionModel(activity, TransactionSummary.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new PostTransactionModel(activity, TransactionSummary.fromJson(request), flowInitiator);
     }
 
     /**
@@ -79,11 +81,12 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionSummary
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link PostTransactionModel}
      */
     @NonNull
-    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request) {
-        return new PostTransactionModel(clientCommunicator, request);
+    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request, String flowInitiator) {
+        return new PostTransactionModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 
 /**
  * Model for the pre-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -45,14 +46,14 @@ public class PreFlowModel extends BaseStageModel {
     private final Payment payment;
     private final PaymentBuilder paymentBuilder;
 
-    private PreFlowModel(Activity activity, Payment payment) {
-        super(activity);
+    private PreFlowModel(Activity activity, Payment payment, String flowInitiator) {
+        super(activity, flowInitiator);
         this.payment = payment;
         this.paymentBuilder = new PaymentBuilder(payment);
     }
 
-    private PreFlowModel(ClientCommunicator clientCommunicator, Payment payment) {
-        super(clientCommunicator);
+    private PreFlowModel(ClientCommunicator clientCommunicator, Payment payment, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.payment = payment;
         this.paymentBuilder = new PaymentBuilder(payment);
     }
@@ -69,7 +70,8 @@ public class PreFlowModel extends BaseStageModel {
     @NonNull
     public static PreFlowModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PreFlowModel(activity, Payment.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new PreFlowModel(activity, Payment.fromJson(request), flowInitiator);
     }
 
     /**
@@ -77,11 +79,12 @@ public class PreFlowModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Payment
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link PreFlowModel}
      */
     @NonNull
-    public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request) {
-        return new PreFlowModel(clientCommunicator, request);
+    public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request, String flowInitiator) {
+        return new PreFlowModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

@@ -28,6 +28,21 @@ import io.reactivex.Observable;
  */
 abstract class AndroidComponentDelegate {
 
+    private final String flowInitiator;
+
+    protected AndroidComponentDelegate(String flowInitiator) {
+        this.flowInitiator = flowInitiator;
+    }
+
+    /**
+     * returns the packagename of the client application that initiated this flow in the first place
+     *
+     * @return A package name or "UNKNOWN" if not known for some reason
+     */
+    public String getFlowInitiator() {
+        return flowInitiator;
+    }
+
     /**
      * Send message to client.
      *

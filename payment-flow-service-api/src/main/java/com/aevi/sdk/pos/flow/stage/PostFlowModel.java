@@ -24,6 +24,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 
 /**
  * Model for the post-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -39,13 +40,13 @@ public class PostFlowModel extends BaseStageModel {
 
     private final PaymentResponse paymentResponse;
 
-    private PostFlowModel(Activity activity, PaymentResponse paymentResponse) {
-        super(activity);
+    private PostFlowModel(Activity activity, PaymentResponse paymentResponse, String flowInitiator) {
+        super(activity, flowInitiator);
         this.paymentResponse = paymentResponse;
     }
 
-    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse) {
-        super(clientCommunicator);
+    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.paymentResponse = paymentResponse;
     }
 
@@ -61,7 +62,8 @@ public class PostFlowModel extends BaseStageModel {
     @NonNull
     public static PostFlowModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PostFlowModel(activity, PaymentResponse.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new PostFlowModel(activity, PaymentResponse.fromJson(request), flowInitiator);
     }
 
     /**
@@ -69,11 +71,12 @@ public class PostFlowModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised PaymentResponse
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link PostFlowModel}
      */
     @NonNull
-    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request) {
-        return new PostFlowModel(clientCommunicator, request);
+    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request, String flowInitiator) {
+        return new PostFlowModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

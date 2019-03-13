@@ -49,13 +49,15 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     private static final String TAG = ServiceComponentDelegate.class.getSimpleName();
     public static final String ACTIVITY_REQUEST_KEY = "request";
     public static final String EXTRAS_INTERNAL_DATA_KEY = "internalData";
+    public static final String EXTRAS_FLOW_INITIATOR = "flowInitiator";
 
     private final ClientCommunicator clientCommunicator;
     private final PublishSubject<FlowEvent> flowServiceMessageSubject;
     private Disposable messageDisposable;
     private String activityId;
 
-    public ServiceComponentDelegate(ClientCommunicator clientCommunicator) {
+    public ServiceComponentDelegate(ClientCommunicator clientCommunicator, String flowInitiator) {
+        super(flowInitiator);
         Preconditions.checkNotNull(clientCommunicator, "clientCommunicator can not be null");
         this.clientCommunicator = clientCommunicator;
         this.flowServiceMessageSubject = PublishSubject.create();
@@ -113,6 +115,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         if (requestJson != null) {
             activityIntent.putExtra(ACTIVITY_REQUEST_KEY, requestJson);
         }
+        activityIntent.putExtra(EXTRAS_FLOW_INITIATOR, getFlowInitiator());
         this.activityId = UUID.randomUUID().toString();
         activityIntent.putExtra(ObservableActivityHelper.INTENT_ID, activityId);
         activityIntent.putExtras(extras);

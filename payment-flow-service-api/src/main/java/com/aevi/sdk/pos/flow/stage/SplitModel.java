@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -49,15 +50,15 @@ public class SplitModel extends BaseStageModel {
     private final AmountsModifier amountsModifier;
     private final FlowResponse flowResponse;
 
-    private SplitModel(Activity activity, SplitRequest splitRequest) {
-        super(activity);
+    private SplitModel(Activity activity, SplitRequest splitRequest, String flowInitiator) {
+        super(activity, flowInitiator);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
     }
 
-    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest) {
-        super(clientCommunicator);
+    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
@@ -75,7 +76,8 @@ public class SplitModel extends BaseStageModel {
     @NonNull
     public static SplitModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new SplitModel(activity, SplitRequest.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new SplitModel(activity, SplitRequest.fromJson(request), flowInitiator);
     }
 
     /**
@@ -83,11 +85,12 @@ public class SplitModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised SplitRequest
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link SplitModel}
      */
     @NonNull
-    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request) {
-        return new SplitModel(clientCommunicator, request);
+    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request, String flowInitiator) {
+        return new SplitModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

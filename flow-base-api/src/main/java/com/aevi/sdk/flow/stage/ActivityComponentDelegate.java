@@ -49,7 +49,8 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
     private final PublishSubject<FlowEvent> flowServiceMessageSubject;
     private final InternalData responseInternalData;
 
-    ActivityComponentDelegate(Activity activity) {
+    ActivityComponentDelegate(Activity activity, String flowInitiator) {
+        super(flowInitiator);
         Preconditions.checkNotNull(activity, "Activity can not be null");
         Preconditions.checkNotNull(activity.getIntent(), "Activity intent can not be null");
         this.activityReference = new WeakReference<>(activity);

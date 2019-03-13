@@ -37,7 +37,7 @@ public class ActivityComponentDelegateTest {
         when(intent.getExtras()).thenReturn(new Bundle());
         helper = mock(ObservableActivityHelper.class);
         when(helper.registerForEvents()).thenReturn(helperEventSubject);
-        activityComponentDelegate = new ActivityComponentDelegate(activity) {
+        activityComponentDelegate = new ActivityComponentDelegate(activity, "com.something") {
             @Override
             protected ObservableActivityHelper<String> getHelperFromActivity(Activity activity) throws NoSuchInstanceException {
                 return helper;

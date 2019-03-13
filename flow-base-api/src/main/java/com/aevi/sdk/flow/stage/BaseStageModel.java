@@ -60,19 +60,30 @@ public abstract class BaseStageModel {
     /**
      * Initialise the stage model from an activity.
      *
-     * @param activity The flow service activity
+     * @param activity      The flow service activity
+     * @param flowInitiator The packageName of the app that started this flow
      */
-    protected BaseStageModel(@Nullable Activity activity) {
-        this(new ActivityComponentDelegate(activity));
+    protected BaseStageModel(@Nullable Activity activity, String flowInitiator) {
+        this(new ActivityComponentDelegate(activity, flowInitiator));
     }
 
     /**
      * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
+     * @param flowInitiator      The packageName of the app that started this flow
      */
-    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
-        this(new ServiceComponentDelegate(clientCommunicator));
+    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator, String flowInitiator) {
+        this(new ServiceComponentDelegate(clientCommunicator, flowInitiator));
+    }
+
+    /**
+     * returns the packagename of the client application that initiated this flow in the first place
+     *
+     * @return A package name or "UNKNOWN" if not known for some reason
+     */
+    public String getFlowInitiator() {
+        return androidComponentDelegate.getFlowInitiator();
     }
 
     /**

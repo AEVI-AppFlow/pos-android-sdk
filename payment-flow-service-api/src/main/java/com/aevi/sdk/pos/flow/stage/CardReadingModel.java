@@ -27,6 +27,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 
 /**
  * Model for the card-reading stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -43,14 +44,14 @@ public class CardReadingModel extends BaseStageModel {
     private final TransactionRequest transactionRequest;
     private final TransactionResponseBuilder transactionResponseBuilder;
 
-    private CardReadingModel(Activity activity, TransactionRequest request) {
-        super(activity);
+    private CardReadingModel(Activity activity, TransactionRequest request, String flowInitiator) {
+        super(activity, flowInitiator);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
 
-    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        super(clientCommunicator);
+    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
@@ -67,7 +68,8 @@ public class CardReadingModel extends BaseStageModel {
     @NonNull
     public static CardReadingModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new CardReadingModel(activity, TransactionRequest.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new CardReadingModel(activity, TransactionRequest.fromJson(request), flowInitiator);
     }
 
     /**
@@ -75,11 +77,12 @@ public class CardReadingModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionRequest
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link CardReadingModel}
      */
     @NonNull
-    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new CardReadingModel(clientCommunicator, request);
+    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
+        return new CardReadingModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

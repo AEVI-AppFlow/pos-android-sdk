@@ -38,8 +38,8 @@ public class StatusUpdateModel extends BaseStageModel {
 
     private final Request request;
 
-    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request) {
-        super(clientCommunicator);
+    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.request = request;
     }
 
@@ -48,11 +48,12 @@ public class StatusUpdateModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Request provided as a string
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link StatusUpdateModel}
      */
     @NonNull
-    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request) {
-        return new StatusUpdateModel(clientCommunicator, request);
+    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request, String flowInitiator) {
+        return new StatusUpdateModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

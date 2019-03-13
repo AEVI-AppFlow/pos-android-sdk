@@ -27,6 +27,7 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 
 /**
  * Model for the transaction-processing stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -45,14 +46,14 @@ public class TransactionProcessingModel extends BaseStageModel {
     private final TransactionRequest transactionRequest;
     private final TransactionResponseBuilder transactionResponseBuilder;
 
-    private TransactionProcessingModel(Activity activity, TransactionRequest request) {
-        super(activity);
+    private TransactionProcessingModel(Activity activity, TransactionRequest request, String flowInitiator) {
+        super(activity, flowInitiator);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
 
-    private TransactionProcessingModel(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        super(clientCommunicator);
+    private TransactionProcessingModel(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
+        super(clientCommunicator, flowInitiator);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
@@ -69,7 +70,8 @@ public class TransactionProcessingModel extends BaseStageModel {
     @NonNull
     public static TransactionProcessingModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new TransactionProcessingModel(activity, TransactionRequest.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new TransactionProcessingModel(activity, TransactionRequest.fromJson(request), flowInitiator);
     }
 
     /**
@@ -77,11 +79,12 @@ public class TransactionProcessingModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionRequest
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link TransactionProcessingModel}
      */
     @NonNull
-    public static TransactionProcessingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new TransactionProcessingModel(clientCommunicator, request);
+    public static TransactionProcessingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
+        return new TransactionProcessingModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

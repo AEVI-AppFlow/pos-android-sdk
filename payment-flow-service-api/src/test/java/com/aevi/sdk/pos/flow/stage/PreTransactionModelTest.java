@@ -41,7 +41,7 @@ public class PreTransactionModelTest {
         requestBaskets.add(new Basket("basket", new BasketItemBuilder().withLabel("item").withAmount(baseAmountValue).build()));
         transactionRequest = new TransactionRequest("myId", "txnId", "sale", "PRE_TRANSACTION",
                                                     new Amounts(baseAmountValue, "GBP"), requestBaskets, customer, additionalData, card);
-        preTransactionModel = PreTransactionModel.fromService(clientCommunicator, transactionRequest);
+        preTransactionModel = PreTransactionModel.fromService(clientCommunicator, transactionRequest, "com.something");
     }
 
     @Test

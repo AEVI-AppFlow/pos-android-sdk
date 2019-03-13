@@ -25,7 +25,7 @@ public class ServiceComponentDelegateTest {
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
         when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
-        serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator) {
+        serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator, "com.something") {
             @Override
             public void sendEventToActivity(FlowEvent event) {
                 sentToActivity = true;

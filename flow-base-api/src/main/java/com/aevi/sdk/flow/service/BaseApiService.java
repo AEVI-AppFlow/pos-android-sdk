@@ -48,6 +48,10 @@ public abstract class BaseApiService extends AbstractChannelService {
         internalData.setSenderPackageName(getPackageName());
     }
 
+    protected String getInternalData(@Nullable InternalData senderInternalData, String flowStage) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(flowStage, "UNKNOWN") : "UNKNOWN";
+    }
+
     /**
      * Set whether or not this service should be stopped after the stream to the client has ended.
      *

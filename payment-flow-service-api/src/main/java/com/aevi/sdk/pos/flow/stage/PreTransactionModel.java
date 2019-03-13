@@ -30,6 +30,7 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import java.util.List;
 
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_FLOW_INITIATOR;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -51,15 +52,15 @@ public class PreTransactionModel extends BaseStageModel {
     private final AmountsModifier amountsModifier;
     private final FlowResponse flowResponse;
 
-    private PreTransactionModel(Activity activity, @NonNull TransactionRequest transactionRequest) {
-        super(activity);
+    private PreTransactionModel(Activity activity, @NonNull TransactionRequest transactionRequest, String flowInitiator) {
+        super(activity,flowInitiator);
         this.transactionRequest = transactionRequest;
         this.amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
         this.flowResponse = new FlowResponse();
     }
 
-    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest) {
-        super(clientCommunicator);
+    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest, String flowInitiator) {
+        super(clientCommunicator,flowInitiator);
         this.transactionRequest = transactionRequest;
         this.amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
         this.flowResponse = new FlowResponse();
@@ -77,7 +78,8 @@ public class PreTransactionModel extends BaseStageModel {
     @NonNull
     public static PreTransactionModel fromActivity(Activity activity) {
         String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PreTransactionModel(activity, TransactionRequest.fromJson(request));
+        String flowInitiator = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+        return new PreTransactionModel(activity, TransactionRequest.fromJson(request), flowInitiator);
     }
 
     /**
@@ -85,11 +87,12 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionRequest
+     * @param flowInitiator The packageName of the app that started this flow
      * @return An instance of {@link PreTransactionModel}
      */
     @NonNull
-    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new PreTransactionModel(clientCommunicator, request);
+    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, String flowInitiator) {
+        return new PreTransactionModel(clientCommunicator, request, flowInitiator);
     }
 
     /**

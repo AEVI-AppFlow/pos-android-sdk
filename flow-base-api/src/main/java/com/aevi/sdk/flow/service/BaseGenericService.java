@@ -22,6 +22,8 @@ import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
+
 /**
  * Base service for handling generic requests defined by a request type and associated bespoke data.
  *
@@ -36,7 +38,8 @@ public abstract class BaseGenericService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request));
+        String flowInitiator = getInternalData(senderInternalData, FLOW_INITIATOR);
+        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request), flowInitiator);
         processRequest(genericStageModel);
     }
 
