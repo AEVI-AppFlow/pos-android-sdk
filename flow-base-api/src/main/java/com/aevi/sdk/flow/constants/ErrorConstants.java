@@ -57,6 +57,11 @@ public interface ErrorConstants {
     String INVALID_MESSAGE_TYPE = "invalidMessageType";
 
     /**
+     * Sent if the flow type or name in the request is not valid
+     */
+    String INVALID_FLOW_IDENTIFIER = "invalidFlowIdentifier";
+
+    /**
      * The processing service has received an invalid or unreadable message. This usually indicates a message has been corrupted.
      */
     String INVALID_REQUEST = "invalidRequest";
@@ -100,6 +105,11 @@ public interface ErrorConstants {
      * Sent if the client is using an API that is not the same major version as the one implemented by the processing service
      */
     String INCOMPATIBLE_API_VERSION = "incompatibleApiVersion";
+
+    /**
+     * Sent if the client sends a request with the same id as a previously initiated request
+     */
+    String DUPLICATE_REQUEST_ID = "duplicateRequestId";
 
     /**
      * Something unexpected happened
