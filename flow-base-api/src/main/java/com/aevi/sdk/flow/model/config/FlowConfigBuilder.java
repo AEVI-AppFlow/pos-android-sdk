@@ -23,8 +23,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 
 /**
  * Builder class for {@link FlowConfig}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-configurations" target="_blank">Flow Configurations Docs</a>
  */
 public class FlowConfigBuilder {
 

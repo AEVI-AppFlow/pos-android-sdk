@@ -42,8 +42,6 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
  * effect as calling {@link #skip()}.
  *
  * If no changes are required, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PreTransactionModel extends BaseStageModel {
 
@@ -89,7 +87,8 @@ public class PreTransactionModel extends BaseStageModel {
      * @return An instance of {@link PreTransactionModel}
      */
     @NonNull
-    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request,
+                                                  InternalData senderInternalData) {
         return new PreTransactionModel(clientCommunicator, request, senderInternalData);
     }
 

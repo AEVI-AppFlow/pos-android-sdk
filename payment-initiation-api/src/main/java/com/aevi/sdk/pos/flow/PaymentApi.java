@@ -20,8 +20,6 @@ import com.aevi.sdk.flow.BaseApiClient;
 
 /**
  * Main entry point to obtain references to the payment related clients.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-pos-apps" target="_blank">Implementing POS apps docs</a>
  */
 public final class PaymentApi {
 

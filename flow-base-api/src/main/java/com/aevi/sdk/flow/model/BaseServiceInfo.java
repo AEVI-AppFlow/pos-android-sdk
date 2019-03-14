@@ -123,7 +123,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     /**
      * Get the list of supported pre-defined flow types.
      *
-     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * See full list of supported flow types in the AppFlow docs. Each pre-defined flow type will have a statically defined flow configuration
      * associated with it, if supported on the current device.
      *
      * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.

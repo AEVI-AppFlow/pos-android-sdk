@@ -72,7 +72,6 @@ public class PaymentBuilder {
      *
      * @param flowType The flow type
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType) {
@@ -92,7 +91,6 @@ public class PaymentBuilder {
      * @param flowType The flow type
      * @param flowName The name of the flow to use
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType, String flowName) {

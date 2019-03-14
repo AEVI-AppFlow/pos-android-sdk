@@ -34,8 +34,6 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * One of {@link #approveWithCard(Card)}, {@link #declineTransaction(String)} or {@link #skipCardReading()} must be called.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class CardReadingModel extends BaseStageModel {
 

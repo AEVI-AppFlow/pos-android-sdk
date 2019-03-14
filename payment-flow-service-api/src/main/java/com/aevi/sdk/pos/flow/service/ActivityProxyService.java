@@ -34,15 +34,12 @@ import java.util.List;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
-import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.
  *
  * Some of the functions in this class can be overridden by subclasses to alter the default behaviour.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 @SuppressLint("Registered")
 public class ActivityProxyService extends BaseApiService {
