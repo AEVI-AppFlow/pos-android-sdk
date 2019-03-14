@@ -37,7 +37,7 @@ abstract class AndroidComponentDelegate {
     }
 
     /**
-     * Returns the InternalData of the client application that initiated this flow in the first place
+     * Returns the InternalData of the client application that sent this request
      *
      * @return A {@link InternalData} object
      */

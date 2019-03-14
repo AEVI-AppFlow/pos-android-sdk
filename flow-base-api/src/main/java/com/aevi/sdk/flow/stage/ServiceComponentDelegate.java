@@ -52,7 +52,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     private static final String TAG = ServiceComponentDelegate.class.getSimpleName();
     public static final String ACTIVITY_REQUEST_KEY = "request";
     public static final String EXTRAS_INTERNAL_DATA_KEY = "internalData";
-    public static final String EXTRAS_FLOW_INITIATOR = "flowInitiator";
+    public static final String EXTRAS_SENDER_INTERNAL_DATA = "senderInternalData";
 
     private final ClientCommunicator clientCommunicator;
     private final PublishSubject<FlowEvent> flowServiceMessageSubject;
@@ -118,7 +118,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         if (requestJson != null) {
             activityIntent.putExtra(ACTIVITY_REQUEST_KEY, requestJson);
         }
-        activityIntent.putExtra(EXTRAS_FLOW_INITIATOR, getSenderInternalData().toJson());
+        activityIntent.putExtra(EXTRAS_SENDER_INTERNAL_DATA, getSenderInternalData().toJson());
         this.activityId = UUID.randomUUID().toString();
         activityIntent.putExtra(ObservableActivityHelper.INTENT_ID, activityId);
         activityIntent.putExtras(extras);
@@ -134,8 +134,8 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     }
 
     @Nullable
-    public static InternalData getFlowInitiatorInternalData(Activity activity) {
-        String json = activity.getIntent().getStringExtra(EXTRAS_FLOW_INITIATOR);
+    public static InternalData getSenderInternalData(Activity activity) {
+        String json = activity.getIntent().getStringExtra(EXTRAS_SENDER_INTERNAL_DATA);
         if(json != null) {
             return InternalData.fromJson(json);
         }
