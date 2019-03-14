@@ -19,6 +19,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Token;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
@@ -29,7 +30,6 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -58,8 +58,9 @@ public class PreTransactionModel extends BaseStageModel {
         this.flowResponse = new FlowResponse();
     }
 
-    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest) {
-        super(clientCommunicator);
+    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest,
+                                InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionRequest = transactionRequest;
         this.amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
         this.flowResponse = new FlowResponse();
@@ -76,8 +77,7 @@ public class PreTransactionModel extends BaseStageModel {
      */
     @NonNull
     public static PreTransactionModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PreTransactionModel(activity, TransactionRequest.fromJson(request));
+        return new PreTransactionModel(activity, TransactionRequest.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
@@ -85,11 +85,12 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised TransactionRequest
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PreTransactionModel}
      */
     @NonNull
-    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new PreTransactionModel(clientCommunicator, request);
+    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+        return new PreTransactionModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
