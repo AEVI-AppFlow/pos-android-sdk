@@ -48,8 +48,8 @@ public abstract class BaseApiService extends AbstractChannelService {
         internalData.setSenderPackageName(getPackageName());
     }
 
-    protected String getInternalData(@Nullable InternalData senderInternalData, String flowStage) {
-        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(flowStage, "UNKNOWN") : "UNKNOWN";
+    protected String getInternalData(@Nullable InternalData senderInternalData, String dataKey) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(dataKey, "UNKNOWN") : "UNKNOWN";
     }
 
     /**
