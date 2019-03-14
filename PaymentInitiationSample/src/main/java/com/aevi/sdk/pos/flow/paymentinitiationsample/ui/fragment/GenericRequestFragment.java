@@ -26,6 +26,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.pos.flow.PaymentApi;
@@ -203,15 +204,14 @@ public class GenericRequestFragment extends BaseObservableFragment {
             return null; // Wait for settings to come back first
         }
         PaymentResponse lastResponse = SampleContext.getInstance(getContext()).getLastReceivedPaymentResponse();
+        AdditionalData requestData = new AdditionalData();
 
         // Some types require additional information
-        Request request = null;
         switch (selectedApiRequestFlow) {
             case FLOW_TYPE_BASKET_STATUS_UPDATE: {
-                request = new Request(selectedApiRequestFlow);
                 Basket basket = new Basket("sampleBasket");
                 basket.addItems(new BasketItemBuilder().withLabel("item").withAmount(200).build());
-                request.addAdditionalData(STATUS_UPDATE_BASKET_MODIFIED, basket);
+                requestData.addData(STATUS_UPDATE_BASKET_MODIFIED, basket);
                 break;
             }
             case FLOW_TYPE_REVERSAL: {
@@ -219,50 +219,55 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 if (paymentAppResponse == null) {
                     return null;
                 }
-                request = new Request(selectedApiRequestFlow, paymentAppResponse.getReferences());
+                requestData = paymentAppResponse.getReferences();
                 break;
             }
             case FLOW_TYPE_RECEIPT_DELIVERY: {
                 if (selectedSubType == null) {
                     return null;
                 }
-                TransactionResponse paymentAppResponse = checkForPaymentAppResponse(lastResponse);
-                if (paymentAppResponse == null) {
-                    return null;
-                }
                 String redeliver = getString(R.string.receipts_redeliver);
                 String cash = getString(R.string.receipts_cash);
                 // Some types require additional information
                 if (selectedSubType.equals(redeliver)) {
-                    request = new Request(selectedApiRequestFlow);
-                    request.addAdditionalData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
+                    if (getFirstTransaction(lastResponse) == null) {
+                        messageView.setText(R.string.please_complete_payment_first);
+                        return null;
+                    }
+                    requestData.addData(DATA_KEY_TRANSACTION, lastResponse.getTransactions().get(0));
                 } else if (selectedSubType.equals(cash)) {
-                    request = new Request(selectedApiRequestFlow);
-                    request.addAdditionalData(RECEIPT_AMOUNTS, new Amounts(15000, "EUR"));
-                    request.addAdditionalData(RECEIPT_PAYMENT_METHOD, PAYMENT_METHOD_CASH);
-                    request.addAdditionalData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
+                    requestData.addData(RECEIPT_AMOUNTS, new Amounts(15000, "EUR"));
+                    requestData.addData(RECEIPT_PAYMENT_METHOD, PAYMENT_METHOD_CASH);
+                    requestData.addData(RECEIPT_OUTCOME, TransactionResponse.Outcome.APPROVED.name());
                 }
                 break;
             }
             case SHOW_LOYALTY_POINTS_REQUEST: {
-                request = new Request(selectedApiRequestFlow);
-                request.addAdditionalData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
+                requestData.addData("customer", CustomerProducer.getDefaultCustomer("Payment Initiation Sample"));
                 break;
             }
             default:
                 // No extra data required
                 break;
         }
-        return request;
+
+        return new Request(selectedApiRequestFlow, requestData);
+    }
+
+    private Transaction getFirstTransaction(PaymentResponse lastResponse) {
+        if (lastResponse != null && !lastResponse.getTransactions().isEmpty() && lastResponse.getTransactions().get(0).hasResponses()) {
+            return lastResponse.getTransactions().get(0);
+        }
+        return null;
     }
 
     private TransactionResponse checkForPaymentAppResponse(PaymentResponse lastResponse) {
-        if (lastResponse == null || lastResponse.getTransactions().isEmpty() || !lastResponse.getTransactions().get(0).hasResponses()
-                || lastResponse.getTransactions().get(0).getPaymentAppResponse() == null) {
+        Transaction firstTransaction = getFirstTransaction(lastResponse);
+        if (firstTransaction == null || firstTransaction.getPaymentAppResponse() == null) {
             messageView.setText(R.string.please_complete_payment_first);
             return null;
         }
-        return lastResponse.getTransactions().get(0).getPaymentAppResponse();
+        return firstTransaction.getPaymentAppResponse();
     }
 
     private void setViewsEnabled(boolean enabled) {
