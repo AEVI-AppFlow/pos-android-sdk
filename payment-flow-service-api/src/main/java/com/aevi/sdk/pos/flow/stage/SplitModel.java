@@ -26,7 +26,6 @@ import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**

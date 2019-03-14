@@ -27,8 +27,6 @@ import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
-
 /**
  * Model for the card-reading stage that exposes all the data functions and other utilities required for any app to process this stage.
  *

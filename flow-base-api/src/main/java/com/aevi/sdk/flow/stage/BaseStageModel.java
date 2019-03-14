@@ -33,6 +33,7 @@ import static com.aevi.sdk.flow.constants.AppMessageTypes.AUDIT_ENTRY;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
 
 /**
  * Internal base class for all stage models that provide the stage specific data functions.
@@ -62,7 +63,7 @@ public abstract class BaseStageModel {
     /**
      * Initialise the stage model from an activity.
      *
-     * @param activity          The flow service activity
+     * @param activity The flow service activity
      */
     protected BaseStageModel(@Nullable Activity activity) {
         this(new ActivityComponentDelegate(activity));
@@ -72,10 +73,15 @@ public abstract class BaseStageModel {
      * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
-     * @param senderInternalData  The InternalData of the app calling this stage
+     * @param senderInternalData The InternalData of the app calling this stage
      */
     protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator, InternalData senderInternalData) {
         this(new ServiceComponentDelegate(clientCommunicator, senderInternalData));
+    }
+
+    @Nullable
+    protected static String getActivityRequestJson(Activity activity) {
+        return activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
     }
 
     /**
@@ -87,8 +93,8 @@ public abstract class BaseStageModel {
         return getInternalData(androidComponentDelegate.getSenderInternalData(), FLOW_INITIATOR);
     }
 
-    protected String getInternalData(@Nullable InternalData senderInternalData, String flowStage) {
-        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(flowStage, "UNKNOWN") : "UNKNOWN";
+    protected String getInternalData(@Nullable InternalData senderInternalData, String dataKey) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(dataKey, "UNKNOWN") : "UNKNOWN";
     }
 
     /**

@@ -30,7 +30,6 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**

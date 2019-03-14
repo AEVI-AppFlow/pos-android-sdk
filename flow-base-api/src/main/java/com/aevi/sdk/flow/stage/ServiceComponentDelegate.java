@@ -14,12 +14,10 @@
 
 package com.aevi.sdk.flow.stage;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
@@ -126,20 +124,6 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         helper.startObservableActivity().subscribe(clientCommunicator::sendMessage,
                                                    throwable -> handleActivityException(throwable, clientCommunicator));
         return helper;
-    }
-
-    @Nullable
-    public static String getActivityRequestJson(Activity activity) {
-        return activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-    }
-
-    @Nullable
-    public static InternalData getSenderInternalData(Activity activity) {
-        String json = activity.getIntent().getStringExtra(EXTRAS_SENDER_INTERNAL_DATA);
-        if(json != null) {
-            return InternalData.fromJson(json);
-        }
-        return null;
     }
 
     private void handleActivityException(Throwable throwable, ClientCommunicator clientCommunicator) {
