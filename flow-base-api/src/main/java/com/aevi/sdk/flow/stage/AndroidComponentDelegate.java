@@ -16,9 +16,11 @@ package com.aevi.sdk.flow.stage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import io.reactivex.Observable;
 
 /**
@@ -27,6 +29,22 @@ import io.reactivex.Observable;
  * each relevant delegate.
  */
 abstract class AndroidComponentDelegate {
+
+    private final InternalData senderInternalData;
+
+    AndroidComponentDelegate(InternalData senderInternalData) {
+        this.senderInternalData = senderInternalData;
+    }
+
+    /**
+     * Returns the InternalData of the client application that initiated this flow in the first place
+     *
+     * @return A {@link InternalData} object
+     */
+    @Nullable
+    public InternalData getSenderInternalData() {
+        return senderInternalData;
+    }
 
     /**
      * Send message to client.

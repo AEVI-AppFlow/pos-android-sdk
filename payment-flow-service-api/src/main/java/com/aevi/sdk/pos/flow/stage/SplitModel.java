@@ -19,13 +19,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
@@ -56,8 +57,8 @@ public class SplitModel extends BaseStageModel {
         this.flowResponse = new FlowResponse();
     }
 
-    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest) {
-        super(clientCommunicator);
+    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
@@ -74,8 +75,7 @@ public class SplitModel extends BaseStageModel {
      */
     @NonNull
     public static SplitModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new SplitModel(activity, SplitRequest.fromJson(request));
+        return new SplitModel(activity, SplitRequest.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
@@ -83,11 +83,12 @@ public class SplitModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised SplitRequest
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link SplitModel}
      */
     @NonNull
-    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request) {
-        return new SplitModel(clientCommunicator, request);
+    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request, InternalData senderInternalData) {
+        return new SplitModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

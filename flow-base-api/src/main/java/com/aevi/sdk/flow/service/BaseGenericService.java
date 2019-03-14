@@ -36,7 +36,7 @@ public abstract class BaseGenericService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request));
+        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request), senderInternalData);
         processRequest(genericStageModel);
     }
 

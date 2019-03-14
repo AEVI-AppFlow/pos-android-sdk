@@ -34,6 +34,7 @@ import java.util.List;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
@@ -56,14 +57,15 @@ public class ActivityProxyService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        String flowStage = senderInternalData != null ? senderInternalData.getAdditionalDataValue(FLOW_STAGE, "UNKNOWN") : "UNKNOWN";
-        launchActivityForStage(flowStage, request, clientCommunicator, false);
+        launchActivityForStage(senderInternalData, request, clientCommunicator, false);
     }
 
     /*
      * Launches the activity for a stage. A subclass can override this to implement custom/conditional activity launching.
      */
-    protected void launchActivityForStage(String flowStage, String request, ClientCommunicator clientCommunicator, boolean isResume) {
+    protected void launchActivityForStage(InternalData senderInternalData, String request, ClientCommunicator clientCommunicator,
+                                          boolean isResume) {
+        String flowStage = getInternalData(senderInternalData, FLOW_STAGE);
         if (flowStage.equals(FlowStages.STATUS_UPDATE)) {
             Log.e(TAG, "Status update stage must be handled in a service context only - ignoring stage for: " + getPackageName());
             clientCommunicator.finishWithNoResponse();
@@ -77,7 +79,7 @@ public class ActivityProxyService extends BaseApiService {
             clientCommunicator.finishWithNoResponse();
             return;
         }
-        ServiceComponentDelegate serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator);
+        ServiceComponentDelegate serviceComponentDelegate = new ServiceComponentDelegate(clientCommunicator, senderInternalData);
         serviceComponentDelegate.processInActivity(getBaseContext(), activityIntent, request);
         serviceComponentDelegate.getFlowServiceEvents().subscribe(event -> {
             switch (event.getType()) {
@@ -85,7 +87,7 @@ public class ActivityProxyService extends BaseApiService {
                     // No-op, the delegate will proxy to activity
                     break;
                 case RESUME_USER_INTERFACE:
-                    resumeActivity(flowStage, request, clientCommunicator);
+                    resumeActivity(senderInternalData, request, clientCommunicator);
                     break;
                 default:
                     // Anything else, we just proxy through to the activity
@@ -100,8 +102,8 @@ public class ActivityProxyService extends BaseApiService {
      * The default method for "resuming" the activity is simply restarting it, as we can not rely on any particular manifest flags, activity lifecycle
      * implementations, etc. Subclasses can override this to implement more sophisticated behaviour.
      */
-    protected void resumeActivity(String flowStage, String request, ClientCommunicator clientCommunicator) {
-        launchActivityForStage(flowStage, request, clientCommunicator, true);
+    protected void resumeActivity(InternalData senderInternalData, String request, ClientCommunicator clientCommunicator) {
+        launchActivityForStage(senderInternalData, request, clientCommunicator, true);
     }
 
     private Intent getActivityIntent(String flowStage) {

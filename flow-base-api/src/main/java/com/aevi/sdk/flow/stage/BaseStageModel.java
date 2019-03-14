@@ -25,11 +25,13 @@ import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AuditEntry;
 import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import io.reactivex.Observable;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.AUDIT_ENTRY;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 
 /**
@@ -60,7 +62,7 @@ public abstract class BaseStageModel {
     /**
      * Initialise the stage model from an activity.
      *
-     * @param activity The flow service activity
+     * @param activity          The flow service activity
      */
     protected BaseStageModel(@Nullable Activity activity) {
         this(new ActivityComponentDelegate(activity));
@@ -70,9 +72,23 @@ public abstract class BaseStageModel {
      * Initialise the stage model from a service.
      *
      * @param clientCommunicator The client communication channel for this model
+     * @param senderInternalData  The InternalData of the app calling this stage
      */
-    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator) {
-        this(new ServiceComponentDelegate(clientCommunicator));
+    protected BaseStageModel(@NonNull ClientCommunicator clientCommunicator, InternalData senderInternalData) {
+        this(new ServiceComponentDelegate(clientCommunicator, senderInternalData));
+    }
+
+    /**
+     * returns the packagename of the client application that initiated this flow in the first place
+     *
+     * @return A package name or "UNKNOWN" if not known for some reason
+     */
+    public String getFlowInitiatorPackage() {
+        return getInternalData(androidComponentDelegate.getSenderInternalData(), FLOW_INITIATOR);
+    }
+
+    protected String getInternalData(@Nullable InternalData senderInternalData, String flowStage) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(flowStage, "UNKNOWN") : "UNKNOWN";
     }
 
     /**

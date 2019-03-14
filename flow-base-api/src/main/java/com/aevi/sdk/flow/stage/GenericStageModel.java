@@ -17,12 +17,13 @@ package com.aevi.sdk.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
-import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getActivityRequestJson;
 
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
@@ -40,8 +41,8 @@ public class GenericStageModel extends BaseStageModel {
         this.request = request;
     }
 
-    private GenericStageModel(ClientCommunicator clientCommunicator, Request request) {
-        super(clientCommunicator);
+    private GenericStageModel(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.request = request;
     }
 
@@ -55,8 +56,7 @@ public class GenericStageModel extends BaseStageModel {
      */
     @NonNull
     public static GenericStageModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new GenericStageModel(activity, Request.fromJson(request));
+        return new GenericStageModel(activity, Request.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
@@ -64,11 +64,12 @@ public class GenericStageModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Request provided as a string
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link GenericStageModel}
      */
     @NonNull
-    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request) {
-        return new GenericStageModel(clientCommunicator, request);
+    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        return new GenericStageModel(clientCommunicator, request, senderInternalData);
     }
 
     /**

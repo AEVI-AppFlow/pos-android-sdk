@@ -34,6 +34,7 @@ import java.lang.ref.WeakReference;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_INTERNAL_DATA_KEY;
+import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.getFlowInitiatorInternalData;
 
 /**
  * Provides activity-based implementation for stage models.
@@ -50,6 +51,7 @@ class ActivityComponentDelegate extends AndroidComponentDelegate {
     private final InternalData responseInternalData;
 
     ActivityComponentDelegate(Activity activity) {
+        super(getFlowInitiatorInternalData(activity));
         Preconditions.checkNotNull(activity, "Activity can not be null");
         Preconditions.checkNotNull(activity.getIntent(), "Activity intent can not be null");
         this.activityReference = new WeakReference<>(activity);
