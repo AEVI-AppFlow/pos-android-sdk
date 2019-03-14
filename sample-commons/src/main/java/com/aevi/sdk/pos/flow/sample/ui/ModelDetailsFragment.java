@@ -226,12 +226,16 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     static List<Pair<String, String>> createCommonTransactionResponseInfo(Context context, TransactionResponse transactionResponse) {
         List<Pair<String, String>> responseInfo = new ArrayList<>();
         responseInfo.add(getStringPair(context, R.string.outcome, transactionResponse.getOutcome().name()));
-        if (transactionResponse.getOutcomeMessage() != null) {
-            responseInfo.add(getStringPair(context, R.string.outcome_message, transactionResponse.getOutcomeMessage()));
+        String outcomeMessage = transactionResponse.getOutcomeMessage();
+        if (outcomeMessage == null || outcomeMessage.isEmpty()) {
+            outcomeMessage = "N/A";
         }
-        if (transactionResponse.getResponseCode() != null) {
-            responseInfo.add(getStringPair(context, R.string.response_code, transactionResponse.getResponseCode()));
+        responseInfo.add(getStringPair(context, R.string.outcome_message, outcomeMessage));
+        String respCode = transactionResponse.getResponseCode();
+        if (respCode == null || respCode.isEmpty()) {
+            respCode = "N/A";
         }
+        responseInfo.add(getStringPair(context, R.string.response_code, respCode));
         return responseInfo;
     }
 
