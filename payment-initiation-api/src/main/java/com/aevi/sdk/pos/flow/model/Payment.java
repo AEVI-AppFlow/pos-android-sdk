@@ -122,7 +122,6 @@ public class Payment extends BaseModel {
      * In cases where only the flow type is set for the payment, FPS will look up matching flows from it and assign a flow name.
      *
      * @return The flow type
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public String getFlowType() {

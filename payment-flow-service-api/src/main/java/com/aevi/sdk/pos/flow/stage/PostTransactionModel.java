@@ -39,8 +39,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
  * effect as calling {@link #skip()}.
  *
  * If no changes are required, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PostTransactionModel extends BaseStageModel {
 

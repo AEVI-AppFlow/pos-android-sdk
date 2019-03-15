@@ -31,8 +31,6 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * Call {@link #processInBackground()} to tell FPS to continue in the flow or {@link #finish()} to inform FPS this service is done.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PostFlowModel extends BaseStageModel {
 

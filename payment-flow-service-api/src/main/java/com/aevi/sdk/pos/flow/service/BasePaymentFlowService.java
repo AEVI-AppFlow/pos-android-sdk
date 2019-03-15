@@ -23,8 +23,6 @@ import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
  * Base class for payment flow services that wish to handle a request in a service directly.
  *
  * This class will map the flow stage to one of its callback methods that clients can override to handle the relevant stage.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BasePaymentFlowService extends BaseApiService {
 

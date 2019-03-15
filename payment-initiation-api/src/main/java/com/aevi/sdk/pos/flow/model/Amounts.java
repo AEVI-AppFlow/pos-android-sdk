@@ -29,8 +29,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
  * Representation of all the amounts relevant for a transaction.
  *
  * See {@link Amount} for representation of a single amount value with associated currency.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/dealing-with-amounts" target="_blank">Dealing with amounts</a>
  */
 public class Amounts implements Jsonable {
 
@@ -77,7 +75,6 @@ public class Amounts implements Jsonable {
      * @param baseAmount        The base amount, inclusive of tax, in subunit form (cents, pence, etc)
      * @param currency          The ISO-4217 currency code
      * @param additionalAmounts The additional amounts
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     public Amounts(long baseAmount, String currency, Map<String, Long> additionalAmounts) {
         checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
@@ -95,7 +92,6 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The string identifier for the amount
      * @param amount     The amount value
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     public void addAdditionalAmount(String identifier, long amount) {
         checkArgument(identifier != null && amount >= 0, "Identifier must be set and value must be >= 0");
@@ -109,7 +105,6 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     public void addAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         if (fraction < 0.0f || fraction > 1.0f) {
@@ -160,7 +155,6 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The identifier
      * @return The amount value
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     public long getAdditionalAmountValue(String identifier) {
         if (additionalAmounts.containsKey(identifier)) {
@@ -174,7 +168,6 @@ public class Amounts implements Jsonable {
      *
      * @param identifier The identifier
      * @return The additional {@link Amount}
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     @NonNull
     public Amount getAdditionalAmount(String identifier) {
@@ -185,7 +178,6 @@ public class Amounts implements Jsonable {
      * Get the map of all the additional amounts set.
      *
      * @return The map of identifier keys mapped to amount values
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Additional Amounts</a>
      */
     @NonNull
     public Map<String, Long> getAdditionalAmounts() {
@@ -214,7 +206,6 @@ public class Amounts implements Jsonable {
      *
      * @param amountIdentifiers The identifiers of the amounts to exclude from the calculation
      * @return The total amount value, excluding the amounts as provider via the identifiers
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/dealing-with-amounts" target="_blank">Dealing with amounts</a>
      */
     public long getTotalExcludingAmounts(String... amountIdentifiers) {
         long total = baseAmount;

@@ -25,8 +25,6 @@ import java.util.Objects;
 
 /**
  * Represents a flow stage in a flow configuration.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-stages" target="_blank">Flow Stages Docs</a>
  */
 public class FlowStage {
 

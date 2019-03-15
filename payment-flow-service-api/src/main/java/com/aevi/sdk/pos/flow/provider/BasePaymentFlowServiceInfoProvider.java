@@ -37,8 +37,6 @@ import static com.aevi.sdk.flow.constants.IntentActions.SERVICE_INFO_CHANGE_ACTI
 
 /**
  * Base class for flow services to provide {@link PaymentFlowServiceInfo} information.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BasePaymentFlowServiceInfoProvider extends BaseServiceInfoProvider {
 

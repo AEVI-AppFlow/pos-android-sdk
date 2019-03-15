@@ -119,6 +119,12 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 }, this::handleError);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateState(false);
+    }
+
     @OnItemSelected(R.id.request_flow_spinner)
     public void onRequestTypeSelection(int position) {
         selectedApiRequestFlow = (String) requestFlowSpinner.getAdapter().getItem(position);

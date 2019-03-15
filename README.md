@@ -1,6 +1,6 @@
 # AEVI AppFlow - POS Android SDK
 
-**Note** - AppFlow v2 is now released!
+**Note** - AppFlow v2.1.0 is now released!
 
 AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called.
 A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
@@ -11,7 +11,7 @@ such as loyalty, split bill, receipt delivery and much more. AppFlow for POS is 
 
 The SDK consists of two APIs - one for client/POS applications to initiate flows and one for value added services and payment applications to integrate into those flows.
 
-Please see the [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki) for detailed information of how AppFlow works and development guidelines.
+Please see the [Documentation](https://aevi-appflow.github.io/pos-android-sdk/) for detailed information of how AppFlow works and development guidelines.
 
 ## Prerequisites
 
@@ -19,11 +19,15 @@ In order to test AppFlow and/or integrate with it, you will need to install thes
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
 - AEVI Developer Config Provider, which provides the flows and other settings for AppFlow
 
-Please download the latest developer bundle from [here](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/downloads), which contains these applications as well as the latest samples.
+Please download the latest developer bundle from [here](https://aevi-appflow.github.io/pos-android-sdk/downloads/), which contains these applications as well as the latest samples.
 
 ## Integrate
 
-In your root project `build.gradle` file, you'll need to include our public bintray repository in the repositories section.
+AppFlow and its dependencies are as of `v2.1.0` published to the `jcenter()` or `mavenCentral()` repositories which are used by default by Android Gradle project / Android Studio.
+
+If you are using an earlier version or having issues getting this to work, you can also add your bintray repository directly as per below. 
+
+In your root project `build.gradle` file, add
 
 ```
 repositories {
@@ -45,8 +49,6 @@ Use the latest version defined below.
 
 [ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/appflow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/appflow-sdk/_latestVersion)
 
-**Note** - please ensure you read the [Application Guidelines](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/application-guidelines) at a minimum before attempting to create an application for AppFlow.
-
 ### Payment Initiation API
 
 For client/POS applications to initiate flows.
@@ -66,7 +68,7 @@ implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 ### API Constants
 
 The AppFlow APIs themselves are designed to facilitate communication between applications via a defined set of data structures. They are however decoupled from what the _values_ or _content_
-of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the data values are defined on the wiki and provided as constants via a separate library.
+of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the data values are defined in the docs and provided as constants via a separate library.
 
 This library is stored in a separate repo [here](https://github.com/AEVI-AppFlow/api-constants). You can find the latest version details and view the defined data constants there.
 
@@ -101,33 +103,12 @@ You can check what the settings are via the `System overview` screen in the `Pay
 
 ### Minimum versions
 
-The minimum versions for importing / building this API are
-- Gradle v4.4 (v4.8+ recommended)
-- Android Gradle Plugin v3.1.3
-- Android Studio v3.1.3
-
-### Known Issues
-
-The API and applications use Gradle v4.8 for building. Due to a bug in this version building in Android Studio (v3.1.3 at time of writing) will cause the following
-error:
-
-```text
-Configuration on demand is not supported by the current version of the Android Gradle plugin since you are using Gradle version 4.6 or above. Suggestion: disable configuration on demand by setting org.gradle.configureondemand=false in your gradle.properties file or use a Gradle version less than 4.6.
-```
-
-In order to disable configuration on demand in Android Studio it must be configured in the settings for Android Studio not the
-`gradle.properties` file as described above. You can disable this setting by navigating to
-
-```text
-Settings - Build, Execution, Deployment - Compiler - Configure on demand
-```
-
-and deselecting the check box.
+This project is using the Gradle wrapper and we recommend using Android Studio v3.3.2 or higher.
 
 ## Documentation
 
-* [Wiki](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki)
-* [Javadocs](https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/javadocs)
+* [Documentation](https://aevi-appflow.github.io/pos-android-sdk/)
+* [Javadocs](https://aevi-appflow.github.io/pos-android-sdk/reference/)
 
 ## Bugs and Feedback
 
@@ -139,7 +120,7 @@ Contributions to any of our repos via pull requests are welcome. We follow the [
 
 ## LICENSE
 
-Copyright 2018 AEVI International GmbH
+Copyright 2019 AEVI International GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

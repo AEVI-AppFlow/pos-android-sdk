@@ -27,8 +27,6 @@ import java.util.UUID;
  *
  * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
  * and one will be selected either automatically or via user interaction.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Docs</a>
  */
 public class Request extends BaseModel {
 
