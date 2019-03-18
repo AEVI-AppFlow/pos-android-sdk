@@ -31,8 +31,6 @@ import java.util.List;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-pos-apps" target="_blank">Implementing POS apps docs</a>
  */
 public interface PaymentClient {
 
@@ -63,7 +61,6 @@ public interface PaymentClient {
      *
      * @param request The request
      * @return Completable that represents the acceptance of the request
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiateRequest(Request request);
@@ -83,7 +80,6 @@ public interface PaymentClient {
      *
      * @param payment The payment to process
      * @return Completable that represents the acceptance of the request
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiatePayment(Payment payment);
@@ -136,7 +132,6 @@ public interface PaymentClient {
      * Examples are when there are changed to devices, applications or system settings.
      *
      * @return A stream that will emit {@link FlowEvent} items
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/events-subscription" target="_blank">Events Docs</a>
      */
     @NonNull
     Observable<FlowEvent> subscribeToSystemEvents();

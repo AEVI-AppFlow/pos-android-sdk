@@ -30,8 +30,6 @@ import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Builder to construct {@link PaymentFlowServiceInfo} instances.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PaymentFlowServiceInfoBuilder {
 
@@ -93,7 +91,7 @@ public class PaymentFlowServiceInfoBuilder {
     /**
      * Set which of the pre-defined flow types your service supports.
      *
-     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * See full list of supported flow types in the AppFlow docs. Each pre-defined flow type will have a statically defined flow configuration
      * associated with it, if supported on the current device.
      *
      * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.

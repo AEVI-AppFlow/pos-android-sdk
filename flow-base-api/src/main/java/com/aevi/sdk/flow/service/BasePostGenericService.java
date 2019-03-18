@@ -23,8 +23,6 @@ import com.aevi.sdk.flow.stage.PostGenericStageModel;
 
 /**
  * Base service for handling post-generic stages which receive the response from the main generic stage.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BasePostGenericService extends BaseApiService {
 
@@ -35,7 +33,8 @@ public abstract class BasePostGenericService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        PostGenericStageModel postGenericStageModel = PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request));
+        PostGenericStageModel postGenericStageModel =
+                PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request), senderInternalData);
         processResponse(postGenericStageModel);
     }
 

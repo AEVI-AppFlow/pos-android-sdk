@@ -25,8 +25,6 @@ import java.util.List;
 
 /**
  * Exposes the various flows and helper methods to query for information.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-configurations" target="_blank">Flow Configurations Docs</a>
  */
 public class FlowConfigurations {
 

@@ -45,7 +45,7 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
     private static final String APPROVED_RESP_CODE = "00";
     private static final String DECLINED_RESP_CODE = "XX";
 
-    private static final String INTERNAL_ID_KEY = "sampleTransactionReference";
+    public static final String INTERNAL_ID_KEY = "sampleTransactionReference";
 
     @BindView(R.id.processed_amounts_spinner)
     DropDownSpinner processedAmountsSpinner;

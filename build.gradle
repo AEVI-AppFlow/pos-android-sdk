@@ -1,5 +1,5 @@
-version = "2.1.0-RC3"
-ext.sampleVersionCode = 2100003 // semver based, MMmmppbb (major minor patch build) without leading 0 for MM
+version = "2.1.0-RC4"
+ext.sampleVersionCode = 2100004 // semver based, MMmmppbb (major minor patch build) without leading 0 for MM
 
 buildscript {
     repositories {
@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1'
         classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0'

@@ -23,8 +23,6 @@ import java.util.Objects;
 
 /**
  * Response to a generic {@link Request} that contains the outcome and bespoke response data for that request type.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request/Response Docs</a>
  */
 public class Response extends BaseModel {
 

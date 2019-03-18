@@ -23,8 +23,6 @@ import com.aevi.sdk.flow.stage.StatusUpdateModel;
 
 /**
  * Base service for handling status update requests defined by a request type and associated bespoke data.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/status-update-flows" target="_blank">Status update docs</a>
  */
 public abstract class BaseStatusUpdateService extends BaseApiService {
 
@@ -35,7 +33,7 @@ public abstract class BaseStatusUpdateService extends BaseApiService {
     @Override
     protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
                                         @Nullable InternalData senderInternalData) {
-        StatusUpdateModel statusUpdateModel = StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request));
+        StatusUpdateModel statusUpdateModel = StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request), senderInternalData);
         processRequest(statusUpdateModel);
     }
 
