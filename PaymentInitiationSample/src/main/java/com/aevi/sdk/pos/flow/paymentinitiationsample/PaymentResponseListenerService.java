@@ -38,7 +38,7 @@ public class PaymentResponseListenerService extends BasePaymentResponseListenerS
         Intent intent = new Intent(this, PaymentResultActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException(errorCode, errorMessage));
+        intent.putExtra(PaymentResultActivity.ERROR_KEY, new FlowException(errorCode, errorMessage).toJson());
         startActivity(intent);
     }
 }
