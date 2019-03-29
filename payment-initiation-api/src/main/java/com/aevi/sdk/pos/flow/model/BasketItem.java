@@ -136,6 +136,8 @@ public class BasketItem {
     /**
      * Get the value for a reference by its key.
      *
+     * Note that reference keys are case sensitive.
+     *
      * @param referenceKey The key of the reference
      * @return The reference value, or null if no such reference exists
      */
@@ -149,6 +151,8 @@ public class BasketItem {
 
     /**
      * Get all item references.
+     *
+     * Note that reference keys are case sensitive.
      *
      * @return The item reference map
      */
