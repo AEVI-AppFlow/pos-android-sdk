@@ -173,6 +173,8 @@ public class BasketItemBuilder {
      *
      * This can be used to add further information about the basket item that is not covered by the primary fields.
      *
+     * Note that reference keys are case sensitive.
+     *
      * @param key   The reference key
      * @param value The reference value
      * @return This builder

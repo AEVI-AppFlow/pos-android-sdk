@@ -88,7 +88,7 @@ public class Amounts implements Jsonable {
      *
      * The additional amounts are represented via a string identifier and the amount value in subunit form.
      *
-     * Examples of identifiers are "tip" and "cashback".
+     * Examples of identifiers are "tip" and "cashback". Note that identifiers are case sensitive!
      *
      * @param identifier The string identifier for the amount
      * @param amount     The amount value
@@ -102,6 +102,8 @@ public class Amounts implements Jsonable {
      * Add an additional amount as a fraction of the base amount.
      *
      * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount value.
+     *
+     * Examples of identifiers are "tip" and "cashback". Note that identifiers are case sensitive!
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
@@ -149,9 +151,23 @@ public class Amounts implements Jsonable {
     }
 
     /**
+     * Check whether there is an additional amount with the provided identifier defined.
+     *
+     * Note that identifiers are case sensitive.
+     *
+     * @param identifier The identifier
+     * @return True if one is defined, false otherwise
+     */
+    public boolean hasAdditionalAmount(String identifier) {
+        return additionalAmounts.containsKey(identifier);
+    }
+
+    /**
      * Get the additional amount value for the provided identifier.
      *
      * If none is set, 0 will be returned.
+     *
+     * Note that identifiers are case sensitive.
      *
      * @param identifier The identifier
      * @return The amount value
@@ -166,6 +182,8 @@ public class Amounts implements Jsonable {
     /**
      * Get an {@link Amount} representation of the additional amount with associated currency.
      *
+     * Note that identifiers are case sensitive.
+     *
      * @param identifier The identifier
      * @return The additional {@link Amount}
      */
@@ -176,6 +194,8 @@ public class Amounts implements Jsonable {
 
     /**
      * Get the map of all the additional amounts set.
+     *
+     * Note that amount identifiers are case sensitive.
      *
      * @return The map of identifier keys mapped to amount values
      */
@@ -203,6 +223,8 @@ public class Amounts implements Jsonable {
      *
      * This is useful for scenarios where some additional amounts are supported natively in an environment (such as tip and cashback), but others
      * (like charity donations) are not and should be appended to the base amount for that environment.
+     *
+     * Note that identifiers are case sensitive.
      *
      * @param amountIdentifiers The identifiers of the amounts to exclude from the calculation
      * @return The total amount value, excluding the amounts as provider via the identifiers
