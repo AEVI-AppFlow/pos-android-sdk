@@ -30,7 +30,9 @@ package com.aevi.sdk.pos.flow.provider;
 
 
 import android.content.Context;
+import android.net.Uri;
 import com.aevi.sdk.flow.service.BaseServiceInfoProvider;
+import com.aevi.sdk.pos.flow.PaymentFlowServiceApi;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 
 import static com.aevi.sdk.flow.constants.IntentActions.SERVICE_INFO_CHANGE_ACTION;
@@ -47,6 +49,12 @@ public abstract class BasePaymentFlowServiceInfoProvider extends BaseServiceInfo
     @Override
     protected String getServiceInfo() {
         return getPaymentFlowServiceInfo().toJson();
+    }
+
+    // Backwards compatible way to know what version we are dealing with before having access to the service info
+    @Override
+    public String getType(Uri uri) {
+        return PaymentFlowServiceApi.getApiVersion();
     }
 
     protected abstract PaymentFlowServiceInfo getPaymentFlowServiceInfo();
