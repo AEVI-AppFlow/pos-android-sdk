@@ -1,0 +1,27 @@
+apply plugin: 'com.jfrog.bintray'
+
+def siteUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk'
+def gitUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk.git'
+
+bintray {
+    if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
+        user = project.bintrayUser
+        key = project.bintrayKey
+    }
+    publications = ['apiJar']
+    override = true
+
+    pkg {
+        dryRun = false
+        publish = true
+        repo = 'aevi-uk'
+        name = 'appflow-pos-apis'
+        userOrg = 'aevi'
+        licenses = ['Apache-2.0']
+        labels = ['payment', 'POS', 'flow', 'android']
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk/issues'
+        vcsUrl = gitUrl
+        publicDownloadNumbers = true
+    }
+}

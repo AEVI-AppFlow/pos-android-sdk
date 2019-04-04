@@ -18,7 +18,7 @@ bintray {
         name = 'appflow-sdk'
         userOrg = 'aevi'
         licenses = ['Apache-2.0']
-        labels = ['payment', 'POS', 'flow', 'android']
+        labels = ['flow', 'java']
         websiteUrl = siteUrl
         issueTrackerUrl = 'https://github.com/AEVI-AppFlow/pos-android-sdk/issues'
         vcsUrl = gitUrl

@@ -29,7 +29,7 @@ buildConfig {
 }
 
 apply from: '../jar-publisher.gradle'
-apply from: '../bintray.gradle'
+apply from: '../bintray-pos-apis.gradle'
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
