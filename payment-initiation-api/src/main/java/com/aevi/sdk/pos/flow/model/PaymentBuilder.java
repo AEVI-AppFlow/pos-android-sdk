@@ -35,6 +35,7 @@ public class PaymentBuilder {
     private String flowName;
     private Amounts amounts;
     private Basket basket;
+    private String paymentMethod;
     private Customer customer;
     private boolean splitEnabled;
     private Token cardToken;
@@ -50,6 +51,7 @@ public class PaymentBuilder {
         flowName = paymentToCopyFrom.getFlowName();
         amounts = paymentToCopyFrom.getAmounts();
         basket = paymentToCopyFrom.getBasket();
+        paymentMethod = paymentToCopyFrom.getPaymentMethod();
         customer = paymentToCopyFrom.getCustomer();
         splitEnabled = paymentToCopyFrom.isSplitEnabled();
         cardToken = paymentToCopyFrom.getCardToken();
@@ -125,6 +127,23 @@ public class PaymentBuilder {
     @NonNull
     public PaymentBuilder withBasket(Basket basket) {
         this.basket = basket;
+        return this;
+    }
+
+    /**
+     * Specify the payment method to use for transaction processing for this payment.
+     *
+     * Setting this has two effects - first it means FPS will filter payment applications based on supported methods, and secondarily it allows
+     * any payment app that supports multiple methods to proceed without a user choice.
+     *
+     * Note that this value has no effect on flow services in general - they may still use any method of their choice to offer services such as loyalty.
+     *
+     * @param paymentMethod The payment method to use for this payment
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
         return this;
     }
 
@@ -240,6 +259,6 @@ public class PaymentBuilder {
         if (basket != null) {
             basket.setPrimaryBasket(true);
         }
-        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
+        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId, paymentMethod);
     }
 }
