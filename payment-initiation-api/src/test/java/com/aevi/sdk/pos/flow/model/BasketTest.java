@@ -5,7 +5,6 @@ import com.aevi.util.json.JsonConverter;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,9 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BasketTest {
 
     private static final BasketItem defaultItemOne =
-            new BasketItem(UUID.randomUUID().toString(), "LabelOne", null, 1000, 2, new HashMap<String, String>());
+            new BasketItem(UUID.randomUUID().toString(), "LabelOne", null, 1000, 1000, 2, null, null, null, null);
     private static final BasketItem defaultItemTwo =
-            new BasketItem(UUID.randomUUID().toString(), "LabelTwo", null, 400, 1, new HashMap<String, String>());
+            new BasketItem(UUID.randomUUID().toString(), "LabelTwo", null, 400, 400, 1, null, null, null, null);
     private Basket sourceBasket;
 
     @Before
@@ -65,7 +64,7 @@ public class BasketTest {
     @Test
     public void canHaveMultipleItemsSameLabel() throws Exception {
         sourceBasket.addItems(defaultItemOne);
-        BasketItem anotherItem = new BasketItem("123", defaultItemOne.getLabel(), null, 500, 1, null);
+        BasketItem anotherItem = new BasketItem("123", defaultItemOne.getLabel(), null, 500, 500, 1, null, null, null, null);
         sourceBasket.addItems(anotherItem);
 
         assertThat(sourceBasket.getNumberOfUniqueItems()).isEqualTo(2);
@@ -199,9 +198,9 @@ public class BasketTest {
 
     @Test
     public void canGetItemsByCategory() throws Exception {
-        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1, null),
-                              new BasketItem("456", "Fanta", "Drinks", 1000, 1, null),
-                              new BasketItem("789", "Pork", "Meat", 1000, 1, null));
+        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1000, 1, null, null, null, null),
+                              new BasketItem("456", "Fanta", "Drinks", 1000, 1000, 1, null, null, null, null),
+                              new BasketItem("789", "Pork", "Meat", 1000, 1000, 1, null, null, null, null));
 
         List<BasketItem> drinks = sourceBasket.getBasketItemsByCategory("Drinks");
         assertThat(drinks).hasSize(2).containsExactlyInAnyOrder(sourceBasket.getItemById("123"), sourceBasket.getItemById("456"));
@@ -209,8 +208,8 @@ public class BasketTest {
 
     @Test
     public void totalValueHandlesNegativeItemsCorrectly() throws Exception {
-        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1, null),
-                              new BasketItem("456", "Fanta", "Drinks", -500, 1, null));
+        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 1000, 1, null, null, null, null),
+                              new BasketItem("456", "Fanta", "Drinks", -500, -500, 1, null, null, null, null));
 
         long total = sourceBasket.getTotalBasketValue();
         assertThat(total).isEqualTo(500);
@@ -218,7 +217,7 @@ public class BasketTest {
 
     @Test
     public void totalValueHandlesNegativeItemsOnlyCorrectly() throws Exception {
-        sourceBasket.addItems(new BasketItem("456", "Fanta", "Drinks", -500, 1, null));
+        sourceBasket.addItems(new BasketItem("456", "Fanta", "Drinks", -500, -500, 1, null, null, null, null));
 
         long total = sourceBasket.getTotalBasketValue();
         assertThat(total).isEqualTo(-500);

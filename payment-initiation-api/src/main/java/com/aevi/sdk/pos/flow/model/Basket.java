@@ -36,6 +36,7 @@ import java.util.*;
  * Note that as basket items are immutable, any update to items (such as merging or changing quantity) leads to new instances being created. For the
  * latest up to date item, always fetch via {@link #getItemById(String)}.
  */
+@SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
 public class Basket extends BaseModel {
 
     private final String basketName;
@@ -81,7 +82,7 @@ public class Basket extends BaseModel {
      */
     Basket(String id, String basketName, List<BasketItem> basketItems) {
         super(id);
-        this.basketName = basketName;
+        this.basketName = basketName != null ? basketName : "N/A";
         this.displayItems = new ArrayList<>(basketItems);
         this.additionalBasketData = new AdditionalData();
     }
@@ -91,6 +92,7 @@ public class Basket extends BaseModel {
      *
      * @return Name of the basket
      */
+    @NonNull
     public String getBasketName() {
         return basketName;
     }
@@ -295,8 +297,9 @@ public class Basket extends BaseModel {
      * Remove the item with the provided id.
      *
      * @param itemId The id of the item to remove
-     * @return The basket item that was removed
+     * @return The basket item that was removed, or null
      */
+    @Nullable
     public BasketItem removeItem(String itemId) {
         BasketItem item = getItemById(itemId);
         if (item != null) {
@@ -363,7 +366,8 @@ public class Basket extends BaseModel {
      * @param values An array of values for this data
      * @param <T>    The type of object this data is an array of
      */
-    public <T> void addAdditionalData(String key, T... values) {
+    @SafeVarargs
+    public final <T> void addAdditionalData(String key, T... values) {
         additionalBasketData.addData(key, values);
     }
 
@@ -372,6 +376,7 @@ public class Basket extends BaseModel {
      *
      * @return The additional basket data
      */
+    @NonNull
     public AdditionalData getAdditionalBasketData() {
         return additionalBasketData;
     }
