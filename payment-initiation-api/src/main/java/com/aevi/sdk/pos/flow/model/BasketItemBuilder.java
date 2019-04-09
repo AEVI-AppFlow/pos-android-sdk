@@ -15,22 +15,26 @@
 package com.aevi.sdk.pos.flow.model;
 
 import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.AdditionalData;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Builder to create {@link BasketItem} instances.
  */
+@SuppressWarnings("WeakerAccess")
 public class BasketItemBuilder {
 
     private String id;
     private int quantity = 1;
     private String label;
     private String category;
+    private long baseAmount = Integer.MIN_VALUE;
     private long amount;
+    private Measurement measurement;
+    private List<BasketItemModifier> modifiers;
     private Map<String, String> references;
+    private AdditionalData itemData;
 
     /**
      * Initialise the builder with a default random id.
@@ -50,8 +54,19 @@ public class BasketItemBuilder {
         this.label = copyFrom.getLabel();
         this.category = copyFrom.getCategory();
         this.amount = copyFrom.getIndividualAmount();
-        this.references = copyFrom.getReferences();
+        this.baseAmount = copyFrom.getIndividualBaseAmount();
+        this.measurement = copyFrom.getMeasurement();
+        if (copyFrom.hasReferences()) {
+            this.references = copyFrom.getReferences();
+        }
+        if (copyFrom.hasItemData()) {
+            this.itemData = copyFrom.getItemData();
+        }
+        if (copyFrom.hasModifiers()) {
+            this.modifiers = copyFrom.getModifiers();
+        }
     }
+
 
     /**
      * Generate a new random id (UUID) for this item.
@@ -79,9 +94,11 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Set the initial quantity for this item.
+     * Set the quantity for this item.
      *
      * Defaults to 1 if not set.
+     *
+     * See {@link #withMeasurement(float, String)} and {@link #withFractionalQuantity(float, String)} for scenarios where quantities have or may have a fractional part and a unit.
      *
      * @param quantity The item quantity
      * @return This builder
@@ -131,6 +148,53 @@ public class BasketItemBuilder {
     }
 
     /**
+     * Set the measurement of this item to support items measured in fractions with a unit, such as "1.25 kilograms".
+     *
+     * The quantity (via {@link #withQuantity(int)} defaults to 1, but can also be set to represent multiple items, such as "2 x 1.25 kilograms".
+     *
+     * See {@link #withFractionalQuantity(float, String)} for a convenience function that sets quantity and measurement as per provided parameters.
+     *
+     * @param value The measurement value
+     * @param unit  The unit (such as "kilograms" or "feet")
+     * @return This builder
+     */
+    @NonNull
+    public BasketItemBuilder withMeasurement(float value, String unit) {
+        this.measurement = new Measurement(value, unit);
+        return this;
+    }
+
+    /**
+     * Convenience method for scenarios where the quantity is represented as float/double internally in the client application.
+     *
+     * If a unit is set, the provided values will be set as per {@link #withMeasurement(float, String)} and the quantity defaults to 1.
+     *
+     * If no unit is set (null) and the provided quantity is a whole number, the value will be set as per {@link #withQuantity(int)}.
+     *
+     * If no unit is set and the provided quantity has a fractional part, an exception will be thrown as unit is mandatory for measurement.
+     *
+     * @param quantity The floating point quantity
+     * @param unit     The unit (such as "kilograms" or "feet") - may be null
+     * @return This builder
+     * @throws IllegalArgumentException When the unit is not set for a quantity with a fractional part
+     */
+    @NonNull
+    public BasketItemBuilder withFractionalQuantity(float quantity, String unit) {
+        if (unit != null) {
+            withMeasurement(quantity, unit);
+        } else if (!hasFractionalPart(quantity)) {
+            withQuantity((int) quantity);
+        } else {
+            throw new IllegalArgumentException("Unit must be set for quantities with fractional parts");
+        }
+        return this;
+    }
+
+    private boolean hasFractionalPart(float value) {
+        return value % 1 != 0;
+    }
+
+    /**
      * Set the label for this item.
      *
      * @param label The label
@@ -155,16 +219,95 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Set the item amount value.
+     * Set the item amount value, inclusive of any modifiers.
      *
      * Note that the amount value can be negative to represent discounts, etc.
      *
-     * @param amount The item amount value
+     * See {@link #withBaseAmount(long)} to set the amount exclusive of modifiers.
+     *
+     * @param amount The item amount value, inclusive of any modifiers
      * @return This builder
      */
     @NonNull
     public BasketItemBuilder withAmount(long amount) {
         this.amount = amount;
+        return this;
+    }
+
+    /**
+     * Set the item *base* amount value, exclusive of any modifiers.
+     *
+     * Note that the amount value can be negative to represent discounts, etc.
+     *
+     * This defaults to the {@link #withAmount(long)} value if not set.
+     *
+     * @param baseAmount The item base amount value, exclusive of any modifiers
+     * @return This builder
+     */
+    @NonNull
+    public BasketItemBuilder withBaseAmount(long baseAmount) {
+        this.baseAmount = baseAmount;
+        return this;
+    }
+
+    /**
+     * Apply modifiers to this item.
+     *
+     * Note that modifiers are NOT validated by AppFlow - it is up to the client to ensure they are correct and that {@link #withAmount(long)}
+     * and {@link #withBaseAmount(long)} have been set with correct values based on the modifiers.
+     *
+     * @param basketItemModifiers The var-args list of modifiers
+     * @return This builder
+     */
+    @NonNull
+    public BasketItemBuilder withModifiers(BasketItemModifier... basketItemModifiers) {
+        if (this.modifiers == null) {
+            this.modifiers = new ArrayList<>();
+        }
+        this.modifiers.addAll(Arrays.asList(basketItemModifiers));
+        return this;
+    }
+
+    /**
+     * Apply modifiers to this item.
+     *
+     * Note that modifiers are NOT validated by AppFlow - it is up to the client to ensure they are correct and that {@link #withAmount(long)}
+     * and {@link #withBaseAmount(long)} have been set with correct values based on the modifiers.
+     *
+     * @param basketItemModifiers The list of modifiers
+     * @return This builder
+     */
+    @NonNull
+    public BasketItemBuilder withModifiers(List<BasketItemModifier> basketItemModifiers) {
+        this.modifiers = basketItemModifiers;
+        return this;
+    }
+
+    /**
+     * Add additional item data entries.
+     *
+     * @param key    The key to use for this data
+     * @param values An array of values for this data
+     * @param <T>    The type of object this data is an array of
+     * @return This builder
+     */
+    @SafeVarargs
+    public final <T> BasketItemBuilder withItemData(String key, T... values) {
+        if (itemData == null) {
+            itemData = new AdditionalData();
+        }
+        itemData.addData(key, values);
+        return this;
+    }
+
+    /**
+     * Add additional item data.
+     *
+     * @param additionalData The additional item data
+     * @return This builder
+     */
+    public BasketItemBuilder withItemData(AdditionalData additionalData) {
+        this.itemData = additionalData;
         return this;
     }
 
@@ -178,7 +321,9 @@ public class BasketItemBuilder {
      * @param key   The reference key
      * @param value The reference value
      * @return This builder
+     * @deprecated Please use {@link #withItemData(AdditionalData)} instead
      */
+    @Deprecated
     public BasketItemBuilder withReference(String key, String value) {
         if (references == null) {
             references = new HashMap<>();
@@ -203,6 +348,10 @@ public class BasketItemBuilder {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have a label");
         }
-        return new BasketItem(id, label, category, amount, quantity, references);
+        // Default base amount to amount
+        if (this.baseAmount == Integer.MIN_VALUE) {
+            this.baseAmount = amount;
+        }
+        return new BasketItem(id, label, category, amount, baseAmount, quantity, measurement, modifiers, references, itemData);
     }
 }
