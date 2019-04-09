@@ -143,5 +143,18 @@ public class BasketItemBuilderTest {
                 new BasketItemBuilder().withId("123").withLabel("banana").withAmount(200).withFractionalQuantity(2.1f, null).build();
     }
 
+    @Test
+    public void baseAmountShouldDefaultToAmount() throws Exception {
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
+        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(200);
+    }
 
+    @Test
+    public void baseAmountShouldNotDefaultToAmountIfSet() throws Exception {
+        BasketItem basketItem =
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).withBaseAmount(0)
+                        .build();
+        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(0);
+    }
 }
