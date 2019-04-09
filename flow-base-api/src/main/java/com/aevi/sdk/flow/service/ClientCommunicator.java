@@ -30,7 +30,7 @@ public class ClientCommunicator {
         this.responseInternalData = responseInternalData;
     }
 
-    void sendAck() {
+    public void sendAck() {
         Log.d(TAG, "Sending ack");
         AppMessage appMessage = new AppMessage(REQUEST_ACK_MESSAGE, responseInternalData);
         channelServer.send(appMessage.toJson());

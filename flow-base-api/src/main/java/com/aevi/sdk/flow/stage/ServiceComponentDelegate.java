@@ -82,6 +82,8 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
     }
 
     private void handleFlowServiceEvent(FlowEvent flowEvent) {
+        Log.d(TAG, "Sending ack for event");
+        clientCommunicator.sendAck();
         publishFlowServiceMessage(flowEvent);
         switch (flowEvent.getType()) {
             case FINISH_IMMEDIATELY:
