@@ -16,7 +16,7 @@ public class BasketItemModifierTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfNoAmountOrPercentage() throws Exception {
-        new BasketItemModifier("bla", "name", "type", null, null);
+        new BasketItemModifier("bla", "name", "type", (Float)null, null);
     }
 
     @Test
@@ -26,7 +26,7 @@ public class BasketItemModifierTest {
 
     @Test
     public void shouldAcceptJustPercentage() throws Exception {
-        new BasketItemModifier("bla", "name", "type", null, 2.5f);
+        new BasketItemModifier("bla", "name", "type", (Float)null, 2.5f);
     }
 
     @Test

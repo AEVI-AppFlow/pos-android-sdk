@@ -32,7 +32,7 @@ public class BasketItemModifier {
      * @param amount     The absolute amount of the modifier.
      * @param percentage The percentage applied to the item amounts.
      */
-    public BasketItemModifier(String id, String name, String type, Float amount, Float percentage) {
+    BasketItemModifier(String id, String name, String type, Float amount, Float percentage) {
         checkNotEmpty(name, "Name must be set");
         checkNotEmpty(type, "Type must be set");
         checkArgument(amount != null || percentage != null, "Either amount or percentage must be set");
@@ -83,8 +83,21 @@ public class BasketItemModifier {
      * @return The absolute amount of this modifier, or null
      */
     @Nullable
-    public Float getAmount() {
+    public Float getFractionalAmount() {
         return amount;
+    }
+
+    /**
+     * The absolute amount of this modifier in subunit form (e.g pence / cents). Use this method if you do not care about fractional amounts
+     * see {@link BasketItemModifier#getFractionalAmount()}.
+     *
+     * This may be null if not set, or zero or negative if set.
+     *
+     * @return The absolute amount of this modifier, or null
+     */
+    @Nullable
+    public Long getAmount() {
+        return amount != null ? amount.longValue() : null;
     }
 
     /**
