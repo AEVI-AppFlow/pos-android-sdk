@@ -1,18 +1,17 @@
-package com.aevi.sdk.pos.flow;
+package com.aevi.sdk.pos.flow.model;
 
-import com.aevi.sdk.pos.flow.model.BasketItemModifier;
 import org.junit.Test;
 
 public class BasketItemModifierTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfNoName() throws Exception {
-        new BasketItemModifier("bla", null, "type", 100L, 2.5f);
+        new BasketItemModifier("bla", null, "type", 100f, 2.5f);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfNoType() throws Exception {
-        new BasketItemModifier("bla", "name", null, 100L, 2.5f);
+        new BasketItemModifier("bla", "name", null, 100f, 2.5f);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -22,7 +21,7 @@ public class BasketItemModifierTest {
 
     @Test
     public void shouldAcceptJustAmount() throws Exception {
-        new BasketItemModifier("bla", "name", "type", 100L, null);
+        new BasketItemModifier("bla", "name", "type", 100f, null);
     }
 
     @Test
@@ -32,6 +31,6 @@ public class BasketItemModifierTest {
 
     @Test
     public void shouldBuildFullInstance() throws Exception {
-        new BasketItemModifier("bla", "name", "type", 100L, 2.5f);
+        new BasketItemModifier("bla", "name", "type", 100f, 2.5f);
     }
 }
