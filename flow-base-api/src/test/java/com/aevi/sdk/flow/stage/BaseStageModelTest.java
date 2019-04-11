@@ -47,6 +47,12 @@ public class BaseStageModelTest {
         verify(androidComponentDelegate, times(5)).sendMessage(isA(AppMessage.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void shouldOnlyAllowResponseSentOnce() throws Exception {
+        testModel.sendEmptyResponse();
+        testModel.sendEmptyResponse();
+    }
+
     static class TestModel extends BaseStageModel {
 
         TestModel(AndroidComponentDelegate androidComponentDelegate) {
