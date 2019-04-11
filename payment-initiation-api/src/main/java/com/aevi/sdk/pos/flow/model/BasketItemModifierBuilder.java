@@ -17,6 +17,12 @@ public class BasketItemModifierBuilder {
     private Float amount;
     private Float percentage;
 
+    /**
+     * Create an instance of this builder
+     *
+     * @param name The name of the modifier you are building
+     * @param type The type of modifier you are building
+     */
     public BasketItemModifierBuilder(@NonNull String name, @NonNull String type) {
         this.name = name;
         this.type = type;
@@ -37,7 +43,10 @@ public class BasketItemModifierBuilder {
     /**
      * Set the absolute amount of this modifier in subunit form (e.g pence / cents). This amount may be fractional i.e. fractions of one cent/penny.
      * A fractional value may used in cases such as representing a tax amount that needs to be correct to several decimal places of accuracy when
-     * these item modifiers are added together as a part of a whole transaction.
+     * these item modifiers are added together as a part of a whole transaction. If a fractional value is not required then use
+     * {@link BasketItemModifierBuilder#withAmount(long)} instead.
+     *
+     * This value can be negative to indicate a reduction/discount to the item amount.
      *
      * @param amount The amount
      * @return This builder
@@ -52,6 +61,8 @@ public class BasketItemModifierBuilder {
      * Set the absolute amount of this modifier in subunit form (e.g pence / cents). Use this method if you do not care about fractional amounts
      * see {@link BasketItemModifierBuilder#withFractionalAmount(float)}.
      *
+     * This value can be negative to indicate a reduction/discount to the item amount.
+     *
      * @param amount The amount
      * @return This builder
      */
@@ -61,9 +72,11 @@ public class BasketItemModifierBuilder {
     }
 
     /**
-     * Set the percentage rate for this modifier
+     * Set the percentage rate for this modifier.
      *
      * The percentage is represented as a float value, such as 25.75 for 25.75%.
+     *
+     * This value can be negative to indicate a reduction/discount to the item amount.
      *
      * @param percentage The percentage
      * @return This builder
