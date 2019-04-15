@@ -51,6 +51,7 @@ import java.util.Currency;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
+import static com.aevi.sdk.flow.constants.ModifierTypes.*;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -245,12 +246,37 @@ public class PaymentFragment extends BaseObservableFragment {
     private Basket createBasket() {
         return new Basket("sampleBasket",
                           // You can add single count items, with label, category and amount value
-                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
-                          new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
+                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee")
+                                  .withBaseAmount(250)
+                                  .withAmount(300)
+                                  .withModifiers(new BasketItemModifierBuilder("Extra shot", MODIFIER_TYPE_EXTRA).withAmount(50).build())
+                                  .build(),
                           new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                           // You can also specify the initial count of the item and provide your own id
                           new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2)
+                                  .build(),
+                          new BasketItemBuilder().withLabel("Concrete").withAmount(458).withFractionalQuantity(1.5f, "kg").build(),
+                          new BasketItemBuilder().withLabel("Big Burger")
+                                  .withAmount(1260)
+                                  .withBaseAmount(1000)
+                                  .withQuantity(3)
+                                  .withModifiers(new BasketItemModifierBuilder("Cheese", MODIFIER_TYPE_EXTRA).withAmount(20).build(),
+                                                 new BasketItemModifierBuilder("No lettuce", MODIFIER_TYPE_EXTRA).withAmount(0).build(),
+                                                 new BasketItemModifierBuilder("No burger", MODIFIER_TYPE_EXTRA).withAmount(0).build(),
+                                                 new BasketItemModifierBuilder("Special Sauce", MODIFIER_TYPE_EXTRA).withAmount(100).build(),
+                                                 new BasketItemModifierBuilder("State Burger Tax", MODIFIER_TYPE_TAX)
+                                                         .withPercentage(12.5f).build()
+                                  )
+                                  .build(),
+                          new BasketItemBuilder().withLabel("Space Ship")
+                                  .withAmount(100000)
+                                  .withQuantity(1)
+                                  .withModifiers(
+                                          new BasketItemModifierBuilder("Rocket Discount", MODIFIER_TYPE_DISCOUNT).withPercentage(25).build(),
+                                          new BasketItemModifierBuilder("Extra Booster", MODIFIER_TYPE_EXTRA).withPercentage(13.1f).withAmount(23000)
+                                                  .build())
                                   .build());
+
     }
 
     @OnClick(R.id.send)
