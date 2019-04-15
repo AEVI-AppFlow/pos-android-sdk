@@ -4,7 +4,7 @@ ext {
     rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.1.0'
-    rxMessengerVersion = '5.0.1'
+    rxMessengerVersion = '5.0.2'
     configApiVersion = '1.1.0'
 
     // Test dependencies
