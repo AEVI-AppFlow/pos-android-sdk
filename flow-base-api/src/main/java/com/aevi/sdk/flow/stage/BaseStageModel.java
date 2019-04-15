@@ -50,6 +50,7 @@ public abstract class BaseStageModel {
 
     private final AndroidComponentDelegate androidComponentDelegate;
     private int auditEntryCount;
+    private boolean responseSent;
 
     /**
      * Initialise the stage model with an android component delegate directly.
@@ -193,6 +194,10 @@ public abstract class BaseStageModel {
      * @param response The response
      */
     protected final void doSendResponse(String response) {
+        if (responseSent) {
+            throw new IllegalStateException("Response may only be sent once");
+        }
+        responseSent = true;
         sendMessage(RESPONSE_MESSAGE, response);
     }
 

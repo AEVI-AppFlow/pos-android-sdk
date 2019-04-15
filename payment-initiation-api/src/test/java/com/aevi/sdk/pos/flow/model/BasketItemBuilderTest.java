@@ -39,7 +39,7 @@ public class BasketItemBuilderTest {
 
     @Test
     public void shouldCreateCorrectBasketItem() throws Exception {
-        BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100L, 50.0f);
+        BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100f, 50.0f);
         BasketItem basketItem =
                 new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withMeasurement(1.25f, "kg")
                         .withCategory("fruit").withAmount(200).withBaseAmount(100)
@@ -65,7 +65,7 @@ public class BasketItemBuilderTest {
 
     @Test
     public void shouldAllowCreationFromExistingItem() throws Exception {
-        BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100L, 50.0f);
+        BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100f, 50.0f);
         BasketItem basketItem =
                 new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withMeasurement(1.25f, "kg")
                         .withCategory("fruit").withAmount(200).withBaseAmount(100)
