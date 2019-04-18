@@ -24,6 +24,8 @@ import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.PaymentResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter.PaymentResponsesAdapter;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class PaymentResponsesFragment extends BaseItemFragment<PaymentResponse> {
 
@@ -38,6 +40,8 @@ public class PaymentResponsesFragment extends BaseItemFragment<PaymentResponse> 
                 .getPaymentClient()
                 .queryPaymentResponses(paymentResponseQuery)
                 .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(paymentResponses -> {
                     if (paymentResponses.isEmpty()) {
                         showNoItemsAvailable(R.string.no_payment_responses_found);
