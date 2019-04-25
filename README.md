@@ -15,17 +15,17 @@ Please see the [Documentation](https://aevi-appflow.github.io/pos-android-sdk/) 
 
 ## Prerequisites
 
-In order to test AppFlow and/or integrate with it, you will need to install these two AEVI provided applications;
+In order to test AppFlow and/or integrate with it, you will need to at a minimum install these two AEVI provided applications;
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
-- AEVI Developer Config Provider, which provides the flows and other settings for AppFlow
+- AEVI AppFlow Configuration App, which provides the flows and other settings for AppFlow tailored for developers
 
 Please download the latest developer bundle from [here](https://aevi-appflow.github.io/pos-android-sdk/downloads/), which contains these applications as well as the latest samples.
 
 ## Integrate
 
-AppFlow and its dependencies are as of `v2.1.0` published to the `jcenter()` or `mavenCentral()` repositories which are used by default by Android Gradle project / Android Studio.
+AppFlow and its dependencies are as of `v2.1.0` published to the `jcenter()` repository which is used by default by Android Gradle project / Android Studio.
 
-If you are using an earlier version or having issues getting this to work, you can also add your bintray repository directly as per below. 
+If you are using an earlier version or having issues getting this to work, you can also add our bintray repository directly as per below. 
 
 In your root project `build.gradle` file, add
 
