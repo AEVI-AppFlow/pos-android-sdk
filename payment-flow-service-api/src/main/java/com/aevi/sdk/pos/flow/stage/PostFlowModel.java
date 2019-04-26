@@ -16,24 +16,21 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
-
 /**
  * Model for the post-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * Call {@link #processInBackground()} to tell FPS to continue in the flow or {@link #finish()} to inform FPS this service is done.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PostFlowModel extends BaseStageModel {
 
@@ -44,8 +41,8 @@ public class PostFlowModel extends BaseStageModel {
         this.paymentResponse = paymentResponse;
     }
 
-    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse) {
-        super(clientCommunicator);
+    private PostFlowModel(ClientCommunicator clientCommunicator, PaymentResponse paymentResponse, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.paymentResponse = paymentResponse;
     }
 
@@ -58,20 +55,22 @@ public class PostFlowModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PostFlowModel}
      */
+    @NonNull
     public static PostFlowModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PostFlowModel(activity, PaymentResponse.fromJson(request));
+        return new PostFlowModel(activity, PaymentResponse.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised PaymentResponse
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PostFlowModel}
      */
-    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request) {
-        return new PostFlowModel(clientCommunicator, request);
+    @NonNull
+    public static PostFlowModel fromService(ClientCommunicator clientCommunicator, PaymentResponse request, InternalData senderInternalData) {
+        return new PostFlowModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -79,6 +78,7 @@ public class PostFlowModel extends BaseStageModel {
      *
      * @return The payment response.
      */
+    @NonNull
     public PaymentResponse getPaymentResponse() {
         return paymentResponse;
     }
@@ -89,7 +89,7 @@ public class PostFlowModel extends BaseStageModel {
      * Typical use cases for this is analytics, reporting, etc that do not launch any UI and hence do not need to block the flow from finishing.
      */
     public void processInBackground() {
-        clientCommunicator.notifyBackgroundProcessing();
+        sendEmptyResponse();
     }
 
     /**
@@ -100,6 +100,7 @@ public class PostFlowModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return paymentResponse.toJson();
     }

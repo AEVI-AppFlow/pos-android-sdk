@@ -15,8 +15,8 @@ import java.util.Objects;
  */
 public class FlowException extends Exception implements Jsonable {
 
-    private String errorCode;
-    private String errorMessage;
+    private final String errorCode;
+    private final String errorMessage;
 
     public FlowException(String errorCode, String message) {
         this.errorMessage = message;

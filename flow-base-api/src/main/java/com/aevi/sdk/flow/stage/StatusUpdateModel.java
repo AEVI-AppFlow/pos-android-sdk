@@ -16,10 +16,9 @@ package com.aevi.sdk.flow.stage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.model.Request;
-import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.service.BaseStatusUpdateService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
@@ -36,8 +35,8 @@ public class StatusUpdateModel extends BaseStageModel {
 
     private final Request request;
 
-    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request) {
-        super(clientCommunicator);
+    private StatusUpdateModel(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.request = request;
     }
 
@@ -45,11 +44,13 @@ public class StatusUpdateModel extends BaseStageModel {
      * Create an instance from a channel server.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string
+     * @param request            The deserialised Request provided as a string
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link StatusUpdateModel}
      */
-    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request) {
-        return new StatusUpdateModel(clientCommunicator, request);
+    @NonNull
+    public static StatusUpdateModel fromService(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        return new StatusUpdateModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -57,6 +58,7 @@ public class StatusUpdateModel extends BaseStageModel {
      *
      * @return The request
      */
+    @NonNull
     public Request getRequest() {
         return request;
     }
@@ -78,13 +80,15 @@ public class StatusUpdateModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return request.toJson();
     }
 
     // Status update handlers are not allowed to launch into foreground
     @Override
-    public ObservableActivityHelper<String> processInActivity(Context context, Intent activityIntent, String requestJson) {
+    @NonNull
+    public ObservableActivityHelper<AppMessage> processInActivity(Context context, Intent activityIntent, String requestJson) {
         throw new IllegalStateException("Starting activities is not allowed for status updates");
     }
 }

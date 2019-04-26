@@ -38,6 +38,7 @@ public class Payment extends BaseModel {
     private final String flowType;
     private final String flowName;
     private final Amounts amounts;
+    private final String paymentMethod;
     private final Basket basket;
     private final Customer customer;
     private final boolean splitEnabled;
@@ -54,6 +55,7 @@ public class Payment extends BaseModel {
         this.flowName = null;
         this.isExternalId = false;
         this.amounts = new Amounts();
+        this.paymentMethod = null;
         this.basket = null;
         this.customer = null;
         this.splitEnabled = false;
@@ -67,7 +69,7 @@ public class Payment extends BaseModel {
      * Internal constructor for use from the Builder.
      */
     Payment(String flowType, String flowName, Amounts amounts, Basket basket, Customer customer, boolean splitEnabled, Token cardToken,
-            AdditionalData additionalData, String source, String deviceId) {
+            AdditionalData additionalData, String source, String deviceId, String paymentMethod) {
         super(UUID.randomUUID().toString());
         Log.i(Payment.class.getSimpleName(), "Created Payment with (internal) id: " + getId());
         this.flowType = flowType;
@@ -75,6 +77,7 @@ public class Payment extends BaseModel {
         this.isExternalId = false;
         this.amounts = amounts != null ? amounts : new Amounts();
         this.basket = basket;
+        this.paymentMethod = paymentMethod;
         this.customer = customer;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
@@ -90,8 +93,7 @@ public class Payment extends BaseModel {
      * This is useful when a request from a different SDK/API is translated to our Payment model.
      */
     Payment(String id, String requestSource, String flowType, String flowName, Amounts amounts, Basket basket, Customer customer,
-            boolean splitEnabled, Token cardToken,
-            AdditionalData additionalData, String deviceId) {
+            boolean splitEnabled, Token cardToken, AdditionalData additionalData, String deviceId, String paymentMethod) {
         super(id);
         Log.i(Payment.class.getSimpleName(), "Created Payment with (external) id: " + id);
         this.source = requestSource;
@@ -100,6 +102,7 @@ public class Payment extends BaseModel {
         this.flowName = flowName;
         this.amounts = amounts != null ? amounts : new Amounts();
         this.basket = basket;
+        this.paymentMethod = paymentMethod;
         this.customer = customer;
         this.splitEnabled = splitEnabled;
         this.cardToken = cardToken;
@@ -122,7 +125,6 @@ public class Payment extends BaseModel {
      * In cases where only the flow type is set for the payment, FPS will look up matching flows from it and assign a flow name.
      *
      * @return The flow type
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public String getFlowType() {
@@ -159,6 +161,18 @@ public class Payment extends BaseModel {
     @Nullable
     public Basket getBasket() {
         return basket;
+    }
+
+    /**
+     * Get the payment method to use for transaction processing for this payment.
+     *
+     * Note that flow services may still make use of other payment methods for other stages of the flow.
+     *
+     * @return The payment method if set, or null
+     */
+    @Nullable
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
     /**
@@ -239,12 +253,13 @@ public class Payment extends BaseModel {
         return deviceId;
     }
 
-
     @Override
     public String toString() {
         return "Payment{" +
-                "flowName='" + flowName + '\'' +
+                "flowType='" + flowType + '\'' +
+                ", flowName='" + flowName + '\'' +
                 ", amounts=" + amounts +
+                ", paymentMethod='" + paymentMethod + '\'' +
                 ", basket=" + basket +
                 ", customer=" + customer +
                 ", splitEnabled=" + splitEnabled +
@@ -253,7 +268,6 @@ public class Payment extends BaseModel {
                 ", isExternalId=" + isExternalId +
                 ", source='" + source + '\'' +
                 ", deviceId='" + deviceId + '\'' +
-                ", flowType='" + flowType + '\'' +
                 "} " + super.toString();
     }
 
@@ -271,22 +285,22 @@ public class Payment extends BaseModel {
         Payment payment = (Payment) o;
         return splitEnabled == payment.splitEnabled &&
                 isExternalId == payment.isExternalId &&
+                Objects.equals(flowType, payment.flowType) &&
                 Objects.equals(flowName, payment.flowName) &&
                 Objects.equals(amounts, payment.amounts) &&
+                Objects.equals(paymentMethod, payment.paymentMethod) &&
                 Objects.equals(basket, payment.basket) &&
                 Objects.equals(customer, payment.customer) &&
                 Objects.equals(cardToken, payment.cardToken) &&
                 Objects.equals(additionalData, payment.additionalData) &&
                 Objects.equals(source, payment.source) &&
-                Objects.equals(deviceId, payment.deviceId) &&
-                Objects.equals(flowType, payment.flowType);
+                Objects.equals(deviceId, payment.deviceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects
-                .hash(super.hashCode(), flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, isExternalId, source, deviceId,
-                      flowType);
+        return Objects.hash(super.hashCode(), flowType, flowName, amounts, paymentMethod, basket, customer, splitEnabled, cardToken, additionalData,
+                            isExternalId, source, deviceId);
     }
 
     @Override

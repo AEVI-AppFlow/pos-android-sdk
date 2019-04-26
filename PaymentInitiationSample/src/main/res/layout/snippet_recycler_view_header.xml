@@ -7,12 +7,12 @@
               android:paddingTop="@dimen/default_vertical_margin">
 
     <TextView
-        android:id="@+id/item_header"
-        style="@style/RecyclerViewHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_horizontal_margin"
-        android:ellipsize="end"
-        android:maxLines="1"/>
+            android:id="@+id/item_header"
+            style="@style/RecyclerViewHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_horizontal_margin"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
 </LinearLayout>

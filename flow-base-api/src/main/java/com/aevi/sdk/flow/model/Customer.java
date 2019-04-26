@@ -27,8 +27,8 @@ import java.util.List;
 public class Customer extends BaseModel {
 
     private String fullName;
-    private AdditionalData customerDetails;
-    private List<Token> tokens;
+    private final AdditionalData customerDetails;
+    private final List<Token> tokens;
 
     // Default constructor for deserialisation
     Customer() {

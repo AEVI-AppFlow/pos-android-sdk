@@ -22,7 +22,7 @@ import com.aevi.sdk.pos.flow.sample.R;
 
 public class SectionHeaderViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView title;
+    public final TextView title;
 
     public SectionHeaderViewHolder(View itemView) {
         super(itemView);

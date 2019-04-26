@@ -1,7 +1,10 @@
 package com.aevi.sdk.pos.flow.stage;
 
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.pos.flow.model.*;
+import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,29 +14,32 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class SplitModelTest {
 
     private ClientCommunicator clientCommunicator;
+    private PublishSubject<AppMessage> messageSubject = PublishSubject.create();
     private SplitModel splitModel;
     private SplitRequest splitRequest;
     private long totalRequestValue;
     private Basket paymentBasket;
     private List<Transaction> prevTransactions;
+    private InternalData internalData;
 
     @Before
     public void setUp() throws Exception {
         clientCommunicator = mock(ClientCommunicator.class);
+        internalData = mock(InternalData.class);
+        when(clientCommunicator.subscribeToMessages()).thenReturn(messageSubject);
         totalRequestValue = 1000;
         paymentBasket = new Basket("basket", new BasketItemBuilder().withLabel("item")
                 .withAmount(totalRequestValue / 2).withQuantity(2).build());
         Payment payment = new PaymentBuilder().withAmounts(new Amounts(totalRequestValue, "GBP"))
                 .withBasket(paymentBasket).withPaymentFlow("sale").build();
         prevTransactions = new ArrayList<>();
-        splitRequest = new SplitRequest(payment, prevTransactions);
-        splitModel = SplitModel.fromService(clientCommunicator, splitRequest);
+        splitRequest = new SplitRequest(payment, payment.getAmounts(), prevTransactions);
+        splitModel = SplitModel.fromService(clientCommunicator, splitRequest, internalData);
     }
 
     @Test
@@ -95,8 +101,8 @@ public class SplitModelTest {
     }
 
     private FlowResponse getSentFlowResponse() {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(clientCommunicator).sendResponseAndEnd(captor.capture());
-        return FlowResponse.fromJson(captor.getValue());
+        ArgumentCaptor<AppMessage> captor = ArgumentCaptor.forClass(AppMessage.class);
+        verify(clientCommunicator).sendMessage(captor.capture());
+        return FlowResponse.fromJson(captor.getValue().getMessageData());
     }
 }

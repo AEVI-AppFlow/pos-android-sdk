@@ -37,6 +37,7 @@ public class TransactionRequest extends BaseModel {
     private final String flowType;
     private final Amounts amounts;
     private final List<Basket> baskets;
+    private final String paymentMethod;
     private final Customer customer;
     private final String flowStage;
     private final AdditionalData additionalData;
@@ -46,7 +47,7 @@ public class TransactionRequest extends BaseModel {
 
     // Default constructor for deserialisation
     TransactionRequest() {
-        this("N/A", "N/A", "", "", new Amounts(), null, null, new AdditionalData(), null);
+        this("N/A", "N/A", "", "", new Amounts(), null, null, new AdditionalData(), null, null);
     }
 
     /**
@@ -61,15 +62,17 @@ public class TransactionRequest extends BaseModel {
      * @param customer       The customer details
      * @param additionalData The additional data
      * @param card           The card details from the VAA or from the payment card reading step
+     * @param paymentMethod  The payment method for this transaction
      */
     public TransactionRequest(String id, String transactionId, String flowType, String flowStage, Amounts amounts, List<Basket> baskets,
-                              Customer customer, AdditionalData additionalData, Card card) {
+                              Customer customer, AdditionalData additionalData, Card card, String paymentMethod) {
         super(id);
         this.transactionId = transactionId;
         this.flowStage = flowStage;
         this.flowType = flowType;
         this.amounts = amounts != null ? amounts : new Amounts(0, "XXX");
         this.baskets = baskets;
+        this.paymentMethod = paymentMethod;
         this.customer = customer;
         this.additionalData = additionalData != null ? additionalData : new AdditionalData();
         this.card = card != null ? card : Card.getEmptyCard();
@@ -133,13 +136,61 @@ public class TransactionRequest extends BaseModel {
     }
 
     /**
+     * Check whether this transaction has a primary basket or not.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the basket if one exists.
+     *
+     * @return True if this transaction has a primary basket, false otherwise
+     */
+    public boolean hasPrimaryBasket() {
+        return baskets != null && !baskets.isEmpty() && baskets.get(0).isPrimaryBasket();
+    }
+
+    /**
+     * Get the primary basket for this transaction, if any is available.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #hasPrimaryBasket()} to check whether one exists or not.
+     *
+     * @return The primary basket, or null if none is available
+     */
+    @Nullable
+    public Basket getPrimaryBasket() {
+        if (hasPrimaryBasket()) {
+            return baskets.get(0);
+        }
+        return null;
+    }
+
+    /**
      * Get the baskets for this transaction.
+     *
+     * This may consist of baskets added by the client initiation app as well as flow services in the flow.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the primary basket specifically, if any is available.
      *
      * @return The baskets
      */
     @NonNull
     public List<Basket> getBaskets() {
-        return baskets != null ? baskets : new ArrayList<Basket>();
+        return baskets != null ? baskets : new ArrayList<>();
+    }
+
+    /**
+     * Get the payment method to use for transaction processing.
+     *
+     * Note that flow services may still make use of other payment methods for other stages of the flow.
+     *
+     * @return The payment method if set, or null
+     */
+    @Nullable
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
     /**

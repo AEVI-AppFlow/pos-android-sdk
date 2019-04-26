@@ -30,7 +30,7 @@ public class SplitBasketHelperTest {
         Payment payment = paymentBuilder.withPaymentFlow(FlowTypes.FLOW_TYPE_SALE)
                 .withAmounts(new Amounts(sourceBasket.getTotalBasketValue(), "GBP"))
                 .withBasket(sourceBasket).build();
-        SplitRequest splitRequest = new SplitRequest(payment, transactions);
+        SplitRequest splitRequest = new SplitRequest(payment, payment.getAmounts(), transactions);
         splitBasketHelper =
                 SplitBasketHelper.createFromSplitRequest(splitRequest, retainZeroQuantityRemaining.length > 0 && retainZeroQuantityRemaining[0]);
     }
@@ -66,20 +66,24 @@ public class SplitBasketHelperTest {
     @Test
     public void canSplitViaBasketShouldReturnTrueIfHasBasket() throws Exception {
         createSplitBasketHelper();
-        assertThat(SplitBasketHelper.canSplitViaBasket(new SplitRequest(paymentBuilder.build(), transactions))).isTrue();
+        Payment payment = paymentBuilder.build();
+        assertThat(SplitBasketHelper.canSplitViaBasket(new SplitRequest(payment, payment.getAmounts(), transactions))).isTrue();
     }
 
     @Test
     public void canSplitViaBasketShouldReturnFalseIfNoBasket() throws Exception {
         createSplitBasketHelper();
         paymentBuilder.withBasket(null);
-        assertThat(SplitBasketHelper.canSplitViaBasket(new SplitRequest(paymentBuilder.build(), transactions))).isFalse();
+        Payment payment = paymentBuilder.build();
+        assertThat(SplitBasketHelper.canSplitViaBasket(new SplitRequest(payment, payment.getAmounts(), transactions))).isFalse();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldThrowUnsupportedExceptionIfNoBasket() throws Exception {
         SplitBasketHelper.createFromSplitRequest(new SplitRequest(paymentBuilder.withPaymentFlow(FlowTypes.FLOW_TYPE_SALE)
-                                                                          .withAmounts(new Amounts(1000, "GBP")).build(), transactions), false);
+                                                                          .withAmounts(new Amounts(1000, "GBP")).build(),
+                                                                  new Amounts(1000, "GBP"),
+                                                                  transactions), false);
     }
 
     @Test

@@ -31,7 +31,6 @@ public class ModelDetailsActivity extends AppCompatActivity {
     public static final String KEY_TITLE = "title";
     public static final String KEY_TITLE_BG = "titleBgColor";
 
-    private ModelDisplay modelDisplay;
     private boolean hideFragmentTitle;
 
     @Override
@@ -54,7 +53,7 @@ public class ModelDetailsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (hideFragmentTitle) {
             modelDisplay.showTitle(false);
         }

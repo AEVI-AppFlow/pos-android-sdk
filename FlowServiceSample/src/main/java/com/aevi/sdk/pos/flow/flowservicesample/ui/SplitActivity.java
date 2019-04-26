@@ -36,6 +36,7 @@ import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_AMOUNTS;
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_BASKET;
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
  * Sample for a split application.
@@ -89,6 +90,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
         }
+        subscribeToFlowServiceEvents(splitModel);
     }
 
     private void setupSplit() {
@@ -219,6 +221,7 @@ public class SplitActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
+        splitModel.addAuditEntry(INFO, "Just a hello from %s", getClass().getSimpleName());
         splitModel.sendResponse();
         finish();
     }

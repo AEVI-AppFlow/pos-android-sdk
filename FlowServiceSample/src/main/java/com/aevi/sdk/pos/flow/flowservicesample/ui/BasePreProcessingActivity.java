@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.PaymentMethods.*;
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 import static com.aevi.sdk.pos.flow.model.AmountsModifier.percentageToFraction;
 
 abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
@@ -50,8 +52,11 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
     @BindViews({R.id.pay_with_points, R.id.pay_with_giftcard, R.id.discount_basket_item})
     List<View> payViews;
 
+    @BindView(R.id.add_charity)
+    Button charityView;
+
     @BindView(R.id.add_surcharge)
-    TextView surchargeView;
+    Button surchargeView;
 
     @BindView(R.id.pay_with_giftcard)
     TextView giftCardView;
@@ -64,6 +69,13 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
         preTransactionModel = PreTransactionModel.fromActivity(this);
         transactionRequest = preTransactionModel.getTransactionRequest();
+
+        if (transactionRequest.getAmounts().hasAdditionalAmount(AmountIdentifiers.AMOUNT_CHARITY_DONATION)) {
+            charityView.setEnabled(false);
+        }
+        if (transactionRequest.getAmounts().hasAdditionalAmount(AmountIdentifiers.AMOUNT_SURCHARGE)) {
+            surchargeView.setEnabled(false);
+        }
 
         surchargeView.setText(getString(R.string.add_surcharge_fee,
                                         AmountFormatter.formatAmount(transactionRequest.getAmounts().getCurrency(), getResources()
@@ -84,6 +96,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
         if (transactionRequest.getAmounts() == null || transactionRequest.getAmounts().getBaseAmountValue() == 0) {
             disablePayViews();
         }
+        subscribeToFlowServiceEvents(preTransactionModel);
     }
 
     @Override
@@ -185,6 +198,7 @@ abstract class BasePreProcessingActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onSendResponse() {
+        preTransactionModel.addAuditEntry(INFO, "Just a hello from %s", getClass().getSimpleName());
         preTransactionModel.sendResponse();
         finish();
     }

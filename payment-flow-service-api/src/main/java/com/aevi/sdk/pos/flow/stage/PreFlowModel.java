@@ -16,7 +16,8 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -25,20 +26,17 @@ import com.aevi.sdk.pos.flow.model.PaymentBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 
 /**
  * Model for the pre-flow stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * To update {@link Payment} data, use {@link #getPaymentBuilder()} to retrieve an instance of {@link PaymentBuilder}. Once finished,
  * call {@link #sendResponse()} to send off the payment data.
  *
  * To cancel the payment flow, call {@link #cancelFlow()}, or to skip/bypass this stage, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PreFlowModel extends BaseStageModel {
 
@@ -51,8 +49,8 @@ public class PreFlowModel extends BaseStageModel {
         this.paymentBuilder = new PaymentBuilder(payment);
     }
 
-    private PreFlowModel(ClientCommunicator clientCommunicator, Payment payment) {
-        super(clientCommunicator);
+    private PreFlowModel(ClientCommunicator clientCommunicator, Payment payment, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.payment = payment;
         this.paymentBuilder = new PaymentBuilder(payment);
     }
@@ -66,20 +64,22 @@ public class PreFlowModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PreFlowModel}
      */
+    @NonNull
     public static PreFlowModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PreFlowModel(activity, Payment.fromJson(request));
+        return new PreFlowModel(activity, Payment.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised Payment
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PreFlowModel}
      */
-    public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request) {
-        return new PreFlowModel(clientCommunicator, request);
+    @NonNull
+    public static PreFlowModel fromService(ClientCommunicator clientCommunicator, Payment request, InternalData senderInternalData) {
+        return new PreFlowModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -87,6 +87,7 @@ public class PreFlowModel extends BaseStageModel {
      *
      * @return The payment model used to initiate the flow
      */
+    @NonNull
     public Payment getPayment() {
         return payment;
     }
@@ -99,6 +100,7 @@ public class PreFlowModel extends BaseStageModel {
      *
      * @return the payment builder that can be used to update {@link Payment} data for the flow
      */
+    @NonNull
     public PaymentBuilder getPaymentBuilder() {
         return paymentBuilder;
     }
@@ -133,6 +135,7 @@ public class PreFlowModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return payment.toJson();
     }

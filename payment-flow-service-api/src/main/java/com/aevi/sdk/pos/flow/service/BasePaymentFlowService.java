@@ -1,7 +1,9 @@
 package com.aevi.sdk.pos.flow.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseApiService;
@@ -15,13 +17,12 @@ import com.aevi.sdk.pos.flow.stage.*;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.STAGE_NOT_SUPPORTED;
 import static com.aevi.sdk.flow.constants.FlowStages.*;
+import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
 
 /**
  * Base class for payment flow services that wish to handle a request in a service directly.
  *
  * This class will map the flow stage to one of its callback methods that clients can override to handle the relevant stage.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BasePaymentFlowService extends BaseApiService {
 
@@ -30,55 +31,62 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
-        Log.d(BasePaymentFlowService.class.getSimpleName(), "Mapping request for flow stage: " + flowStage);
-        mapStageToCallback(flowStage, clientCommunicator, request);
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
+        mapStageToCallback(clientCommunicator, request, senderInternalData);
     }
 
     /**
      * Maps a stage to one of the callback methods that can be overridden in this class.
      *
-     * @param flowStage          The flow stage
+     * @param senderInternalData The internal data of the client that initiated this flow
      * @param clientCommunicator The client message communicator
      * @param request            The request
      */
-    protected void mapStageToCallback(String flowStage, ClientCommunicator clientCommunicator, String request) {
+    private void mapStageToCallback(ClientCommunicator clientCommunicator, String request, InternalData senderInternalData) {
         try {
-
+            String flowStage = getInternalData(senderInternalData, FLOW_STAGE);
             if (flowStage != null) {
+                Log.d(BasePaymentFlowService.class.getSimpleName(),
+                      String.format("Mapping request for flow stage: %s", flowStage));
                 switch (flowStage) {
                     case PRE_FLOW:
-                        onPreFlow(PreFlowModel.fromService(clientCommunicator, Payment.fromJson(request)));
+                        onPreFlow(PreFlowModel.fromService(clientCommunicator, Payment.fromJson(request), senderInternalData));
                         break;
                     case SPLIT:
-                        onSplit(SplitModel.fromService(clientCommunicator, SplitRequest.fromJson(request)));
+                        onSplit(SplitModel.fromService(clientCommunicator, SplitRequest.fromJson(request), senderInternalData));
                         break;
                     case PRE_TRANSACTION:
-                        onPreTransaction(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        onPreTransaction(
+                                PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request), senderInternalData));
                         break;
                     case PAYMENT_CARD_READING:
-                        onPaymentCardReading(CardReadingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        onPaymentCardReading(
+                                CardReadingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request), senderInternalData));
                         break;
                     case POST_CARD_READING:
-                        onPostCardReading(PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        onPostCardReading(
+                                PreTransactionModel.fromService(clientCommunicator, TransactionRequest.fromJson(request), senderInternalData));
                         break;
                     case TRANSACTION_PROCESSING:
-                        onTransactionProcessing(TransactionProcessingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request)));
+                        onTransactionProcessing(
+                                TransactionProcessingModel.fromService(clientCommunicator, TransactionRequest.fromJson(request), senderInternalData));
                         break;
                     case POST_TRANSACTION:
-                        onPostTransaction(PostTransactionModel.fromService(clientCommunicator, TransactionSummary.fromJson(request)));
+                        onPostTransaction(
+                                PostTransactionModel.fromService(clientCommunicator, TransactionSummary.fromJson(request), senderInternalData));
                         break;
                     case POST_FLOW:
-                        onPostFlow(PostFlowModel.fromService(clientCommunicator, PaymentResponse.fromJson(request)));
+                        onPostFlow(PostFlowModel.fromService(clientCommunicator, PaymentResponse.fromJson(request), senderInternalData));
                         break;
                     case GENERIC:
-                        onGeneric(GenericStageModel.fromService(clientCommunicator, Request.fromJson(request)));
+                        onGeneric(GenericStageModel.fromService(clientCommunicator, Request.fromJson(request), senderInternalData));
                         break;
                     case POST_GENERIC:
-                        onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request)));
+                        onPostGeneric(PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request), senderInternalData));
                         break;
                     case STATUS_UPDATE:
-                        onStatusUpdate(StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request)));
+                        onStatusUpdate(StatusUpdateModel.fromService(clientCommunicator, Request.fromJson(request), senderInternalData));
                         break;
                     default:
                         onUnknownStage(flowStage, clientCommunicator, request);
@@ -88,15 +96,6 @@ public abstract class BasePaymentFlowService extends BaseApiService {
             }
         } catch (StageNotImplementedException e) {
             returnStageNotImplemented(clientCommunicator, e.stage);
-        }
-    }
-
-    private static class StageNotImplementedException extends RuntimeException {
-
-        final String stage;
-
-        StageNotImplementedException(String stage) {
-            this.stage = stage;
         }
     }
 
@@ -215,5 +214,14 @@ public abstract class BasePaymentFlowService extends BaseApiService {
     private void returnStageNotImplemented(ClientCommunicator clientCommunicator, String stage) {
         clientCommunicator
                 .sendResponseAsErrorAndEnd(STAGE_NOT_SUPPORTED, String.format("[%s] Stage handling not implemented by this flow service.", stage));
+    }
+
+    private static class StageNotImplementedException extends RuntimeException {
+
+        final String stage;
+
+        StageNotImplementedException(String stage) {
+            this.stage = stage;
+        }
     }
 }

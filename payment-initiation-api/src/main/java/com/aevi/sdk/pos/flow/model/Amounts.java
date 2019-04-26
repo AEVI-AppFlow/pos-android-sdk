@@ -18,7 +18,9 @@ import android.support.annotation.NonNull;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
@@ -45,15 +47,15 @@ public class Amounts implements Jsonable {
     }
 
     /**
-     * Initialise with base amount and currency.
+     * Initialise with base amount (inclusive of tax) and currency.
      *
      * Additional amounts can be set via {@link #addAdditionalAmount(String, long)}.
      *
-     * @param baseAmount The base amount in subunit form (cents, pence, etc)
+     * @param baseAmount The base amount, inclusive of tax, in subunit form (cents, pence, etc)
      * @param currency   The ISO-4217 currency code
      */
     public Amounts(long baseAmount, String currency) {
-        this(baseAmount, currency, new HashMap<String, Long>());
+        this(baseAmount, currency, new HashMap<>());
     }
 
     /**
@@ -63,21 +65,22 @@ public class Amounts implements Jsonable {
      */
     public Amounts(Amounts from) {
         this(from.baseAmount, from.currency, from.additionalAmounts);
+        currencyExchangeRate = from.currencyExchangeRate;
+        originalCurrency = from.originalCurrency;
     }
 
     /**
-     * Initialise with base amount, currency and additional amounts map.
+     * Initialise with base amount (inclusive of tax), currency and additional amounts map.
      *
-     * @param baseAmount        The base amount in subunit form (cents, pence, etc)
+     * @param baseAmount        The base amount, inclusive of tax, in subunit form (cents, pence, etc)
      * @param currency          The ISO-4217 currency code
      * @param additionalAmounts The additional amounts
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public Amounts(long baseAmount, String currency, Map<String, Long> additionalAmounts) {
         checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
         this.baseAmount = baseAmount;
         this.currency = currency;
-        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<String, Long>();
+        this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<>();
     }
 
     /**
@@ -85,11 +88,10 @@ public class Amounts implements Jsonable {
      *
      * The additional amounts are represented via a string identifier and the amount value in subunit form.
      *
-     * Examples of identifiers are "tip" and "cashback".
+     * Examples of identifiers are "tip" and "cashback". Note that identifiers are case sensitive!
      *
      * @param identifier The string identifier for the amount
      * @param amount     The amount value
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public void addAdditionalAmount(String identifier, long amount) {
         checkArgument(identifier != null && amount >= 0, "Identifier must be set and value must be >= 0");
@@ -101,9 +103,10 @@ public class Amounts implements Jsonable {
      *
      * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount value.
      *
+     * Examples of identifiers are "tip" and "cashback". Note that identifiers are case sensitive!
+     *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public void addAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         if (fraction < 0.0f || fraction > 1.0f) {
@@ -125,6 +128,8 @@ public class Amounts implements Jsonable {
     /**
      * Get the base amount in subunit form (cents, pence, etc).
      *
+     * The base amount is inclusive of any tax.
+     *
      * Note that base amount can be 0.
      *
      * @return The base amount in subunit form
@@ -136,6 +141,8 @@ public class Amounts implements Jsonable {
     /**
      * Get an {@link Amount} representation of the base amount with associated currency.
      *
+     * The base amount is inclusive of any tax.
+     *
      * @return Base {@link Amount}
      */
     @NonNull
@@ -144,13 +151,26 @@ public class Amounts implements Jsonable {
     }
 
     /**
+     * Check whether there is an additional amount with the provided identifier defined.
+     *
+     * Note that identifiers are case sensitive.
+     *
+     * @param identifier The identifier
+     * @return True if one is defined, false otherwise
+     */
+    public boolean hasAdditionalAmount(String identifier) {
+        return additionalAmounts.containsKey(identifier);
+    }
+
+    /**
      * Get the additional amount value for the provided identifier.
      *
      * If none is set, 0 will be returned.
      *
+     * Note that identifiers are case sensitive.
+     *
      * @param identifier The identifier
      * @return The amount value
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     public long getAdditionalAmountValue(String identifier) {
         if (additionalAmounts.containsKey(identifier)) {
@@ -162,9 +182,10 @@ public class Amounts implements Jsonable {
     /**
      * Get an {@link Amount} representation of the additional amount with associated currency.
      *
+     * Note that identifiers are case sensitive.
+     *
      * @param identifier The identifier
      * @return The additional {@link Amount}
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     @NonNull
     public Amount getAdditionalAmount(String identifier) {
@@ -174,8 +195,9 @@ public class Amounts implements Jsonable {
     /**
      * Get the map of all the additional amounts set.
      *
+     * Note that amount identifiers are case sensitive.
+     *
      * @return The map of identifier keys mapped to amount values
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additional-amounts" target="_blank">Amounts Docs</a>
      */
     @NonNull
     public Map<String, Long> getAdditionalAmounts() {
@@ -187,10 +209,33 @@ public class Amounts implements Jsonable {
      *
      * @return The total amount
      */
+    @JsonConverter.ExposeMethod(value = "totalAmount")
     public long getTotalAmountValue() {
         long total = baseAmount;
         for (String key : additionalAmounts.keySet()) {
             total += additionalAmounts.get(key);
+        }
+        return total;
+    }
+
+    /**
+     * Get the total amount (base + additional amounts) in subunit form, excluding any additionals as defined by their provided identifiers.
+     *
+     * This is useful for scenarios where some additional amounts are supported natively in an environment (such as tip and cashback), but others
+     * (like charity donations) are not and should be appended to the base amount for that environment.
+     *
+     * Note that identifiers are case sensitive.
+     *
+     * @param amountIdentifiers The identifiers of the amounts to exclude from the calculation
+     * @return The total amount value, excluding the amounts as provider via the identifiers
+     */
+    public long getTotalExcludingAmounts(String... amountIdentifiers) {
+        long total = baseAmount;
+        List<String> identifierList = Arrays.asList(amountIdentifiers);
+        for (String key : additionalAmounts.keySet()) {
+            if (!identifierList.contains(key)) {
+                total += additionalAmounts.get(key);
+            }
         }
         return total;
     }
@@ -316,12 +361,13 @@ public class Amounts implements Jsonable {
      * Note that the result Amounts will only contain additionalAmounts defined in a1, the one being subtracted from.
      * If an amount is set in a2 only, it will not be added to the resulting Amounts.
      *
-     * @param a1 The amounts to subtract a2 from
-     * @param a2 The amounts of which a1 will be reduced by
+     * @param a1                        The amounts to subtract a2 from
+     * @param a2                        The amounts of which a1 will be reduced by
+     * @param keepZeroAmountAdditionals Whether or not to keep additional amounts with a value of zero
      * @return The reduced amounts
      */
     @NonNull
-    public static Amounts subtractAmounts(Amounts a1, Amounts a2) {
+    public static Amounts subtractAmounts(Amounts a1, Amounts a2, boolean keepZeroAmountAdditionals) {
         if (a1 == null || a2 == null || !a1.getCurrency().equals(a2.getCurrency())) {
             throw new IllegalArgumentException("Invalid amounts or trying to combine different currencies");
         }
@@ -330,7 +376,12 @@ public class Amounts implements Jsonable {
         Map<String, Long> a2Additionals = a2.getAdditionalAmounts();
         for (String a2Key : a2Additionals.keySet()) {
             if (newAdditionals.containsKey(a2Key)) {
-                newAdditionals.put(a2Key, Math.max(newAdditionals.get(a2Key) - a2Additionals.get(a2Key), 0));
+                long additionalRemainder = Math.max(newAdditionals.get(a2Key) - a2Additionals.get(a2Key), 0);
+                if (additionalRemainder > 0 || keepZeroAmountAdditionals) {
+                    newAdditionals.put(a2Key, additionalRemainder);
+                } else {
+                    newAdditionals.remove(a2Key);
+                }
             }
         }
 

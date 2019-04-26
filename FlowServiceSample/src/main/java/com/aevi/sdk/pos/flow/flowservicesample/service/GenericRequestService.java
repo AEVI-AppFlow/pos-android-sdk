@@ -14,14 +14,19 @@
 
 package com.aevi.sdk.pos.flow.flowservicesample.service;
 
+import android.app.Activity;
 import android.util.Log;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.LoyaltyBalanceActivity;
 import com.aevi.sdk.pos.flow.flowservicesample.ui.ReceiptDeliveryActivity;
 
+import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.FlowTypes.FLOW_TYPE_RECEIPT_DELIVERY;
 
 /**
@@ -37,17 +42,43 @@ public class GenericRequestService extends BaseGenericService {
         Request request = stageModel.getRequest();
         Log.d(TAG, "Got generic request: " + request.toJson());
 
+        // The requests we handle here require foreground processing (showing UI)
+        if (request.shouldProcessInBackground()) {
+            stageModel.sendResponse(new Response(request, false, "Can not handle this request in the background"));
+            return;
+        }
+
         switch (request.getRequestType()) {
             case SHOW_LOYALTY_POINTS_REQUEST:
                 stageModel.processInActivity(getBaseContext(), LoyaltyBalanceActivity.class);
+                subscribeToFlowServiceEvents(stageModel, LoyaltyBalanceActivity.class);
                 break;
             case FLOW_TYPE_RECEIPT_DELIVERY:
                 stageModel.processInActivity(getBaseContext(), ReceiptDeliveryActivity.class);
+                subscribeToFlowServiceEvents(stageModel, ReceiptDeliveryActivity.class);
                 break;
             default:
                 stageModel.sendResponse(new Response(request, false, "Unsupported request type"));
                 break;
 
         }
+    }
+
+    protected void subscribeToFlowServiceEvents(BaseStageModel model, Class<? extends Activity> activityToRestart) {
+        model.getEvents().subscribe(event -> {
+            switch (event.getType()) {
+                case RESUME_USER_INTERFACE:
+                    // In this sample, we simply restart the activity as it contains no state
+                    model.processInActivity(getBaseContext(), activityToRestart);
+                    break;
+                case RESPONSE_REJECTED:
+                    String rejectReason = event.getData().getStringValue(REJECTED_REASON);
+                    Log.w(TAG, "Response rejected: " + rejectReason);
+                    break;
+                default:
+                    Log.i(TAG, "Received flow service event: " + event.getType());
+                    break;
+            }
+        });
     }
 }

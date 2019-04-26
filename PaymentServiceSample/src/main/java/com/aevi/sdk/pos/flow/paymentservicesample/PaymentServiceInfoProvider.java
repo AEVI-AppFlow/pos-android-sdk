@@ -15,6 +15,8 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 
+import android.support.annotation.NonNull;
+import android.util.Log;
 import com.aevi.sdk.pos.flow.model.Merchant;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
@@ -22,12 +24,14 @@ import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
+import static com.aevi.sdk.flow.constants.ServiceInfoErrors.*;
 
 public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 
+    private static final String TAG = PaymentServiceInfoProvider.class.getSimpleName();
+
     @Override
     protected PaymentFlowServiceInfo getPaymentFlowServiceInfo() {
-
         String[] supportedCurrencies = getContext().getResources().getStringArray(R.array.supported_currencies);
         String[] supportedPaymentMethods = getContext().getResources().getStringArray(R.array.payment_methods);
 
@@ -42,5 +46,21 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withManualEntrySupport(false)
                 .withSupportsAccessibilityMode(false)
                 .build(getContext());
+    }
+
+    @Override
+    protected boolean onServiceInfoError(@NonNull String errorType, @NonNull String errorMessage) {
+        switch (errorType) {
+            case RETRIEVAL_TIME_OUT:
+                Log.d(TAG, "Retrieval of service info timed out");
+                break;
+            case INVALID_STAGE_DEFINITIONS:
+                Log.d(TAG, "Problems with stage definitions: " + errorMessage);
+                break;
+            case INVALID_SERVICE_INFO:
+                Log.d(TAG, "Invalid service info: " + errorMessage);
+                break;
+        }
+        return true;
     }
 }

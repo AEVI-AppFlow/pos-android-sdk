@@ -97,7 +97,6 @@ public class CardBuilder {
      *
      * @param additionalData Additional data
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/card-details" target="_blank">Card details</a>
      */
     @NonNull
     public CardBuilder withAdditionalData(AdditionalData additionalData) {
@@ -114,7 +113,6 @@ public class CardBuilder {
      * @param values An array of values for this data
      * @param <T>    The type of object this data is an array of
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/card-details" target="_blank">Card details</a>
      */
     @NonNull
     public <T> CardBuilder withAdditionalData(String key, T... values) {

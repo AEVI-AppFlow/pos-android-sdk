@@ -27,14 +27,19 @@ import com.aevi.android.rxmessenger.Channels;
 import com.aevi.android.rxmessenger.MessageException;
 import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
+import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.*;
-import io.reactivex.*;
-import io.reactivex.functions.Action;
+import com.aevi.sdk.flow.model.config.AppFlowSettings;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
 import java.util.List;
 
+import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_MESSENGER;
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.DEVICE_INFO_REQUEST;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
@@ -42,12 +47,14 @@ import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTIO
 import static com.aevi.sdk.flow.constants.ResponseMechanisms.RESPONSE_SERVICE;
 
 /**
- * Base client for all API domain implementations.
+ * Internal base client for all API domain implementations.
+ *
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
  */
 public abstract class BaseApiClient {
 
-    private static final String APPFLOW_COMMS_CHANNEL = "appFlowCommsChannel";
-
+    private static final String KEY_APPFLOW_SETTINGS = "appflowSettings";
     public static final String FLOW_PROCESSING_SERVICE = "com.aevi.sdk.fps";
     protected static final ComponentName FLOW_PROCESSING_SERVICE_COMPONENT =
             new ComponentName(FLOW_PROCESSING_SERVICE, FLOW_PROCESSING_SERVICE + ".FlowProcessingService");
@@ -60,7 +67,7 @@ public abstract class BaseApiClient {
 
     private final InternalData internalData;
     protected final Context context;
-    private boolean useWebsocket = false;
+    private String commsChannel;
 
     protected BaseApiClient(String apiVersion, Context context) {
         internalData = new InternalData(apiVersion);
@@ -73,10 +80,11 @@ public abstract class BaseApiClient {
         // here we only check the channel once and once only for each instance of this client
         // once setup the client will use the same comm channel until it is disposed of and re-created
         ConfigClient configClient = ConfigApi.getConfigClient(context);
-        String channel = configClient.getConfigValue(APPFLOW_COMMS_CHANNEL);
-        if (CHANNEL_WEBSOCKET.equals(channel)) {
-            useWebsocket = true;
+        AppFlowSettings appFlowSettings = AppFlowSettings.fromJson(configClient.getConfigValue(KEY_APPFLOW_SETTINGS));
+        if (appFlowSettings == null) {
+            appFlowSettings = new AppFlowSettings();
         }
+        commsChannel = appFlowSettings.getCommsChannel();
     }
 
     protected InternalData getInternalData() {
@@ -95,18 +103,26 @@ public abstract class BaseApiClient {
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
                 .ignoreElement()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        requestMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, CompletableSource>() {
-                    @Override
-                    public CompletableSource apply(Throwable throwable) throws Exception {
-                        return Completable.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(requestMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Completable.error(createFlowException(throwable)));
+    }
+
+    @NonNull
+    public Observable<Response> queryResponses(@NonNull ResponseQuery responseQuery) {
+        if (!isProcessingServiceInstalled(context)) {
+            return Observable.error(NO_FPS_EXCEPTION);
+        }
+
+        responseQuery.setResponseType(Response.class.getName());
+
+        final ChannelClient paymentInfoMessenger = getMessengerClient(INFO_PROVIDER_SERVICE_COMPONENT);
+        AppMessage appMessage = new AppMessage(AppMessageTypes.RESPONSES_REQUEST, responseQuery.toJson(), getInternalData());
+        return paymentInfoMessenger
+                .sendMessage(appMessage.toJson())
+                .map(Response::fromJson)
+                .doFinally(paymentInfoMessenger::closeConnection)
+                .onErrorResumeNext((Function<Throwable, ObservableSource<? extends Response>>) throwable -> Observable
+                        .error(createFlowException(throwable)));
     }
 
     protected Single<Response> initiateRequestDirect(final Request request) {
@@ -119,26 +135,13 @@ public abstract class BaseApiClient {
         return requestMessenger
                 .sendMessage(appMessage.toJson())
                 .singleOrError()
-                .map(new Function<String, Response>() {
-                    @Override
-                    public Response apply(String json) throws Exception {
-                        Response response = Response.fromJson(json);
-                        response.setOriginatingRequest(request);
-                        return response;
-                    }
+                .map(json -> {
+                    Response response = Response.fromJson(json);
+                    response.setOriginatingRequest(request);
+                    return response;
                 })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        requestMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends Response>>() {
-                    @Override
-                    public SingleSource<? extends Response> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(requestMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     @NonNull
@@ -150,25 +153,10 @@ public abstract class BaseApiClient {
         AppMessage appMessage = new AppMessage(DEVICE_INFO_REQUEST, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, Device>() {
-                    @Override
-                    public Device apply(String json) throws Exception {
-                        return Device.fromJson(json);
-                    }
-                })
+                .map(Device::fromJson)
                 .toList()
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends List<Device>>>() {
-                    @Override
-                    public SingleSource<? extends List<Device>> apply(Throwable throwable) throws Exception {
-                        return Single.error(createFlowException(throwable));
-                    }
-                });
+                .doFinally(deviceMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> Single.error(createFlowException(throwable)));
     }
 
     @NonNull
@@ -180,31 +168,20 @@ public abstract class BaseApiClient {
         AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, getInternalData());
         return deviceMessenger
                 .sendMessage(appMessage.toJson())
-                .map(new Function<String, FlowEvent>() {
-                    @Override
-                    public FlowEvent apply(String json) throws Exception {
-                        return FlowEvent.fromJson(json);
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        deviceMessenger.closeConnection();
-                    }
-                })
-                .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends FlowEvent>>() {
-                    @Override
-                    public ObservableSource<? extends FlowEvent> apply(Throwable throwable) throws Exception {
-                        return Observable.error(createFlowException(throwable));
-                    }
+                .map(FlowEvent::fromJson)
+                .doFinally(deviceMessenger::closeConnection)
+                .onErrorResumeNext(throwable -> {
+                    return Observable.error(createFlowException(throwable));
                 });
     }
 
     protected ChannelClient getMessengerClient(ComponentName componentName) {
-        if (useWebsocket) {
-            return Channels.webSocket(context, componentName);
-        } else {
-            return Channels.messenger(context, componentName);
+        switch (commsChannel) {
+            case CHANNEL_WEBSOCKET:
+                return Channels.webSocket(context, componentName);
+            case CHANNEL_MESSENGER:
+            default:
+                return Channels.messenger(context, componentName);
         }
     }
 

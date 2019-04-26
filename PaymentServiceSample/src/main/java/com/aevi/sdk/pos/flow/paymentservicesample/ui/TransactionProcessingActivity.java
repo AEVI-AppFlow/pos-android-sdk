@@ -20,10 +20,7 @@ import android.widget.CheckBox;
 import android.widget.Switch;
 import butterknife.*;
 import com.aevi.sdk.flow.constants.FlowStages;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.Card;
-import com.aevi.sdk.pos.flow.model.TransactionRequest;
-import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
@@ -40,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CARD;
 import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
 
 public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
@@ -64,7 +62,7 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private List<Long> processedAmountsOptions = new ArrayList<>();
+    private final List<Long> processedAmountsOptions = new ArrayList<>();
     private TransactionRequest transactionRequest;
     private TransactionProcessingModel transactionProcessingModel;
     private ModelDisplay modelDisplay;
@@ -79,7 +77,7 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
 
         final DropDownHelper dropDownHelper = new DropDownHelper(this);
         long totalAmount = transactionRequest.getAmounts().getTotalAmountValue();
-        processedAmountsOptions.addAll(Arrays.asList(0L, totalAmount / 2L, totalAmount, (long) (totalAmount * 1.5)));
+        processedAmountsOptions.addAll(Arrays.asList(0L, totalAmount / 2L, totalAmount));
         List<String> formattedAmountOptions = new ArrayList<>();
         for (Long processedAmountsOption : processedAmountsOptions) {
             formattedAmountOptions
@@ -121,16 +119,16 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
 
     private void buildTransactionResponse() {
         if (approveSwitch.isChecked()) {
-            transactionProcessingModel.getTransactionResponseBuilder()
-                    .approve(getProcessedAmounts(), (String) paymentMethodsSpinner.getSelectedItem())
+            TransactionResponseBuilder transactionResponseBuilder = transactionProcessingModel.getTransactionResponseBuilder();
+            setProcessedAmounts(transactionResponseBuilder)
                     .withOutcomeMessage("User approved manually")
                     .withResponseCode(APPROVED_RESP_CODE)
                     .withCard(getCard())
                     .withReference(INTERNAL_ID_KEY, UUID.randomUUID().toString())
-                    .withReference(MERCHANT_ID, IdProvider.getMerchantId())
-                    .withReference(MERCHANT_NAME, IdProvider.getMerchantName())
-                    .withReference(TERMINAL_ID, IdProvider.getTerminalId())
-                    .withReference(TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
+                    .withReference(REFERENCE_KEY_MERCHANT_ID, IdProvider.getMerchantId())
+                    .withReference(REFERENCE_KEY_MERCHANT_NAME, IdProvider.getMerchantName())
+                    .withReference(REFERENCE_KEY_TERMINAL_ID, IdProvider.getTerminalId())
+                    .withReference(REFERENCE_KEY_TRANSACTION_DATE_TIME, String.valueOf(System.currentTimeMillis()))
                     .build();
         } else {
             transactionProcessingModel.getTransactionResponseBuilder()
@@ -150,10 +148,17 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
         finish();
     }
 
-    private Amounts getProcessedAmounts() {
+    private TransactionResponseBuilder setProcessedAmounts(TransactionResponseBuilder transactionResponseBuilder) {
         int chosenSelection = processedAmountsSpinner.getSelectedItemPosition();
         long amounts = processedAmountsOptions.get(chosenSelection);
-        return new Amounts(amounts, transactionRequest.getAmounts().getCurrency());
+        if (amounts == 0) {
+            transactionResponseBuilder.approve();
+        } else if (amounts < transactionRequest.getAmounts().getTotalAmountValue()) {
+            transactionResponseBuilder.approve(new Amounts(amounts, transactionRequest.getAmounts().getCurrency()), PAYMENT_METHOD_CARD);
+        } else {
+            transactionResponseBuilder.approve(transactionRequest.getAmounts(), PAYMENT_METHOD_CARD);
+        }
+        return transactionResponseBuilder;
     }
 
     private Card getCard() {

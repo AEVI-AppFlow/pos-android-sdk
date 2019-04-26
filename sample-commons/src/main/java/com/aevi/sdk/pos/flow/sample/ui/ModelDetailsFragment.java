@@ -46,11 +46,10 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     public int getLayoutResource() {
         return R.layout.fragment_model_details;
     }
-
+    
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         adapter = new SectionedRecyclerViewAdapter();
     }
 
@@ -88,7 +87,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
             adapter.addSection(createTokenSection(payment.getCardToken()));
         }
         if (payment.getBasket() != null) {
-            addBasketSection(payment.getBasket(), payment.getAmounts().getCurrency(), false);
+            addBasketSection(payment.getBasket(), payment.getAmounts().getCurrency(), false, true);
         }
         if (payment.getCustomer() != null) {
             addCustomerSection(payment.getCustomer());
@@ -123,6 +122,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         if (request.getRequestType() != null) {
             requestInfo.add(getStringPair(R.string.request_type, request.getRequestType()));
         }
+        requestInfo.add(getStringPair(R.string.process_in_background, request.shouldProcessInBackground()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, requestInfo, true));
 
         addDataSections(request.getRequestData(), null);
@@ -173,7 +173,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
                 addTransactionSection(transaction, count++);
             }
         } else {
-            addBasketSection(splitRequest.getSourcePayment().getBasket(), splitRequest.getSourcePayment().getAmounts().getCurrency(), false);
+            addBasketSection(splitRequest.getSourcePayment().getBasket(), splitRequest.getSourcePayment().getAmounts().getCurrency(), false, true);
         }
 
         setupRecyclerView(R.string.split_request_model_overview);
@@ -297,6 +297,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         int outcomeRes = response.wasSuccessful() ? R.string.success : R.string.failed;
         responseInfo.add(getStringPair(R.string.outcome, getString(outcomeRes)));
         responseInfo.add(getStringPair(R.string.outcome_message, response.getOutcomeMessage()));
+        responseInfo.add(getStringPair(R.string.was_processed_in_background, response.wasProcessedInBackground()));
         adapter.addSection(new RecyclerViewSection(getActivity(), R.string.overview, responseInfo, true));
 
         addDataSections(response.getResponseData(), null);
@@ -331,7 +332,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
 
         if (flowResponse.getAdditionalBasket() != null) {
-            addBasketSection(flowResponse.getAdditionalBasket(), currency, true);
+            addBasketSection(flowResponse.getAdditionalBasket(), currency, true, false);
         }
 
         if (flowResponse.getModifiedBasket() != null) {
@@ -367,18 +368,18 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addBasketSections(List<Basket> baskets, String currency) {
         for (int i = 0; i < baskets.size(); i++) {
             String title = getString(R.string.basket_title, i + 1);
-            adapter.addSection(createBasketSection(baskets.get(i), currency, true, title));
+            adapter.addSection(createBasketSection(baskets.get(i), currency, true, title, true));
         }
     }
 
     private void addDiscountSection(Basket basket, String currency) {
-        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, true, false);
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, true, false, false);
         adapter.addSection(new RecyclerViewSection(getActivity(), "Discount items for primary basket", basketInfo, false));
     }
 
-    private void addBasketSection(Basket basket, String currency, boolean newlyAddedBasket) {
+    private void addBasketSection(Basket basket, String currency, boolean newlyAddedBasket, boolean showPrimaryInfo) {
         String title = newlyAddedBasket ? getString(R.string.basket_title_new_basket) : getString(R.string.basket_title_no_count);
-        adapter.addSection(createBasketSection(basket, currency, true, title));
+        adapter.addSection(createBasketSection(basket, currency, true, title, showPrimaryInfo));
     }
 
     private void addCustomerSection(Customer customer) {
@@ -404,16 +405,20 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
         }
     }
 
-    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, String title) {
-        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, addItems, true);
+    private RecyclerViewSection createBasketSection(Basket basket, String currency, boolean addItems, String title, boolean showPrimaryInfo) {
+        List<Pair<String, String>> basketInfo = getBasketInfoList(basket, currency, addItems, true, showPrimaryInfo);
         return new RecyclerViewSection(getActivity(), title, basketInfo, false);
     }
 
     @NonNull
-    private List<Pair<String, String>> getBasketInfoList(Basket basket, String currency, boolean addItems, boolean addBasketInfo) {
+    private List<Pair<String, String>> getBasketInfoList(Basket basket, String currency, boolean addItems, boolean addBasketInfo,
+                                                         boolean showPrimaryInfo) {
         List<Pair<String, String>> basketInfo = new ArrayList<>();
         if (addBasketInfo) {
             basketInfo.add(getStringPair(R.string.basket_name, basket.getBasketName()));
+            if (showPrimaryInfo) {
+                basketInfo.add(getStringPair(R.string.basket_primary, String.valueOf(basket.isPrimaryBasket())));
+            }
             basketInfo.add(getStringPair(R.string.basket_total, formatAmount(currency, basket.getTotalBasketValue())));
             basketInfo.add(getStringPair(R.string.basket_num_items, basket.getNumberOfUniqueItems()));
         }
@@ -493,7 +498,7 @@ public class ModelDetailsFragment extends BaseObservableFragment implements Mode
     private void addGenericDataFields(List<Pair<String, String>> itemList, AdditionalData additionalData) {
         for (String key : additionalData.getKeys()) {
             Object value = additionalData.getValue(key);
-            if (value != null && (value instanceof Number || value instanceof String)) {
+            if (value instanceof Number || value instanceof String) {
                 itemList.add(getStringPair(key, value));
             } else if (value instanceof Basket) {
                 itemList.add(getStringPair(key, ((Basket) value).getBasketName()));

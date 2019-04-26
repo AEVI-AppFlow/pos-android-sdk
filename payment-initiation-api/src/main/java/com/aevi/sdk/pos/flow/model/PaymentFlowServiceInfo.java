@@ -74,8 +74,8 @@ public class PaymentFlowServiceInfo extends BaseServiceInfo {
         this.canAdjustAmounts = canAdjustAmounts;
         this.canPayAmounts = canPayAmounts;
         this.defaultCurrency = defaultCurrency;
-        this.paymentMethods = paymentMethods != null ? paymentMethods : new HashSet<String>();
-        this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new HashSet<String>();
+        this.paymentMethods = paymentMethods != null ? paymentMethods : new HashSet<>();
+        this.supportedCurrencies = supportedCurrencies != null ? supportedCurrencies : new HashSet<>();
     }
 
     /**

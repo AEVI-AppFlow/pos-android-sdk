@@ -19,8 +19,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Token;
-import com.aevi.sdk.flow.service.BaseApiService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.PaymentClient;
@@ -30,21 +30,18 @@ import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import java.util.List;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Model for the pre-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
  * effect as calling {@link #skip()}.
  *
  * If no changes are required, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PreTransactionModel extends BaseStageModel {
 
@@ -59,8 +56,9 @@ public class PreTransactionModel extends BaseStageModel {
         this.flowResponse = new FlowResponse();
     }
 
-    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest) {
-        super(clientCommunicator);
+    private PreTransactionModel(ClientCommunicator clientCommunicator, @NonNull TransactionRequest transactionRequest,
+                                InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionRequest = transactionRequest;
         this.amountsModifier = new AmountsModifier(transactionRequest.getAmounts());
         this.flowResponse = new FlowResponse();
@@ -75,20 +73,23 @@ public class PreTransactionModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PreTransactionModel}
      */
+    @NonNull
     public static PreTransactionModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PreTransactionModel(activity, TransactionRequest.fromJson(request));
+        return new PreTransactionModel(activity, TransactionRequest.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionRequest
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PreTransactionModel}
      */
-    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new PreTransactionModel(clientCommunicator, request);
+    @NonNull
+    public static PreTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request,
+                                                  InternalData senderInternalData) {
+        return new PreTransactionModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -96,6 +97,7 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @return The transaction request
      */
+    @NonNull
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
     }
@@ -123,30 +125,34 @@ public class PreTransactionModel extends BaseStageModel {
     }
 
     /**
-     * Set or update an additional payment amount with an amount value.
+     * Add or update an additional amount with an amount value.
      *
-     * This is typically used to add a fee/charge, charity contribution, tax/vat, etc
+     * This is typically used to add a fee/charge, charity contribution, etc. Note that this should never be used to represent the value of any
+     * goods or services.
      *
-     * Must be 0 or greater.
+     * Must be 0 or greater and existing amounts may only be increased, not decreased.
      *
      * @param identifier The amount identifier
      * @param amount     The amount value
-     * @throws IllegalArgumentException If identifier or amount are invalid
+     * @throws IllegalArgumentException If identifier or amount are invalid or existing amount is being decreased
      */
     public void setAdditionalAmount(String identifier, long amount) {
         checkNotEmpty(identifier, "Identifier must be set");
         checkNotNegative(amount, "Amount must be zero or greater");
-        amountsModifier.setAdditionalAmount(identifier, amount);
+        amountsModifier.setAdditionalAmount(identifier, amount, false);
     }
 
     /**
      * Set or update an additional amount as a fraction of the base amount.
      *
      * This is useful for cases where a fee, charity contribution, etc is calculated as a fraction or percentage of the base amount.
+     * Note that this should never be used to represent the value of any goods or services.
+     *
+     * Note that any existing amount may only be increased, not decreased.
      *
      * @param identifier The string identifier for the amount
      * @param fraction   The fraction of the base amount, ranging from 0.0 to 1.0f (0% to 100%)
-     * @throws IllegalArgumentException If identifier is not set
+     * @throws IllegalArgumentException If identifier is not set or existing amount is decreased
      */
     public void setAdditionalAmountAsBaseFraction(String identifier, float fraction) {
         checkNotEmpty(identifier, "Identifier must be set");
@@ -250,12 +256,16 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * Note that if you are applying discounts to specific basket items, please use {@link #applyDiscountsToBasket(String, List, String)} instead.
      *
-     * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
+     * The use cases for this involves the customer paying part or all of the base amount owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
      *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
+     * Note that paying off the "additional amounts" is not supported at this time - only the base amount. The paid amounts must only set
+     * the base amount value, and it must not exceed the request base amount value. If it exceeds it, or there are additional amounts set,
+     * an exception will be thrown.
      *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
+     * If there is remaining base amounts to pay after this, the remaining amount will be processed by the payment app.
+     *
+     * If the request contains no additional amounts and this payment equals the requested amounts, the transaction will be considered fulfilled and completed.
      *
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
@@ -264,11 +274,17 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
-     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
+     * @throws IllegalArgumentException If either argument is null or the values violate the restrictions mentioned above
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
         checkNotNull(amountsPaid, "Amounts paid must be set");
         checkNotEmpty(paymentMethod, "Payment method must be set");
+        if (amountsPaid.getBaseAmountValue() > transactionRequest.getAmounts().getBaseAmountValue()) {
+            throw new IllegalArgumentException("Paid base amount value can not exceed the request base amount value");
+        }
+        if (!amountsPaid.getAdditionalAmounts().isEmpty()) {
+            throw new IllegalArgumentException("Paid additional amounts is not supported at the moment - set base amount only");
+        }
         if (amountsPaid.getTotalAmountValue() > transactionRequest.getAmounts().getTotalAmountValue()) {
             throw new IllegalArgumentException("Paid amounts can not exceed requested amounts");
         }
@@ -309,6 +325,7 @@ public class PreTransactionModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
@@ -337,6 +354,7 @@ public class PreTransactionModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionRequest.toJson();
     }

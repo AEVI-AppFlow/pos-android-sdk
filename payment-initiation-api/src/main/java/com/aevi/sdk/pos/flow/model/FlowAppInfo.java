@@ -48,7 +48,7 @@ public class FlowAppInfo {
      * @param stage     The stage at which the flow app is called
      */
     public FlowAppInfo(String flowAppId, String stage) {
-        this(flowAppId, stage, new ArrayList<String>());
+        this(flowAppId, stage, new ArrayList<>());
     }
 
     /**
@@ -77,7 +77,6 @@ public class FlowAppInfo {
      * Note that this simply indicates what was augmented - not to what. The {@link PaymentResponse} can be parsed to review that information.
      *
      * @return The list of data that was augmented.
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/augmented-data" target="_blank">Augmented data docs</a>
      */
     @NonNull
     public List<String> getAugmentedData() {

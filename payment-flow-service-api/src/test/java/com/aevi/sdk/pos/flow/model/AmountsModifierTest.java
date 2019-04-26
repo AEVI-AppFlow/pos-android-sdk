@@ -13,12 +13,12 @@ public class AmountsModifierTest {
 
         Amounts updated = new AmountsModifier(original)
                 .updateBaseAmount(50)
-                .setAdditionalAmount("cashback", 20)
-                .setAdditionalAmount("tip", 15)
+                .setAdditionalAmount("cashback", 30, false)
+                .setAdditionalAmount("tip", 15, false)
                 .build();
 
         assertThat(updated.getBaseAmountValue()).isEqualTo(50);
-        assertThat(updated.getAdditionalAmountValue("cashback")).isEqualTo(20);
+        assertThat(updated.getAdditionalAmountValue("cashback")).isEqualTo(30);
         assertThat(updated.getAdditionalAmountValue("tip")).isEqualTo(15);
     }
 
@@ -29,10 +29,27 @@ public class AmountsModifierTest {
 
         Amounts updated = new AmountsModifier(original)
                 .updateBaseAmount(-50)
-                .setAdditionalAmount("cashback", -20)
+                .setAdditionalAmount("cashback", -20, false)
                 .build();
 
         assertThat(updated).isEqualTo(original);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAllowReducingAdditional() throws Exception {
+        Amounts original = new Amounts(100, "GBP");
+        original.addAdditionalAmount("cashback", 100);
+
+        new AmountsModifier(original).setAdditionalAmount("cashback", 50, false);
+    }
+
+    @Test
+    public void shouldAllowReducingAdditionalWithFlagSet() throws Exception {
+        Amounts original = new Amounts(100, "GBP");
+        original.addAdditionalAmount("cashback", 100);
+
+        Amounts updated = new AmountsModifier(original).setAdditionalAmount("cashback", 50, true).build();
+        assertThat(updated.getAdditionalAmount("cashback").getValue()).isEqualTo(50);
     }
 
     @Test

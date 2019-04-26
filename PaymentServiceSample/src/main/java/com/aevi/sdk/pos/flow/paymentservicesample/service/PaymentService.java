@@ -13,6 +13,9 @@
  */
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
+import android.app.Activity;
+import android.util.Log;
+import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
@@ -20,6 +23,11 @@ import com.aevi.sdk.pos.flow.paymentservicesample.ui.TransactionProcessingActivi
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
+
+import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
  * This service illustrates an explicit service implementation which gives full control over how and where to process the requests.
@@ -30,16 +38,39 @@ public class PaymentService extends BasePaymentFlowService {
 
     @Override
     protected void onPaymentCardReading(CardReadingModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
+        subscribeToFlowServiceEvents(model, PaymentCardReadingActivity.class);
     }
 
     @Override
     protected void onTransactionProcessing(TransactionProcessingModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
+        subscribeToFlowServiceEvents(model, TransactionProcessingActivity.class);
     }
 
     @Override
     protected void onGeneric(GenericStageModel model) {
+        model.addAuditEntry(INFO, "Hello from PaymentService onGeneric");
         GenericStageHandler.handleGenericRequest(getBaseContext(), model);
+    }
+
+    protected void subscribeToFlowServiceEvents(BaseStageModel model, Class<? extends Activity> activityToRestart) {
+        model.getEvents().subscribe(event -> {
+            switch (event.getType()) {
+                case RESUME_USER_INTERFACE:
+                    // In this sample, we simply restart the activity as it contains no state
+                    model.processInActivity(getBaseContext(), activityToRestart);
+                    break;
+                case RESPONSE_REJECTED:
+                    String rejectReason = event.getData().getStringValue(REJECTED_REASON);
+                    Log.w("PaymentServiceSample", "Response rejected: " + rejectReason);
+                    break;
+                default:
+                    Log.i("PaymentServiceSample", "Received flow service event: " + event.getType());
+                    break;
+            }
+        });
     }
 }

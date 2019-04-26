@@ -2,10 +2,12 @@ package com.aevi.sdk.flow.service;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import io.reactivex.subjects.BehaviorSubject;
 import org.junit.Before;
@@ -68,15 +70,6 @@ public class BaseApiServiceTest {
                 new FlowException(FLOW_SERVICE_ERROR, "Flow service failed with exception: Skimaroo");
 
         verifyMessageSent(AppMessageTypes.FAILURE_MESSAGE, expected.toJson());
-        verifyCommsEnded(true);
-    }
-
-    @Test
-    public void shouldCallFinishOnFinishRequest() throws Exception {
-        AppMessage appMessage = new AppMessage(AppMessageTypes.FORCE_FINISH_MESSAGE);
-        fakeIncomingMessage(appMessage);
-
-        assertThat(apiService.finishRequestReceived).isTrue();
         verifyCommsEnded(false);
     }
 
@@ -114,18 +107,13 @@ public class BaseApiServiceTest {
         }
 
         @Override
-        protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
+        protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                      @Nullable InternalData senderInternalData) {
             requestReceived = Request.fromJson(request);
             if (throwExceptionInProcessRequest) {
                 throw new IllegalStateException("Skimaroo");
             }
         }
 
-
-        @Override
-        protected void onForceFinish(ClientCommunicator clientCommunicator) {
-            super.onForceFinish(clientCommunicator);
-            finishRequestReceived = true;
-        }
     }
 }

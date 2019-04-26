@@ -29,16 +29,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Wrapper for generic data that may or may not be typed.
+ * A container of generic/bespoke data that can be of any type, identified by a string key.
  *
- * What keys and values are supported is depends on the environment (such as apps, etc).
- *
- * See the wiki documentation (Reference Values section) for further information.
- *
- * Data is stored with a string based key and any arbitrary object as the value.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/additionaldata-howto" target="_blank">AdditionalData Howto</a>
+ * Note that keys are case sensitive, meaning it is essential the right case is used for insertions and lookups.
  */
+@SuppressWarnings({"unchecked", "ConstantConditions", "WeakerAccess"})
 public class AdditionalData implements Jsonable {
 
     private final Map<String, JsonOption> data;

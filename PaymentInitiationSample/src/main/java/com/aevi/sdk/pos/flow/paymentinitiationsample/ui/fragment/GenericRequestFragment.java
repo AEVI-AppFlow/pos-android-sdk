@@ -21,9 +21,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import com.aevi.sdk.flow.model.AdditionalData;
@@ -75,6 +77,9 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @BindView(R.id.message)
     TextView messageView;
 
+    @BindView(R.id.process_background)
+    CheckBox processInBackground;
+
     private String selectedApiRequestFlow;
     private String selectedSubType;
     private ModelDisplay modelDisplay;
@@ -112,6 +117,12 @@ public class GenericRequestFragment extends BaseObservableFragment {
                     flowTypes.add(UNSUPPORTED_FLOW); // For illustration of what happens if you initiate a request with unsupported flow
                     dropDownHelper.setupDropDown(requestFlowSpinner, flowTypes, false);
                 }, this::handleError);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateState(false);
     }
 
     @OnItemSelected(R.id.request_flow_spinner)
@@ -159,6 +170,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
     @OnItemSelected(R.id.sub_type_spinner)
     public void onSubTypeSelection(int position) {
         selectedSubType = (String) subTypeSpinner.getAdapter().getItem(position);
+        updateState(false);
+    }
+
+    @OnCheckedChanged(R.id.process_background)
+    public void onProcessBackgroundStateChanged(CheckBox checkBox, boolean processInBackground) {
         updateState(false);
     }
 
@@ -251,7 +267,11 @@ public class GenericRequestFragment extends BaseObservableFragment {
                 break;
         }
 
-        return new Request(selectedApiRequestFlow, requestData);
+        Request request = new Request(selectedApiRequestFlow, requestData);
+        // Indicate whether or not to process request in background - make sure to read docs to understand implications of this
+        request.setProcessInBackground(processInBackground.isChecked());
+
+        return request;
     }
 
     private Transaction getFirstTransaction(PaymentResponse lastResponse) {

@@ -12,11 +12,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Popup" parent="@style/AppThemeNoActionBar">
-    </style>
-
-    <style name="DialogTitle" parent="BaseDialogTitle">
-        <item name="android:background">@color/colorPrimary</item>
-    </style>
-
 </resources>

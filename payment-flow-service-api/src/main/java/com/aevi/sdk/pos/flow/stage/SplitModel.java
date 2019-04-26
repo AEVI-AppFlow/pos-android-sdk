@@ -17,21 +17,21 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.*;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.*;
 
 /**
  * Model for the split stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
@@ -40,8 +40,6 @@ import static com.aevi.sdk.flow.util.Preconditions.*;
  * For cancelling the flow, call {@link #cancelFlow()}.
  *
  * If no changes are required, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class SplitModel extends BaseStageModel {
 
@@ -56,8 +54,8 @@ public class SplitModel extends BaseStageModel {
         this.flowResponse = new FlowResponse();
     }
 
-    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest) {
-        super(clientCommunicator);
+    private SplitModel(ClientCommunicator clientCommunicator, SplitRequest splitRequest, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.splitRequest = splitRequest;
         this.amountsModifier = new AmountsModifier(splitRequest.getRemainingAmounts());
         this.flowResponse = new FlowResponse();
@@ -72,20 +70,22 @@ public class SplitModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link SplitModel}
      */
+    @NonNull
     public static SplitModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new SplitModel(activity, SplitRequest.fromJson(request));
+        return new SplitModel(activity, SplitRequest.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised SplitRequest
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link SplitModel}
      */
-    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request) {
-        return new SplitModel(clientCommunicator, request);
+    @NonNull
+    public static SplitModel fromService(ClientCommunicator clientCommunicator, SplitRequest request, InternalData senderInternalData) {
+        return new SplitModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -93,6 +93,7 @@ public class SplitModel extends BaseStageModel {
      *
      * @return The split request.
      */
+    @NonNull
     public SplitRequest getSplitRequest() {
         return splitRequest;
     }
@@ -165,16 +166,20 @@ public class SplitModel extends BaseStageModel {
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
      *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
+     * Note that paying off the "additional amounts" is not supported at this time - only the base amount. The paid amounts must only set
+     * the base amount value, and it must not exceed the request base amount value. If it exceeds it, or there are additional amounts set,
+     * an exception will be thrown.
      *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
+     * If there is remaining base amounts to pay after this, the remaining amount will be processed by the payment app.
+     *
+     * If the request contains no additional amounts and this payment equals the requested amounts, the transaction will be considered fulfilled and completed.
      *
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
      *
      * @param amountsPaid   The amounts paid
      * @param paymentMethod The method of payment
-     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
+     * @throws IllegalArgumentException If either argument is null or the values violate the restrictions mentioned above
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod) {
         setAmountsPaid(amountsPaid, paymentMethod, null);
@@ -186,9 +191,13 @@ public class SplitModel extends BaseStageModel {
      * The use cases for this involves the customer paying part or all of the amounts owed via means other than payment cards.
      * Examples are loyalty points, cash, etc.
      *
-     * If this amount is less than the overall amount for the transaction, the remaining amount will be processed by the payment app.
+     * Note that paying off the "additional amounts" is not supported at this time - only the base amount. The paid amounts must only set
+     * the base amount value, and it must not exceed the request base amount value. If it exceeds it, or there are additional amounts set,
+     * an exception will be thrown.
      *
-     * If this amount equals the overall (original or updated) amounts, the transaction will be considered fulfilled and completed.
+     * If there is remaining base amounts to pay after this, the remaining amount will be processed by the payment app.
+     *
+     * If the request contains no additional amounts and this payment equals the requested amounts, the transaction will be considered fulfilled and completed.
      *
      * NOTE! This response only tracks one paid amounts - if this method is called more than once, any previous values will be overwritten.
      * It is up to the client to ensure that a consolidated Amounts object is constructed and provided here.
@@ -196,11 +205,17 @@ public class SplitModel extends BaseStageModel {
      * @param amountsPaid       The amounts paid
      * @param paymentMethod     The method of payment
      * @param paymentReferences Payment references associated with the payment
-     * @throws IllegalArgumentException If either argument is null or paid amounts exceed request amounts
+     * @throws IllegalArgumentException If either argument is null or the values violate the restrictions mentioned above
      */
     public void setAmountsPaid(Amounts amountsPaid, String paymentMethod, AdditionalData paymentReferences) {
         checkNotNull(amountsPaid, "Amounts paid must be set");
         checkNotEmpty(paymentMethod, "Payment method must be set");
+        if (amountsPaid.getBaseAmountValue() > splitRequest.getRemainingAmounts().getBaseAmountValue()) {
+            throw new IllegalArgumentException("Paid base amount value can not exceed the request base amount value");
+        }
+        if (!amountsPaid.getAdditionalAmounts().isEmpty()) {
+            throw new IllegalArgumentException("Paid additional amounts is not supported at the moment - set base amount only");
+        }
         if (amountsPaid.getTotalAmountValue() > splitRequest.getRemainingAmounts().getTotalAmountValue()) {
             throw new IllegalArgumentException("Paid amounts can not exceed requested amounts");
         }
@@ -228,6 +243,7 @@ public class SplitModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         if (amountsModifier.hasModifications()) {
             flowResponse.updateRequestAmounts(amountsModifier.build());
@@ -254,6 +270,7 @@ public class SplitModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return splitRequest.toJson();
     }

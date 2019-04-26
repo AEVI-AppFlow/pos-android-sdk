@@ -25,8 +25,6 @@ import java.util.Objects;
 
 /**
  * Represents a flow stage in a flow configuration.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-stages" target="_blank">Flow Stages Docs</a>
  */
 public class FlowStage {
 
@@ -62,7 +60,7 @@ public class FlowStage {
     public FlowStage(String name, AppExecutionType appExecutionType, List<FlowApp> flowApps) {
         this.name = name;
         this.appExecutionType = appExecutionType;
-        this.flowApps = flowApps != null ? flowApps : new ArrayList<FlowApp>();
+        this.flowApps = flowApps != null ? flowApps : new ArrayList<>();
     }
 
     /**

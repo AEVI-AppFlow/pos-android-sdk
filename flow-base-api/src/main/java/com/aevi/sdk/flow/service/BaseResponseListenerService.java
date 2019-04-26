@@ -19,8 +19,6 @@ import com.aevi.sdk.flow.model.Response;
 
 /**
  * Extend this service in your application to listen to responses for "generic" requests and status updates initiated by your application.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-response-listeners" target="_blank">Response listener docs</a>
  */
 public abstract class BaseResponseListenerService extends BaseListenerService<Response> {
 
@@ -29,7 +27,7 @@ public abstract class BaseResponseListenerService extends BaseListenerService<Re
     }
 
     @Override
-    protected void notifyResponse(@NonNull Response response) {
+    protected final void notifyResponse(@NonNull Response response) {
         if (response.wasProcessedInBackground()) {
             notifyStatusUpdateResponse(response);
         } else {

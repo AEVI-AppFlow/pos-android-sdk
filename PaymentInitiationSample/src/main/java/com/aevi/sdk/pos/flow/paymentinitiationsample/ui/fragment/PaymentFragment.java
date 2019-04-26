@@ -51,6 +51,7 @@ import java.util.Currency;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
+import static com.aevi.sdk.flow.constants.ModifierTypes.*;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -81,7 +82,7 @@ public class PaymentFragment extends BaseObservableFragment {
     @BindView(R.id.send)
     Button send;
 
-    private PaymentBuilder paymentBuilder = new PaymentBuilder();
+    private final PaymentBuilder paymentBuilder = new PaymentBuilder();
     private boolean allFieldsReady;
     private ModelDisplay modelDisplay;
     private DropDownHelper dropDownHelper;
@@ -190,6 +191,7 @@ public class PaymentFragment extends BaseObservableFragment {
             paymentBuilder.withBasket(basket);
             amounts = new Amounts(basket.getTotalBasketValue(), (String) currencySpinner.getSelectedItem());
         }
+
         paymentBuilder.withAmounts(amounts);
 
         paymentBuilder.withSplitEnabled(splitBox.isChecked());
@@ -245,11 +247,20 @@ public class PaymentFragment extends BaseObservableFragment {
     private Basket createBasket() {
         return new Basket("sampleBasket",
                           // You can add single count items, with label, category and amount value
-                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee").withAmount(250).build(),
-                          new BasketItemBuilder().withLabel("Extra shot").withCategory("coffee").withAmount(50).build(),
+                          new BasketItemBuilder().withLabel("Flat White").withCategory("coffee")
+                                  .withBaseAmount(250)
+                                  .withAmount(300)
+                                  .withModifiers(new BasketItemModifierBuilder("Extra shot", MODIFIER_TYPE_EXTRA).withAmount(50).build())
+                                  .build(),
                           new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                           // You can also specify the initial count of the item and provide your own id
                           new BasketItemBuilder().withId("1234-abcd").withLabel("Chocolate Cake").withCategory("cake").withAmount(250).withQuantity(2)
+                                  .build(),
+                          // You can specify quantity as fractional and associate a unit with it
+                          new BasketItemBuilder()
+                                  .withLabel("Coffee Beans")
+                                  .withAmount(458)
+                                  .withFractionalQuantity(1.5f, "kg")
                                   .build());
     }
 

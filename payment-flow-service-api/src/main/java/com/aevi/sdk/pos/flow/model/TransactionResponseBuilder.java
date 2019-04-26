@@ -82,6 +82,12 @@ public final class TransactionResponseBuilder {
     /**
      * Set the transaction as approved with processed amount details and optionally specify the payment method used (defaults to "card").
      *
+     * Important - if the transaction is approved and the full amounts have been charged, it is strongly recommended that you use the request amounts
+     * from the {@link TransactionRequest} to set the amounts here to ensure the correct amounts breakdown.
+     *
+     * If the outcome is a partial auth, it is at the discretion of the payment application how to set the amounts but it is advisable that the
+     * request amounts breakdown is kept intact when possible.
+     *
      * For cases where no amounts were processed, see {@link #approve()}.
      *
      * @param processedAmounts The processed amounts (may be zero, but must not be null)
@@ -193,6 +199,15 @@ public final class TransactionResponseBuilder {
             this.references = references;
         }
         return this;
+    }
+
+    /**
+     * Returns true if the data setup in the builder so far will build a valid {@link TransactionResponse}
+     *
+     * @return True if this builder has been setup correctly i.e. an outcome has been set
+     */
+    public boolean isValid() {
+        return id != null && !id.isEmpty() && outcome != null;
     }
 
     /**

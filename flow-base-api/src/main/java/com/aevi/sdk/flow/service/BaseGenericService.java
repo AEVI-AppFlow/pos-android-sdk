@@ -16,14 +16,14 @@ package com.aevi.sdk.flow.service;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.FlowBaseConfig;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 
 /**
  * Base service for handling generic requests defined by a request type and associated bespoke data.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BaseGenericService extends BaseApiService {
 
@@ -32,8 +32,9 @@ public abstract class BaseGenericService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
-        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request));
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
+        GenericStageModel genericStageModel = GenericStageModel.fromService(clientCommunicator, Request.fromJson(request), senderInternalData);
         processRequest(genericStageModel);
     }
 

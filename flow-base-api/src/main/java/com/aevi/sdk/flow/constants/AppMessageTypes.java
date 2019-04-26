@@ -19,12 +19,19 @@ package com.aevi.sdk.flow.constants;
  */
 public interface AppMessageTypes {
 
+    // Initiated by client apps
     String REQUEST_MESSAGE = "request";
     String PAYMENT_MESSAGE = "payment";
-    String RESPONSE_MESSAGE = "response";
     String PAYMENT_FLOW_CONFIG_REQUEST = "paymentFlowConfigRequest";
+    String RESPONSES_REQUEST = "responsesRequest";
     String DEVICE_INFO_REQUEST = "deviceInfoRequest";
+
+    // Sent from flow services
+    String RESPONSE_MESSAGE = "response";
+    String AUDIT_ENTRY = "auditEntry";
     String FAILURE_MESSAGE = "failure";
-    String FORCE_FINISH_MESSAGE = "forceFinish";
     String REQUEST_ACK_MESSAGE = "requestAck";
+
+    // Sent by FPS
+    String FLOW_SERVICE_EVENT = "flowServiceEvent";
 }

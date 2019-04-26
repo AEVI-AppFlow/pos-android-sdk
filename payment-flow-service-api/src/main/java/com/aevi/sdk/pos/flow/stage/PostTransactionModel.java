@@ -16,8 +16,9 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.flow.service.BaseApiService;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.FlowResponse;
@@ -25,22 +26,19 @@ import com.aevi.sdk.pos.flow.model.TransactionSummary;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotNull;
 
 /**
  * Model for the post-transaction stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * If data has been augmented, {@link #sendResponse()} must be called for these changes to be applied. If called with no changes, it has the same
  * effect as calling {@link #skip()}.
  *
  * If no changes are required, call {@link #skip()}.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class PostTransactionModel extends BaseStageModel {
 
@@ -53,8 +51,8 @@ public class PostTransactionModel extends BaseStageModel {
         this.flowResponse = new FlowResponse();
     }
 
-    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary) {
-        super(clientCommunicator);
+    private PostTransactionModel(ClientCommunicator clientCommunicator, TransactionSummary transactionSummary, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionSummary = transactionSummary;
         this.flowResponse = new FlowResponse();
     }
@@ -68,20 +66,23 @@ public class PostTransactionModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link PostTransactionModel}
      */
+    @NonNull
     public static PostTransactionModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new PostTransactionModel(activity, TransactionSummary.fromJson(request));
+        return new PostTransactionModel(activity, TransactionSummary.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionSummary
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link PostTransactionModel}
      */
-    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request) {
-        return new PostTransactionModel(clientCommunicator, request);
+    @NonNull
+    public static PostTransactionModel fromService(ClientCommunicator clientCommunicator, TransactionSummary request,
+                                                   InternalData senderInternalData) {
+        return new PostTransactionModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -89,6 +90,7 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @return The transaction summary
      */
+    @NonNull
     public TransactionSummary getTransactionSummary() {
         return transactionSummary;
     }
@@ -130,6 +132,7 @@ public class PostTransactionModel extends BaseStageModel {
      *
      * @return The flow response
      */
+    @NonNull
     FlowResponse getFlowResponse() {
         return flowResponse;
     }
@@ -153,6 +156,7 @@ public class PostTransactionModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionSummary.toJson();
     }

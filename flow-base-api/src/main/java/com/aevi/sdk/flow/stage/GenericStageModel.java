@@ -15,17 +15,18 @@
 package com.aevi.sdk.flow.stage;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseGenericService;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
-
 /**
  * Model for the generic stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BaseGenericService}or domain implementations for various ways of getting access to this object.
+ * See {@link BaseGenericService} or domain implementations for various ways of getting access to this object.
  *
  * Call {@link #sendResponse(Response)} to send back a response.
  */
@@ -38,14 +39,22 @@ public class GenericStageModel extends BaseStageModel {
         this.request = request;
     }
 
-    private GenericStageModel(ClientCommunicator clientCommunicator, Request request) {
-        super(clientCommunicator);
+    private GenericStageModel(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.request = request;
     }
 
+    /**
+     * Create an instance from an activity context.
+     *
+     * This assumes that the activity was started via {@link BaseStageModel#processInActivity(Context, Class)}.
+     *
+     * @param activity The activity that was started via one of the means described above
+     * @return An instance of {@link GenericStageModel}
+     */
+    @NonNull
     public static GenericStageModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new GenericStageModel(activity, Request.fromJson(request));
+        return new GenericStageModel(activity, Request.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
@@ -53,10 +62,12 @@ public class GenericStageModel extends BaseStageModel {
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
      * @param request            The deserialised Request provided as a string
+     * @param senderInternalData  The InternalData of the app that started this flow
      * @return An instance of {@link GenericStageModel}
      */
-    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request) {
-        return new GenericStageModel(clientCommunicator, request);
+    @NonNull
+    public static GenericStageModel fromService(ClientCommunicator clientCommunicator, Request request, InternalData senderInternalData) {
+        return new GenericStageModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -64,6 +75,7 @@ public class GenericStageModel extends BaseStageModel {
      *
      * @return The request
      */
+    @NonNull
     public Request getRequest() {
         return request;
     }
@@ -80,6 +92,7 @@ public class GenericStageModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return request.toJson();
     }

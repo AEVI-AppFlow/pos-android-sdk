@@ -12,19 +12,13 @@
  *  limitations under the License.
  */
 
-package com.aevi.sdk.pos.flow.flowservicesample.settings;
+package com.aevi.sdk.flow.model.config;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import com.aevi.sdk.pos.flow.flowservicesample.R;
+/**
+ * Conditions that can be associated with a flow app for it to be eligible to be called in a flow.
+ */
+public interface FlowAppConditions {
 
-public class SettingsActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-    }
+    String OUTCOME_PARTIALLY_FULFILLED = "outcomePartiallyFulfilled";
 
 }

@@ -33,8 +33,6 @@ public class GenericResultActivity extends AppCompatActivity {
     @BindView(R.id.request_status)
     ImageView requestStatus;
 
-    private ModelDisplay modelDisplay;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +43,7 @@ public class GenericResultActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+        ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         Intent intent = getIntent();
         if (intent.hasExtra(GENERIC_RESPONSE_KEY)) {
             Response response = Response.fromJson(intent.getStringExtra(GENERIC_RESPONSE_KEY));

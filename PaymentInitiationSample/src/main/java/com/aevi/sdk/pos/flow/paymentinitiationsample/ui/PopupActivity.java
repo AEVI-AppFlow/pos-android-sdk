@@ -29,6 +29,7 @@ public class PopupActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "fragment";
     public static final String FRAGMENT_FLOW_SERVICES = "fragment_flow_services";
     public static final String FRAGMENT_DEVICES = "fragment_devices";
+    public static final String FRAGMENT_PAYMENT_RESPONSES = "fragment_payment_responses";
     public static final String FRAGMENT_SYSTEM_INFO = "fragment_system_info";
     public static final String FRAGMENT_SYSTEM_EVENTS = "fragment_system_events";
     public static final String FRAGMENT_JSON = "fragment_json";
@@ -54,6 +55,8 @@ public class PopupActivity extends AppCompatActivity {
                 return new FlowServicesFragment();
             case FRAGMENT_DEVICES:
                 return new DevicesFragment();
+            case FRAGMENT_PAYMENT_RESPONSES:
+                return new PaymentResponsesFragment();
             case FRAGMENT_SYSTEM_INFO:
                 return new SystemOverviewFragment();
             case FRAGMENT_SYSTEM_EVENTS:

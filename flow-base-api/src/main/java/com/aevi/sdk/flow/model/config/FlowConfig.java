@@ -28,8 +28,6 @@ import java.util.*;
  * Represents a flow configuration consisting of a series of stages with associated stage rules and applications.
  *
  * Use {@link FlowConfigBuilder} to instantiate programmatically.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/flow-configurations" target="_blank">Flow Configurations Docs</a>
  */
 public class FlowConfig implements Jsonable, JsonPostProcessing {
 
@@ -43,24 +41,26 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
     private final String description;
     private final String restrictedToApp;
     private final List<FlowStage> stages;
+    private final boolean processInBackground;
     private boolean generatedFromCustomType;
 
     private transient List<FlowStage> allStagesFlattened;
     private transient Map<String, FlowStage> allStagesMap;
 
     FlowConfig() {
-        this("N/A", "N/A", 0, 0, null, null, null);
+        this("N/A", "N/A", 0, 0, null, null, null, false);
     }
 
     public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp,
-                      List<FlowStage> stages) {
+                      List<FlowStage> stages, boolean processInBackground) {
         this.name = name;
         this.type = type;
         this.version = version;
         this.apiMajorVersion = apiMajorVersion;
         this.description = description;
         this.restrictedToApp = restrictedToApp;
-        this.stages = stages != null ? stages : new ArrayList<FlowStage>();
+        this.stages = stages != null ? stages : new ArrayList<>();
+        this.processInBackground = processInBackground;
         parseStageHierarchy();
     }
 
@@ -174,6 +174,17 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      */
     public String getRequestClass() {
         return allStagesMap.keySet().contains(normaliseStageName(FlowStages.TRANSACTION_PROCESSING)) ? REQUEST_CLASS_PAYMENT : REQUEST_CLASS_GENERIC;
+    }
+
+    /**
+     * Determines whether this flow will be processed as a background flow (invisible) or foreground flow (with UI)
+     *
+     * Default is false - foreground flow.
+     *
+     * @return True if background flow, false if foreground flow
+     */
+    public boolean shouldProcessInBackground() {
+        return processInBackground;
     }
 
     /**
@@ -330,6 +341,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         FlowConfig that = (FlowConfig) o;
         return version == that.version &&
                 apiMajorVersion == that.apiMajorVersion &&
+                processInBackground == that.processInBackground &&
                 generatedFromCustomType == that.generatedFromCustomType &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(type, that.type) &&
@@ -342,8 +354,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, generatedFromCustomType, allStagesFlattened,
-                            allStagesMap);
+        return Objects.hash(name, type, version, apiMajorVersion, description, restrictedToApp, stages, processInBackground, generatedFromCustomType,
+                            allStagesFlattened, allStagesMap);
     }
 }

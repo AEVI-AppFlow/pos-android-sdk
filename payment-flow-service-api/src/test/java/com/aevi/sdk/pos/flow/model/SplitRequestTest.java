@@ -11,6 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class SplitRequestTest {
 
+    private static final long ORIGINAL_AMOUNT = 1000;
     private static final long TOTAL_AMOUNT = 2000;
     private static final String CURRENCY = "GBP";
 
@@ -19,7 +20,7 @@ public class SplitRequestTest {
 
     @Before
     public void setUp() throws Exception {
-        payment = new PaymentBuilder().withAmounts(new Amounts(TOTAL_AMOUNT, CURRENCY)).withPaymentFlow("sale").build();
+        payment = new PaymentBuilder().withAmounts(new Amounts(ORIGINAL_AMOUNT, CURRENCY)).withPaymentFlow("sale").build();
     }
 
     @Test
@@ -78,7 +79,7 @@ public class SplitRequestTest {
 
     private void setupWithNothingProcessed() {
         List<Transaction> transactions = new ArrayList<>();
-        splitRequest = new SplitRequest(payment, transactions);
+        splitRequest = new SplitRequest(payment, new Amounts(TOTAL_AMOUNT, CURRENCY), transactions);
     }
 
     private void setupWithAllProcessed() {
@@ -87,7 +88,7 @@ public class SplitRequestTest {
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
 
-        splitRequest = new SplitRequest(payment, transactions);
+        splitRequest = new SplitRequest(payment, new Amounts(TOTAL_AMOUNT, CURRENCY), transactions);
     }
 
     private void setupSplitRequestWith75PercentProcessed() {
@@ -101,7 +102,7 @@ public class SplitRequestTest {
         transactions.add(transaction);
         transactions.add(transaction2);
 
-        splitRequest = new SplitRequest(payment, transactions);
+        splitRequest = new SplitRequest(payment, new Amounts(TOTAL_AMOUNT, CURRENCY), transactions);
     }
 
     private static TransactionResponse getResponse(Amounts amounts) {

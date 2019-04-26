@@ -36,11 +36,13 @@ import java.util.*;
  * Note that as basket items are immutable, any update to items (such as merging or changing quantity) leads to new instances being created. For the
  * latest up to date item, always fetch via {@link #getItemById(String)}.
  */
+@SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
 public class Basket extends BaseModel {
 
     private final String basketName;
     private final List<BasketItem> displayItems;
     private final AdditionalData additionalBasketData;
+    private boolean primaryBasket;
 
     /**
      * Initialise an empty basket.
@@ -48,7 +50,7 @@ public class Basket extends BaseModel {
      * @param basketName The name of the basket
      */
     public Basket(String basketName) {
-        this(basketName, new ArrayList<BasketItem>());
+        this(basketName, new ArrayList<>());
     }
 
     /**
@@ -80,7 +82,7 @@ public class Basket extends BaseModel {
      */
     Basket(String id, String basketName, List<BasketItem> basketItems) {
         super(id);
-        this.basketName = basketName;
+        this.basketName = basketName != null ? basketName : "N/A";
         this.displayItems = new ArrayList<>(basketItems);
         this.additionalBasketData = new AdditionalData();
     }
@@ -90,8 +92,20 @@ public class Basket extends BaseModel {
      *
      * @return Name of the basket
      */
+    @NonNull
     public String getBasketName() {
         return basketName;
+    }
+
+    /**
+     * Check whether this basket is the primary basket for the current flow.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app).
+     *
+     * @return True if this basket is the primary basket, false otherwise
+     */
+    public boolean isPrimaryBasket() {
+        return primaryBasket;
     }
 
     /**
@@ -283,8 +297,9 @@ public class Basket extends BaseModel {
      * Remove the item with the provided id.
      *
      * @param itemId The id of the item to remove
-     * @return The basket item that was removed
+     * @return The basket item that was removed, or null
      */
+    @Nullable
     public BasketItem removeItem(String itemId) {
         BasketItem item = getItemById(itemId);
         if (item != null) {
@@ -319,6 +334,7 @@ public class Basket extends BaseModel {
      *
      * @return The total number of items
      */
+    @JsonConverter.ExposeMethod(value = "totalNumberOfItems")
     public int getTotalNumberOfItems() {
         int total = 0;
         for (BasketItem displayItem : displayItems) {
@@ -328,10 +344,11 @@ public class Basket extends BaseModel {
     }
 
     /**
-     * Get the total basket value.
+     * Get the total basket value, inclusive of tax.
      *
      * @return The total basket value
      */
+    @JsonConverter.ExposeMethod(value = "totalBasketValue")
     public long getTotalBasketValue() {
         long total = 0;
         for (BasketItem displayItem : displayItems) {
@@ -349,7 +366,8 @@ public class Basket extends BaseModel {
      * @param values An array of values for this data
      * @param <T>    The type of object this data is an array of
      */
-    public <T> void addAdditionalData(String key, T... values) {
+    @SafeVarargs
+    public final <T> void addAdditionalData(String key, T... values) {
         additionalBasketData.addData(key, values);
     }
 
@@ -358,6 +376,7 @@ public class Basket extends BaseModel {
      *
      * @return The additional basket data
      */
+    @NonNull
     public AdditionalData getAdditionalBasketData() {
         return additionalBasketData;
     }
@@ -370,6 +389,15 @@ public class Basket extends BaseModel {
             displayItems.set(displayItems.indexOf(existingItem), newItem);
         }
         return newItem;
+    }
+
+    /**
+     * For internal use.
+     *
+     * @param primaryBasket True or false
+     */
+    public void setPrimaryBasket(boolean primaryBasket) {
+        this.primaryBasket = primaryBasket;
     }
 
     @Override

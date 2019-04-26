@@ -35,6 +35,7 @@ public class PaymentBuilder {
     private String flowName;
     private Amounts amounts;
     private Basket basket;
+    private String paymentMethod;
     private Customer customer;
     private boolean splitEnabled;
     private Token cardToken;
@@ -50,6 +51,7 @@ public class PaymentBuilder {
         flowName = paymentToCopyFrom.getFlowName();
         amounts = paymentToCopyFrom.getAmounts();
         basket = paymentToCopyFrom.getBasket();
+        paymentMethod = paymentToCopyFrom.getPaymentMethod();
         customer = paymentToCopyFrom.getCustomer();
         splitEnabled = paymentToCopyFrom.isSplitEnabled();
         cardToken = paymentToCopyFrom.getCardToken();
@@ -72,7 +74,6 @@ public class PaymentBuilder {
      *
      * @param flowType The flow type
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType) {
@@ -92,7 +93,6 @@ public class PaymentBuilder {
      * @param flowType The flow type
      * @param flowName The name of the flow to use
      * @return This builder
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Types</a>
      */
     @NonNull
     public PaymentBuilder withPaymentFlow(String flowType, String flowName) {
@@ -127,6 +127,23 @@ public class PaymentBuilder {
     @NonNull
     public PaymentBuilder withBasket(Basket basket) {
         this.basket = basket;
+        return this;
+    }
+
+    /**
+     * Specify the payment method to use for transaction processing for this payment.
+     *
+     * Setting this has two effects - first it means FPS will filter payment applications based on supported methods, and secondarily it allows
+     * any payment app that supports multiple methods to proceed without a user choice.
+     *
+     * Note that this value has no effect on flow services in general - they may still use any method of their choice to offer services such as loyalty.
+     *
+     * @param paymentMethod The payment method to use for this payment
+     * @return This builder
+     */
+    @NonNull
+    public PaymentBuilder withPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
         return this;
     }
 
@@ -239,6 +256,9 @@ public class PaymentBuilder {
         if (basket != null && basket.getTotalBasketValue() != amounts.getBaseAmountValue()) {
             throw new IllegalArgumentException("The basket total value must match base amounts value");
         }
-        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId);
+        if (basket != null) {
+            basket.setPrimaryBasket(true);
+        }
+        return new Payment(flowType, flowName, amounts, basket, customer, splitEnabled, cardToken, additionalData, source, deviceId, paymentMethod);
     }
 }

@@ -38,7 +38,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     private final Set<String> supportedDataKeys;
     private final AdditionalData additionalInfo;
     private Set<String> stages;
-    private Map<String, String[]> flowAndStagesDefinitions;
+    private final Map<String, String[]> flowAndStagesDefinitions;
 
     // Default constructor for deserialisation
     protected BaseServiceInfo() {
@@ -56,9 +56,9 @@ public abstract class BaseServiceInfo extends BaseModel {
         this.apiVersion = apiVersion;
         this.displayName = displayName;
         this.hasAccessibilityMode = hasAccessibilityMode;
-        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<String>();
-        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<String>();
-        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<String>();
+        this.supportedFlowTypes = supportedFlowTypes != null ? supportedFlowTypes : new HashSet<>();
+        this.customRequestTypes = customRequestTypes != null ? customRequestTypes : new HashSet<>();
+        this.supportedDataKeys = supportedDataKeys != null ? supportedDataKeys : new HashSet<>();
         this.additionalInfo = additionalInfo != null ? additionalInfo : new AdditionalData();
         this.flowAndStagesDefinitions = new HashMap<>();
         checkArguments();
@@ -123,7 +123,7 @@ public abstract class BaseServiceInfo extends BaseModel {
     /**
      * Get the list of supported pre-defined flow types.
      *
-     * See full list of supported flow types on the AppFlow wiki. Each pre-defined flow type will have a statically defined flow configuration
+     * See full list of supported flow types in the AppFlow docs. Each pre-defined flow type will have a statically defined flow configuration
      * associated with it, if supported on the current device.
      *
      * Note that what flow types are available to clients is entirely determined by the flow configurations and not what flow services reports.

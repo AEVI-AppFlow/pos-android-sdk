@@ -37,8 +37,6 @@ public class PaymentResultActivity extends AppCompatActivity {
     public static final String ERROR_KEY = "error";
     private static final String TAG = PaymentResultActivity.class.getSimpleName();
 
-    private ModelDisplay modelDisplay;
-
     @BindView(R.id.request_status)
     ImageView requestStatus;
 
@@ -63,7 +61,7 @@ public class PaymentResultActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(PAYMENT_RESPONSE_KEY)) {
             PaymentResponse response = PaymentResponse.fromJson(intent.getStringExtra(PAYMENT_RESPONSE_KEY));
-            modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
+            ModelDisplay modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
             modelDisplay.showPaymentResponse(response);
             modelDisplay.showTitle(false);
             if (response.getOutcome() == PARTIALLY_FULFILLED) {

@@ -17,7 +17,8 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import com.aevi.sdk.flow.service.BaseApiService;
+import android.support.annotation.NonNull;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.pos.flow.model.Card;
@@ -26,17 +27,13 @@ import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
 import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
-import static com.aevi.sdk.flow.service.ActivityHelper.ACTIVITY_REQUEST_KEY;
-
 /**
  * Model for the card-reading stage that exposes all the data functions and other utilities required for any app to process this stage.
  *
- * See {@link BasePaymentFlowService#onPreFlow(PreFlowModel)} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
+ * See {@link BasePaymentFlowService} for how to retrieve the model from a service context, and {@link ActivityProxyService} for
  * how to proxy the request onto an activity from where this can be instantiated via {@link #fromActivity(Activity)}.
  *
  * One of {@link #approveWithCard(Card)}, {@link #declineTransaction(String)} or {@link #skipCardReading()} must be called.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public class CardReadingModel extends BaseStageModel {
 
@@ -49,8 +46,8 @@ public class CardReadingModel extends BaseStageModel {
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
 
-    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        super(clientCommunicator);
+    private CardReadingModel(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+        super(clientCommunicator, senderInternalData);
         this.transactionRequest = request;
         this.transactionResponseBuilder = new TransactionResponseBuilder(transactionRequest.getId());
     }
@@ -64,20 +61,22 @@ public class CardReadingModel extends BaseStageModel {
      * @param activity The activity that was started via one of the means described above
      * @return An instance of {@link CardReadingModel}
      */
+    @NonNull
     public static CardReadingModel fromActivity(Activity activity) {
-        String request = activity.getIntent().getStringExtra(ACTIVITY_REQUEST_KEY);
-        return new CardReadingModel(activity, TransactionRequest.fromJson(request));
+        return new CardReadingModel(activity, TransactionRequest.fromJson(getActivityRequestJson(activity)));
     }
 
     /**
      * Create an instance from a service context.
      *
      * @param clientCommunicator The client communicator for sending/receiving messages at this point in the flow
-     * @param request            The deserialised Payment provided as a string via {@link BaseApiService#processRequest(ClientCommunicator, String, String)}
+     * @param request            The deserialised TransactionRequest
+     * @param senderInternalData The internal data of the app that started this stage
      * @return An instance of {@link CardReadingModel}
      */
-    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request) {
-        return new CardReadingModel(clientCommunicator, request);
+    @NonNull
+    public static CardReadingModel fromService(ClientCommunicator clientCommunicator, TransactionRequest request, InternalData senderInternalData) {
+        return new CardReadingModel(clientCommunicator, request, senderInternalData);
     }
 
     /**
@@ -85,6 +84,7 @@ public class CardReadingModel extends BaseStageModel {
      *
      * @return The transaction request
      */
+    @NonNull
     public TransactionRequest getTransactionRequest() {
         return transactionRequest;
     }
@@ -142,6 +142,7 @@ public class CardReadingModel extends BaseStageModel {
     }
 
     @Override
+    @NonNull
     public String getRequestJson() {
         return transactionRequest.toJson();
     }

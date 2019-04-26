@@ -32,8 +32,8 @@ public class FlowStagesActivity extends AppCompatActivity {
     public static final String KEY_CURRENT_STAGE = "titleCurrentStage";
 
     static class Stage {
-        String name;
-        int viewId;
+        final String name;
+        final int viewId;
 
         public Stage(String name, int viewId) {
             this.name = name;
@@ -57,8 +57,6 @@ public class FlowStagesActivity extends AppCompatActivity {
         stages.add(new Stage("Payment response", R.id.payment_response));
     }
 
-    private String currentStage;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +68,7 @@ public class FlowStagesActivity extends AppCompatActivity {
         if (titleBg != 0) {
             titleView.setBackgroundColor(titleBg);
         }
-        currentStage = getIntent().getStringExtra(KEY_CURRENT_STAGE);
+        String currentStage = getIntent().getStringExtra(KEY_CURRENT_STAGE);
 
         boolean postActive = false;
         for (Stage stage : stages) {

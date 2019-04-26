@@ -16,26 +16,23 @@ package com.aevi.sdk.flow.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
-import com.aevi.sdk.flow.constants.InternalDataKeys;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.InternalData;
-import com.aevi.sdk.flow.stage.BaseStageModel;
-import io.reactivex.functions.Consumer;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.FORCE_FINISH_MESSAGE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
-import static com.aevi.sdk.flow.constants.ErrorConstants.INVALID_MESSAGE_TYPE;
 
 /**
- * Base service for all API service implementations.
+ * Internal base class for all API service implementations.
+ *
+ * This is an internal class not intended to be used directly by external applications. No guarantees are made of backwards compatibility and the
+ * class may be removed without any warning.
  */
 public abstract class BaseApiService extends AbstractChannelService {
-
-    public static final String BACKGROUND_PROCESSING = "backgroundProcessing";
 
     private final String TAG = getClass().getSimpleName(); // Use class name of implementing service
 
@@ -49,6 +46,10 @@ public abstract class BaseApiService extends AbstractChannelService {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         internalData.setSenderPackageName(getPackageName());
+    }
+
+    protected String getInternalData(@Nullable InternalData senderInternalData, String dataKey) {
+        return senderInternalData != null ? senderInternalData.getAdditionalDataValue(dataKey, "UNKNOWN") : "UNKNOWN";
     }
 
     /**
@@ -66,44 +67,26 @@ public abstract class BaseApiService extends AbstractChannelService {
     }
 
     @Override
-    protected void onNewClient(ChannelServer channelServer, String packageName) {
-
+    protected final void onNewClient(ChannelServer channelServer, String packageName) {
+        Log.d(TAG, "onNewClient: " + packageName);
         final ClientCommunicator clientCommunicator = new ClientCommunicator(channelServer, internalData);
-        clientCommunicator.subscribeToMessages().subscribe(new Consumer<String>() {
-            @Override
-            public void accept(String message) throws Exception {
-                Log.d(TAG, "Received message: " + message);
-                AppMessage appMessage = AppMessage.fromJson(message);
-                String flowStage = null;
-                if (appMessage.getInternalData() != null && appMessage.getInternalData().getAdditionalData() != null) {
-                    flowStage = appMessage.getInternalData().getAdditionalData().get(InternalDataKeys.FLOW_STAGE);
-                }
-                if (flowStage == null) {
-                    flowStage = "UNKNOWN";
-                }
-
-                checkVersions(appMessage, internalData);
-                String messageData = appMessage.getMessageData();
-                switch (appMessage.getMessageType()) {
-                    case REQUEST_MESSAGE:
-                        handleRequestMessage(clientCommunicator, messageData, flowStage);
-                        break;
-                    case FORCE_FINISH_MESSAGE:
-                        onForceFinish(clientCommunicator);
-                        break;
-                    default:
-                        String msg = String.format("Unknown message type: %s", appMessage.getMessageType());
-                        Log.e(TAG, msg);
-                        clientCommunicator.sendResponseAsErrorAndEnd(INVALID_MESSAGE_TYPE, msg);
-                        break;
-                }
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Log.e(TAG, "Failed while parsing message from client", throwable);
-            }
-        });
+        clientCommunicator.subscribeToMessages()
+                .takeUntil(appMessage -> {
+                    return appMessage.getMessageType().equals(REQUEST_MESSAGE);
+                })
+                .subscribe(appMessage -> {
+                    Log.d(TAG, "Received message: " + appMessage.getMessageType());
+                    checkVersions(appMessage, internalData);
+                    String messageData = appMessage.getMessageData();
+                    switch (appMessage.getMessageType()) {
+                        case REQUEST_MESSAGE:
+                            handleRequestMessage(clientCommunicator, messageData, appMessage.getInternalData());
+                            break;
+                        default:
+                            Log.w(TAG, String.format("Ignoring message type: %s", appMessage.getMessageType()));
+                            break;
+                    }
+                }, throwable -> Log.e(TAG, "Failed while parsing message from client", throwable));
     }
 
     static void checkVersions(AppMessage appMessage, InternalData checkWith) {
@@ -119,10 +102,10 @@ public abstract class BaseApiService extends AbstractChannelService {
         }
     }
 
-    private void handleRequestMessage(ClientCommunicator clientCommunicator, String messageData, String flowStage) {
+    private void handleRequestMessage(ClientCommunicator clientCommunicator, String requestData, InternalData internalData) {
         try {
             clientCommunicator.sendAck();
-            processRequest(clientCommunicator, messageData, flowStage);
+            processRequest(clientCommunicator, requestData, internalData);
         } catch (Throwable t) {
             clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ERROR, String.format("Flow service failed with exception: %s", t.getMessage()));
             throw t;
@@ -145,18 +128,8 @@ public abstract class BaseApiService extends AbstractChannelService {
      *
      * @param clientCommunicator The client communicator for this stage
      * @param request            The request to be processed
-     * @param flowStage          The flow stage this request is being called for
+     * @param senderInternalData Associated internal data from client
      */
-    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage);
-
-    /**
-     * Called externally when your application needs to abort what it is doing and finish anything that may be running including an Activity that you may have started.
-     *
-     * Any activities started using the {@link BaseStageModel#processInActivity(Context, Class)} method will be automatically finished for you
-     *
-     * If you are overriding this method ensure that you include the super call to it here
-     */
-    protected void onForceFinish(ClientCommunicator clientCommunicator) {
-        clientCommunicator.finishStartedActivities();
-    }
+    protected abstract void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                           @Nullable InternalData senderInternalData);
 }

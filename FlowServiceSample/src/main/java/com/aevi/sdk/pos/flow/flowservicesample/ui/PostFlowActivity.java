@@ -26,6 +26,7 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 import com.aevi.sdk.pos.flow.stage.PostFlowModel;
 
 import static com.aevi.sdk.flow.constants.FlowStages.POST_FLOW;
+import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
@@ -44,6 +45,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
         postFlowModel = PostFlowModel.fromActivity(this);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         modelDisplay.showTitle(false);
+        subscribeToFlowServiceEvents(postFlowModel);
     }
 
     @Override
@@ -54,6 +56,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
 
     @OnClick(R.id.send_response)
     public void onFinish() {
+        postFlowModel.addAuditEntry(INFO, "Just a hello from %s", getClass().getSimpleName());
         postFlowModel.finish();
         finish();
     }

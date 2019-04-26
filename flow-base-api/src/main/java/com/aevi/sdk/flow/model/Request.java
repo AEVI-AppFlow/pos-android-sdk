@@ -27,8 +27,6 @@ import java.util.UUID;
  *
  * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
  * and one will be selected either automatically or via user interaction.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/request-types" target="_blank">Request Docs</a>
  */
 public class Request extends BaseModel {
 
@@ -37,6 +35,7 @@ public class Request extends BaseModel {
     private String flowName;
     private String deviceId;
     private String targetAppId;
+    private boolean processInBackground;
 
     // Default constructor for deserialisation
     Request() {
@@ -183,6 +182,30 @@ public class Request extends BaseModel {
         return requestData;
     }
 
+    /**
+     * Check whether this request should be handled in the background (without showing any user interface).
+     *
+     * If set, applications must not launch any UI (activities) as part of handling this request.
+     * If it is not possible to handle the request in this manner, a response indicating failure to process should be sent back.
+     *
+     * @return True if this request should be handled without showing UI
+     */
+    public boolean shouldProcessInBackground() {
+        return processInBackground;
+    }
+
+    /**
+     * Specify that the request (and hence the flow) should be processed in the background.
+     *
+     * This means that the flow will be invisible to any merchant/customer. Do note however that you must ensure that the type of
+     * request *can* be handled without user interaction, as otherwise it will be rejected by the receiving application.
+     *
+     * @param processInBackground True to make this request be processed in the background
+     */
+    public void setProcessInBackground(boolean processInBackground) {
+        this.processInBackground = processInBackground;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -191,12 +214,13 @@ public class Request extends BaseModel {
     @Override
     public String toString() {
         return "Request{" +
-                "flowName='" + flowName + '\'' +
+                "requestType='" + requestType + '\'' +
                 ", requestData=" + requestData +
-                ", requestType='" + requestType + '\'' +
+                ", flowName='" + flowName + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", targetAppId='" + targetAppId + '\'' +
-                '}';
+                ", processInBackground=" + processInBackground +
+                "} " + super.toString();
     }
 
     @Override
@@ -211,17 +235,17 @@ public class Request extends BaseModel {
             return false;
         }
         Request request = (Request) o;
-        return Objects.equals(flowName, request.flowName) &&
-                Objects.equals(requestData, request.requestData) &&
+        return processInBackground == request.processInBackground &&
                 Objects.equals(requestType, request.requestType) &&
+                Objects.equals(requestData, request.requestData) &&
+                Objects.equals(flowName, request.flowName) &&
                 Objects.equals(deviceId, request.deviceId) &&
                 Objects.equals(targetAppId, request.targetAppId);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), flowName, requestData, requestType, deviceId, targetAppId);
+        return Objects.hash(super.hashCode(), requestType, requestData, flowName, deviceId, targetAppId, processInBackground);
     }
 
     public static Request fromJson(String json) {

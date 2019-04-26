@@ -33,7 +33,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
 
     private final OnFlowConfigClickListener listener;
 
-    private String[] fpsSettingsLabels;
+    private final String[] fpsSettingsLabels;
     private int[] fpsSettingsResIds;
 
     private final List<FlowConfig> flowConfigs;
@@ -78,6 +78,7 @@ public class SystemOverviewAdapter extends BaseServiceInfoAdapter<SystemOverview
 
     private void handleViewLine(int position, @NonNull ViewHolder holder) {
         String value = "";
+        holder.lineLayout.setOnClickListener(null);
         if (isFlowConfig(position)) {
             value = handleFlowConfig(position, holder, info.getFlowConfigurations().getAll());
         } else if (isFpsSetting(position)) {

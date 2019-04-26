@@ -16,6 +16,7 @@
 package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -28,6 +29,7 @@ public class FlowApp implements Jsonable {
 
     private final String id;
     private final boolean mandatory;
+    private final String conditionalOn;
 
     /**
      * Construct with id.
@@ -39,17 +41,20 @@ public class FlowApp implements Jsonable {
     public FlowApp(String id) {
         this.id = id != null ? id : "N/A";
         this.mandatory = false;
+        this.conditionalOn = null;
     }
 
     /**
      * Construct with id and mandatory flag.
      *
-     * @param id        The application id
-     * @param mandatory Whether or not the app is mandatory for the flow to be valid
+     * @param id            The application id
+     * @param mandatory     Whether or not the app is mandatory for the flow to be valid
+     * @param conditionalOn Condition for this flow app to be eligible
      */
-    public FlowApp(String id, boolean mandatory) {
+    public FlowApp(String id, boolean mandatory, String conditionalOn) {
         this.id = id != null ? id : "N/A";
         this.mandatory = mandatory;
+        this.conditionalOn = conditionalOn;
     }
 
     /**
@@ -73,6 +78,16 @@ public class FlowApp implements Jsonable {
         return mandatory;
     }
 
+    /**
+     * Get the condition, if any, that is required for this flow app to be eligible.
+     *
+     * @return The condition, if any, that is required for this flow app to be eligible.
+     */
+    @Nullable
+    public String getConditionalOnValue() {
+        return conditionalOn;
+    }
+
     @Override
     public String toJson() {
         return JsonConverter.serialize(this);
@@ -88,12 +103,12 @@ public class FlowApp implements Jsonable {
         }
         FlowApp flowApp = (FlowApp) o;
         return mandatory == flowApp.mandatory &&
-                Objects.equals(id, flowApp.id);
+                Objects.equals(id, flowApp.id) &&
+                Objects.equals(conditionalOn, flowApp.conditionalOn);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, mandatory);
+        return Objects.hash(id, mandatory, conditionalOn);
     }
 }

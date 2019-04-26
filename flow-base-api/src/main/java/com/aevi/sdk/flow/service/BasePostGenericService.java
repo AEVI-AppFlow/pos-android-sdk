@@ -15,14 +15,14 @@
 package com.aevi.sdk.flow.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.FlowBaseConfig;
+import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.stage.PostGenericStageModel;
 
 /**
  * Base service for handling post-generic stages which receive the response from the main generic stage.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-flow-services" target="_blank">Implementing Flow Services</a>
  */
 public abstract class BasePostGenericService extends BaseApiService {
 
@@ -31,8 +31,10 @@ public abstract class BasePostGenericService extends BaseApiService {
     }
 
     @Override
-    protected void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request, @NonNull String flowStage) {
-        PostGenericStageModel postGenericStageModel = PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request));
+    protected final void processRequest(@NonNull ClientCommunicator clientCommunicator, @NonNull String request,
+                                        @Nullable InternalData senderInternalData) {
+        PostGenericStageModel postGenericStageModel =
+                PostGenericStageModel.fromService(clientCommunicator, Response.fromJson(request), senderInternalData);
         processResponse(postGenericStageModel);
     }
 

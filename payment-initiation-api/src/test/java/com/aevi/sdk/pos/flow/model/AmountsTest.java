@@ -12,7 +12,9 @@ public class AmountsTest {
         amounts.addAdditionalAmount("one", 1500L);
         amounts.addAdditionalAmount("two", 2000L);
         assertThat(amounts.getBaseAmountValue()).isEqualTo(1000L);
+        assertThat(amounts.getBaseAmount()).isEqualTo(new Amount(1000L, "GBP"));
         assertThat(amounts.getTotalAmountValue()).isEqualTo(4500L);
+        assertThat(amounts.getTotalAmount()).isEqualTo(new Amount(4500L, "GBP"));
     }
 
     @Test
@@ -75,17 +77,43 @@ public class AmountsTest {
         amount2.addAdditionalAmount("bob", 250L);
         amount2.addAdditionalAmount("harry", 120L);
 
-        Amounts result = Amounts.subtractAmounts(amount1, amount2);
+        Amounts result = Amounts.subtractAmounts(amount1, amount2, true);
         assertThat(result.getCurrency()).isEqualTo("GBP");
         assertThat(result.getBaseAmountValue()).isEqualTo(650L);
         assertThat(result.getTotalAmountValue()).isEqualTo(1150L);
+        assertThat(result.getAdditionalAmounts()).containsKeys("bob", "susan");
         assertThat(result.getAdditionalAmountValue("bob")).isEqualTo(200L);
         assertThat(result.getAdditionalAmountValue("susan")).isEqualTo(300L);
         assertThat(result.getAdditionalAmountValue("harry")).isEqualTo(0L);
     }
 
+    @Test
+    public void checkSubtractAmountsRemovesZeroBasedWhenRequested() throws Exception {
+        Amounts amount1 = new Amounts(1000L, "GBP");
+        amount1.addAdditionalAmount("bob", 450L);
+        Amounts amount2 = new Amounts(500L, "GBP");
+        amount2.addAdditionalAmount("bob", 450L);
+        amount2.addAdditionalAmount("harry", 120L);
+
+        Amounts result = Amounts.subtractAmounts(amount1, amount2, false);
+        assertThat(result.getCurrency()).isEqualTo("GBP");
+        assertThat(result.getBaseAmountValue()).isEqualTo(500L);
+        assertThat(result.getAdditionalAmounts()).doesNotContainKeys("bob", "harry");
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void checkCantSubtractAmountsDifferentCurrency() throws Exception {
-        Amounts.subtractAmounts(new Amounts(10L, "GBP"), new Amounts(10L, "USD"));
+        Amounts.subtractAmounts(new Amounts(10L, "GBP"), new Amounts(10L, "USD"), false);
+    }
+
+    @Test
+    public void checkCanGetTotalExcludingAmounts() throws Exception {
+        Amounts amounts = new Amounts(1000L, "GBP");
+        amounts.addAdditionalAmount("one", 1500L);
+        amounts.addAdditionalAmount("two", 2000L);
+        amounts.addAdditionalAmount("three", 3000L);
+        assertThat(amounts.getBaseAmountValue()).isEqualTo(1000L);
+        assertThat(amounts.getTotalAmountValue()).isEqualTo(7500L);
+        assertThat(amounts.getTotalExcludingAmounts("one", "two")).isEqualTo(4000L);
     }
 }

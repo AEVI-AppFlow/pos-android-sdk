@@ -60,8 +60,8 @@ public class Transaction extends BaseModel {
     }
 
     public Transaction(Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData) {
-        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<TransactionResponse>(),
-             new ArrayList<FlowAppInfo>());
+        this(UUID.randomUUID().toString(), requestedAmounts, baskets, customer, additionalData, new ArrayList<>(),
+             new ArrayList<>());
     }
 
     Transaction(String id, Amounts requestedAmounts, List<Basket> baskets, Customer customer, AdditionalData additionalData,
@@ -85,7 +85,43 @@ public class Transaction extends BaseModel {
     }
 
     /**
-     * Get the list of baskets for this transaction
+     * Check whether this transaction has a primary basket or not.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the basket if one exists.
+     *
+     * @return True if this transaction has a primary basket, false otherwise
+     */
+    public boolean hasPrimaryBasket() {
+        return baskets != null && !baskets.isEmpty() && baskets.get(0).isPrimaryBasket();
+    }
+
+    /**
+     * Get the primary basket for this transaction, if any is available.
+     *
+     * The primary basket is generally provided by the client application initiating the flow (i.e the POS app), whereas secondary baskets may
+     * be added by flow services.
+     *
+     * See {@link #hasPrimaryBasket()} to check whether one exists or not.
+     *
+     * @return The primary basket, or null if none is available
+     */
+    @Nullable
+    public Basket getPrimaryBasket() {
+        if (hasPrimaryBasket()) {
+            return baskets.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Get the baskets for this transaction.
+     *
+     * This may consist of baskets added by the client initiation app as well as flow services in the flow.
+     *
+     * See {@link #getPrimaryBasket()} for retrieving the primary basket specifically, if any is available.
      *
      * @return The list of baskets
      */
@@ -156,11 +192,12 @@ public class Transaction extends BaseModel {
      * @return The remaining amounts.
      */
     @NonNull
+    @JsonConverter.ExposeMethod(value = "remainingAmounts")
     public Amounts getRemainingAmounts() {
         Amounts remaining = new Amounts(requestedAmounts);
         for (TransactionResponse transactionResponse : transactionResponses) {
             if (transactionResponse.getOutcome() == APPROVED && transactionResponse.getAmountsProcessed() != null) {
-                remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed());
+                remaining = Amounts.subtractAmounts(remaining, transactionResponse.getAmountsProcessed(), false);
             }
         }
         return remaining;
@@ -174,6 +211,7 @@ public class Transaction extends BaseModel {
      * @return The amounts processed at this point in time.
      */
     @NonNull
+    @JsonConverter.ExposeMethod(value = "processedAmounts")
     public Amounts getProcessedAmounts() {
         Amounts processed = new Amounts(0, requestedAmounts.getCurrency());
         for (TransactionResponse transactionResponse : transactionResponses) {
@@ -189,6 +227,7 @@ public class Transaction extends BaseModel {
      *
      * @return True if the amounts have been fully processed, false otherwise.
      */
+    @JsonConverter.ExposeMethod(value = "hasProcessedRequestedAmounts")
     public boolean hasProcessedRequestedAmounts() {
         return getRemainingAmounts().getTotalAmountValue() == 0;
     }

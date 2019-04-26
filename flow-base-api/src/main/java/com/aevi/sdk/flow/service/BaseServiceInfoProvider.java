@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * ContentProvider base class that should be extended by API service providers in order to give information about the app capabilities.
@@ -33,6 +35,11 @@ import android.os.Bundle;
 public abstract class BaseServiceInfoProvider extends ContentProvider {
 
     public static final String SERVICE_INFO_KEY = "serviceInfo";
+    public static final String SERVICE_INFO_ERROR_KEY = "serviceInfoError";
+    public static final String SERVICE_INFO_ERROR_DESC_KEY = "serviceInfoErrorDescription";
+    public static final String SERVICE_INFO_ERROR_HANDLED_KEY = "serviceInfoErrorHandled";
+    public static final String METHOD_GET_SERVICE_INFO = "getServiceInfo";
+    public static final String METHOD_PROVIDE_ERROR = "provideError";
 
     private final String serviceInfoChangeBroadcast;
 
@@ -66,12 +73,39 @@ public abstract class BaseServiceInfoProvider extends ContentProvider {
 
     @Override
     public final Bundle call(String method, String arg, Bundle extras) {
-        Bundle b = new Bundle();
-        b.putString(SERVICE_INFO_KEY, getServiceInfo());
-        return b;
+        Bundle bundle = new Bundle();
+        if (method == null || method.isEmpty()) {
+            method = METHOD_GET_SERVICE_INFO;
+        }
+        switch (method) {
+            case METHOD_GET_SERVICE_INFO:
+                bundle.putString(SERVICE_INFO_KEY, getServiceInfo());
+                break;
+            case METHOD_PROVIDE_ERROR:
+                boolean handled = onServiceInfoError(extras.getString(SERVICE_INFO_ERROR_KEY), extras.getString(SERVICE_INFO_ERROR_DESC_KEY));
+                bundle.putBoolean(SERVICE_INFO_ERROR_HANDLED_KEY, handled);
+                break;
+            default:
+                break;
+        }
+
+        return bundle;
     }
 
     protected abstract String getServiceInfo();
+
+    /**
+     * Override this method to receive error messages related to the retrieval and/or parsing of the
+     * {@link com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo} provided by your application.
+     *
+     * @param errorType    The error type as per {@link com.aevi.sdk.flow.constants.ServiceInfoErrors}
+     * @param errorMessage A descriptive error message
+     * @return True if handled, false if not handled
+     */
+    protected boolean onServiceInfoError(@NonNull String errorType, @NonNull String errorMessage) {
+        Log.e(getClass().getSimpleName(), "onServiceInfoError not implemented. type: " + errorType + ", message: " + errorMessage);
+        return false;
+    }
 
     /**
      * Notify the system that the configuration has changed.

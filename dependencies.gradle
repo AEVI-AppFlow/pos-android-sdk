@@ -3,8 +3,8 @@ ext {
     gsonVersion = '2.8.0'
     rxJavaVersion = '2.2.2'
     printApiVersion = '1.0.1'
-    jsonConverterVersion = '1.0.2'
-    rxMessengerVersion = '4.0.0'
+    jsonConverterVersion = '1.1.0'
+    rxMessengerVersion = '5.0.2'
     configApiVersion = '1.1.0'
 
     // Test dependencies
@@ -15,16 +15,18 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
+    // Sample Android deps
     archLifecycleVersion = '1.0.3'
     archLifecycleJava8Version = '1.1.0'
-
-    butterKnifeVersion = '8.8.1'
+    butterKnifeVersion = '9.0.0'
     recyclerViewVersion = '28.0.0'
     supportLibraryVersion = '28.0.0'
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
-    aeviUiLibraryVersion = "1.2.0"
-    appFlowConstantsVersion = '2.0.11'
+
+    // Sample AEVI deps
+    aeviUiLibraryVersion = "2.0.1"
+    appFlowConstantsVersion = '2.2.2'
 
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21

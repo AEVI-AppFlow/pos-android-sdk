@@ -17,12 +17,10 @@ package com.aevi.sdk.pos.flow;
 
 import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.constants.ErrorConstants;
-import com.aevi.sdk.flow.model.Device;
-import com.aevi.sdk.flow.model.FlowEvent;
-import com.aevi.sdk.flow.model.FlowException;
-import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.model.Payment;
+import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
 import io.reactivex.Completable;
@@ -33,8 +31,6 @@ import java.util.List;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
- *
- * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/implementing-pos-apps" target="_blank">Implementing POS apps docs</a>
  */
 public interface PaymentClient {
 
@@ -65,7 +61,6 @@ public interface PaymentClient {
      *
      * @param request The request
      * @return Completable that represents the acceptance of the request
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiateRequest(Request request);
@@ -85,10 +80,35 @@ public interface PaymentClient {
      *
      * @param payment The payment to process
      * @return Completable that represents the acceptance of the request
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/handling-responses" target="_blank">Handling responses</a>
      */
     @NonNull
     Completable initiatePayment(Payment payment);
+
+    /**
+     * Returns a stream of completed PaymentResponses for the given parameters.
+     *
+     * This query will <strong>only</strong> return {@link PaymentResponse} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
+     *
+     * @param responseQuery An object representing some parameters to limit the query by
+     * @return An Observable stream of payment responses
+     */
+    @NonNull
+    Observable<PaymentResponse> queryPaymentResponses(@NonNull ResponseQuery responseQuery);
+
+    /**
+     * Returns a stream of completed Responses for the given parameters
+     *
+     * This query will <strong>only</strong> return {@link Response} objects that were generated in response to requests by your application (package name)
+     *
+     * Responses will <strong>only</strong> be returned for completed flows. Responses for incomplete or in-progress flows will not be returned by this method
+     *
+     * @param responseQuery An object representing some parameters to limit the query by
+     * @return An Observable stream of responses
+     */
+    @NonNull
+    Observable<Response> queryResponses(@NonNull ResponseQuery responseQuery);
 
     /**
      * Query for devices connected to the processing service, if multi-device is enabled.
@@ -112,7 +132,6 @@ public interface PaymentClient {
      * Examples are when there are changed to devices, applications or system settings.
      *
      * @return A stream that will emit {@link FlowEvent} items
-     * @see <a href="https://github.com/AEVI-AppFlow/pos-android-sdk/wiki/events-subscription" target="_blank">Events Docs</a>
      */
     @NonNull
     Observable<FlowEvent> subscribeToSystemEvents();
