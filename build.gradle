@@ -1,5 +1,5 @@
-version = "2.1.0-SNAPSHOT"
-ext.sampleVersionCode = 2100005 // semver based, MMmmppbb (major minor patch build) without leading 0 for MM
+version = "2.1.0"
+ext.sampleVersionCode = 2010000 // semver based, MMmmppbb (major minor patch build) without leading 0 for MM
 
 buildscript {
     repositories {
