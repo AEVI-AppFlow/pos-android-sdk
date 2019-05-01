@@ -36,7 +36,7 @@ public class BasketItem {
     private final String label;
     private final String category;
     private final long amount;
-    private final long baseAmount;
+    private final float baseAmount;
     private final int quantity;
     private final Measurement measurement;
     private final List<BasketItemModifier> modifiers;
@@ -55,7 +55,7 @@ public class BasketItem {
      * @param id          The identifier (SKU or similar) for this item
      * @param label       The label of the item to show to merchants/customers, such as "Red onion"
      * @param category    The category the item belongs to, such as "vegetables" or "dairy"
-     * @param amount      The amount (cost) for this (individual) item, inclusive of modifiers and tax
+     * @param amount      The amount (cost, rounded) for this (individual) item, inclusive of modifiers and tax
      * @param baseAmount  The base amount (cost) for this (individual) item, exclusive of modifiers
      * @param quantity    The quantity (count) of this basket item (default is 1, below 0 will produce an exception)
      * @param measurement The measurement of this basket item (for items that are measured in fractions and require a unit)
@@ -63,7 +63,7 @@ public class BasketItem {
      * @param references  Custom references for this basket item (deprecated - use itemData instead)
      * @param itemData    The item additional data
      */
-    BasketItem(String id, String label, String category, long amount, long baseAmount, int quantity,
+    BasketItem(String id, String label, String category, long amount, float baseAmount, int quantity,
                Measurement measurement, List<BasketItemModifier> modifiers, @Deprecated Map<String, String> references,
                AdditionalData itemData) {
         this.id = id;
@@ -111,6 +111,8 @@ public class BasketItem {
     /**
      * Get the cost (amount) for a single item of this type, inclusive of all modifiers and tax.
      *
+     * This value has been rounded to closest whole sub-unit if the calculated amount has decimal points.
+     *
      * Note that the amount may be negative in the case of discounts, etc.
      *
      * @return The cost (amount) for a single item of this type, including modifiers
@@ -128,12 +130,14 @@ public class BasketItem {
      *
      * @return The base cost (amount) for a single item of this type, excluding modifiers
      */
-    public long getIndividualBaseAmount() {
+    public float getIndividualBaseAmount() {
         return baseAmount;
     }
 
     /**
      * Get the total cost (amount) for the items of this type, inclusive of modifiers.
+     *
+     * This value has been rounded to closest whole sub-unit if the calculated amount has decimal points.
      *
      * Note that the amount may be negative in the case of discounts, etc.
      *
@@ -145,6 +149,21 @@ public class BasketItem {
     }
 
     /**
+     * Get the total cost (amount) for the items of this type, calculated from the base amount with modifiers applied.
+     *
+     * This can be used when rounding does not provide enough accuracy for calculating the total basket value.
+     *
+     * @return The total fractional amount, calculated from base amount with modifiers applied
+     */
+    public float getTotalFractionalAmount() {
+        if (!hasModifiers()) {
+            return getTotalAmount();
+        }
+        float amount = calculateFinalAmount(baseAmount, modifiers);
+        return amount * quantity;
+    }
+
+    /**
      * Get the total base cost (amount) for the items of this type, exclusive of any modifiers.
      *
      * Note that the amount may be negative in the case of discounts, etc.
@@ -152,7 +171,7 @@ public class BasketItem {
      * @return The total cost (amount) for the items of this type, excluding modifiers
      */
     @JsonConverter.ExposeMethod(value = "totalBaseAmount")
-    public long getTotalBaseAmount() {
+    public float getTotalBaseAmount() {
         return baseAmount * quantity;
     }
 
@@ -329,5 +348,24 @@ public class BasketItem {
     @Override
     public int hashCode() {
         return Objects.hash(id, label, category, amount, baseAmount, quantity, measurement, modifiers, references, itemData);
+    }
+
+    /**
+     * Calculate the final amount after applying modifiers to the base amount.
+     *
+     * @param baseAmount The base amount value
+     * @param modifiers  The list of modifiers
+     * @return The amount value calculated from base with modifiers applied
+     */
+    public static float calculateFinalAmount(float baseAmount, List<BasketItemModifier> modifiers) {
+        float amount = baseAmount;
+        for (BasketItemModifier modifier : modifiers) {
+            if (modifier.getFractionalAmount() != null && modifier.getFractionalAmount() != 0.0f) {
+                amount += modifier.getFractionalAmount();
+            } else if (modifier.getPercentage() != null) {
+                amount += baseAmount * (modifier.getPercentage() / 100.0f);
+            }
+        }
+        return amount;
     }
 }

@@ -222,4 +222,38 @@ public class BasketTest {
         long total = sourceBasket.getTotalBasketValue();
         assertThat(total).isEqualTo(-500);
     }
+
+    @Test
+    public void totalShouldCalculateFromAmountFieldIfNoModifiers() throws Exception {
+        sourceBasket.addItems(new BasketItem("123", "Coke", "Drinks", 1000, 0, 1, null, null, null, null),
+                              new BasketItem("456", "Fanta", "Drinks", 500, 0, 1, null, null, null, null));
+
+        assertThat(sourceBasket.getTotalBasketValue()).isEqualTo(1500);
+    }
+
+    @Test
+    public void totalShouldCalculateFromBaseAndModifiersAndRound() throws Exception {
+        BasketItem basketItem1 = new BasketItemBuilder()
+                .withLabel("vanilla")
+                .withQuantity(2)
+                .withBaseAmountAndModifiers(500, new BasketItemModifierBuilder("tax1", "tax").withFractionalAmount(202.05f).build(),
+                                            new BasketItemModifierBuilder("tax2", "tax").withPercentage(24.56f).build()).build();
+
+        BasketItem basketItem2 = new BasketItemBuilder()
+                .withLabel("ice")
+                .withQuantity(1)
+                .withBaseAmountAndModifiers(150, new BasketItemModifierBuilder("tax4", "tax").withFractionalAmount(-5.5f).build(),
+                                            new BasketItemModifierBuilder("tax5", "tax").withPercentage(-25.003f).build()).build();
+
+        sourceBasket.addItems(basketItem1, basketItem2);
+
+        sourceBasket.setRoundingStrategy(RoundingStrategy.NEAREST);
+        assertThat(sourceBasket.getTotalBasketValue()).isEqualTo(1757);
+
+        sourceBasket.setRoundingStrategy(RoundingStrategy.DOWN);
+        assertThat(sourceBasket.getTotalBasketValue()).isEqualTo(1756);
+
+        sourceBasket.setRoundingStrategy(RoundingStrategy.UP);
+        assertThat(sourceBasket.getTotalBasketValue()).isEqualTo(1757);
+    }
 }

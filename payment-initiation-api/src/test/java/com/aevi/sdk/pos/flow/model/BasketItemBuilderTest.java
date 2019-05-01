@@ -42,8 +42,8 @@ public class BasketItemBuilderTest {
         BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100f, 50.0f);
         BasketItem basketItem =
                 new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withMeasurement(1.25f, "kg")
-                        .withCategory("fruit").withAmount(200).withBaseAmount(100)
-                        .withModifiers(modifier)
+                        .withCategory("fruit")
+                        .withBaseAmountAndModifiers(100, modifier)
                         .withItemData("bleep", "blarp")
                         .build();
         assertThat(basketItem.getId()).isEqualTo("123");
@@ -51,9 +51,9 @@ public class BasketItemBuilderTest {
         assertThat(basketItem.getCategory()).isEqualTo("fruit");
         assertThat(basketItem.getQuantity()).isEqualTo(2);
         assertThat(basketItem.getIndividualAmount()).isEqualTo(200);
-        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(100);
+        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(100.0f);
         assertThat(basketItem.getTotalAmount()).isEqualTo(400);
-        assertThat(basketItem.getTotalBaseAmount()).isEqualTo(200);
+        assertThat(basketItem.getTotalBaseAmount()).isEqualTo(200.0f);
         assertThat(basketItem.hasMeasurement()).isTrue();
         assertThat(basketItem.getMeasurement()).isEqualTo(new Measurement(1.25f, "kg"));
         assertThat(basketItem.hasModifiers()).isTrue();
@@ -68,8 +68,8 @@ public class BasketItemBuilderTest {
         BasketItemModifier modifier = new BasketItemModifier("bla", "Cheeeese!", "addon", 100f, 50.0f);
         BasketItem basketItem =
                 new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withMeasurement(1.25f, "kg")
-                        .withCategory("fruit").withAmount(200).withBaseAmount(100)
-                        .withModifiers(modifier)
+                        .withCategory("fruit")
+                        .withBaseAmountAndModifiers(100, modifier)
                         .withItemData("bleep", "blarp")
                         .build();
         BasketItem newItem = new BasketItemBuilder(basketItem).withQuantity(4).build();
@@ -79,9 +79,9 @@ public class BasketItemBuilderTest {
         assertThat(newItem.getCategory()).isEqualTo("fruit");
         assertThat(newItem.getQuantity()).isEqualTo(4);
         assertThat(newItem.getIndividualAmount()).isEqualTo(200);
-        assertThat(newItem.getIndividualBaseAmount()).isEqualTo(100);
+        assertThat(newItem.getIndividualBaseAmount()).isEqualTo(100.0f);
         assertThat(newItem.getTotalAmount()).isEqualTo(800);
-        assertThat(newItem.getTotalBaseAmount()).isEqualTo(400);
+        assertThat(newItem.getTotalBaseAmount()).isEqualTo(400.0f);
         assertThat(newItem.hasMeasurement()).isTrue();
         assertThat(newItem.getMeasurement()).isEqualTo(new Measurement(1.25f, "kg"));
         assertThat(newItem.hasModifiers()).isTrue();
@@ -139,22 +139,51 @@ public class BasketItemBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void withFractionalQuantityShouldThrowExIfNoUnitWithFractions() throws Exception {
+        new BasketItemBuilder().withId("123").withLabel("banana").withAmount(200).withFractionalQuantity(2.1f, null).build();
+    }
+
+    @Test
+    public void amountsShouldDefaultToZero() throws Exception {
         BasketItem basketItem =
-                new BasketItemBuilder().withId("123").withLabel("banana").withAmount(200).withFractionalQuantity(2.1f, null).build();
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").build();
+        assertThat(basketItem.getIndividualAmount()).isEqualTo(0);
+        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(0);
     }
 
     @Test
     public void baseAmountShouldDefaultToAmount() throws Exception {
         BasketItem basketItem =
                 new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).build();
-        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(200);
+        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(200.0f);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionIfTryingToSetAmountAfterSettingModifiers() throws Exception {
+        new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit")
+                .withBaseAmountAndModifiers(10.0f, new BasketItemModifierBuilder("1", "2").withPercentage(20f).build())
+                .withAmount(50)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionIfTryingToSetModifiersAfterAmount() throws Exception {
+        new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit")
+                .withAmount(50)
+                .withBaseAmountAndModifiers(10.0f, new BasketItemModifierBuilder("1", "2").withPercentage(20f).build())
+                .build();
     }
 
     @Test
-    public void baseAmountShouldNotDefaultToAmountIfSet() throws Exception {
+    public void shouldCalculateAmountIfModifiersAreSet() throws Exception {
+        BasketItemModifier modifier1 = new BasketItemModifier("bla", "Cheeeese!", "addon", 100f, 50.0f);
+        BasketItemModifier modifier2 = new BasketItemModifier("bla2", "Cheeeese!2", "discount", null, -5.5f);
         BasketItem basketItem =
-                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withCategory("fruit").withAmount(200).withBaseAmount(0)
+                new BasketItemBuilder().withId("123").withLabel("banana").withQuantity(2).withMeasurement(1.25f, "kg")
+                        .withCategory("fruit")
+                        .withBaseAmountAndModifiers(100, modifier1, modifier2)
+                        .withItemData("bleep", "blarp")
                         .build();
-        assertThat(basketItem.getIndividualBaseAmount()).isEqualTo(0);
+
+        assertThat(basketItem.getIndividualAmount()).isEqualTo(195);
     }
 }
