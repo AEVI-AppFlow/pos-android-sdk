@@ -51,7 +51,7 @@ import java.util.Currency;
 import java.util.List;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
-import static com.aevi.sdk.flow.constants.ModifierTypes.*;
+import static com.aevi.sdk.flow.constants.ModifierTypes.MODIFIER_TYPE_EXTRA;
 
 public class PaymentFragment extends BaseObservableFragment {
 
@@ -248,9 +248,8 @@ public class PaymentFragment extends BaseObservableFragment {
         return new Basket("sampleBasket",
                           // You can add single count items, with label, category and amount value
                           new BasketItemBuilder().withLabel("Flat White").withCategory("coffee")
-                                  .withBaseAmount(250)
-                                  .withAmount(300)
-                                  .withModifiers(new BasketItemModifierBuilder("Extra shot", MODIFIER_TYPE_EXTRA).withAmount(50).build())
+                                  .withBaseAmountAndModifiers(250,
+                                                              new BasketItemModifierBuilder("Extra shot", MODIFIER_TYPE_EXTRA).withAmount(50).build())
                                   .build(),
                           new BasketItemBuilder().withLabel("Water").withCategory("drinks").withAmount(150).build(),
                           // You can also specify the initial count of the item and provide your own id

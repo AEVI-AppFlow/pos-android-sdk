@@ -29,8 +29,8 @@ public class BasketItemBuilder {
     private int quantity = 1;
     private String label;
     private String category;
-    private long baseAmount = Integer.MIN_VALUE;
-    private long amount;
+    private float baseAmount = Float.MIN_VALUE;
+    private long amount = Long.MIN_VALUE;
     private Measurement measurement;
     private List<BasketItemModifier> modifiers;
     private Map<String, String> references;
@@ -219,67 +219,62 @@ public class BasketItemBuilder {
     }
 
     /**
-     * Set the item amount value, inclusive of any modifiers.
+     * Set the item amount value, inclusive of tax.
+     *
+     * This is to be used for cases where modifiers (see {@link #withBaseAmountAndModifiers(float, BasketItemModifier...)} are not relevant and a client
+     * just wants to set the absolute amount value of this item.
      *
      * Note that the amount value can be negative to represent discounts, etc.
      *
-     * See {@link #withBaseAmount(long)} to set the amount exclusive of modifiers.
+     * See {@link #withBaseAmountAndModifiers(float, BasketItemModifier...)} to instead provide a base amount with modifiers applied.
      *
-     * @param amount The item amount value, inclusive of any modifiers
+     * @param amount The item amount value, inclusive of tax.
      * @return This builder
      */
     @NonNull
     public BasketItemBuilder withAmount(long amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    /**
-     * Set the item *base* amount value, exclusive of any modifiers.
-     *
-     * Note that the amount value can be negative to represent discounts, etc.
-     *
-     * This defaults to the {@link #withAmount(long)} value if not set.
-     *
-     * @param baseAmount The item base amount value, exclusive of any modifiers
-     * @return This builder
-     */
-    @NonNull
-    public BasketItemBuilder withBaseAmount(long baseAmount) {
-        this.baseAmount = baseAmount;
-        return this;
-    }
-
-    /**
-     * Apply modifiers to this item.
-     *
-     * Note that modifiers are NOT validated by AppFlow - it is up to the client to ensure they are correct and that {@link #withAmount(long)}
-     * and {@link #withBaseAmount(long)} have been set with correct values based on the modifiers.
-     *
-     * @param basketItemModifiers The var-args list of modifiers
-     * @return This builder
-     */
-    @NonNull
-    public BasketItemBuilder withModifiers(BasketItemModifier... basketItemModifiers) {
-        if (this.modifiers == null) {
-            this.modifiers = new ArrayList<>();
+        if (baseAmount != Float.MIN_VALUE || (this.modifiers != null && this.modifiers.size() > 0)) {
+            throw new IllegalArgumentException("Amount may not be set if base amount and modifiers have been set");
         }
-        this.modifiers.addAll(Arrays.asList(basketItemModifiers));
+        this.amount = amount;
+        this.baseAmount = amount;
         return this;
     }
 
     /**
-     * Apply modifiers to this item.
+     * Set the item base amount value together with any modifiers that are to be applied to this amount.
      *
-     * Note that modifiers are NOT validated by AppFlow - it is up to the client to ensure they are correct and that {@link #withAmount(long)}
-     * and {@link #withBaseAmount(long)} have been set with correct values based on the modifiers.
+     * {@link #withAmount(long)} may NOT be called in combination with this - the amount field is in this case calculated
+     * from the base amount with modifiers applied, and then rounded.
      *
-     * @param basketItemModifiers The list of modifiers
+     * @param baseAmount          The base amount value (exclusive of modifiers)
+     * @param basketItemModifiers The var-args list of modifiers to apply to base amount
      * @return This builder
      */
     @NonNull
-    public BasketItemBuilder withModifiers(List<BasketItemModifier> basketItemModifiers) {
+    public BasketItemBuilder withBaseAmountAndModifiers(float baseAmount, BasketItemModifier... basketItemModifiers) {
+        withBaseAmountAndModifiers(baseAmount, Arrays.asList(basketItemModifiers));
+        return this;
+    }
+
+    /**
+     * Set the item base amount value together with any modifiers that are to be applied to this amount.
+     *
+     * {@link #withAmount(long)} may NOT be called in combination with this - the amount field is in this case calculated
+     * from the base amount with modifiers applied, and then rounded.
+     *
+     * @param baseAmount          The base amount value (exclusive of modifiers)
+     * @param basketItemModifiers The list of modifiers to apply to base amount
+     * @return This builder
+     */
+    @NonNull
+    public BasketItemBuilder withBaseAmountAndModifiers(float baseAmount, List<BasketItemModifier> basketItemModifiers) {
+        if (this.amount != Long.MIN_VALUE) {
+            throw new IllegalArgumentException("Base amount and modifiers may not be set if amount has already been set");
+        }
+        this.baseAmount = baseAmount;
         this.modifiers = basketItemModifiers;
+        this.amount = Math.round(BasketItem.calculateFinalAmount(baseAmount, modifiers));
         return this;
     }
 
@@ -348,10 +343,12 @@ public class BasketItemBuilder {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("A basket item must have a label");
         }
-        // Default base amount to amount
-        if (this.baseAmount == Integer.MIN_VALUE) {
-            this.baseAmount = amount;
+
+        if (this.amount == Long.MIN_VALUE && this.baseAmount == Float.MIN_VALUE) {
+            this.amount = 0;
+            this.baseAmount = 0;
         }
+
         return new BasketItem(id, label, category, amount, baseAmount, quantity, measurement, modifiers, references, itemData);
     }
 }
