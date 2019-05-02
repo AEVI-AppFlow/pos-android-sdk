@@ -23,6 +23,8 @@ import com.aevi.util.json.JsonConverter;
 
 import java.util.*;
 
+import static com.aevi.sdk.pos.flow.model.RoundingStrategy.NEAREST;
+
 /**
  * Represents a basket consisting of one or multiple {@link BasketItem}.
  *
@@ -43,6 +45,7 @@ public class Basket extends BaseModel {
     private final List<BasketItem> displayItems;
     private final AdditionalData additionalBasketData;
     private boolean primaryBasket;
+    private RoundingStrategy roundingStrategy = NEAREST;
 
     /**
      * Initialise an empty basket.
@@ -85,6 +88,17 @@ public class Basket extends BaseModel {
         this.basketName = basketName != null ? basketName : "N/A";
         this.displayItems = new ArrayList<>(basketItems);
         this.additionalBasketData = new AdditionalData();
+    }
+
+    /**
+     * Set the rounding strategy for calculating the basket total to the appropriate whole sub-unit.
+     *
+     * By default, {@link RoundingStrategy#NEAREST} will be used.
+     *
+     * @param roundingStrategy The {@link RoundingStrategy} to use for calculating basket total
+     */
+    public void setRoundingStrategy(RoundingStrategy roundingStrategy) {
+        this.roundingStrategy = roundingStrategy;
     }
 
     /**
@@ -346,15 +360,26 @@ public class Basket extends BaseModel {
     /**
      * Get the total basket value, inclusive of tax.
      *
+     * This value is calculated as the sum of each item base amount with modifiers applied and then rounded as per the strategy set
+     * via {@link #setRoundingStrategy(RoundingStrategy)}.
+     *
      * @return The total basket value
      */
     @JsonConverter.ExposeMethod(value = "totalBasketValue")
     public long getTotalBasketValue() {
-        long total = 0;
+        double total = 0;
         for (BasketItem displayItem : displayItems) {
-            total += displayItem.getTotalAmount();
+            total += displayItem.getTotalFractionalAmount();
         }
-        return total;
+        switch (roundingStrategy) {
+            case DOWN:
+                return (long) total;
+            case UP:
+                return (long) Math.ceil(total);
+            case NEAREST:
+            default:
+                return Math.round(total);
+        }
     }
 
     /**
