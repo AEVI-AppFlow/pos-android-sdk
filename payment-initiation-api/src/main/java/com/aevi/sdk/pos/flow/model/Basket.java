@@ -371,15 +371,18 @@ public class Basket extends BaseModel {
         for (BasketItem displayItem : displayItems) {
             total += displayItem.getTotalFractionalAmount();
         }
-        switch (roundingStrategy) {
-            case DOWN:
-                return (long) total;
-            case UP:
-                return (long) Math.ceil(total);
-            case NEAREST:
-            default:
-                return Math.round(total);
+        if (roundingStrategy != null) {
+            switch (roundingStrategy) {
+                case DOWN:
+                    return (long) total;
+                case UP:
+                    return (long) Math.ceil(total);
+                case NEAREST:
+                default:
+                    return Math.round(total);
+            }
         }
+        return Math.round(total);
     }
 
     /**
