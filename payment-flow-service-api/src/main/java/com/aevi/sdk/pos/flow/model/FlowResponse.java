@@ -222,6 +222,21 @@ public class FlowResponse implements Sendable {
     }
 
     /**
+     * Add payment reference.
+     *
+     * @param key    The key to use for this data
+     * @param values An array of values for this data
+     * @param <T>    The type of object this data is an array of
+     */
+    @SafeVarargs
+    public final <T> void addPaymentReference(String key, T... values) {
+        if (paymentReferences == null) {
+            paymentReferences = new AdditionalData();
+        }
+        paymentReferences.addData(key, values);
+    }
+
+    /**
      * Set payment references.
      *
      * @param paymentReferences The references via Options

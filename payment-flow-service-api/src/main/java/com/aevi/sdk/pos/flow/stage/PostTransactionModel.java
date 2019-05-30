@@ -111,7 +111,7 @@ public class PostTransactionModel extends BaseStageModel {
     public final <T> void addReferences(String key, T... values) {
         checkNotNull(key, "Key must be set");
         checkNotEmpty(values, "At least one value must be provided");
-        flowResponse.addAdditionalRequestData(key, values);
+        flowResponse.addPaymentReference(key, values);
     }
 
     /**
@@ -122,7 +122,7 @@ public class PostTransactionModel extends BaseStageModel {
      * @param references The references
      */
     public final void addReferences(AdditionalData references) {
-        flowResponse.setAdditionalRequestData(references);
+        flowResponse.setPaymentReferences(references);
     }
 
     /**
