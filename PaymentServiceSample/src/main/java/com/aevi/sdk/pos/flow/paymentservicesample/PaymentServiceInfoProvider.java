@@ -43,7 +43,7 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withCanPayAmounts(true, supportedPaymentMethods)
                 .withSupportedCurrencies(supportedCurrencies)
                 .withDefaultCurrency(supportedCurrencies[0])
-                .withSupportedFlowTypes(FLOW_TYPE_SALE, FLOW_TYPE_REFUND, FLOW_TYPE_REVERSAL, FLOW_TYPE_TOKENISATION)
+                .withSupportedFlowTypes(FLOW_TYPE_SALE, FLOW_TYPE_REFUND, FLOW_TYPE_REVERSAL, FLOW_TYPE_TOKENISATION, FLOW_TYPE_BATCH_CLOSURE)
                 .withCustomRequestTypes(FLOW_EVENT)
                 .withMerchants(new Merchant(IdProvider.getMerchantId(), IdProvider.getMerchantName()))
                 .withManualEntrySupport(false)

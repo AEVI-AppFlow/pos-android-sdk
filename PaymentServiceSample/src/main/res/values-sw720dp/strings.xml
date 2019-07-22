@@ -5,4 +5,5 @@
     <string name="pss_txn_processing">Payment Service Sample - Transaction processing step</string>
     <string name="pss_card_reading">Payment Service Sample - Payment card reading step</string>
     <string name="pss_select_token">Payment Service Sample - Select token</string>
+    <string name="pss_batch_closure">Payment Service Sample - Batch closure</string>
 </resources>
