@@ -14,6 +14,7 @@ android {
         applicationId 'com.aevi.sdk.pos.flow.flowservicesample'
         minSdkVersion projectMinSdkVersion
         targetSdkVersion projectTargetSdkVersion
+        versionCode sampleVersionCode
         versionName "${apiVersion}"
     }
     signingConfigs {
