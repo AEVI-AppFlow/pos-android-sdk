@@ -46,26 +46,26 @@ reusable-steps:
       name: Build and copy
       command: ./gradlew javadoc build jar copyApiLibs
   - &store
-    store_artifacts:
-      path: flow-base-api/build/libs
+    - store_artifacts:
+        path: flow-base-api/build/libs
 
-    store_artifacts:
-      path: flow-service-api/build/libs
+    - store_artifacts:
+        path: flow-service-api/build/libs
 
-    store_artifacts:
-      path: payment-initiation-api/build/libs
+    - store_artifacts:
+        path: payment-initiation-api/build/libs
 
-    store_artifacts:
-      path: payment-service-api/build/libs
+    - store_artifacts:
+        path: payment-service-api/build/libs
 
-    store_artifacts:
-      path: PaymentInitiationSample/build/outputs/apk
+    - store_artifacts:
+        path: PaymentInitiationSample/build/outputs/apk
 
-    store_artifacts:
-      path: PaymentServiceSample/build/outputs/apk
+    - store_artifacts:
+        path: PaymentServiceSample/build/outputs/apk
 
-    store_artifacts:
-      path: FlowServiceSample/build/outputs/apk
+    - store_artifacts:
+        path: FlowServiceSample/build/outputs/apk
 
   - &persist
     persist_to_workspace:
@@ -102,7 +102,7 @@ jobs:
       - *test
       - *build
       - *save_cache
-      - *store
+      - <<: *store
       - *persist
 
   deploy-qa:
