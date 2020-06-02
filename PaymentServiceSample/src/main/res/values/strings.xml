@@ -12,6 +12,7 @@
     <string name="select_payment_method_used">Select payment method used</string>
 
     <string name="send_response">Send response</string>
+    <string name="ask_a_question">Ask a question</string>
     <string name="defaults_to_requested_amounts">(Defaults to requested amounts)</string>
     <string name="pss_txn_processing">Transaction processing</string>
     <string name="pss_card_reading">Payment card reading</string>
@@ -24,5 +25,14 @@
     </string>
     <string name="token_help">Tokenisation is the process where an application generates a token, typically based on a payment card presented by a customer.\n\nThis token can then be used to identify the customer, and possibly be used to charge the customer for further transactions without requiring the physical card being present.
     </string>
+
+    <string name="message_payment_card_reading">Requesting card from customer</string>
+    <string name="message_processing_transaction">Processing transaction with host</string>
+
+    <string name="event_title">Got response from initiator to our question</string>
+
+    <string name="event_question">Does the customer have their card?</string>
+    <string name="card_yes">Yes</string>
+    <string name="card_no">No</string>
 </resources>
 

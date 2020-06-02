@@ -17,6 +17,7 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 
 import java.util.Objects;
@@ -24,7 +25,7 @@ import java.util.UUID;
 
 /**
  * Generic request that at minimum contains a request type and optionally flow name and bespoke request data.
- *
+ * <p>
  * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
  * and one will be selected either automatically or via user interaction.
  */
@@ -35,6 +36,7 @@ public class Request extends BaseModel {
     private String flowName;
     private String deviceId;
     private String targetAppId;
+    private String source;
     private boolean processInBackground;
 
     // Default constructor for deserialisation
@@ -148,6 +150,25 @@ public class Request extends BaseModel {
     }
 
     /**
+     * Get the source for this request if given
+     *
+     * @return The id of the application that started (sourced) this request
+     */
+    @Nullable
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Set the source for this request
+     *
+     * @param source The id of the application starting this request
+     */
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    /**
      * Get the application target id.
      *
      * @return The application target id
@@ -219,6 +240,7 @@ public class Request extends BaseModel {
                 ", flowName='" + flowName + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", targetAppId='" + targetAppId + '\'' +
+                ", source='" + source + '\'' +
                 ", processInBackground=" + processInBackground +
                 "} " + super.toString();
     }
@@ -240,12 +262,13 @@ public class Request extends BaseModel {
                 Objects.equals(requestData, request.requestData) &&
                 Objects.equals(flowName, request.flowName) &&
                 Objects.equals(deviceId, request.deviceId) &&
-                Objects.equals(targetAppId, request.targetAppId);
+                Objects.equals(targetAppId, request.targetAppId) &&
+                Objects.equals(source, request.source);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), requestType, requestData, flowName, deviceId, targetAppId, processInBackground);
+        return Objects.hash(super.hashCode(), requestType, requestData, flowName, deviceId, targetAppId, processInBackground, source);
     }
 
     public static Request fromJson(String json) {

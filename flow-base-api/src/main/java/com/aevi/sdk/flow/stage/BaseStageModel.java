@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.FlowServiceEventDataKeys;
 import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
@@ -27,10 +28,10 @@ import com.aevi.sdk.flow.model.AuditEntry;
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
+
 import io.reactivex.Observable;
 
-import static com.aevi.sdk.flow.constants.AppMessageTypes.AUDIT_ENTRY;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.RESPONSE_MESSAGE;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
@@ -179,6 +180,16 @@ public abstract class BaseStageModel {
             sendMessage(AUDIT_ENTRY, auditEntry.toJson());
             auditEntryCount++;
         }
+    }
+
+    /**
+     * Send an event back to the processing service for forwarding to any interested clients
+     *
+     * @param flowEvent The flow event to send. This object should contain the event data required to be sent to the client.
+     *                  originatingRequestId and target will be automatically set by processing service accordingly
+     */
+    public void sendEvent(FlowEvent flowEvent) {
+        sendMessage(FLOW_EVENT, flowEvent.toJson());
     }
 
     /**

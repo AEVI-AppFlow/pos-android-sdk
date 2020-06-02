@@ -1,6 +1,6 @@
 # AEVI AppFlow - POS Android SDK
 
-**Note** - AppFlow v2.1.1 is now released!
+**Note** - AppFlow v2.2.0 is now released!
 
 AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called.
 A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
@@ -11,7 +11,7 @@ such as loyalty, split bill, receipt delivery and much more. AppFlow for POS is 
 
 The SDK consists of two APIs - one for client/POS applications to initiate flows and one for value added services and payment applications to integrate into those flows.
 
-Please see the [Documentation](https://aevi-appflow.github.io/pos-android-sdk/) for detailed information of how AppFlow works and development guidelines.
+Please see the [Documentation](https://developer.aevi.com/) for detailed information of how AppFlow works and development guidelines.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ In order to test AppFlow and/or integrate with it, you will need to at a minimum
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
 - AEVI AppFlow Configuration App, which provides the flows and other settings for AppFlow tailored for developers
 
-Please download the latest developer bundle from [here](https://aevi-appflow.github.io/pos-android-sdk/downloads/), which contains these applications as well as the latest samples.
+Please download the latest developer bundle from [here](https://developer.aevi.com//downloads/), which contains these applications as well as the latest samples.
 
 ## Integrate
 
@@ -120,7 +120,7 @@ Contributions to any of our repos via pull requests are welcome. We follow the [
 
 ## LICENSE
 
-Copyright 2019 AEVI International GmbH
+Copyright 2020 AEVI International GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

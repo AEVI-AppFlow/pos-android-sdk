@@ -49,6 +49,8 @@ dependencies {
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
+    implementation apiDependencies.rxAndroid
+    implementation apiDependencies.gson
     implementation sampleDependencies.aeviUiLibrary
 
     implementation(sampleDependencies.support) { force = true }

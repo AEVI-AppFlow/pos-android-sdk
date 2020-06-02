@@ -14,13 +14,24 @@
 
 package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.Switch;
-import butterknife.*;
+
 import com.aevi.sdk.flow.constants.FlowStages;
-import com.aevi.sdk.pos.flow.model.*;
+import com.aevi.sdk.flow.constants.events.ConfirmationTypes;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.pos.flow.model.Amounts;
+import com.aevi.sdk.pos.flow.model.Card;
+import com.aevi.sdk.pos.flow.model.TransactionRequest;
+import com.aevi.sdk.pos.flow.model.TransactionResponse;
+import com.aevi.sdk.pos.flow.model.TransactionResponseBuilder;
+import com.aevi.sdk.pos.flow.model.events.ConfirmationOption;
+import com.aevi.sdk.pos.flow.model.events.ConfirmationRequest;
+import com.aevi.sdk.pos.flow.model.events.ConfirmationResponse;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.InMemoryStore;
@@ -37,8 +48,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
+import io.reactivex.disposables.Disposable;
+
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CARD;
 import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
+import static com.aevi.sdk.flow.constants.events.ConfirmationOptionValues.*;
+import static com.aevi.sdk.flow.constants.events.FlowEventTypes.*;
+
 
 public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
 
@@ -67,6 +88,8 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
     private TransactionProcessingModel transactionProcessingModel;
     private ModelDisplay modelDisplay;
 
+    private Disposable eventsDisposable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +115,33 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);
         }
+
+        subscribeToEvents();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (eventsDisposable != null) {
+            eventsDisposable.dispose();
+            eventsDisposable = null;
+        }
+    }
+
+    private void subscribeToEvents() {
+        // here we are subscribing to flow com.aevi.sdk.pos.flow.model.events and waiting for a confirmation response to our question, if the user (merchant) chooses to ask it during transaction processing
+        eventsDisposable = transactionProcessingModel.getEvents().subscribe(flowEvent -> {
+            if (flowEvent.getType().equals(EVENT_CONFIRMATION_RESPONSE)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TransactionProcessingActivity.this);
+
+                ConfirmationResponse response = flowEvent.getEventData(ConfirmationResponse.class);
+                // in reality we'd check the response value here but for this sample we are just assuming there's one and displaying it
+                builder.setTitle(R.string.event_title).setMessage(response.getSelectedValues()[0]);
+                builder.create().show();
+            }
+        }, throwable -> {
+            Log.e("TPA", "Failed to get com.aevi.sdk.pos.flow.model.events", throwable);
+        });
     }
 
     @Override
@@ -146,6 +196,15 @@ public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {
         InMemoryStore.getInstance().setLastTransactionResponseGenerated(transactionProcessingModel.getTransactionResponse());
         transactionProcessingModel.sendResponse();
         finish();
+    }
+
+    @OnClick(R.id.ask_a_question)
+    public void onSendFlowEvent() {
+        ConfirmationOption[] opts = new ConfirmationOption[2];
+        opts[0] = new ConfirmationOption(CONFIRMATION_OPTION_YES, getString(R.string.card_yes));
+        opts[1] = new ConfirmationOption(CONFIRMATION_OPTION_NO, getString(R.string.card_no));
+        FlowEvent flowEvent = new FlowEvent(EVENT_CONFIRMATION_REQUEST, new ConfirmationRequest(ConfirmationTypes.CONFIRMATION_TYPE_CARD, getString(R.string.event_question), opts));
+        transactionProcessingModel.sendEvent(flowEvent);
     }
 
     private TransactionResponseBuilder setProcessedAmounts(TransactionResponseBuilder transactionResponseBuilder) {

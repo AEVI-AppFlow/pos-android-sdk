@@ -2,6 +2,7 @@ ext {
     // API dependencies
     gsonVersion = '2.8.0'
     rxJavaVersion = '2.2.2'
+    rxAndroidVersion = '2.1.1'
     printApiVersion = '1.0.1'
     jsonConverterVersion = '1.1.0'
     rxMessengerVersion = '5.0.2'
@@ -10,7 +11,7 @@ ext {
     // Test dependencies
     junitVersion = '4.12'
     hamcrestVersion = '1.3'
-    mockitoVersion = '1.10.19'
+    mockitoVersion = '3.3.3'
     assertJVersion = '2.7.0'
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
@@ -23,10 +24,11 @@ ext {
     supportLibraryVersion = '28.0.0'
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
+    jsonConverterVersion = "1.1.0"
 
     // Sample AEVI deps
     aeviUiLibraryVersion = "2.0.1"
-    appFlowConstantsVersion = '2.2.2'
+    appFlowConstantsVersion = '2.3.0'
 
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 21
@@ -35,6 +37,7 @@ ext {
             androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
             rxMessenger       : "com.aevi.android:rxmessenger:$rxMessengerVersion",
+            rxAndroid         : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
             gson              : "com.google.code.gson:gson:$gsonVersion",
             archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
             archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
@@ -52,7 +55,7 @@ ext {
             supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
             design           : "com.android.support:design:$designLibraryVersion",
             constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
-            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion"
+            appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion",
     ]
 
     sampleAptDependencies = [
@@ -60,12 +63,10 @@ ext {
     ]
 
     testDependencies = [
-            junit       : "junit:junit:$junitVersion",
-            hamcrestCore: "org.hamcrest:hamcrest-core:$hamcrestVersion",
-            hamcrestInt : "org.hamcrest:hamcrest-integration:$hamcrestVersion",
-            hamcrestLib : "org.hamcrest:hamcrest-library:$hamcrestVersion",
-            mockito     : "org.mockito:mockito-core:$mockitoVersion",
-            assertJ     : "org.assertj:assertj-core:$assertJVersion",
-            robolectric : "org.robolectric:robolectric:$robolectricVersion",
+            junit      : "junit:junit:$junitVersion",
+            hamcrestAll: "org.hamcrest:hamcrest-all:$hamcrestVersion",
+            mockito    : "org.mockito:mockito-core:$mockitoVersion",
+            assertJ    : "org.assertj:assertj-core:$assertJVersion",
+            robolectric: "org.robolectric:robolectric:$robolectricVersion",
     ]
 }

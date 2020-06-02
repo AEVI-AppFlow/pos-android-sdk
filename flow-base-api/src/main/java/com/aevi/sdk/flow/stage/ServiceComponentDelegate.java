@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.AppMessage;
@@ -27,16 +28,15 @@ import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
 import com.aevi.sdk.flow.util.Preconditions;
+
+import java.util.UUID;
+
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
-import java.util.UUID;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.FLOW_SERVICE_EVENT;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
+import static android.content.Intent.*;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.*;
 
@@ -94,6 +94,10 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
             case RESPONSE_REJECTED:
                 completeMessageStream();
                 break;
+            default:
+                // forward event to activity if there is one
+                sendEventToActivity(flowEvent);
+                break;
         }
     }
 
@@ -124,7 +128,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
         activityIntent.putExtras(extras);
         ObservableActivityHelper<AppMessage> helper = ObservableActivityHelper.createInstance(context, activityIntent);
         helper.startObservableActivity().subscribe(clientCommunicator::sendMessage,
-                                                   throwable -> handleActivityException(throwable, clientCommunicator));
+                throwable -> handleActivityException(throwable, clientCommunicator));
         return helper;
     }
 
@@ -134,7 +138,7 @@ public class ServiceComponentDelegate extends AndroidComponentDelegate {
             clientCommunicator.sendResponseAsErrorAndEnd(me.getErrorCode(), me.getErrorMessage());
         } else {
             clientCommunicator.sendResponseAsErrorAndEnd(FLOW_SERVICE_ERROR,
-                                                         String.format("Flow service failed during activity: %s", throwable.getMessage()));
+                    String.format("Flow service failed during activity: %s", throwable.getMessage()));
         }
     }
 

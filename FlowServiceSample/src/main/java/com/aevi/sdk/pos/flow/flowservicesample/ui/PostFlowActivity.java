@@ -43,6 +43,7 @@ public class PostFlowActivity extends BaseSampleAppCompatActivity {
         ButterKnife.bind(this);
         setupToolbar(toolbar, R.string.fss_post_flow);
         postFlowModel = PostFlowModel.fromActivity(this);
+        sendClientMessage(postFlowModel, R.string.message_post_flow);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         modelDisplay.showTitle(false);
         subscribeToFlowServiceEvents(postFlowModel);

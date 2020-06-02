@@ -21,11 +21,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.stage.BaseStageModel;
+import com.aevi.sdk.pos.flow.model.events.ProgressMessage;
 import com.aevi.sdk.pos.flow.sample.R;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
+import static com.aevi.sdk.flow.constants.events.FlowEventTypes.EVENT_PROGRESS_MESSAGE;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
 
@@ -33,6 +37,11 @@ public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
         toolbar.setTitle(titleRes);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    protected void sendClientMessage(BaseStageModel model, int resId) {
+        FlowEvent flowEvent = new FlowEvent(EVENT_PROGRESS_MESSAGE, new ProgressMessage(getString(resId)));
+        model.sendEvent(flowEvent);
     }
 
     @Override

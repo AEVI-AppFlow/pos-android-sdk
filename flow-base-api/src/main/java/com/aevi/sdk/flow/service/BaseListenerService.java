@@ -15,6 +15,7 @@ package com.aevi.sdk.flow.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
@@ -27,7 +28,7 @@ import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
 
 /**
  * Base service used for notifying clients of the final response for any transaction.
- *
+ * <p>
  * This class should not be used directly instead choose one of the child classes
  * e.g. for generic responses use {@link BaseResponseListenerService}.
  */
@@ -70,12 +71,15 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
                     }
                 } else if (AppMessageTypes.FAILURE_MESSAGE.equals(appMessage.getMessageType())) {
                     FlowException flowException = FlowException.fromJson(appMessage.getMessageData());
-                    notifyError(flowException.getErrorCode(), flowException.getErrorMessage());
+                    notifyError(flowException);
+                } else if (AppMessageTypes.FLOW_EVENT.equals((appMessage.getMessageType()))) {
+                    FlowEvent flowEvent = FlowEvent.fromJson(appMessage.getMessageData());
+                    notifyFlowEvent(flowEvent);
                 }
             }
         }, throwable -> {
             if (throwable instanceof FlowException) {
-                notifyError(((FlowException) throwable).getErrorCode(), ((FlowException) throwable).getErrorMessage());
+                notifyError((FlowException) throwable);
             } else {
                 notifyError(UNEXPECTED_ERROR, throwable.getMessage());
             }
@@ -100,6 +104,28 @@ public abstract class BaseListenerService<RESPONSE extends BaseModel> extends Ab
      *
      * @param errorCode    The error code as per {@link com.aevi.sdk.flow.constants.ErrorConstants}
      * @param errorMessage Error message to further outline the problem
+     * @deprecated Please use {@link #notifyError(FlowException)} instead
      */
-    protected abstract void notifyError(@NonNull String errorCode, @NonNull String errorMessage);
+    protected void notifyError(@NonNull String errorCode, @NonNull String errorMessage) {
+        // overriding this method is now optional
+    }
+
+    /**
+     * This method will be called upon unrecoverable errors in the flow.
+     *
+     * @param flowException Error message to further outline the problem
+     */
+    protected void notifyError(@NonNull FlowException flowException) {
+        notifyError(flowException.getErrorCode(), flowException.getErrorMessage());
+    }
+
+    /**
+     * This method will be called when a flowEvent is received. Clients can optionally override this
+     * method to do something with the event
+     *
+     * @param flowEvent The flowEvent sent from flow apps or services called in a flow
+     */
+    protected void notifyFlowEvent(@NonNull FlowEvent flowEvent) {
+        // No-op
+    }
 }

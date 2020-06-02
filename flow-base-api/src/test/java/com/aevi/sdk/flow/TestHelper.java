@@ -3,17 +3,18 @@ package com.aevi.sdk.flow;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.res.builder.RobolectricPackageManager;
+import org.robolectric.shadows.ShadowPackageManager;
 
 import static org.robolectric.Shadows.shadowOf;
 
 public class TestHelper {
 
     public static void pretendServiceIsInstalled(ComponentName componentName) {
-        RobolectricPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ShadowPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
         Intent intent = new Intent();
         intent.setComponent(componentName);
 
