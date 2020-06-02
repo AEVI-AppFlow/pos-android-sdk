@@ -28,7 +28,7 @@ import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
 
 /**
  * Base service used for notifying clients of the final response for any transaction.
- * <p>
+ *
  * This class should not be used directly instead choose one of the child classes
  * e.g. for generic responses use {@link BaseResponseListenerService}.
  */

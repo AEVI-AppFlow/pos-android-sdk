@@ -17,7 +17,7 @@ package com.aevi.sdk.flow.constants;
 /**
  * Event types that may be sent to a flow service.
  *
- * Note that these com.aevi.sdk.pos.flow.model.events are only propagated via a stage model initialised from a service. It is up to the service implementation to proxy them
+ * Note that these events are only propagated via a stage model initialised from a service. It is up to the service implementation to proxy them
  * to any activity if one has been started.
  */
 public interface FlowServiceEventTypes {

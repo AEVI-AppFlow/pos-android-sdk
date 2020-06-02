@@ -35,7 +35,7 @@ import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
  * This service illustrates an explicit service implementation which gives full control over how and where to process the requests.
- * <p>
+ *
  * See the FlowServiceSample for illustrations on how to automatically proxy a request to an activity.
  */
 public class PaymentService extends BasePaymentFlowService {

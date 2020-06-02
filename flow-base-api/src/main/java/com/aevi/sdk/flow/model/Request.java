@@ -25,7 +25,7 @@ import java.util.UUID;
 
 /**
  * Generic request that at minimum contains a request type and optionally flow name and bespoke request data.
- * <p>
+ *
  * If a flow name is set, the flow with that name will be explicitly used. If not set, the request type will be used to look up eligible flows
  * and one will be selected either automatically or via user interaction.
  */
