@@ -99,11 +99,22 @@ public abstract class BaseApiClient {
 
     @NonNull
     public Completable initiateRequest(final Request request) {
+        return doSendRequest(request, REQUEST_MESSAGE);
+    }
+
+    public Completable sendEvent(final FlowEvent flowEvent) {
+        Request request = new Request(FLOW_EVENT);
+        request.getRequestData().addData(FLOW_EVENT, flowEvent);
+        request.setProcessInBackground(true); // events always processed in background (service receiving event may still be in the foreground)
+        return doSendRequest(request, FLOW_EVENT);
+    }
+
+    private Completable doSendRequest(final Request request, String appMessageType) {
         if (!isProcessingServiceInstalled(context)) {
             return Completable.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = new AppMessage(appMessageType, request.toJson(), getInternalData());
         appMessage.setResponseMechanism(RESPONSE_SERVICE);
         return requestMessenger
                 .sendMessage(appMessage.toJson())
@@ -111,13 +122,6 @@ public abstract class BaseApiClient {
                 .ignoreElement()
                 .doFinally(requestMessenger::closeConnection)
                 .onErrorResumeNext(throwable -> Completable.error(createFlowException(throwable)));
-    }
-
-    public Completable sendEvent(final FlowEvent flowEvent) {
-        Request request = new Request(FLOW_EVENT);
-        request.getRequestData().addData(FLOW_EVENT, flowEvent);
-        request.setProcessInBackground(true); // events always processed in background (service receiving event may still be in the foreground)
-        return initiateRequest(request);
     }
 
     @NonNull
