@@ -18,10 +18,13 @@ dependencies {
 
     testImplementation project(':payment-flow-service-api') // So we have access to certain builders
     testImplementation apiDependencies.androidMockable
+    testImplementation sampleDependencies.appFlowConstants
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
+    testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.robolectric
+
 }
 
 buildConfig {

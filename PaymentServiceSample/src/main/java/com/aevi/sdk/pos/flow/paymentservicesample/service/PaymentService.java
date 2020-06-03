@@ -14,10 +14,15 @@
 package com.aevi.sdk.pos.flow.paymentservicesample.service;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+
+import com.aevi.sdk.flow.model.AdditionalData;
+import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
+import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.TransactionProcessingActivity;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
@@ -25,8 +30,7 @@ import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
-import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
-import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.*;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
@@ -37,9 +41,15 @@ import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 public class PaymentService extends BasePaymentFlowService {
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+    }
+
+    @Override
     protected void onPaymentCardReading(CardReadingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onPaymentCardReading");
         model.processInActivity(getBaseContext(), PaymentCardReadingActivity.class);
+        sendClientMessage(model, getString(R.string.message_payment_card_reading));
         subscribeToFlowServiceEvents(model, PaymentCardReadingActivity.class);
     }
 
@@ -47,6 +57,7 @@ public class PaymentService extends BasePaymentFlowService {
     protected void onTransactionProcessing(TransactionProcessingModel model) {
         model.addAuditEntry(INFO, "Hello from PaymentService onTransactionProcessing");
         model.processInActivity(getBaseContext(), TransactionProcessingActivity.class);
+        sendClientMessage(model, getString(R.string.message_processing_transaction));
         subscribeToFlowServiceEvents(model, TransactionProcessingActivity.class);
     }
 
@@ -73,4 +84,12 @@ public class PaymentService extends BasePaymentFlowService {
             }
         });
     }
+
+    private void sendClientMessage(BaseStageModel model, String message) {
+        AdditionalData eventData = new AdditionalData();
+        eventData.addData("message", message); // TODO add to FlowEventTypes
+        FlowEvent flowEvent = new FlowEvent("message", eventData); // TODO add to FlowEventTypeDataKeys
+        model.sendEvent(flowEvent);
+    }
+
 }

@@ -4,8 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.*;
+
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.res.builder.RobolectricPackageManager;
+import org.robolectric.shadows.ShadowPackageManager;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -61,7 +62,7 @@ public class TestEnvironment {
 
     public static void pretendFpsIsInstalled() {
         ComponentName componentName = FLOW_PROCESSING_SERVICE_COMPONENT;
-        RobolectricPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ShadowPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
         Intent intent = new Intent();
         intent.setComponent(componentName);
 

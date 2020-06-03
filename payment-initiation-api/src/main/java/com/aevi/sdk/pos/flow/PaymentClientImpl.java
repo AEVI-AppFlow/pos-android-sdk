@@ -18,6 +18,7 @@ package com.aevi.sdk.pos.flow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
@@ -26,6 +27,7 @@ import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;

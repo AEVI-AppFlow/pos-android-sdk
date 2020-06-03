@@ -167,4 +167,8 @@
         <item>@string/abort_on_flow_app_error</item>
         <item>@string/abort_on_payment_app_error</item>
     </array>
+
+
+    <string name="channel_name">Event Notifications</string>
+    <string name="channel_description">Flow Events will be shown here when recieved</string>
 </resources>

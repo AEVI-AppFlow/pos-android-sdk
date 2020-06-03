@@ -44,6 +44,7 @@ public class PostTransactionActivity extends BaseSampleAppCompatActivity {
         setContentView(R.layout.activity_post_txn);
         ButterKnife.bind(this);
         postTransactionModel = PostTransactionModel.fromActivity(this);
+        sendClientMessage(postTransactionModel, R.string.message_post_transaction);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);
         if (modelDisplay != null) {
             modelDisplay.showTitle(false);

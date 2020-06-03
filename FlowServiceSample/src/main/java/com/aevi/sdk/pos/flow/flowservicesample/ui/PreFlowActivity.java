@@ -71,6 +71,7 @@ public class PreFlowActivity extends BaseSampleAppCompatActivity {
         });
 
         preFlowModel = PreFlowModel.fromActivity(this);
+        sendClientMessage(preFlowModel, R.string.message_pre_flow);
         paymentBuilder = preFlowModel.getPaymentBuilder();
         setupToolbar(toolbar, R.string.fss_pre_flow);
         modelDisplay = (ModelDisplay) getSupportFragmentManager().findFragmentById(R.id.fragment_request_details);

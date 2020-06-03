@@ -53,6 +53,7 @@ public class PaymentClientImplTest {
     public void initiatePaymentShouldSendPaymentViaRequestCorrectly() {
         pretendFpsIsInstalled();
         Payment payment = new PaymentBuilder().withPaymentFlow("blarp").withAmounts(new Amounts(1000, "GBP")).build();
+        String uuid = payment.getId(); // do something with this id here
 
         paymentClient.initiatePayment(payment).test();
 
