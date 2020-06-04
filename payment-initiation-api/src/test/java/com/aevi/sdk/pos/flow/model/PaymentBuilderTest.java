@@ -58,7 +58,7 @@ public class PaymentBuilderTest {
     }
 
     @Test
-    public void withAdditionalDataShouldReplaceAnyPReviousData() {
+    public void withAdditionalDataShouldBeplaceAnyPreviousData() {
         PaymentBuilder builder = new PaymentBuilder()
                 .withPaymentFlow("sale")
                 .withAmounts(new Amounts(1000, "GBP"));
