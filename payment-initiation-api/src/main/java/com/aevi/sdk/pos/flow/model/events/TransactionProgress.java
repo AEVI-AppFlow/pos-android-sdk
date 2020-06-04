@@ -1,3 +1,16 @@
+/*
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.aevi.sdk.pos.flow.model.events;
 
 import android.support.annotation.NonNull;
@@ -25,6 +38,7 @@ public class TransactionProgress {
 
     /**
      * Creates a progress event with some {@link Amounts}
+     *
      * @param amounts The current amounts
      */
     public TransactionProgress(@NonNull Amounts amounts) {
@@ -33,8 +47,9 @@ public class TransactionProgress {
 
     /**
      * Creates a progress event with some {@link Amounts} and a {@link Card}
+     *
      * @param amounts The current amounts
-     * @param card THe current card details
+     * @param card    THe current card details
      */
     public TransactionProgress(@NonNull Amounts amounts, @NonNull Card card) {
         this(amounts, card, new AdditionalData());
@@ -42,8 +57,9 @@ public class TransactionProgress {
 
     /**
      * Creates a progress event with some {@link Amounts} a {@link Card} and some reference data
-     * @param amounts The current amounts
-     * @param card The current card details
+     *
+     * @param amounts    The current amounts
+     * @param card       The current card details
      * @param references A set of references
      */
     public TransactionProgress(@NonNull Amounts amounts, @NonNull Card card, @NonNull AdditionalData references) {
