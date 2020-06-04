@@ -43,7 +43,7 @@ public class BatchClosureActivity extends BaseSampleAppCompatActivity {
     }
 
     @OnClick(R.id.reply_with_success)
-    public void onRespondWitToken() {
+    public void onRespondWithToken() {
         sendTokenResponseAndFinish(true);
     }
 
