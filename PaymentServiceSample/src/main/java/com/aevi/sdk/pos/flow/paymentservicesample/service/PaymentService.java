@@ -17,10 +17,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.stage.BaseStageModel;
 import com.aevi.sdk.flow.stage.GenericStageModel;
+import com.aevi.sdk.pos.flow.model.events.ProgressMessage;
 import com.aevi.sdk.pos.flow.paymentservicesample.GenericStageHandler;
 import com.aevi.sdk.pos.flow.paymentservicesample.R;
 import com.aevi.sdk.pos.flow.paymentservicesample.ui.PaymentCardReadingActivity;
@@ -31,6 +31,7 @@ import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.*;
+import static com.aevi.sdk.flow.constants.events.FlowEventTypes.EVENT_PROGRESS_MESSAGE;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
 
 /**
@@ -86,9 +87,7 @@ public class PaymentService extends BasePaymentFlowService {
     }
 
     private void sendClientMessage(BaseStageModel model, String message) {
-        AdditionalData eventData = new AdditionalData();
-        eventData.addData("message", message); // TODO add to FlowEventTypes
-        FlowEvent flowEvent = new FlowEvent("message", eventData); // TODO add to FlowEventTypeDataKeys
+        FlowEvent flowEvent = new FlowEvent(EVENT_PROGRESS_MESSAGE, new ProgressMessage(message));
         model.sendEvent(flowEvent);
     }
 

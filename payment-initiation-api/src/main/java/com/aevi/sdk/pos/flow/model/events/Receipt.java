@@ -1,5 +1,17 @@
+/*
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.aevi.sdk.pos.flow.model.events;
-
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +42,7 @@ public class Receipt {
 
     /**
      * Creates a receipt object
+     *
      * @param receiptType The type of receipt this is e.g. customer, merchant
      * @param receiptText The actual formatted text of the receipt
      */
@@ -40,8 +53,9 @@ public class Receipt {
 
     /**
      * Sets the receipt data
+     *
      * @param receiptDataFormat The format of the data set here e.g. json
-     * @param receiptData The actual (escaped) data
+     * @param receiptData       The actual (escaped) data
      */
     public void setReceiptData(@NonNull String receiptDataFormat, @NonNull String receiptData) {
         this.receiptDataFormat = receiptDataFormat;
