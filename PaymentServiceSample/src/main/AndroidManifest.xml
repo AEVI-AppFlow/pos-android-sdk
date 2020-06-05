@@ -54,6 +54,12 @@
                 android:label="@string/pss_select_token"
                 android:resizeableActivity="false"/>
 
+        <activity
+                android:name=".ui.BatchClosureActivity"
+                android:excludeFromRecents="true"
+                android:label="@string/pss_batch_closure"
+                android:resizeableActivity="false"/>
+
     </application>
 
 </manifest>
