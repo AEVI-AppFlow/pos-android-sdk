@@ -17,12 +17,14 @@ package com.aevi.sdk.pos.flow.paymentservicesample;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.aevi.sdk.pos.flow.model.Merchant;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfoBuilder;
 import com.aevi.sdk.pos.flow.paymentservicesample.util.IdProvider;
 import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 
+import static com.aevi.sdk.flow.constants.AppMessageTypes.FLOW_EVENT;
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 import static com.aevi.sdk.flow.constants.ServiceInfoErrors.*;
 
@@ -41,7 +43,8 @@ public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvid
                 .withCanPayAmounts(true, supportedPaymentMethods)
                 .withSupportedCurrencies(supportedCurrencies)
                 .withDefaultCurrency(supportedCurrencies[0])
-                .withSupportedFlowTypes(FLOW_TYPE_SALE, FLOW_TYPE_REFUND, FLOW_TYPE_REVERSAL, FLOW_TYPE_TOKENISATION)
+                .withSupportedFlowTypes(FLOW_TYPE_SALE, FLOW_TYPE_REFUND, FLOW_TYPE_REVERSAL, FLOW_TYPE_TOKENISATION, FLOW_TYPE_BATCH_CLOSURE)
+                .withCustomRequestTypes(FLOW_EVENT)
                 .withMerchants(new Merchant(IdProvider.getMerchantId(), IdProvider.getMerchantName()))
                 .withManualEntrySupport(false)
                 .withSupportsAccessibilityMode(false)

@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
+
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.android.rxmessenger.Channels;
 import com.aevi.android.rxmessenger.MessageException;
@@ -29,22 +30,27 @@ import com.aevi.sdk.config.ConfigApi;
 import com.aevi.sdk.config.ConfigClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ErrorConstants;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.AppMessage;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.InternalData;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.ResponseQuery;
 import com.aevi.sdk.flow.model.config.AppFlowSettings;
+
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
-import java.util.List;
-
-import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_MESSENGER;
-import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_WEBSOCKET;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.DEVICE_INFO_REQUEST;
-import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
-import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTION;
-import static com.aevi.sdk.flow.constants.ResponseMechanisms.RESPONSE_SERVICE;
+import static com.aevi.android.rxmessenger.MessageConstants.*;
+import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
+import static com.aevi.sdk.flow.constants.ResponseMechanisms.*;
 
 /**
  * Internal base client for all API domain implementations.
@@ -93,11 +99,22 @@ public abstract class BaseApiClient {
 
     @NonNull
     public Completable initiateRequest(final Request request) {
+        return doSendRequest(request, REQUEST_MESSAGE);
+    }
+
+    public Completable sendEvent(final FlowEvent flowEvent) {
+        Request request = new Request(FLOW_EVENT);
+        request.getRequestData().addData(FLOW_EVENT, flowEvent);
+        request.setProcessInBackground(true); // events always processed in background (service receiving event may still be in the foreground)
+        return doSendRequest(request, FLOW_EVENT);
+    }
+
+    private Completable doSendRequest(final Request request, String appMessageType) {
         if (!isProcessingServiceInstalled(context)) {
             return Completable.error(NO_FPS_EXCEPTION);
         }
         final ChannelClient requestMessenger = getMessengerClient(FLOW_PROCESSING_SERVICE_COMPONENT);
-        AppMessage appMessage = new AppMessage(REQUEST_MESSAGE, request.toJson(), getInternalData());
+        AppMessage appMessage = new AppMessage(appMessageType, request.toJson(), getInternalData());
         appMessage.setResponseMechanism(RESPONSE_SERVICE);
         return requestMessenger
                 .sendMessage(appMessage.toJson())

@@ -16,6 +16,7 @@ package com.aevi.sdk.pos.flow.model;
 
 
 import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
@@ -207,13 +208,23 @@ public class PaymentBuilder {
     }
 
     /**
-     * Set the additional data to pass via the payment.
+     * @Deprecated Please use {@link #withAdditionalData}
+     */
+    @NonNull
+    public PaymentBuilder addAdditionalData(AdditionalData additionalData) {
+        return withAdditionalData(additionalData);
+    }
+
+    /**
+     * Sets the additional data to pass via the payment.
+     *
+     * <strong>NOTE: This will replace any previously added additional data with the data given here.</strong>
      *
      * @param additionalData The additional data
      * @return This builder
      */
     @NonNull
-    public PaymentBuilder addAdditionalData(AdditionalData additionalData) {
+    public PaymentBuilder withAdditionalData(AdditionalData additionalData) {
         this.additionalData = additionalData;
         return this;
     }

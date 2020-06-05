@@ -18,6 +18,7 @@ dependencies {
     testImplementation project(':payment-flow-service-api')
     testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
+    testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
     testImplementation testDependencies.robolectric

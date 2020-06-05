@@ -31,6 +31,7 @@ public interface AppMessageTypes {
     String AUDIT_ENTRY = "auditEntry";
     String FAILURE_MESSAGE = "failure";
     String REQUEST_ACK_MESSAGE = "requestAck";
+    String FLOW_EVENT = "flowEvent";
 
     // Sent by FPS
     String FLOW_SERVICE_EVENT = "flowServiceEvent";

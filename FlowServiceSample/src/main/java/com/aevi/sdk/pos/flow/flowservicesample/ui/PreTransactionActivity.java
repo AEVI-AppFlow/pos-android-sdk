@@ -19,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import butterknife.BindView;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.flowservicesample.R;
+import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
+import com.aevi.sdk.pos.flow.stage.PreTransactionModel;
 
 /**
  * Sample activity for pre-payment stage. See base class.
@@ -35,6 +37,8 @@ public class PreTransactionActivity extends BasePreProcessingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupToolbar(toolbar, R.string.fss_pre_payment);
+        PreTransactionModel preTransactionModel = PreTransactionModel.fromActivity(this);
+        sendClientMessage(preTransactionModel, R.string.message_pre_transaction);
     }
 
     @Override

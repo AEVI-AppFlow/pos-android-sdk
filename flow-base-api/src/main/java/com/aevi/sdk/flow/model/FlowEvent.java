@@ -17,6 +17,7 @@ package com.aevi.sdk.flow.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -29,7 +30,10 @@ public class FlowEvent implements Jsonable {
 
     private final String type;
     private final AdditionalData data;
+
     private String eventTrigger;
+    private String originatingRequestId;
+    private String target;
 
     public FlowEvent(String type) {
         this.type = type;
@@ -45,6 +49,19 @@ public class FlowEvent implements Jsonable {
         this.type = type;
         this.data = data;
         this.eventTrigger = eventTrigger;
+    }
+
+    /**
+     * Creates an event that contains an arbitrary event data model
+     *
+     * @param type      The type of event
+     * @param eventData The data object
+     */
+    @SuppressWarnings("unchecked")
+    public <T> FlowEvent(String type, T eventData) {
+        this.type = type;
+        this.data = new AdditionalData();
+        this.data.addData(type, eventData);
     }
 
     /**
@@ -68,6 +85,23 @@ public class FlowEvent implements Jsonable {
     }
 
     /**
+     * If this event has an event data object this method can be used as a simple way to get it
+     *
+     * @param classType The type of class you are expecting in this event type
+     * @return The data object if present in the event data
+     */
+    public <T> T getEventData(Class<T> classType) {
+        return this.data.getValue(type, classType);
+    }
+
+    /**
+     * @return True if this event had some data object assoicated with it
+     */
+    public boolean hasEventData() {
+        return this.data.hasData(type);
+    }
+
+    /**
      * Set the event trigger.
      *
      * @param eventTrigger The event trigger
@@ -86,24 +120,59 @@ public class FlowEvent implements Jsonable {
         return eventTrigger;
     }
 
+    /**
+     * Get the id of the request that initiated this flow
+     *
+     * @return The id of the request
+     */
+    @Nullable
+    public String getOriginatingRequestId() {
+        return originatingRequestId;
+    }
+
+    /**
+     * Set the id originating request that initiated this flow
+     *
+     * @param originatingRequestId The id
+     */
+    public void setOriginatingRequestId(String originatingRequestId) {
+        this.originatingRequestId = originatingRequestId;
+    }
+
+    /**
+     * Get the target. i.e. where this event should be sent
+     *
+     * @return The target
+     */
+    @Nullable
+    public String getTarget() {
+        return target;
+    }
+
+    /**
+     * Sets the target i.e. where this event should be sent to
+     *
+     * @param target The target
+     */
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FlowEvent flowEvent = (FlowEvent) o;
-        return Objects.equals(type, flowEvent.type) &&
-                Objects.equals(data, flowEvent.data) &&
-                Objects.equals(eventTrigger, flowEvent.eventTrigger);
+        return type.equals(flowEvent.type) &&
+                data.equals(flowEvent.data) &&
+                Objects.equals(eventTrigger, flowEvent.eventTrigger) &&
+                Objects.equals(originatingRequestId, flowEvent.originatingRequestId) &&
+                Objects.equals(target, flowEvent.target);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(type, data, eventTrigger);
+        return Objects.hash(type, data, eventTrigger, originatingRequestId, target);
     }
 
     @Override
@@ -112,6 +181,8 @@ public class FlowEvent implements Jsonable {
                 "type='" + type + '\'' +
                 ", data=" + data +
                 ", eventTrigger='" + eventTrigger + '\'' +
+                ", originatingRequestId='" + originatingRequestId + '\'' +
+                ", target='" + target + '\'' +
                 '}';
     }
 

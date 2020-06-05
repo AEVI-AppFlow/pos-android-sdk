@@ -14,9 +14,14 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.FlowException;
 import com.aevi.sdk.flow.model.Response;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
+import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.NotificationHelper;
 
 import static android.content.Intent.*;
 
@@ -24,6 +29,9 @@ public class ResponseListenerService extends BaseResponseListenerService {
 
     @Override
     protected void notifyGenericResponse(Response response) {
+        NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
+        notificationHelper.dismissNotification();
+
         Intent intent = new Intent(this, GenericResultActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT | FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY, response.toJson());
@@ -37,12 +45,21 @@ public class ResponseListenerService extends BaseResponseListenerService {
     }
 
     @Override
-    protected void notifyError(String errorCode, String errorMessage) {
+    protected void notifyFlowEvent(@NonNull FlowEvent flowEvent) {
+        NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
+        notificationHelper.notifyEvent(flowEvent);
+    }
+
+    @Override
+    protected void notifyError(@NonNull FlowException flowException) {
+        NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
+        notificationHelper.dismissNotification();
+
         Intent intent = new Intent(this, GenericResultActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_REORDER_TO_FRONT |
-                                FLAG_ACTIVITY_NO_ANIMATION);
+                FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(GenericResultActivity.GENERIC_RESPONSE_KEY,
-                        new Response("N/A", false, errorCode + " : " + errorMessage, null).toJson());
+                new Response("N/A", false, flowException.getErrorCode() + " : " + flowException.getErrorMessage(), null).toJson());
         startActivity(intent);
     }
 }

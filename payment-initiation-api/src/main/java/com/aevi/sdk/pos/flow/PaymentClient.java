@@ -16,18 +16,25 @@ package com.aevi.sdk.pos.flow;
 
 
 import android.support.annotation.NonNull;
+
 import com.aevi.sdk.flow.constants.ErrorConstants;
-import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.flow.model.Device;
+import com.aevi.sdk.flow.model.FlowEvent;
+import com.aevi.sdk.flow.model.FlowException;
+import com.aevi.sdk.flow.model.Request;
+import com.aevi.sdk.flow.model.Response;
+import com.aevi.sdk.flow.model.ResponseQuery;
 import com.aevi.sdk.flow.service.BaseResponseListenerService;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 import com.aevi.sdk.pos.flow.service.BasePaymentResponseListenerService;
+
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-
-import java.util.List;
 
 /**
  * Payment client that exposes all the functions supported to query for payment services and initiate payments, etc.
@@ -83,6 +90,17 @@ public interface PaymentClient {
      */
     @NonNull
     Completable initiatePayment(Payment payment);
+
+    /**
+     * Sends a flow event.
+     *
+     * Events can be sent and received at any time including during other payment flows.
+     *
+     * @param flowEvent The event to send
+     * @return Completable that represents the acceptance of the request
+     */
+    @NonNull
+    Completable sendEvent(FlowEvent flowEvent);
 
     /**
      * Returns a stream of completed PaymentResponses for the given parameters.

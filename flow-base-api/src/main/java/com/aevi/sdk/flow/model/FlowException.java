@@ -1,5 +1,7 @@
 package com.aevi.sdk.flow.model;
 
+import android.support.annotation.Nullable;
+
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
@@ -17,6 +19,10 @@ public class FlowException extends Exception implements Jsonable {
 
     private final String errorCode;
     private final String errorMessage;
+
+    private String originatingRequestId;
+
+    private String target;
 
     public FlowException(String errorCode, String message) {
         this.errorMessage = message;
@@ -51,22 +57,66 @@ public class FlowException extends Exception implements Jsonable {
         return JsonConverter.deserialize(json, FlowException.class);
     }
 
+    /**
+     * Get the id of the request that initiated this flow
+     *
+     * @return The id of the request
+     */
+    public String getOriginatingRequestId() {
+        return originatingRequestId;
+    }
+
+    /**
+     * Set the id originating request that initiated this flow
+     *
+     * @param originatingRequestId The id
+     */
+    public void setOriginatingRequestId(String originatingRequestId) {
+        this.originatingRequestId = originatingRequestId;
+    }
+
+    /**
+     * Get the target for this exception.
+     *
+     * @return The targett.
+     */
+    @Nullable
+    public String getTarget() {
+        return target;
+    }
+
+    /**
+     * Sets the target i.e. where this exception should be delivered to
+     *
+     * @param target The target
+     */
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FlowException that = (FlowException) o;
-        return Objects.equals(errorCode, that.errorCode) &&
-                Objects.equals(errorMessage, that.errorMessage);
+        return errorCode.equals(that.errorCode) &&
+                errorMessage.equals(that.errorMessage) &&
+                Objects.equals(originatingRequestId, that.originatingRequestId) &&
+                Objects.equals(target, that.target);
     }
 
     @Override
     public int hashCode() {
+        return Objects.hash(errorCode, errorMessage, originatingRequestId, target);
+    }
 
-        return Objects.hash(errorCode, errorMessage);
+    @Override
+    public String toString() {
+        return "FlowException{" +
+                "errorCode='" + errorCode + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", originatingRequestId='" + originatingRequestId + '\'' +
+                ", target='" + target + '\'' +
+                '}';
     }
 }

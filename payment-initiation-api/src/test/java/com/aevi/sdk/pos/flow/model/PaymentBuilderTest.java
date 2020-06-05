@@ -1,7 +1,9 @@
 package com.aevi.sdk.pos.flow.model;
 
 
+import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Token;
+
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -53,5 +55,41 @@ public class PaymentBuilderTest {
         assertThat(payment.getAmounts()).isEqualTo(new Amounts(1000, "GBP"));
         assertThat(payment.isSplitEnabled()).isTrue();
         assertThat(payment.getBasket()).isNotNull();
+    }
+
+    @Test
+    public void withAdditionalDataShouldBeplaceAnyPreviousData() {
+        PaymentBuilder builder = new PaymentBuilder()
+                .withPaymentFlow("sale")
+                .withAmounts(new Amounts(1000, "GBP"));
+
+        builder.addAdditionalData("replaceme", "banana");
+        AdditionalData ad = new AdditionalData();
+        ad.addData("dontreplaceme", "apple");
+        builder.withAdditionalData(ad);
+
+        Payment payment = builder.build();
+
+        assertThat(payment.getAdditionalData().hasData("replaceme")).isFalse();
+        assertThat(payment.getAdditionalData().hasData("dontreplaceme")).isTrue();
+    }
+
+    @Test
+    public void checkThatAddAdditionalDataOnlyAddsAsExpected() {
+        PaymentBuilder builder = new PaymentBuilder()
+                .withPaymentFlow("sale")
+                .withAmounts(new Amounts(1000, "GBP"));
+
+        builder.addAdditionalData("replaceme", "banana");
+        AdditionalData ad = new AdditionalData();
+        ad.addData("dontreplaceme", "apple");
+        builder.withAdditionalData(ad);
+        builder.addAdditionalData("somethingelse", "orange");
+
+        Payment payment = builder.build();
+
+        assertThat(payment.getAdditionalData().hasData("dontreplaceme")).isTrue();
+        assertThat(payment.getAdditionalData().hasData("somethingelse")).isTrue();
+
     }
 }

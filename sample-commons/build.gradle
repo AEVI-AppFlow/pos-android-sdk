@@ -35,6 +35,8 @@ dependencies {
 
     api sampleDependencies.appFlowConstants
 
+    implementation apiDependencies.gson
+
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }
     implementation(sampleDependencies.recyclerView) { force = true }

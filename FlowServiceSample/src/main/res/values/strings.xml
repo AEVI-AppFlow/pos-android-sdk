@@ -59,4 +59,9 @@
     <string name="add_item_discount">Update basket with discounts</string>
     <string name="pre_flow_header_text">This sample only provides the minimum controls for pre-flow. For more details, see documentation.</string>
     <string name="set_amount">Set amount</string>
+
+    <string name="message_pre_flow">Started PRE_FLOW flow app</string>
+    <string name="message_post_flow">Started POST_FLOW flow app</string>
+    <string name="message_post_transaction">Started POST_TRANSACTION flow app</string>
+    <string name="message_pre_transaction">Started PRE_TRANSACTION flow app</string>
 </resources>
