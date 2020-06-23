@@ -33,6 +33,7 @@ public class FlowConfigBuilder {
     private String description;
     private String restrictedToApp;
     private boolean processInBackground;
+    private boolean allowZeroAmounts;
     private List<FlowStage> stages = new ArrayList<>();
 
     /**
@@ -151,6 +152,20 @@ public class FlowConfigBuilder {
     }
 
     /**
+     * Specify that zero amounts are still to be passed to all flow services
+     *
+     * It true then even if all amounts have been fulfilled or the requested amount is zero then
+     * the flow services will still be called and expected to provide a TransactionResponse.
+     *
+     * @param allowZeroAmounts True to allow zero amounts to be passed to flow services
+     * @return This builder
+     */
+    public FlowConfigBuilder withAllowZeroAmounts(boolean allowZeroAmounts) {
+        this.allowZeroAmounts = allowZeroAmounts;
+        return this;
+    }
+
+    /**
      * Build a flow config instance.
      *
      * @return The flow config
@@ -158,7 +173,7 @@ public class FlowConfigBuilder {
     public FlowConfig build() {
         checkNotEmpty(name, "Name must be set");
         checkNotEmpty(type, "Type must be set");
-        return new FlowConfig(name, type, version, apiMajorVersion, description, restrictedToApp, stages, processInBackground);
+        return new FlowConfig(name, type, version, apiMajorVersion, description, restrictedToApp, stages, processInBackground, allowZeroAmounts);
     }
 
     private static int getMajorVersionNumber() {

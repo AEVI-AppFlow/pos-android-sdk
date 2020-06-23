@@ -208,9 +208,10 @@ public class PaymentBuilder {
     }
 
     /**
-     * @Deprecated Please use {@link #withAdditionalData}
+     * @deprecated Please use {@link #withAdditionalData}
      */
     @NonNull
+    @Deprecated
     public PaymentBuilder addAdditionalData(AdditionalData additionalData) {
         return withAdditionalData(additionalData);
     }

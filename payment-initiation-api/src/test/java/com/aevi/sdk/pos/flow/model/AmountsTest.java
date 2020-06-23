@@ -116,4 +116,25 @@ public class AmountsTest {
         assertThat(amounts.getTotalAmountValue()).isEqualTo(7500L);
         assertThat(amounts.getTotalExcludingAmounts("one", "two")).isEqualTo(4000L);
     }
+
+    @Test
+    public void checkZeroAmountsAreAllowed() {
+        Amounts amounts = new Amounts(0, "GBP");
+        assertThat(amounts.getBaseAmountValue()).isEqualTo(0L);
+        assertThat(amounts.getTotalAmountValue()).isEqualTo(0L);
+        assertThat(amounts.getTotalExcludingAmounts()).isEqualTo(0L);
+    }
+
+    @Test
+    public void checkCanGetAmountForZeroAmounts() {
+        Amounts amounts = new Amounts(0, "GBP");
+
+        Amount amount = amounts.getBaseAmount();
+        assertThat(amount.getValue()).isEqualTo(0L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkZeroAmountWithoutCorrectCurrencyWillFail() {
+        new Amounts(0, "");
+    }
 }

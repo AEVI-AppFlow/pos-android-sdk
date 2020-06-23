@@ -2,6 +2,7 @@ package com.aevi.sdk.pos.flow.model;
 
 import com.aevi.util.json.JsonConverter;
 import com.google.gson.JsonParseException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +29,8 @@ public class PaymentTest {
         Payment payment = getValidRequest(1000, "GBP", "sale");
 
         Payment result = Payment.fromJson(payment.toJson());
+
+        System.out.println(payment.toJson());
 
         assertValues(result, 1000, "GBP", "sale");
         assertThat(payment).isEqualTo(result);

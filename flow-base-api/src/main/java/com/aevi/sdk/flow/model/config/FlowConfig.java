@@ -42,17 +42,18 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
     private final String restrictedToApp;
     private final List<FlowStage> stages;
     private final boolean processInBackground;
+    private final boolean allowZeroAmounts;
     private boolean generatedFromCustomType;
 
     private transient List<FlowStage> allStagesFlattened;
     private transient Map<String, FlowStage> allStagesMap;
 
     FlowConfig() {
-        this("N/A", "N/A", 0, 0, null, null, null, false);
+        this("N/A", "N/A", 0, 0, null, null, null, false, false);
     }
 
     public FlowConfig(String name, String type, int version, int apiMajorVersion, String description, String restrictedToApp,
-                      List<FlowStage> stages, boolean processInBackground) {
+                      List<FlowStage> stages, boolean processInBackground, boolean allowZeroAmounts) {
         this.name = name;
         this.type = type;
         this.version = version;
@@ -61,6 +62,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
         this.restrictedToApp = restrictedToApp;
         this.stages = stages != null ? stages : new ArrayList<>();
         this.processInBackground = processInBackground;
+        this.allowZeroAmounts = allowZeroAmounts;
         parseStageHierarchy();
     }
 
@@ -185,6 +187,20 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      */
     public boolean shouldProcessInBackground() {
         return processInBackground;
+    }
+
+    /**
+     * Determines whether zero amounts are allowed to be passed to flow services in a flow.
+     *
+     * Specifically this is usually sending a transaction request to the card reading and transaction
+     * processing flow service when the amount remaining is zero or the requested amount was zero at initiation.
+     *
+     * Default is false which indicates the flow services will be skipped when all amounts are fulfilled or zero
+     *
+     * @return True if zero amounts should be passed to flow services. Otherwise the service
+     */
+    public boolean shouldAllowZeroAmounts() {
+        return allowZeroAmounts;
     }
 
     /**
