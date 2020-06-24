@@ -197,7 +197,7 @@ public class FlowConfig implements Jsonable, JsonPostProcessing {
      *
      * Default is false which indicates the flow services will be skipped when all amounts are fulfilled or zero
      *
-     * @return True if zero amounts should be passed to flow services. Otherwise the service
+     * @return True if zero amounts should be passed to flow services. Otherwise the service will be skipped when amount left to process is zero
      */
     public boolean shouldAllowZeroAmounts() {
         return allowZeroAmounts;
