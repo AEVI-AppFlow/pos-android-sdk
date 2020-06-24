@@ -1,6 +1,7 @@
 package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class FlowConfigTest {
 
     @Before
     public void setup() {
-        flowConfig = new FlowConfig("blarp", "river", 1, 2, "yes", null, null, false);
+        flowConfig = new FlowConfig("blarp", "river", 1, 2, "yes", null, null, false, false);
     }
 
     @Test
@@ -103,6 +104,22 @@ public class FlowConfigTest {
         checkHasAppForStage("burps", true);
         checkHasAppForStage("", false);
         checkHasAppForStage(null, false);
+    }
+
+    @Test
+    public void checkFlags() {
+        FlowConfig flowConfig1 = new FlowConfig("blarp", "river", 1, 2, "yes", null, null, true, false);
+        FlowConfig flowConfig2 = new FlowConfig("blarp", "river", 1, 2, "yes", null, null, false, true);
+
+        flowConfig1 = FlowConfig.fromJson(flowConfig1.toJson());
+        flowConfig2 = FlowConfig.fromJson(flowConfig2.toJson());
+
+        assertThat(flowConfig.shouldAllowZeroAmounts()).isFalse();
+        assertThat(flowConfig.shouldProcessInBackground()).isFalse();
+        assertThat(flowConfig1.shouldAllowZeroAmounts()).isFalse();
+        assertThat(flowConfig1.shouldProcessInBackground()).isTrue();
+        assertThat(flowConfig2.shouldAllowZeroAmounts()).isTrue();
+        assertThat(flowConfig2.shouldProcessInBackground()).isFalse();
     }
 
     private void checkHasAppForStage(String stage, boolean expected) {
