@@ -77,7 +77,7 @@ public class Amounts implements Jsonable {
      * @param additionalAmounts The additional amounts
      */
     public Amounts(long baseAmount, String currency, Map<String, Long> additionalAmounts) {
-        checkArgument(baseAmount >= 0 && currency != null && currency.length() == 3, "Base amount and currency must be set correctly");
+        checkArgument(currency != null && currency.length() == 3, "Currency must be set correctly");
         this.baseAmount = baseAmount;
         this.currency = currency;
         this.additionalAmounts = additionalAmounts != null ? additionalAmounts : new HashMap<>();

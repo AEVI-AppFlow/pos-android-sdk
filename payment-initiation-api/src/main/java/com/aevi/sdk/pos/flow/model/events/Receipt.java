@@ -35,7 +35,6 @@ public class Receipt {
     @Nullable
     private String receiptDataFormat;
 
-
     public Receipt(@NonNull String receiptType) {
         this(receiptType, null);
     }
