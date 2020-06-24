@@ -16,10 +16,6 @@ package com.aevi.sdk.pos.flow.model.events;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aevi.sdk.flow.model.AdditionalData;
-import com.aevi.sdk.pos.flow.model.Amounts;
-import com.aevi.sdk.pos.flow.model.Card;
-
 import java.util.Objects;
 
 /**
