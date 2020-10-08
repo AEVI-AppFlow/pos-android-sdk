@@ -13,11 +13,17 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_button_shadow_depth"
+            android:background="@drawable/shadow_gradient" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/send_button_vert_margin"
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/send_response"
@@ -25,10 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/margin_horizontal"
-                android:layout_marginTop="@dimen/send_button_vert_margin"
-                android:layout_marginRight="@dimen/margin_horizontal"
-                android:layout_marginBottom="@dimen/send_button_vert_margin"
+                android:layout_marginEnd="@dimen/margin_horizontal"
                 android:gravity="center_horizontal"
                 android:text="@string/send_response" />
 
@@ -38,18 +41,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/margin_horizontal"
-                android:layout_marginTop="@dimen/send_button_vert_margin"
-                android:layout_marginRight="@dimen/margin_horizontal"
+                android:layout_marginStart="@dimen/margin_horizontal"
                 android:layout_marginBottom="@dimen/send_button_vert_margin"
                 android:gravity="center_horizontal"
                 android:text="@string/ask_a_question" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/send_button_shadow_depth"
-            android:background="@drawable/shadow_gradient" />
     </LinearLayout>
 
     <android.support.v7.widget.Toolbar
