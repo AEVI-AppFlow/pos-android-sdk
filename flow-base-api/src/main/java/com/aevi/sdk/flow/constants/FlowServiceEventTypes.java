@@ -23,11 +23,21 @@ package com.aevi.sdk.flow.constants;
 public interface FlowServiceEventTypes {
 
     /**
-     * If a flow service activity is no longer in the background for some reason (such as home being pressed), a merchant can choose to resume
+     * If a flow service activity is no longer in the foreground for some reason (such as home being pressed), a merchant can choose to resume
      * the flow service user interface from the AppFlow controls. In this case, this event will be sent and the flow service can resume or restart
      * the user interface as appropriate to allow the merchant to start over or continue where she left off.
      */
     String RESUME_USER_INTERFACE = "resumeUserInterface";
+
+    /**
+     * If a flow service activity is no longer in the foreground for some reason (such as home being pressed), a merchant can choose to resume
+     * the flow service user interface or cancel the flow from the AppFlow controls.
+     *
+     * If the merchant chooses to cancel the flow, and the current flow service is allowed to handle cancellation requests, this event will be sent
+     * to the flow service. If it can cancel, it must do so immediately. If cancellation is not feasible, then it should resume the user interface
+     * and notify the merchant why the cancellation requests could not be fulfilled.
+     */
+    String CANCEL_OR_RESUME = "cancelOrResume";
 
     /**
      * Sent from the flow processing service when the flow service has not sent a response within the timeout limit or
