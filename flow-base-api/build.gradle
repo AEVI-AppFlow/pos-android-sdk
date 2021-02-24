@@ -1,9 +1,19 @@
 apply plugin: 'java-library'
 
-group = 'com.aevi.sdk.flow'
-version = "${apiVersion}"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
-apply from: '../publish-repo.gradle'
+apply from: gradleScript('lib/versioning.gradle')
+apply from: gradleScript('android/publishing-utils.gradle')
+
+group = 'com.aevi.sdk.flow'
+version = libraryVersion
+
+publishingUtils?.publication {
+    groupId group
+    artifactId project.name
+    version libraryVersion
+}
 
 dependencies {
     compileOnly apiDependencies.androidMockable
@@ -44,11 +54,8 @@ javadoc {
 }
 
 buildConfig {
+    packageName = 'com.aevi.sdk.flow'
     clsName = 'FlowBaseConfig'
 }
 
-apply from: '../jar-publisher.gradle'
-apply from: 'bintray-base.gradle'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"

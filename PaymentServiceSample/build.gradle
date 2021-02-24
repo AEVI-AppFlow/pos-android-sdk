@@ -1,23 +1,15 @@
 apply plugin: 'com.android.application'
 
-apply from: "../artifacts.gradle"
-apply from: "../publish-repo.gradle"
-apply from: "../publish-repo-android.gradle"
-
+ext.applicationId = "com.aevi.sdk.pos.flow.paymentservicesample"
 ext.applicationName = "PaymentServiceSample"
-ext.artifactIdPrefix = "payment-service-sample"
-ext.artifactGroupId = "com.aevi.sdk.pos.flow"
+ext.applicationTargetSdkVersion = 28
+ext.applicationMinSdkVersion = 21
+
+apply from: gradleScript('android/artifacts.gradle')
+apply from: gradleScript('android/versioning.gradle')
+apply from: gradleScript('android/basic-android.gradle')
 
 android {
-    compileSdkVersion projectTargetSdkVersion
-
-    defaultConfig {
-        applicationId 'com.aevi.sdk.pos.flow.paymentservicesample'
-        minSdkVersion projectMinSdkVersion
-        targetSdkVersion projectTargetSdkVersion
-        versionCode sampleVersionCode
-        versionName "${apiVersion}"
-    }
     signingConfigs {
         release {
             storeFile file("../samples-key.jks")
@@ -31,10 +23,6 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
         }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
         abortOnError false

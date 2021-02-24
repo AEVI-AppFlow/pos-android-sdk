@@ -30,9 +30,6 @@ ext {
     aeviUiLibraryVersion = "2.0.1"
     appFlowConstantsVersion = '2.3.2'
 
-    projectTargetSdkVersion = 28
-    projectMinSdkVersion = 21
-
     apiDependencies = [
             androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",

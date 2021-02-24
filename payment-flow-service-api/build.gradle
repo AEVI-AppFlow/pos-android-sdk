@@ -1,9 +1,19 @@
 apply plugin: 'java-library'
 
-group = 'com.aevi.sdk.pos.flow'
-version = "${apiVersion}"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
-apply from: '../publish-repo.gradle'
+apply from: gradleScript('lib/versioning.gradle')
+apply from: gradleScript('android/publishing-utils.gradle')
+
+group = 'com.aevi.sdk.pos.flow'
+version = libraryVersion
+
+publishingUtils?.publication {
+    groupId group
+    artifactId project.name
+    version libraryVersion
+}
 
 dependencies {
     api project(':payment-initiation-api')
@@ -24,9 +34,3 @@ dependencies {
 buildConfig {
     clsName = 'FlowServiceConfig'
 }
-
-apply from: '../jar-publisher.gradle'
-apply from: '../bintray-pos-apis.gradle'
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
