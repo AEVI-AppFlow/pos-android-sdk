@@ -21,7 +21,8 @@ In order to test AppFlow and/or integrate with it, you will need to at a minimum
 
 Please download the latest developer bundle from [here](https://developer.aevi.com//downloads/), which contains these applications as well as the latest samples.
 
-## Integrate
+## Integrate (v2.2.4+)
+
 
 AppFlow and its dependencies are as of `v2.1.0` published to the `jcenter()` repository which is used by default by Android Gradle project / Android Studio.
 
