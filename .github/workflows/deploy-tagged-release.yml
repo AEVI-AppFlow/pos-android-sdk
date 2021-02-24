@@ -148,10 +148,7 @@ jobs:
         if: contains(env.TAG, '-') != true
         run: |
           git checkout -- .
-          ./gradlew prepareForNextRelease \
-          -Pnew_version_patch=${{env.NEW_VERSION_PATCH}} \
-          -Pnew_version_suffix=-SNAPSHOT \
-          -Pnew_build_counter=1 \
+          ./gradlew prepareForNextRelease
 
       - name: Create Pull Request to prepare for next release if final version was released
         if: contains(env.TAG, '-') != true
