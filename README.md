@@ -28,6 +28,10 @@ Version `2.2.4` is functionally equivalent to the last published `jcenter()` ver
 
 If you require access to an earlier version once `jcenter` has shut down, please contact AEVI for assistance.
 
+Unfortunately Github enforces authentication for retrieving Github packages, even for public repositories. This means that you must
+use a valid Github user and generate a personal access token with `read:packages` ticked and provide as credentials as per below.
+If you do not have a Github user or require assistance with this, please contact AEVI for support.
+
 In your root project `build.gradle` file, add
 
 ```
