@@ -21,19 +21,24 @@ In order to test AppFlow and/or integrate with it, you will need to at a minimum
 
 Please download the latest developer bundle from [here](https://developer.aevi.com//downloads/), which contains these applications as well as the latest samples.
 
-## Integrate (v2.2.4+)
+## Integrate
 
+AppFlow and its dependencies are as of `v2.2.4` published to the Github packages repository. This is in response to `bintray` and `jcenter` shutting down in May 2021.
+Version `2.2.4` is functionally equivalent to the last published `jcenter()` version (`2.2.3`).
 
-AppFlow and its dependencies are as of `v2.1.0` published to the `jcenter()` repository which is used by default by Android Gradle project / Android Studio.
-
-If you are using an earlier version or having issues getting this to work, you can also add our bintray repository directly as per below. 
+If you require access to an earlier version once `jcenter` has shut down, please contact AEVI for assistance.
 
 In your root project `build.gradle` file, add
 
 ```
 repositories {
     maven {
-        url "http://dl.bintray.com/aevi/aevi-uk"
+        name = "AEVI-repos"
+        url = uri("https://maven.pkg.github.com/aevi-appflow/*")
+        credentials {
+            username = <your Github username>
+            password = <your Github personal access token with `read:packages` enabled>
+        }
     }
 }
 ```
@@ -46,9 +51,7 @@ These APIs require that your application is compiled with Java 8. Ensure that yo
     }
 ```
 
-Use the latest version defined below.
-
-[ ![Download](https://api.bintray.com/packages/aevi/aevi-uk/appflow-sdk/images/download.svg) ](https://bintray.com/aevi/aevi-uk/appflow-sdk/_latestVersion)
+See [Github packages](https://github.com/orgs/AEVI-AppFlow/packages?repo_name=pos-android-sdk) for list of published artifacts.
 
 ### Payment Initiation API
 
