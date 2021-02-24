@@ -120,6 +120,8 @@ jobs:
           -Pversion_patch=${{env.VERSION_PATCH}} \
           -Pversion_suffix=${{env.VERSION_SUFFIX}} \
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Copy API libs to artifacts dir
         run: ./gradlew copyApiLibs
