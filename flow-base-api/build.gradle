@@ -6,8 +6,11 @@ targetCompatibility = "1.8"
 apply from: gradleScript('lib/versioning.gradle')
 apply from: gradleScript('android/publishing-utils.gradle')
 
+group = 'com.aevi.sdk.flow'
+version = libraryVersion
+
 publishingUtils?.publication {
-    groupId 'com.aevi.sdk.flow'
+    groupId group
     artifactId project.name
     version libraryVersion
 }
@@ -49,9 +52,6 @@ javadoc {
     options.memberLevel = JavadocMemberLevel.PUBLIC
     failOnError = false
 }
-
-group = 'com.aevi.sdk.flow'
-version = libraryVersion
 
 buildConfig {
     packageName = 'com.aevi.sdk.flow'

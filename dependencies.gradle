@@ -28,7 +28,7 @@ ext {
 
     // Sample AEVI deps
     aeviUiLibraryVersion = "2.0.1"
-    appFlowConstantsVersion = '0.0.3'
+    appFlowConstantsVersion = '2.3.2'
 
     apiDependencies = [
             androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
