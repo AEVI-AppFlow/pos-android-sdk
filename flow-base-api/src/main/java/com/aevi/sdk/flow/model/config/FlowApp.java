@@ -31,7 +31,7 @@ public class FlowApp implements Jsonable {
     private final String id;
     private final boolean mandatory;
     private final String conditionalOn;
-    private boolean delegateCancellationsTo;
+    private final boolean delegateCancellationsTo;
 
     /**
      * Construct with id.
@@ -44,6 +44,7 @@ public class FlowApp implements Jsonable {
         this.id = id != null ? id : "N/A";
         this.mandatory = false;
         this.conditionalOn = null;
+        this.delegateCancellationsTo = false;
     }
 
     /**
@@ -57,6 +58,7 @@ public class FlowApp implements Jsonable {
         this.id = id != null ? id : "N/A";
         this.mandatory = mandatory;
         this.conditionalOn = conditionalOn;
+        this.delegateCancellationsTo = false;
     }
 
     /**
