@@ -17,6 +17,7 @@ package com.aevi.sdk.flow.model.config;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -30,6 +31,7 @@ public class FlowApp implements Jsonable {
     private final String id;
     private final boolean mandatory;
     private final String conditionalOn;
+    private final boolean delegateCancellationsTo;
 
     /**
      * Construct with id.
@@ -42,10 +44,11 @@ public class FlowApp implements Jsonable {
         this.id = id != null ? id : "N/A";
         this.mandatory = false;
         this.conditionalOn = null;
+        this.delegateCancellationsTo = false;
     }
 
     /**
-     * Construct with id and mandatory flag.
+     * Construct with id, mandatory flag and conditionalOn flag.
      *
      * @param id            The application id
      * @param mandatory     Whether or not the app is mandatory for the flow to be valid
@@ -55,6 +58,22 @@ public class FlowApp implements Jsonable {
         this.id = id != null ? id : "N/A";
         this.mandatory = mandatory;
         this.conditionalOn = conditionalOn;
+        this.delegateCancellationsTo = false;
+    }
+
+    /**
+     * Construct with all parameters.
+     *
+     * @param id                      The application id
+     * @param mandatory               Whether or not the app is mandatory for the flow to be valid
+     * @param conditionalOn           Condition for this flow app to be eligible
+     * @param delegateCancellationsTo Whether or not FPS should delegate cancellation handling to this flow service
+     */
+    public FlowApp(String id, boolean mandatory, String conditionalOn, boolean delegateCancellationsTo) {
+        this.id = id != null ? id : "N/A";
+        this.mandatory = mandatory;
+        this.conditionalOn = conditionalOn;
+        this.delegateCancellationsTo = delegateCancellationsTo;
     }
 
     /**
@@ -86,6 +105,20 @@ public class FlowApp implements Jsonable {
     @Nullable
     public String getConditionalOnValue() {
         return conditionalOn;
+    }
+
+    /**
+     * If true, FPS will delegate requests to cancel the transaction/flow to this flow service when
+     * it is active in the flow.
+     *
+     * This is to support use cases where a flow service may be busy doing critical processing and
+     * cancelling the flow at that time is not desirable. It is then up to the flow service whether
+     * it can respect the cancellation request or not.
+     *
+     * @return True to delegate cancellations to the flow service, false to let FPS handle it
+     */
+    public boolean shouldDelegateCancellationsTo() {
+        return delegateCancellationsTo;
     }
 
     @Override
