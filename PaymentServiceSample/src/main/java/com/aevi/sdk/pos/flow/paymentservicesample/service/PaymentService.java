@@ -30,7 +30,7 @@ import com.aevi.sdk.pos.flow.stage.CardReadingModel;
 import com.aevi.sdk.pos.flow.stage.TransactionProcessingModel;
 
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
-import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.CANCEL_OR_RESUME;
+import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.CANCEL_OR_RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.events.FlowEventTypes.EVENT_PROGRESS_MESSAGE;
@@ -77,7 +77,7 @@ public class PaymentService extends BasePaymentFlowService {
                     // In this sample, we simply restart the activity as it contains no state
                     model.processInActivity(getBaseContext(), activityToRestart);
                     break;
-                case CANCEL_OR_RESUME:
+                case CANCEL_OR_RESUME_USER_INTERFACE:
                     Log.i("PaymentServiceSample", "Received cancel or resume");
                     handleCancelOrResume(model, activityToRestart);
                     break;

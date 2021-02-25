@@ -37,7 +37,7 @@ public interface FlowServiceEventTypes {
      * to the flow service. If it can cancel, it must do so immediately. If cancellation is not feasible, then it should resume the user interface
      * and notify the merchant why the cancellation requests could not be fulfilled.
      */
-    String CANCEL_OR_RESUME = "cancelOrResume";
+    String CANCEL_OR_RESUME_USER_INTERFACE = "cancelOrResumeUserInterface";
 
     /**
      * Sent from the flow processing service when the flow service has not sent a response within the timeout limit or
