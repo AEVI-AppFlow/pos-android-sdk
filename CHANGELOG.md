@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - New flag `delegateCancellationsTo` for `FlowApp` to allow configuring cancellation delegations in the flow config
-- New flow service event `cancelOrResume`, that is sent to active flow services if the above flag is set and the merchant requests cancellation
+- New flow service event `cancelOrResumeUserInterface`, that is sent to active flow services if the above flag is set and the merchant requests cancellation
 
 ## [2.2.4] - 2021-02-24
 
