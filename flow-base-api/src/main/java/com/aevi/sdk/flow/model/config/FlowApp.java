@@ -128,20 +128,17 @@ public class FlowApp implements Jsonable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FlowApp flowApp = (FlowApp) o;
         return mandatory == flowApp.mandatory &&
+                delegateCancellationsTo == flowApp.delegateCancellationsTo &&
                 Objects.equals(id, flowApp.id) &&
                 Objects.equals(conditionalOn, flowApp.conditionalOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mandatory, conditionalOn);
+        return Objects.hash(id, mandatory, conditionalOn, delegateCancellationsTo);
     }
 }
