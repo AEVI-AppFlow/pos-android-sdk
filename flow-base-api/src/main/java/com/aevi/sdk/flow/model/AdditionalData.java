@@ -223,7 +223,11 @@ public class AdditionalData implements Jsonable {
         JsonOption option = data.get(key);
         if (option != null) {
             try {
-                return Class.forName(option.getType()).cast(option.getValue());
+                Class<?> entryClass = getClassFromType(option.getType());
+                if (entryClass == null) {
+                    entryClass = Class.forName(option.getType());
+                }
+                return entryClass.cast(option.getValue());
             } catch (ClassNotFoundException e) {
                 //... fall thru
             }
@@ -248,7 +252,10 @@ public class AdditionalData implements Jsonable {
             String classType = data.get(key).getType();
             // First see if we can detect it as an assignable type, meaning we can return subclasses of a super type as well
             try {
-                Class<?> entryClass = Class.forName(classType);
+                Class<?> entryClass = getClassFromType(classType);
+                if (entryClass == null) {
+                    entryClass = Class.forName(classType);
+                }
                 if (desiredType.isAssignableFrom(entryClass)) {
                     map.put(key, getValueByType(desiredType, data.get(key).getValue()));
                 }
@@ -290,14 +297,13 @@ public class AdditionalData implements Jsonable {
         T returnValue = null;
 
         if (option != null) {
-
             // If exact type match, cast and return
-            if (option.getType().equals(desiredType.getName())) {
+            if (option.getType().equals(desiredType.getName()) || option.getType().equals(desiredType.getSimpleName())) {
                 returnValue = getValueByType(desiredType, option.getValue());
             }
 
             // Else, let's see if expected is an array of the type stored and return it as array
-            else if (desiredType.isArray() && desiredType.getName().equals("[L" + option.getType() + ";")) {
+            else if (desiredType.isArray() && (desiredType.getName().equals("[L" + option.getType() + ";") || desiredType.getSimpleName().equals(option.getType() + "[]"))) {
                 returnValue = getValueAsArray(desiredType, option);
             }
 
@@ -432,5 +438,30 @@ public class AdditionalData implements Jsonable {
 
     public static AdditionalData fromJson(String json) {
         return JsonConverter.deserialize(json, AdditionalData.class);
+    }
+
+    public static Class<?> getClassFromType(String type) {
+        switch (type) {
+            case "Byte":
+                return Byte.class;
+            case "Short":
+                return Short.class;
+            case "Integer":
+                return Integer.class;
+            case "Long":
+                return Long.class;
+            case "Double":
+                return Double.class;
+            case "Float":
+                return Float.class;
+            case "String":
+                return String.class;
+            case "Boolean":
+                return Boolean.class;
+            case "Character":
+                return Character.class;
+            default:
+                return null;
+        }
     }
 }
