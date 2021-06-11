@@ -298,12 +298,12 @@ public class AdditionalData implements Jsonable {
 
         if (option != null) {
             // If exact type match, cast and return
-            if (option.getType().equals(desiredType.getName()) || option.getType().equals(desiredType.getSimpleName())) {
+            if (option.getType().equals(desiredType.getName()) || option.getType().equals(desiredType.getSimpleName().toLowerCase())) {
                 returnValue = getValueByType(desiredType, option.getValue());
             }
 
             // Else, let's see if expected is an array of the type stored and return it as array
-            else if (desiredType.isArray() && (desiredType.getName().equals("[L" + option.getType() + ";") || desiredType.getSimpleName().equals(option.getType() + "[]"))) {
+            else if (desiredType.isArray() && (desiredType.getName().equals("[L" + option.getType() + ";") || desiredType.getSimpleName().toLowerCase().equals(option.getType() + "[]"))) {
                 returnValue = getValueAsArray(desiredType, option);
             }
 
@@ -442,26 +442,36 @@ public class AdditionalData implements Jsonable {
 
     public static Class<?> getClassFromType(String type) {
         switch (type) {
-            case "Byte":
+            case BYTE:
                 return Byte.class;
-            case "Short":
+            case SHORT:
                 return Short.class;
-            case "Integer":
+            case INTEGER:
                 return Integer.class;
-            case "Long":
+            case LONG:
                 return Long.class;
-            case "Double":
+            case DOUBLE:
                 return Double.class;
-            case "Float":
+            case FLOAT:
                 return Float.class;
-            case "String":
+            case STRING:
                 return String.class;
-            case "Boolean":
+            case BOOLEAN:
                 return Boolean.class;
-            case "Character":
+            case CHARACTER:
                 return Character.class;
             default:
                 return null;
         }
     }
+
+    private static final String BYTE = "byte";
+    private static final String SHORT = "short";
+    private static final String INTEGER = "integer";
+    private static final String LONG = "long";
+    private static final String DOUBLE = "double";
+    private static final String FLOAT = "float";
+    private static final String STRING = "string";
+    private static final String BOOLEAN = "boolean";
+    private static final String CHARACTER = "character";
 }

@@ -35,7 +35,7 @@ public class AdditionalDataTest {
         additionalData.addData("myExtra", "ext");
         assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
 
-        setForced("myExtra", "String", "ext");
+        setForced("myExtra", "string", "ext");
         assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
     }
 
@@ -44,7 +44,7 @@ public class AdditionalDataTest {
         additionalData.addData("myBoolean", true);
         assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
 
-        setForced("myBoolean", "Boolean", true);
+        setForced("myBoolean", "boolean", true);
         assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
     }
 
@@ -53,7 +53,7 @@ public class AdditionalDataTest {
         additionalData.addData("myInt", 42322);
         assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
 
-        setForced("myInt", "Integer", 42322);
+        setForced("myInt", "integer", 42322);
         assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
     }
 
@@ -62,7 +62,7 @@ public class AdditionalDataTest {
         additionalData.addData("myLong", 7736663L);
         assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
 
-        setForced("myLong", "Long", 7736663L);
+        setForced("myLong", "long", 7736663L);
         assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
     }
 
@@ -72,7 +72,7 @@ public class AdditionalDataTest {
         additionalData.addData("myArray", array);
         assertThat(additionalData.getValue("myArray")).isEqualTo(array);
 
-        setForced("myArray", "Integer[]", array);
+        setForced("myArray", "integer[]", array);
         assertThat(additionalData.getValue("myArray", Integer[].class)).isEqualTo(array);
     }
 
@@ -82,7 +82,7 @@ public class AdditionalDataTest {
         additionalData.addData("myArray", array);
         assertThat(additionalData.getValue("myArray")).isEqualTo(array);
 
-        setForced("myArray", "NonPrimitiveClass[]", array);
+        setForced("myArray", "nonprimitiveclass[]", array);
         assertThat(additionalData.getValue("myArray", NonPrimitiveClass[].class)).isEqualTo(array);
     }
 
@@ -136,7 +136,7 @@ public class AdditionalDataTest {
         additionalData.addData("customer", customer);
         assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
 
-        setForced("customer", "Customer", customer);
+        setForced("customer", "customer", customer);
         assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
     }
 
@@ -157,7 +157,7 @@ public class AdditionalDataTest {
         String[] tests = additionalData.getValue("test", String[].class);
         assertThat(tests).hasSize(1).containsOnly("hello");
 
-        setForced("test", "String", "hello");
+        setForced("test", "string", "hello");
         assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
     }
 
@@ -167,7 +167,7 @@ public class AdditionalDataTest {
         Integer[] tests = additionalData.getValue("test", Integer[].class);
         assertThat(tests).hasSize(1).containsOnly(1);
 
-        setForced("test", "Integer", 1);
+        setForced("test", "integer", 1);
         assertThat(additionalData.getValue("test", Integer[].class)).hasSize(1).containsOnly(1);
     }
 
@@ -178,7 +178,7 @@ public class AdditionalDataTest {
         NonPrimitiveClass[] tests = additionalData.getValue("test", NonPrimitiveClass[].class);
         assertThat(tests).hasSize(1).containsOnly(npc);
 
-        setForced("test", "NonPrimitiveClass", npc);
+        setForced("test", "nonprimitiveclass", npc);
         assertThat(additionalData.getValue("test", NonPrimitiveClass[].class)).hasSize(1).containsOnly(npc);
     }
 
@@ -188,7 +188,7 @@ public class AdditionalDataTest {
         int[] tests = additionalData.getValue("test", int[].class);
         assertThat(tests).isNull();
 
-        setForced("test", "Integer", 1);
+        setForced("test", "integer", 1);
         assertThat(additionalData.getValue("test", int[].class)).isNull();
     }
 
