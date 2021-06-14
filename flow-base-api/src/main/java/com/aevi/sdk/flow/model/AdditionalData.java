@@ -298,7 +298,10 @@ public class AdditionalData implements Jsonable {
 
         if (option != null) {
             // If exact type match, cast and return
-            if (option.getType().equals(desiredType.getName()) || option.getType().equals(desiredType.getSimpleName().toLowerCase())) {
+            if (option.getType().equals(desiredType.getName()) ||
+                    option.getType().equals(desiredType.getSimpleName().toLowerCase()) ||
+                    desiredType.getSimpleName().endsWith("[]") && option.getType().equals(ARRAY) ||
+                    option.getType().equals(OBJECT)) {
                 returnValue = getValueByType(desiredType, option.getValue());
             }
 
@@ -451,6 +454,7 @@ public class AdditionalData implements Jsonable {
             case LONG:
                 return Long.class;
             case DOUBLE:
+            case NUMBER:
                 return Double.class;
             case FLOAT:
                 return Float.class;
@@ -474,4 +478,7 @@ public class AdditionalData implements Jsonable {
     private static final String STRING = "string";
     private static final String BOOLEAN = "boolean";
     private static final String CHARACTER = "character";
+    private static final String OBJECT = "object";
+    private static final String NUMBER = "number";
+    private static final String ARRAY = "array";
 }

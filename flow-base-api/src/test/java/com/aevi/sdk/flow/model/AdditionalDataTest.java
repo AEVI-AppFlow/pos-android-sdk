@@ -153,11 +153,17 @@ public class AdditionalDataTest {
     @Test
     public void canRetrieveSingleStringValueAsAnArray() throws Exception {
         additionalData.addData("test", "hello");
-
         String[] tests = additionalData.getValue("test", String[].class);
         assertThat(tests).hasSize(1).containsOnly("hello");
 
         setForced("test", "string", "hello");
+        assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
+    }
+
+    @Test
+    public void canRetrieveUnspecifiedTypeArray() throws Exception {
+        String[] array = new String[] { "hello" };
+        setForced("test", "array", array);
         assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
     }
 
@@ -180,6 +186,13 @@ public class AdditionalDataTest {
 
         setForced("test", "nonprimitiveclass", npc);
         assertThat(additionalData.getValue("test", NonPrimitiveClass[].class)).hasSize(1).containsOnly(npc);
+    }
+
+    @Test
+    public void canRetrieveNonPrimitiveObject() throws Exception {
+        NonPrimitiveClass npc = new NonPrimitiveClass("one");
+        setForced("test", "object", npc);
+        assertThat(additionalData.getValue("test", NonPrimitiveClass.class)).isEqualTo(npc);
     }
 
     @Test
@@ -235,4 +248,27 @@ public class AdditionalDataTest {
         map.put(key, new JsonOption(value, type));
         additionalData = new AdditionalData(map);
     }
+
+    @Test
+    public void jsonSerializationTest() throws Exception {
+        additionalData.addData("int", 1);
+        additionalData.addData("long", 2L);
+        additionalData.addData("double", 2.01);
+        additionalData.addData("float", 2.01f);
+        additionalData.addData("str", "hello");
+        assertThat(additionalData.toJson()).isEqualTo(json);
+    }
+
+    @Test
+    public void jsonDeserializationTest() throws Exception {
+        additionalData = AdditionalData.fromJson(json);
+        assertThat(additionalData.getValue("int")).isEqualTo(1);
+        assertThat(additionalData.getValue("long")).isEqualTo(2L);
+        assertThat(additionalData.getValue("double")).isEqualTo(2.01);
+        assertThat(additionalData.getValue("float")).isEqualTo(2.01f);
+        assertThat(additionalData.getValue("str")).isEqualTo("hello");
+    }
+
+    private static final String json = "{\"data\":{\"str\":{\"value\":\"hello\",\"type\":\"java.lang.String\"},\"double\":{\"value\":2.01,\"type\":\"java.lang.Double\"},\"float\":{\"value\":2.01,\"type\":\"java.lang.Float\"},\"int\":{\"value\":1,\"type\":\"java.lang.Integer\"},\"long\":{\"value\":2,\"type\":\"java.lang.Long\"}}}";
+
 }
