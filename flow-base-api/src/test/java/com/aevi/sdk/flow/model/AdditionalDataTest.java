@@ -35,7 +35,7 @@ public class AdditionalDataTest {
         additionalData.addData("myExtra", "ext");
         assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
 
-        setForced("myExtra", "string", "ext");
+        setForced("myExtra", "ext");
         assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
     }
 
@@ -44,7 +44,7 @@ public class AdditionalDataTest {
         additionalData.addData("myBoolean", true);
         assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
 
-        setForced("myBoolean", "boolean", true);
+        setForced("myBoolean", true);
         assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
     }
 
@@ -53,7 +53,7 @@ public class AdditionalDataTest {
         additionalData.addData("myInt", 42322);
         assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
 
-        setForced("myInt", "integer", 42322);
+        setForced("myInt", 42322);
         assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
     }
 
@@ -62,7 +62,7 @@ public class AdditionalDataTest {
         additionalData.addData("myLong", 7736663L);
         assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
 
-        setForced("myLong", "long", 7736663L);
+        setForced("myLong", 7736663L);
         assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
     }
 
@@ -72,7 +72,7 @@ public class AdditionalDataTest {
         additionalData.addData("myArray", array);
         assertThat(additionalData.getValue("myArray")).isEqualTo(array);
 
-        setForced("myArray", "integer[]", array);
+        setForced("myArray", array);
         assertThat(additionalData.getValue("myArray", Integer[].class)).isEqualTo(array);
     }
 
@@ -82,7 +82,7 @@ public class AdditionalDataTest {
         additionalData.addData("myArray", array);
         assertThat(additionalData.getValue("myArray")).isEqualTo(array);
 
-        setForced("myArray", "nonprimitiveclass[]", array);
+        setForced("myArray", array);
         assertThat(additionalData.getValue("myArray", NonPrimitiveClass[].class)).isEqualTo(array);
     }
 
@@ -119,7 +119,7 @@ public class AdditionalDataTest {
         assertThat(additionalData.getValue("accessibleMode", Boolean.class)).isTrue();
         assertThat(additionalData.getValue("accessibleMode", String.class)).isNull();
         assertThat(additionalData.getValue("accessibleMode", Integer.class)).isNull();
-        assertThat(additionalData.getValue("accessibleMode", Object.class)).isNull();
+        assertThat(additionalData.getValue("accessibleMode", Object.class)).isNotNull();
     }
 
     @Test
@@ -136,7 +136,7 @@ public class AdditionalDataTest {
         additionalData.addData("customer", customer);
         assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
 
-        setForced("customer", "customer", customer);
+        setForced("customer", customer);
         assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
     }
 
@@ -156,14 +156,14 @@ public class AdditionalDataTest {
         String[] tests = additionalData.getValue("test", String[].class);
         assertThat(tests).hasSize(1).containsOnly("hello");
 
-        setForced("test", "string", "hello");
+        setForced("test", "hello");
         assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
     }
 
     @Test
     public void canRetrieveUnspecifiedTypeArray() throws Exception {
         String[] array = new String[] { "hello" };
-        setForced("test", "array", array);
+        setForced("test", array);
         assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
     }
 
@@ -173,7 +173,7 @@ public class AdditionalDataTest {
         Integer[] tests = additionalData.getValue("test", Integer[].class);
         assertThat(tests).hasSize(1).containsOnly(1);
 
-        setForced("test", "integer", 1);
+        setForced("test", 1);
         assertThat(additionalData.getValue("test", Integer[].class)).hasSize(1).containsOnly(1);
     }
 
@@ -184,25 +184,25 @@ public class AdditionalDataTest {
         NonPrimitiveClass[] tests = additionalData.getValue("test", NonPrimitiveClass[].class);
         assertThat(tests).hasSize(1).containsOnly(npc);
 
-        setForced("test", "nonprimitiveclass", npc);
+        setForced("test", npc);
         assertThat(additionalData.getValue("test", NonPrimitiveClass[].class)).hasSize(1).containsOnly(npc);
     }
 
     @Test
     public void canRetrieveNonPrimitiveObject() throws Exception {
         NonPrimitiveClass npc = new NonPrimitiveClass("one");
-        setForced("test", "object", npc);
+        setForced("test", npc);
         assertThat(additionalData.getValue("test", NonPrimitiveClass.class)).isEqualTo(npc);
     }
 
     @Test
-    public void retrievingBoxedPrimitiveAsPrimitiveArrayShouldReturnNull() throws Exception {
+    public void retrievingBoxedPrimitiveAsPrimitiveArray() throws Exception {
         additionalData.addData("test", 1);
         int[] tests = additionalData.getValue("test", int[].class);
-        assertThat(tests).isNull();
+        assertThat(tests).hasSize(1).containsOnly(1);
 
-        setForced("test", "integer", 1);
-        assertThat(additionalData.getValue("test", int[].class)).isNull();
+        setForced("test", 1);
+        assertThat(additionalData.getValue("test", int[].class)).hasSize(1).containsOnly(1);
     }
 
     @Test
@@ -237,15 +237,9 @@ public class AdditionalDataTest {
         assertThat(dataOfType).hasSize(4).containsKeys("int", "long", "double", "float");
     }
 
-    @Test
-    public void unsupportedTypeIsNull() {
-        setForced("myExtra", "unknown", "ext");
-        assertThat(additionalData.getValue("myExtra")).isNull();
-    }
-
-    private void setForced(String key, String type, Object value) {
+    private void setForced(String key, Object value) {
         Map<String, JsonOption> map = new HashMap();
-        map.put(key, new JsonOption(value, type));
+        map.put(key, new JsonOption(value, ""));
         additionalData = new AdditionalData(map);
     }
 

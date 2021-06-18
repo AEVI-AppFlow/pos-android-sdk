@@ -78,9 +78,6 @@ public class AdditionalData implements Jsonable {
      * This will overwrite any previous values with the same key. Clients need to call {@link #hasData(String)} to check whether a key already
      * exists to avoid potential overwriting of existing values.
      *
-     * Note that value.getClass() is used to store the type of the class. If you are passing in a subclass and want clients to only see the
-     * super type, please use {@link #addDataWithType(String, Object, Class)} and specify the supertype.
-     *
      * @param key    The string key for this value
      * @param values The value/values to store
      * @param <T>    The type of the value
@@ -94,22 +91,6 @@ public class AdditionalData implements Jsonable {
             } else {
                 data.put(key, new JsonOption(values));
             }
-        }
-    }
-
-    /**
-     * As per {@link #addData(String, Object[])}, but also allows a third parameter to explicitly set the type (Class) of the value.
-     *
-     * This will allow clients to read the value as the intended type.
-     *
-     * @param key   The string key for this value
-     * @param value The value to store
-     * @param type  The type of the value
-     * @param <T>   The type of the value
-     */
-    public <T> void addDataWithType(String key, T value, Class<?> type) {
-        if (value != null && type != null) {
-            data.put(key, new JsonOption(value, type.getName()));
         }
     }
 
@@ -198,20 +179,6 @@ public class AdditionalData implements Jsonable {
     }
 
     /**
-     * Get the class name (Class.getName()) for the value associated with the provided key.
-     *
-     * @param key The data key
-     * @return The fully qualified value class name (such as java.lang.String)
-     */
-    @Nullable
-    public String getValueClassName(String key) {
-        if (data.containsKey(key)) {
-            return data.get(key).getType();
-        }
-        return null;
-    }
-
-    /**
      * Retrieve the value for the provided key as a raw object for casting.
      *
      * @param key          The data key
@@ -222,15 +189,7 @@ public class AdditionalData implements Jsonable {
     public Object getValue(String key, Object... defaultValue) {
         JsonOption option = data.get(key);
         if (option != null) {
-            try {
-                Class<?> entryClass = getClassFromType(option.getType());
-                if (entryClass == null) {
-                    entryClass = Class.forName(option.getType());
-                }
-                return entryClass.cast(option.getValue());
-            } catch (ClassNotFoundException e) {
-                //... fall thru
-            }
+            return option.getValue();
         }
         if (defaultValue.length > 0) {
             return defaultValue[0];
@@ -249,21 +208,9 @@ public class AdditionalData implements Jsonable {
     public <T> Map<String, T> getDataOfType(Class<T> desiredType) {
         Map<String, T> map = new HashMap<>();
         for (String key : data.keySet()) {
-            String classType = data.get(key).getType();
-            // First see if we can detect it as an assignable type, meaning we can return subclasses of a super type as well
-            try {
-                Class<?> entryClass = getClassFromType(classType);
-                if (entryClass == null) {
-                    entryClass = Class.forName(classType);
-                }
-                if (desiredType.isAssignableFrom(entryClass)) {
-                    map.put(key, getValueByType(desiredType, data.get(key).getValue()));
-                }
-            } catch (ClassNotFoundException e) {
-                // Fallback to dealing with direct string comparison
-                if (classType.equals(desiredType.getName())) {
-                    map.put(key, getValue(key, desiredType));
-                }
+            T value = getValueByType(desiredType, data.get(key).getValue());
+            if (value != null) {
+                map.put(key, value);
             }
         }
         return map;
@@ -271,19 +218,21 @@ public class AdditionalData implements Jsonable {
 
     /**
      * Retrieve the value for the provided key, casted to the type provided where possible.
-     *
-     * Use {{@link #getValueClassName(String)}} to check what type a value is.
-     *
+     * <p>
      * The method will attempt the following, in order; <br><br>
-     * 1. If the stored value type matches the desiredType parameter, it will be cast to that and returned.<br>
-     * Example - stored value is java.lang.String and desiredType is String.class.
-     * <pre> {@code String value = getValue("key", String.class) } </pre>
-     * 2. If the desiredType parameter is the array representation of the stored value type, the value will be returned as a single item array.<br>
+     * 1. If the stored value isn't an array and the desiredType is, it will be wrapped in a desiredType array<br>
+     * If the value types don't match the array will be empty but a fixed size of 1
      * Example - stored value is java.lang.Integer and desiredType is Integer[].class, returns single item array.
      * <pre> {@code Integer[] value = getValue("key", Integer[].class) } </pre>
+     * 2. If the stored value type is an array and matches the desiredType parameter, it will be cast to that and returned.<br>
+     * Example - stored value is Integer[] and desiredType is Integer[].
+     * <pre> {@code Integer[] value = getValue("key", Integer[].class) } </pre>
      * 3. If the desiredType parameter is a String[], the stored value(s) (array or not) will be returned as their string representation (toString()) as elements in a string array.<br>
-     * Example - stored value is 10 (java.lang.Integer) and desiredType is String[].class, new String[]{"10"}.
+     * Example - stored value is 10 (Integer) and desiredType is String[].class, new String[]{"10"}.
      * <pre> {@code String[] value = getValue("key", String[].class) } </pre>
+     * 4. If none of the above conditions are met then the desiredType is likely primitive, it will attempt to be cast to that and returned<br>
+     * Example - stored value is java.lang.String and desiredType is String.class.
+     * <pre> {@code String value = getValue("key", String.class) } </pre>
      *
      * @param key          The data key
      * @param desiredType  The expected or desired type for the return value
@@ -297,29 +246,25 @@ public class AdditionalData implements Jsonable {
         T returnValue = null;
 
         if (option != null) {
-            // If exact type match, cast and return
-            if (option.getType().equals(desiredType.getName()) ||
-                    option.getType().equals(desiredType.getSimpleName().toLowerCase()) ||
-                    desiredType.getSimpleName().endsWith("[]") && option.getType().equals(ARRAY) ||
-                    option.getType().equals(OBJECT)) {
-                returnValue = getValueByType(desiredType, option.getValue());
-            }
-
-            // Else, let's see if expected is an array of the type stored and return it as array
-            else if (desiredType.isArray() && (desiredType.getName().equals("[L" + option.getType() + ";") || desiredType.getSimpleName().toLowerCase().equals(option.getType() + "[]"))) {
+            // If desired type is an array but value isn't, cast, box and return
+            if (desiredType.isArray() && !option.getValue().getClass().isArray()) {
                 returnValue = getValueAsArray(desiredType, option);
             }
-
-            // TODO check if assignable - value stored is a subclass of desired type
-
-            // Eeeelse, if desired type is String[], we convert whatever we have to an array of strings relying on toString()
-            else if (desiredType.equals(String[].class)) {
+            // Else if exact array match, cast and return
+            else if (desiredType.isArray() && option.getValue().getClass() == desiredType) {
+                returnValue = getValueByType(desiredType, option.getValue());
+            }
+            // Else, if desired type is String[], we convert whatever we have to an array of strings relying on toString()
+            else if (desiredType == String[].class) {
                 returnValue = getValueAsStringArray(option);
             }
-
-            // Fallback - log as a warning
+            // Else attempt to cast and return
             else {
-                Log.w(AdditionalData.class.getSimpleName(), "Failed to convert " + option.getType() + " to " + desiredType.getName());
+                returnValue = getValueByType(desiredType, option.getValue());
+            }
+            // Fallback - log as a warning
+            if (returnValue == null) {
+                Log.w(AdditionalData.class.getSimpleName(), "Failed to convert " + option.getValue() + " to " + desiredType.getName());
             }
         }
 
@@ -379,7 +324,14 @@ public class AdditionalData implements Jsonable {
     @SuppressWarnings("unchecked")
     private <T> T getValueAsArray(Class<T> desiredType, JsonOption option) {
         T t = (T) Array.newInstance(desiredType.getComponentType(), 1);
-        Array.set(t, 0, option.getValue());
+        try {
+            T value = (T) option.getValue();
+            Array.set(t, 0, value);
+        } catch (IllegalArgumentException e) {
+            if (desiredType == String[].class) {
+                Array.set(t, 0, option.getValue().toString());
+            }
+        }
         return t;
     }
 
@@ -442,43 +394,4 @@ public class AdditionalData implements Jsonable {
     public static AdditionalData fromJson(String json) {
         return JsonConverter.deserialize(json, AdditionalData.class);
     }
-
-    public static Class<?> getClassFromType(String type) {
-        switch (type) {
-            case BYTE:
-                return Byte.class;
-            case SHORT:
-                return Short.class;
-            case INTEGER:
-                return Integer.class;
-            case LONG:
-                return Long.class;
-            case DOUBLE:
-            case NUMBER:
-                return Double.class;
-            case FLOAT:
-                return Float.class;
-            case STRING:
-                return String.class;
-            case BOOLEAN:
-                return Boolean.class;
-            case CHARACTER:
-                return Character.class;
-            default:
-                return null;
-        }
-    }
-
-    private static final String BYTE = "byte";
-    private static final String SHORT = "short";
-    private static final String INTEGER = "integer";
-    private static final String LONG = "long";
-    private static final String DOUBLE = "double";
-    private static final String FLOAT = "float";
-    private static final String STRING = "string";
-    private static final String BOOLEAN = "boolean";
-    private static final String CHARACTER = "character";
-    private static final String OBJECT = "object";
-    private static final String NUMBER = "number";
-    private static final String ARRAY = "array";
 }
