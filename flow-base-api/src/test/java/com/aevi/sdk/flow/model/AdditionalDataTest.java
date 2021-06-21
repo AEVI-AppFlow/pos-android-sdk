@@ -1,10 +1,13 @@
 package com.aevi.sdk.flow.model;
 
 
+import com.aevi.util.json.JsonOption;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +17,14 @@ public class AdditionalDataTest {
 
     private AdditionalData additionalData;
 
+    class NonPrimitiveClass {
+        public String name;
+
+        public NonPrimitiveClass(String name) {
+            this.name = name;
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
         additionalData = new AdditionalData();
@@ -22,29 +33,57 @@ public class AdditionalDataTest {
     @Test
     public void canSetStringOption() {
         additionalData.addData("myExtra", "ext");
+        assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
 
+        setForced("myExtra", "ext");
         assertThat(additionalData.getValue("myExtra")).isEqualTo("ext");
     }
 
     @Test
     public void canSetBooleanOption() {
         additionalData.addData("myBoolean", true);
+        assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
 
+        setForced("myBoolean", true);
         assertThat(additionalData.getValue("myBoolean")).isEqualTo(true);
     }
 
     @Test
     public void canSetIntOption() {
         additionalData.addData("myInt", 42322);
+        assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
 
+        setForced("myInt", 42322);
         assertThat(additionalData.getValue("myInt")).isEqualTo(42322);
     }
 
     @Test
     public void canSetLongOption() {
         additionalData.addData("myLong", 7736663L);
-
         assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
+
+        setForced("myLong", 7736663L);
+        assertThat(additionalData.getValue("myLong")).isEqualTo(7736663L);
+    }
+
+    @Test
+    public void canSetArrayOption() {
+        Integer[] array = new Integer[]{1, 2, 3};
+        additionalData.addData("myArray", array);
+        assertThat(additionalData.getValue("myArray")).isEqualTo(array);
+
+        setForced("myArray", array);
+        assertThat(additionalData.getValue("myArray", Integer[].class)).isEqualTo(array);
+    }
+
+    @Test
+    public void canSetNonPrimitiveArrayOption() {
+        NonPrimitiveClass[] array = new NonPrimitiveClass[]{new NonPrimitiveClass("one"), new NonPrimitiveClass("two")};
+        additionalData.addData("myArray", array);
+        assertThat(additionalData.getValue("myArray")).isEqualTo(array);
+
+        setForced("myArray", array);
+        assertThat(additionalData.getValue("myArray", NonPrimitiveClass[].class)).isEqualTo(array);
     }
 
     @Test
@@ -80,7 +119,7 @@ public class AdditionalDataTest {
         assertThat(additionalData.getValue("accessibleMode", Boolean.class)).isTrue();
         assertThat(additionalData.getValue("accessibleMode", String.class)).isNull();
         assertThat(additionalData.getValue("accessibleMode", Integer.class)).isNull();
-        assertThat(additionalData.getValue("accessibleMode", Object.class)).isNull();
+        assertThat(additionalData.getValue("accessibleMode", Object.class)).isNotNull();
     }
 
     @Test
@@ -95,6 +134,9 @@ public class AdditionalDataTest {
     public void canGetOptionOfComplexType() throws IOException {
         Customer customer = new Customer("123");
         additionalData.addData("customer", customer);
+        assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
+
+        setForced("customer", customer);
         assertThat(additionalData.getValue("customer", Customer.class)).isEqualTo(customer);
     }
 
@@ -111,25 +153,56 @@ public class AdditionalDataTest {
     @Test
     public void canRetrieveSingleStringValueAsAnArray() throws Exception {
         additionalData.addData("test", "hello");
-
         String[] tests = additionalData.getValue("test", String[].class);
         assertThat(tests).hasSize(1).containsOnly("hello");
+
+        setForced("test", "hello");
+        assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
+    }
+
+    @Test
+    public void canRetrieveUnspecifiedTypeArray() throws Exception {
+        String[] array = new String[] { "hello" };
+        setForced("test", array);
+        assertThat(additionalData.getValue("test", String[].class)).hasSize(1).containsOnly("hello");
     }
 
     @Test
     public void canRetrieveSingleBoxedValueAsAnArray() throws Exception {
         additionalData.addData("test", 1);
-
         Integer[] tests = additionalData.getValue("test", Integer[].class);
         assertThat(tests).hasSize(1).containsOnly(1);
+
+        setForced("test", 1);
+        assertThat(additionalData.getValue("test", Integer[].class)).hasSize(1).containsOnly(1);
     }
 
     @Test
-    public void retrievingBoxedPrimitiveAsPrimitiveArrayShouldReturnNull() throws Exception {
-        additionalData.addData("test", 1);
+    public void canRetrieveSingleNonPrimitiveValueAsAnArray() throws Exception {
+        NonPrimitiveClass npc = new NonPrimitiveClass("one");
+        additionalData.addData("test", npc);
+        NonPrimitiveClass[] tests = additionalData.getValue("test", NonPrimitiveClass[].class);
+        assertThat(tests).hasSize(1).containsOnly(npc);
 
+        setForced("test", npc);
+        assertThat(additionalData.getValue("test", NonPrimitiveClass[].class)).hasSize(1).containsOnly(npc);
+    }
+
+    @Test
+    public void canRetrieveNonPrimitiveObject() throws Exception {
+        NonPrimitiveClass npc = new NonPrimitiveClass("one");
+        setForced("test", npc);
+        assertThat(additionalData.getValue("test", NonPrimitiveClass.class)).isEqualTo(npc);
+    }
+
+    @Test
+    public void retrievingBoxedPrimitiveAsPrimitiveArray() throws Exception {
+        additionalData.addData("test", 1);
         int[] tests = additionalData.getValue("test", int[].class);
-        assertThat(tests).isNull();
+        assertThat(tests).hasSize(1).containsOnly(1);
+
+        setForced("test", 1);
+        assertThat(additionalData.getValue("test", int[].class)).hasSize(1).containsOnly(1);
     }
 
     @Test
@@ -163,4 +236,33 @@ public class AdditionalDataTest {
         Map<String, Number> dataOfType = additionalData.getDataOfType(Number.class);
         assertThat(dataOfType).hasSize(4).containsKeys("int", "long", "double", "float");
     }
+
+    private void setForced(String key, Object value) {
+        Map<String, JsonOption> map = new HashMap();
+        map.put(key, new JsonOption(value, ""));
+        additionalData = new AdditionalData(map);
+    }
+
+    @Test
+    public void jsonSerializationTest() throws Exception {
+        additionalData.addData("int", 1);
+        additionalData.addData("long", 2L);
+        additionalData.addData("double", 2.01);
+        additionalData.addData("float", 2.01f);
+        additionalData.addData("str", "hello");
+        assertThat(additionalData.toJson()).isEqualTo(json);
+    }
+
+    @Test
+    public void jsonDeserializationTest() throws Exception {
+        additionalData = AdditionalData.fromJson(json);
+        assertThat(additionalData.getValue("int")).isEqualTo(1);
+        assertThat(additionalData.getValue("long")).isEqualTo(2L);
+        assertThat(additionalData.getValue("double")).isEqualTo(2.01);
+        assertThat(additionalData.getValue("float")).isEqualTo(2.01f);
+        assertThat(additionalData.getValue("str")).isEqualTo("hello");
+    }
+
+    private static final String json = "{\"data\":{\"str\":{\"value\":\"hello\",\"type\":\"java.lang.String\"},\"double\":{\"value\":2.01,\"type\":\"java.lang.Double\"},\"float\":{\"value\":2.01,\"type\":\"java.lang.Float\"},\"int\":{\"value\":1,\"type\":\"java.lang.Integer\"},\"long\":{\"value\":2,\"type\":\"java.lang.Long\"}}}";
+
 }
