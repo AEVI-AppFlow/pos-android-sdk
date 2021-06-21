@@ -4,7 +4,7 @@ ext {
     rxJavaVersion = '2.2.2'
     rxAndroidVersion = '2.1.1'
     printApiVersion = '1.0.1'
-    jsonConverterVersion = '1.1.0'
+    jsonConverterVersion = "1.1.1-SNAPSHOT"
     rxMessengerVersion = '5.0.2'
     configApiVersion = '1.1.0'
 
@@ -24,7 +24,6 @@ ext {
     supportLibraryVersion = '28.0.0'
     designLibraryVersion = '28.0.0'
     constraintLayoutVersion = '1.0.2'
-    jsonConverterVersion = "1.1.0"
 
     // Sample AEVI deps
     aeviUiLibraryVersion = "2.0.1"
