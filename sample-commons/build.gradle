@@ -4,6 +4,10 @@ apply from: gradleScript('android/versioning.gradle')
 ext.applicationTargetSdkVersion = 28
 ext.applicationMinSdkVersion = 21
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 android {
     compileSdkVersion applicationTargetSdkVersion
 
@@ -34,10 +38,6 @@ android {
     }
 }
 
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -54,7 +54,7 @@ dependencies {
     implementation project(':payment-initiation-api')
     implementation project(':payment-flow-service-api')
     implementation sampleDependencies.aeviUiLibrary
-    implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
+    implementation 'com.github.luizgrp:sectionedrecyclerviewadapter:1.2.0'
 
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
