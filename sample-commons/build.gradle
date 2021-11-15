@@ -4,10 +4,6 @@ apply from: gradleScript('android/versioning.gradle')
 ext.applicationTargetSdkVersion = 28
 ext.applicationMinSdkVersion = 21
 
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 android {
     compileSdkVersion applicationTargetSdkVersion
 
