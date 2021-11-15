@@ -3,7 +3,6 @@ ext {
     gsonVersion = '2.8.0'
     rxJavaVersion = '2.2.2'
     rxAndroidVersion = '2.1.1'
-    printApiVersion = '1.1.5'
     jsonConverterVersion = '1.1.1'
     rxMessengerVersion = '5.0.2'
     configApiVersion = '1.1.0'
