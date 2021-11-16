@@ -18,7 +18,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:4.1.2'
         classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
-        classpath 'com.aevi.sdk.build:gradle-scripts:1.0.9'
+        classpath 'com.aevi.sdk.build:gradle-scripts:1.1.8'
     }
 }
 
@@ -28,6 +28,12 @@ ext.gradleScript = { path ->
 
 apply from: gradleScript('root/common-tasks.gradle')
 apply from: gradleScript('root/repositories.gradle')
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 
 task cleanDocs(type: Delete) {
     delete 'documentation/public'

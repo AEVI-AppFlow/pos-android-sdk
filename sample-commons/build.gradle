@@ -50,7 +50,7 @@ dependencies {
     implementation project(':payment-initiation-api')
     implementation project(':payment-flow-service-api')
     implementation sampleDependencies.aeviUiLibrary
-    implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
+    implementation 'com.github.luizgrp:sectionedrecyclerviewadapter:1.2.0'
 
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
