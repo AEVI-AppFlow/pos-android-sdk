@@ -4,8 +4,8 @@ ext {
     rxJavaVersion = '2.2.2'
     rxAndroidVersion = '2.1.1'
     jsonConverterVersion = '1.1.1'
-    rxMessengerVersion = '5.0.2'
-    configApiVersion = '1.1.0'
+    rxMessengerVersion = '5.0.3'
+    configApiVersion = '1.1.1'
 
     // Test dependencies
     junitVersion = '4.12'
