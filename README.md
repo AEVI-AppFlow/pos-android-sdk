@@ -15,7 +15,7 @@ In order to test AppFlow and/or integrate with it, you will need to at a minimum
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
 - AEVI AppFlow Configuration App, which provides the flows and other settings for AppFlow tailored for developers
 
-Please download the latest developer bundle from [here](https://developer.aevi.com/documentation/appflow/introduction/downloads/downloads#introduction-developer-bundle-v11), which contains these applications as well as the latest samples.
+Please download the latest developer bundle from [here](https://github.com/AEVI-AppFlow/developer-bundle/releases), which contains these applications as well as the latest samples.
 
 ## Integrate
 
