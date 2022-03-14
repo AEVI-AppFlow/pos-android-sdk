@@ -1,17 +1,13 @@
 # AEVI AppFlow - POS Android SDK
 
-**Note** - AppFlow v2.2.3 is now released!
-
-AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called.
-A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
+AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called. A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
 
 The point of sale (POS) Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate various
-flows for common operations such as payments, refunds, voids etc. In addition to calling standard payment applications, any number of value added services can be called during the flow,
-such as loyalty, split bill, receipt delivery and much more. AppFlow for POS is highly configurable and flexible, allowing dynamic configuration of flows and input / output data.
+flows for common operations such as payments, refunds, voids etc. In addition to calling standard payment applications, any number of value added services can be called during the flow, such as loyalty, split bill, receipt delivery and much more. AppFlow for POS is highly configurable and flexible, allowing dynamic configuration of flows and input / output data.
 
 The SDK consists of two APIs - one for client/POS applications to initiate flows and one for value added services and payment applications to integrate into those flows.
 
-Please see the [Documentation](https://developer.aevi.com/) for detailed information of how AppFlow works and development guidelines.
+Please see the [Documentation](https://developer.aevi.com/documentation/appflow/introduction/guides/get-started) for detailed information of how AppFlow works and how to integrate with it.
 
 ## Prerequisites
 
@@ -19,17 +15,15 @@ In order to test AppFlow and/or integrate with it, you will need to at a minimum
 - AEVI Flow Processing Service (FPS), which implements the APIs and executes the flows
 - AEVI AppFlow Configuration App, which provides the flows and other settings for AppFlow tailored for developers
 
-Please download the latest developer bundle from [here](https://developer.aevi.com//downloads/), which contains these applications as well as the latest samples.
+Please download the latest developer bundle from [here](https://developer.aevi.com/documentation/appflow/introduction/downloads/downloads#introduction-developer-bundle-v11), which contains these applications as well as the latest samples.
 
 ## Integrate
 
-AppFlow and its dependencies are as of `v2.2.4` published to the Github packages repository. This is in response to `bintray` and `jcenter` shutting down in May 2021.
-Version `2.2.4` is functionally equivalent to the last published `jcenter()` version (`2.2.3`).
+AppFlow and its dependencies are as of `v2.2.4` published to the Github packages repository. This is in response to `bintray` and `jcenter` shutting down in May 2021. Version `2.2.4` is functionally equivalent to the last published `jcenter()` version (`2.2.3`).
 
 If you require access to an earlier version once `jcenter` has shut down, please contact AEVI for assistance.
 
-Unfortunately Github enforces authentication for retrieving Github packages, even for public repositories. This means that you must
-use a valid Github user and generate a personal access token with `read:packages` ticked and provide as credentials as per below.
+Unfortunately Github enforces authentication for retrieving Github packages, even for public repositories. This means that you must use a valid Github user and generate a personal access token with `read:packages` ticked and provide as credentials as per below.
 If you do not have a Github user or require assistance with this, please contact AEVI for support.
 
 In your root project `build.gradle` file, add
@@ -75,8 +69,7 @@ implementation 'com.aevi.sdk.pos.flow:payment-flow-service-api:<version>'
 
 ### API Constants
 
-The AppFlow APIs themselves are designed to facilitate communication between applications via a defined set of data structures. They are however decoupled from what the _values_ or _content_
-of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the data values are defined in the docs and provided as constants via a separate library.
+The AppFlow APIs themselves are designed to facilitate communication between applications via a defined set of data structures. They are however decoupled from what the _values_ or _content_ of these data structures are, in order to keep them as flexible and configurable as possible. Instead, the data values are defined in the docs and provided as constants via a separate library.
 
 This library is stored in a separate repo [here](https://github.com/AEVI-AppFlow/api-constants). You can find the latest version details and view the defined data constants there.
 
@@ -107,24 +100,13 @@ See `FpsSettings` for details on all the parameters.
 
 You can check what the settings are via the `System overview` screen in the `Payment Initiation Sample`.
 
-## Build Environment
-
-### Minimum versions
-
-This project is using the Gradle wrapper and we recommend using Android Studio v3.3.2 or higher.
-
-## Documentation
-
-* [Documentation](https://aevi-appflow.github.io/pos-android-sdk/)
-* [Javadocs](https://aevi-appflow.github.io/pos-android-sdk/reference/)
-
 ## Bugs and Feedback
 
 For bugs, feature requests and questions please use [GitHub Issues](https://github.com/AEVI-AppFlow/pos-android-sdk/issues).
 
 ## Contributions
 
-Contributions to any of our repos via pull requests are welcome. We follow the [git flow](https://nvie.com/posts/a-successful-git-branching-model/) branching model.
+Contributions to any of our repos via pull requests are welcome.
 
 ## LICENSE
 
