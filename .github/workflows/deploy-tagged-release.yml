@@ -5,6 +5,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GITHUB_ACTOR: ${{ secrets.CI_BOT_USERNAME }}
   GITHUB_TOKEN: ${{ secrets.CI_BOT_PAT }}
+  SDK_DEV_KEYSTORE: ${{ secrets.SDK_DEV_KEYSTORE }}
+  SDK_DEV_KEYSTORE_PASSWORD: ${{ secrets.SDK_DEV_KEYSTORE_PASSWORD }}
 
 on:
   push:
@@ -34,10 +36,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: zulu
+          java-version: 11
 
       - name: Extract tag from ref
         # ref is refs/tag/<tag> - split by / and retrieve the 3rd element
@@ -112,7 +115,7 @@ jobs:
           -Pversion_suffix=${{env.VERSION_SUFFIX}} \
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
 
-      - name: Build and upload library jars to maven repo
+      - name: Build and upload library jars to Github repo
         run: |
           ./gradlew jar publishJavaPublicationToGithubRepository \
           -Pversion_major=${{env.VERSION_MAJOR}} \
@@ -122,6 +125,23 @@ jobs:
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish final release versions to Maven Central
+        if: contains(env.TAG, '-') != true
+        run: |
+          ./gradlew jar publishToSonatype closeAndReleaseSonatypeStagingRepository \
+          -Pversion_major=${{env.VERSION_MAJOR}} \
+          -Pversion_minor=${{env.VERSION_MINOR}} \
+          -Pversion_patch=${{env.VERSION_PATCH}} \
+          -Pversion_suffix=${{env.VERSION_SUFFIX}} \
+          -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
+        env:
+          MVN_CENTRAL_USERNAME: ${{ secrets.MVN_CENTRAL_USERNAME }}
+          MVN_CENTRAL_PASSWORD: ${{ secrets.MVN_CENTRAL_PASSWORD }}
+          MVN_CENTRAL_PGP_KEY_ID: ${{ secrets.MVN_CENTRAL_PGP_KEY_ID }}
+          MVN_CENTRAL_PGP_PRIVATE_KEY: ${{ secrets.MVN_CENTRAL_PGP_PRIVATE_KEY }}
+          MVN_CENTRAL_PGP_PASSWORD: ${{ secrets.MVN_CENTRAL_PGP_PASSWORD }}
+          MVN_CENTRAL_STAGING_PROFILE_ID: ${{ secrets.MVN_CENTRAL_STAGING_PROFILE_ID }}
 
       - name: Copy API libs to artifacts dir
         run: ./gradlew copyApiLibs

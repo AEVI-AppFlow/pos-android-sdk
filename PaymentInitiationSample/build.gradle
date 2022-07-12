@@ -39,7 +39,8 @@ dependencies {
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxAndroid
     implementation apiDependencies.gson
-    implementation sampleDependencies.aeviUiLibrary
+    implementation files('libs/android-mockable-default-values-26.jar')
+    api(name:'ui-library-2.0.1', ext:'aar')
 
     implementation(sampleDependencies.support) { force = true }
     implementation(sampleDependencies.appCompat) { force = true }

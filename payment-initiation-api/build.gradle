@@ -1,10 +1,10 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "11"
+targetCompatibility = "11"
 
 apply from: gradleScript('lib/versioning.gradle')
-apply from: gradleScript('android/publishing-utils.gradle')
+apply from: gradleScript('publish/publishing-utils.gradle')
 
 group = 'com.aevi.sdk.pos.flow'
 version = libraryVersion
@@ -18,7 +18,7 @@ publishingUtils?.publication {
 dependencies {
     api project(':flow-base-api')
 
-    compileOnly apiDependencies.androidMockable
+    implementation files('libs/android-mockable-default-values-26.jar')
     implementation apiDependencies.gson
     api apiDependencies.rxJava
     api apiDependencies.rxMessenger
@@ -27,7 +27,7 @@ dependencies {
     api apiDependencies.archLifecycleJava8
 
     testImplementation project(':payment-flow-service-api') // So we have access to certain builders
-    testImplementation apiDependencies.androidMockable
+    testImplementation files('libs/android-mockable-default-values-26.jar')
     testImplementation sampleDependencies.appFlowConstants
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
@@ -38,5 +38,10 @@ dependencies {
 }
 
 buildConfig {
-    clsName = 'PaymentInitiationConfig'
+    buildConfigField("String", "NAME", "\"${project.name}\"")
+    buildConfigField("String", "VERSION", provider { "\"${project.version}\"" })
+    buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
+
+    packageName = "com.aevi.sdk.pos.flow"
+    className = 'PaymentInitiationConfig'
 }

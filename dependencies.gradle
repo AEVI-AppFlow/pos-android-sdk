@@ -13,7 +13,7 @@ ext {
     mockitoVersion = '3.3.3'
     assertJVersion = '2.7.0'
     androidMockableVersion = '26'
-    robolectricVersion = '3.3.2'
+    robolectricVersion = '3.8'
 
     // Sample Android deps
     archLifecycleVersion = '1.0.3'
@@ -30,7 +30,7 @@ ext {
     appFlowConstantsVersion = '2.3.7'
 
     apiDependencies = [
-            androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
+            //androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
             rxMessenger       : "com.aevi.android:rxmessenger:$rxMessengerVersion",
             rxAndroid         : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
@@ -42,7 +42,7 @@ ext {
     ]
 
     sampleDependencies = [
-            aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
+            //aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
             support          : "com.android.support:support-v4:$supportLibraryVersion",
             recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",

@@ -39,7 +39,8 @@ dependencies {
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
-    implementation sampleDependencies.aeviUiLibrary
+    implementation files('libs/android-mockable-default-values-26.jar')
+    api(name:'ui-library-2.0.1', ext:'aar')
     implementation project(':payment-flow-service-api')
     implementation project(':sample-commons')
     implementation sampleDependencies.butterKnife

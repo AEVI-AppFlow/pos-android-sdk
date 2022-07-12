@@ -1,13 +1,14 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "11"
+targetCompatibility = "11"
 
 apply from: gradleScript('lib/versioning.gradle')
-apply from: gradleScript('android/publishing-utils.gradle')
+apply from: gradleScript('publish/publishing-utils.gradle')
 
 group = 'com.aevi.sdk.flow'
 version = libraryVersion
+description = 'flow-base-api'
 
 publishingUtils?.publication {
     groupId group
@@ -15,8 +16,10 @@ publishingUtils?.publication {
     version libraryVersion
 }
 
+apply from: gradleScript('publish/publish-maven-central.gradle')
+
 dependencies {
-    compileOnly apiDependencies.androidMockable
+    implementation files('libs/android-mockable-default-values-26.jar')
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
@@ -26,7 +29,7 @@ dependencies {
     implementation apiDependencies.configApi
 
     testImplementation project(':payment-flow-service-api')
-    testImplementation apiDependencies.androidMockable
+    testImplementation files('libs/android-mockable-default-values-26.jar')
     testImplementation testDependencies.junit
     testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.mockito
@@ -54,8 +57,12 @@ javadoc {
 }
 
 buildConfig {
-    packageName = 'com.aevi.sdk.flow'
-    clsName = 'FlowBaseConfig'
+    buildConfigField("String", "NAME", "\"${project.name}\"")
+    buildConfigField("String", "VERSION", provider { "\"${project.version}\"" })
+    buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
+
+    packageName = "com.aevi.sdk.flow"
+    className = "FlowBaseConfig"
 }
 
 
