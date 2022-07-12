@@ -8,12 +8,15 @@ apply from: gradleScript('publish/publishing-utils.gradle')
 
 group = 'com.aevi.sdk.pos.flow'
 version = libraryVersion
+description = 'payment-initiation-api'
 
 publishingUtils?.publication {
     groupId group
     artifactId project.name
     version libraryVersion
 }
+
+apply from: gradleScript('publish/publish-maven-central.gradle')
 
 dependencies {
     api project(':flow-base-api')
