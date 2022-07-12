@@ -26,6 +26,7 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url uri("https://sdk-public-artifacts.s3.eu-west-1.amazonaws.com/maven2") }
         flatDir { dirs 'libs' }
     }
 }

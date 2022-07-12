@@ -18,7 +18,7 @@ publishingUtils?.publication {
 dependencies {
     api project(':flow-base-api')
 
-    implementation files('libs/android-mockable-default-values-26.jar')
+    compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     api apiDependencies.rxJava
     api apiDependencies.rxMessenger
@@ -27,7 +27,7 @@ dependencies {
     api apiDependencies.archLifecycleJava8
 
     testImplementation project(':payment-flow-service-api') // So we have access to certain builders
-    testImplementation files('libs/android-mockable-default-values-26.jar')
+    testImplementation apiDependencies.androidMockable
     testImplementation sampleDependencies.appFlowConstants
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito

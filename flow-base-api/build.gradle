@@ -19,7 +19,7 @@ publishingUtils?.publication {
 apply from: gradleScript('publish/publish-maven-central.gradle')
 
 dependencies {
-    implementation files('libs/android-mockable-default-values-26.jar')
+    compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
@@ -29,7 +29,7 @@ dependencies {
     implementation apiDependencies.configApi
 
     testImplementation project(':payment-flow-service-api')
-    testImplementation files('libs/android-mockable-default-values-26.jar')
+    testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.mockito
