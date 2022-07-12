@@ -72,7 +72,7 @@ jobs:
       - name: Publish final release versions to Maven Central
         if: contains(env.TAG, '-') != true
         run: |
-          ./gradlew jar publishToSonatype closeAndReleaseSonatypeStagingRepository \
+          ./gradlew assembleRelease publishToSonatype closeAndReleaseSonatypeStagingRepository \
           -Pversion_major=2 \
           -Pversion_minor=2 \
           -Pversion_patch=8 \
