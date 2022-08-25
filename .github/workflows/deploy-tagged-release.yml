@@ -117,7 +117,7 @@ jobs:
 
       - name: Build and upload library jars to Github repo
         run: |
-          ./gradlew assembleRelease publish \
+          ./gradlew assembleRelease publishReleasePublicationToGithubRepository \
           -Pversion_major=${{env.VERSION_MAJOR}} \
           -Pversion_minor=${{env.VERSION_MINOR}} \
           -Pversion_patch=${{env.VERSION_PATCH}} \
