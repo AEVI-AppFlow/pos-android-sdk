@@ -139,20 +139,3 @@ jobs:
             ${{ steps.flow-service-apk-file-path.outputs.apk_path_release }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish final release versions to Maven Central
-        if: contains(env.TAG, '-') != true
-        run: |
-          ./gradlew assembleRelease publishToSonatype closeAndReleaseSonatypeStagingRepository \
-          -Pversion_major=${{env.VERSION_MAJOR}} \
-          -Pversion_minor=${{env.VERSION_MINOR}} \
-          -Pversion_patch=${{env.VERSION_PATCH}} \
-          -Pversion_suffix=${{env.VERSION_SUFFIX}} \
-          -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
-        env:
-          MVN_CENTRAL_USERNAME: ${{ secrets.MVN_CENTRAL_USERNAME }}
-          MVN_CENTRAL_PASSWORD: ${{ secrets.MVN_CENTRAL_PASSWORD }}
-          MVN_CENTRAL_PGP_KEY_ID: ${{ secrets.MVN_CENTRAL_PGP_KEY_ID }}
-          MVN_CENTRAL_PGP_PRIVATE_KEY: ${{ secrets.MVN_CENTRAL_PGP_PRIVATE_KEY }}
-          MVN_CENTRAL_PGP_PASSWORD: ${{ secrets.MVN_CENTRAL_PGP_PASSWORD }}
-          MVN_CENTRAL_STAGING_PROFILE_ID: ${{ secrets.MVN_CENTRAL_STAGING_PROFILE_ID }}
