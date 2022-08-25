@@ -14,12 +14,12 @@
 
 package com.aevi.sdk.flow.model.config;
 
-import com.aevi.sdk.flow.FlowBaseConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
+
+import com.aevi.sdk.flow.BuildConfig;
 
 /**
  * Builder class for {@link FlowConfig}.
@@ -177,7 +177,7 @@ public class FlowConfigBuilder {
     }
 
     private static int getMajorVersionNumber() {
-        String version = FlowBaseConfig.VERSION;
+        String version = BuildConfig.VERSION;
         return Character.getNumericValue(version.charAt(0));
     }
 }

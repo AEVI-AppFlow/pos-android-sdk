@@ -14,8 +14,6 @@
 package com.aevi.sdk.flow.service;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
@@ -25,6 +23,8 @@ import static com.aevi.sdk.flow.BaseApiClient.FLOW_PROCESSING_SERVICE;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_ACK_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.UNEXPECTED_ERROR;
 import static com.aevi.sdk.flow.service.BaseApiService.checkVersions;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base service used for notifying clients of the final response for any transaction.

@@ -14,10 +14,10 @@
 
 package com.aevi.sdk.flow.service;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.aevi.sdk.flow.FlowBaseConfig;
+import com.aevi.sdk.flow.BuildConfig;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.GenericStageModel;
@@ -28,7 +28,7 @@ import com.aevi.sdk.flow.stage.GenericStageModel;
 public abstract class BaseGenericService extends BaseApiService {
 
     public BaseGenericService() {
-        super(FlowBaseConfig.VERSION);
+        super(BuildConfig.VERSION);
     }
 
     @Override

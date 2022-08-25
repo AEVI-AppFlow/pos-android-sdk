@@ -14,16 +14,17 @@
 
 package com.aevi.sdk.pos.flow;
 
-
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.sdk.flow.BaseApiClient;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.constants.ResponseMechanisms;
 import com.aevi.sdk.flow.model.*;
+import com.aevi.sdk.pos.flow.initiation.BuildConfig;
 import com.aevi.sdk.pos.flow.model.Payment;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
@@ -45,7 +46,7 @@ public class PaymentClientImpl extends BaseApiClient implements PaymentClient {
     private static final String TAG = PaymentClientImpl.class.getSimpleName();
 
     protected PaymentClientImpl(Context context) {
-        super(PaymentInitiationConfig.VERSION, context);
+        super(BuildConfig.VERSION, context);
         startFps(context);
         Log.i(TAG, "PaymentClient initialised from " + context.getPackageName());
     }

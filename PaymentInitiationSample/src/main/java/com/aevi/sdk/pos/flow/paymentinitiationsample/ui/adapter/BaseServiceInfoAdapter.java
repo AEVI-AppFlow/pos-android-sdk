@@ -17,11 +17,13 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.R;

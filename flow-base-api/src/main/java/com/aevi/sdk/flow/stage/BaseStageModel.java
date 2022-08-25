@@ -17,8 +17,6 @@ package com.aevi.sdk.flow.stage;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.FlowServiceEventDataKeys;
@@ -35,6 +33,9 @@ import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_INITIATOR;
 import static com.aevi.sdk.flow.model.AppMessage.EMPTY_DATA;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.ACTIVITY_REQUEST_KEY;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Internal base class for all stage models that provide the stage specific data functions.

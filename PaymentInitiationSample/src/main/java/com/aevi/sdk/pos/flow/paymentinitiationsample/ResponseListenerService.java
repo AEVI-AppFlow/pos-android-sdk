@@ -14,7 +14,6 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.FlowException;
@@ -24,6 +23,8 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.GenericResultActivity;
 import com.aevi.sdk.pos.flow.paymentinitiationsample.ui.NotificationHelper;
 
 import static android.content.Intent.*;
+
+import androidx.annotation.NonNull;
 
 public class ResponseListenerService extends BaseResponseListenerService {
 

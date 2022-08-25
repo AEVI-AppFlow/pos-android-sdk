@@ -28,9 +28,9 @@
 
 package com.aevi.sdk.pos.flow.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.BaseServiceInfo;
 import com.aevi.sdk.flow.util.ComparisonUtil;

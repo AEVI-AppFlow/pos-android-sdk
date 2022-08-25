@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:paddingBottom="5dp">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/Toolbar"
             android:layout_alignParentTop="true"

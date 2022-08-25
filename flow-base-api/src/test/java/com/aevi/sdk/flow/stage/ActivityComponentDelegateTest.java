@@ -1,11 +1,8 @@
 package com.aevi.sdk.flow.stage;
 
 import android.app.Activity;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.constants.FlowServiceEventTypes;
@@ -17,6 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 
 @SuppressWarnings("unchecked")
 public class ActivityComponentDelegateTest {

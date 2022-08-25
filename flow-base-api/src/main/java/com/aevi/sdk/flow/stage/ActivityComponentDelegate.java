@@ -16,10 +16,8 @@ package com.aevi.sdk.flow.stage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
@@ -35,6 +33,9 @@ import java.lang.ref.WeakReference;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATELY;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_INTERNAL_DATA_KEY;
 import static com.aevi.sdk.flow.stage.ServiceComponentDelegate.EXTRAS_SENDER_INTERNAL_DATA;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LifecycleOwner;
 
 /**
  * Provides activity-based implementation for stage models.

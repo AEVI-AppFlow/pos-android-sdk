@@ -14,8 +14,6 @@
 
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
-
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.sdk.pos.flow.model.Merchant;
@@ -27,6 +25,8 @@ import com.aevi.sdk.pos.flow.provider.BasePaymentFlowServiceInfoProvider;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.FLOW_EVENT;
 import static com.aevi.sdk.flow.constants.FlowTypes.*;
 import static com.aevi.sdk.flow.constants.ServiceInfoErrors.*;
+
+import androidx.annotation.NonNull;
 
 public class PaymentServiceInfoProvider extends BasePaymentFlowServiceInfoProvider {
 

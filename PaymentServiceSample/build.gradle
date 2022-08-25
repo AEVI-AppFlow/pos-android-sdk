@@ -2,40 +2,23 @@ apply plugin: 'com.android.application'
 
 ext.applicationId = "com.aevi.sdk.pos.flow.paymentservicesample"
 ext.applicationName = "PaymentServiceSample"
-ext.applicationTargetSdkVersion = 28
-ext.applicationMinSdkVersion = 21
 
 apply from: gradleScript('android/artifacts.gradle')
 apply from: gradleScript('android/versioning.gradle')
 apply from: gradleScript('android/basic-android.gradle')
 
-android {
-    signingConfigs {
-        release {
-            storeFile file("../samples-key.jks")
-            storePassword "appflow"
-            keyAlias "sample"
-            keyPassword "appflow"
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
-        }
-    }
-    lintOptions {
-        abortOnError false
+configurations {
+    all {
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
     }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(sampleDependencies.support) { force = true }
-    implementation(sampleDependencies.appCompat) { force = true }
-    implementation(sampleDependencies.recyclerView) { force = true }
-    implementation(sampleDependencies.cardView) { force = true }
-    implementation(sampleDependencies.design) { force = true }
+    implementation(sampleDependencies.support)
+    implementation(sampleDependencies.appCompat)
+    implementation(sampleDependencies.recyclerView)
+    implementation(sampleDependencies.cardView)
+    implementation(sampleDependencies.design)
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxAndroid

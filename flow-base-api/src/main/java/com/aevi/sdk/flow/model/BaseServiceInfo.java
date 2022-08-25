@@ -14,13 +14,13 @@
 
 package com.aevi.sdk.flow.model;
 
-
-import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.*;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+
+import androidx.annotation.NonNull;
 
 /**
  * Common flags for service info models regardless of domain.

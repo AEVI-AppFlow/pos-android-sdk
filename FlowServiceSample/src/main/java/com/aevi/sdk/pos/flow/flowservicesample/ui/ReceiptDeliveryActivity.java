@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,6 +34,8 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import static com.aevi.sdk.flow.constants.AdditionalDataKeys.DATA_KEY_TRANSACTION;
 import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class ReceiptDeliveryActivity extends BaseSampleAppCompatActivity {
 

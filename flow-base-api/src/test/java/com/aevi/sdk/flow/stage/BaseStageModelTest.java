@@ -1,6 +1,5 @@
 package com.aevi.sdk.flow.stage;
 
-import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
 import com.aevi.sdk.flow.model.AuditEntry;
@@ -10,8 +9,9 @@ import org.mockito.ArgumentCaptor;
 
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.WARNING;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
+
+import androidx.annotation.NonNull;
 
 public class BaseStageModelTest {
 

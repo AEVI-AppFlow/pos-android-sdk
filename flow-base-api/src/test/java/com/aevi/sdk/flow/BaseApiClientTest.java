@@ -22,12 +22,12 @@ import java.util.List;
 
 import static com.aevi.sdk.flow.TestHelper.pretendServiceIsInstalled;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@Config(sdk = Build.VERSION_CODES.N, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class BaseApiClientTest {
 

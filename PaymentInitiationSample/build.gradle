@@ -2,36 +2,18 @@ apply plugin: 'com.android.application'
 
 ext.applicationId = "com.aevi.sdk.pos.flow.paymentinitiationsample"
 ext.applicationName = "PaymentInitiationSample"
-ext.applicationTargetSdkVersion = 28
-ext.applicationMinSdkVersion = 21
 
 apply from: gradleScript('android/artifacts.gradle')
 apply from: gradleScript('android/versioning.gradle')
 apply from: gradleScript('android/basic-android.gradle')
 
-android {
-    signingConfigs {
-        release {
-            storeFile file("../samples-key.jks")
-            storePassword "appflow"
-            keyAlias "sample"
-            keyPassword "appflow"
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
-        }
-    }
-    lintOptions {
-        abortOnError false
+configurations {
+    all {
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation project(':payment-initiation-api')
     implementation project(':sample-commons')
     implementation apiDependencies.archLifecycle
@@ -41,11 +23,11 @@ dependencies {
     implementation apiDependencies.gson
     implementation sampleDependencies.aeviUiLibrary
 
-    implementation(sampleDependencies.support) { force = true }
-    implementation(sampleDependencies.appCompat) { force = true }
-    implementation(sampleDependencies.recyclerView) { force = true }
-    implementation(sampleDependencies.cardView) { force = true }
-    implementation(sampleDependencies.design) { force = true }
+    implementation(sampleDependencies.support)
+    implementation(sampleDependencies.appCompat)
+    implementation(sampleDependencies.recyclerView)
+    implementation(sampleDependencies.cardView)
+    implementation(sampleDependencies.design)
 
     implementation sampleDependencies.butterKnife
     annotationProcessor sampleAptDependencies.butterKnife

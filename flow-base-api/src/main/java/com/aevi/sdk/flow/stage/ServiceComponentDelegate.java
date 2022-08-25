@@ -17,7 +17,6 @@ package com.aevi.sdk.flow.stage;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
@@ -39,6 +38,8 @@ import static android.content.Intent.*;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.*;
+
+import androidx.annotation.NonNull;
 
 /**
  * Provides service-based implementation for stage models.

@@ -14,9 +14,11 @@
 
 package com.aevi.sdk.flow.model.config;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonPostProcessing;

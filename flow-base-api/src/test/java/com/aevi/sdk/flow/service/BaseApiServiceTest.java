@@ -1,8 +1,5 @@
 package com.aevi.sdk.flow.service;
 
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.constants.AppMessageTypes;
 import com.aevi.sdk.flow.model.AppMessage;
@@ -21,6 +18,9 @@ import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class BaseApiServiceTest {
 

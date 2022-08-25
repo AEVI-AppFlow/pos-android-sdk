@@ -11,7 +11,7 @@ import org.robolectric.annotation.Config;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@Config(sdk = Build.VERSION_CODES.N, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class PaymentApiTest extends ApiTestBase {
 

@@ -14,8 +14,9 @@
 
 package com.aevi.sdk.pos.flow.model.config;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import io.reactivex.Observable;
 

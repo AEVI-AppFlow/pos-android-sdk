@@ -14,8 +14,7 @@
 
 package com.aevi.sdk.pos.flow;
 
-
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.aevi.sdk.flow.constants.ErrorConstants;
 import com.aevi.sdk.flow.model.Device;

@@ -15,8 +15,6 @@
 package com.aevi.sdk.pos.flow.model;
 
 
-import android.support.annotation.NonNull;
-
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.sdk.flow.model.Token;
@@ -24,6 +22,8 @@ import com.aevi.sdk.pos.flow.PaymentClient;
 import com.aevi.sdk.pos.flow.model.config.PaymentSettings;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+
+import androidx.annotation.NonNull;
 
 /**
  * Builder to construct {@link Payment} objects.

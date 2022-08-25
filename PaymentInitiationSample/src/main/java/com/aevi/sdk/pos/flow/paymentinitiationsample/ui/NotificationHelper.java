@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.pos.flow.model.events.ConfirmationOption;
@@ -18,6 +17,8 @@ import com.aevi.sdk.pos.flow.paymentinitiationsample.R;
 
 import static com.aevi.sdk.flow.constants.events.FlowEventTypes.*;
 import static com.aevi.sdk.pos.flow.paymentinitiationsample.ConfirmationActionReceiver.*;
+
+import androidx.core.app.NotificationCompat;
 
 public class NotificationHelper {
 

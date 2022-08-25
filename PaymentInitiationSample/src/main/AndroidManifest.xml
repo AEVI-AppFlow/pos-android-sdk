@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,13 +24,13 @@
         <activity
             android:name=".ui.PopupActivity"
             android:excludeFromRecents="true"
-            android:noHistory="true"></activity>
+            android:noHistory="true" />
         <activity
             android:name=".ui.PaymentResultActivity"
-            android:label="@string/payment_result"></activity>
+            android:label="@string/payment_result" />
         <activity
             android:name=".ui.GenericResultActivity"
-            android:label="@string/payment_result"></activity>
+            android:label="@string/payment_result" />
 
         <receiver
             android:name=".ConfirmationActionReceiver"

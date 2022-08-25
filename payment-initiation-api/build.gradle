@@ -1,13 +1,14 @@
-apply plugin: 'java-library'
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+apply plugin: 'com.android.library'
 
 apply from: gradleScript('lib/versioning.gradle')
-apply from: gradleScript('android/publishing-utils.gradle')
+apply from: gradleScript('android/versioning.gradle')
+apply from: gradleScript('android/sdk-dev-signing-config.gradle')
+apply from: gradleScript('publish/publishing-utils.gradle')
+apply from: gradleScript('android/basic-library.gradle')
 
 group = 'com.aevi.sdk.pos.flow'
 version = libraryVersion
+description = 'payment-initiation-api'
 
 publishingUtils?.publication {
     groupId group
@@ -15,10 +16,19 @@ publishingUtils?.publication {
     version libraryVersion
 }
 
+apply from: gradleScript('publish/publish-maven-central.gradle')
+
+android {
+    defaultConfig {
+        buildConfigField("String", "NAME", "\"${project.name}\"")
+        buildConfigField("String", "VERSION", "\"${libraryVersion}\"")
+        buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
+    }
+}
+
 dependencies {
     api project(':flow-base-api')
 
-    compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     api apiDependencies.rxJava
     api apiDependencies.rxMessenger
@@ -27,7 +37,6 @@ dependencies {
     api apiDependencies.archLifecycleJava8
 
     testImplementation project(':payment-flow-service-api') // So we have access to certain builders
-    testImplementation apiDependencies.androidMockable
     testImplementation sampleDependencies.appFlowConstants
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
@@ -35,8 +44,4 @@ dependencies {
     testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.robolectric
 
-}
-
-buildConfig {
-    clsName = 'PaymentInitiationConfig'
 }

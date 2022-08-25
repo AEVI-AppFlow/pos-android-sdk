@@ -15,8 +15,6 @@
 package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +28,9 @@ import com.aevi.sdk.pos.flow.sample.R;
 import static com.aevi.sdk.flow.constants.FlowServiceEventDataKeys.REJECTED_REASON;
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESPONSE_REJECTED;
 import static com.aevi.sdk.flow.constants.events.FlowEventTypes.EVENT_PROGRESS_MESSAGE;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public abstract class BaseSampleAppCompatActivity extends AppCompatActivity {
 

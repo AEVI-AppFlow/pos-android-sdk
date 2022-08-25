@@ -15,7 +15,9 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.widget.Toolbar;
+
 import butterknife.BindView;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.pos.flow.flowservicesample.R;

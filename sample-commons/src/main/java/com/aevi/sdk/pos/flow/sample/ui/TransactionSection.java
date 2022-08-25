@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.aevi.sdk.pos.flow.model.TransactionResponse;
 import com.aevi.sdk.pos.flow.sample.AmountFormatter;
 import com.aevi.sdk.pos.flow.sample.R;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,9 @@ import java.util.List;
 import static com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment.createCommonTransactionResponseInfo;
 import static com.aevi.sdk.pos.flow.sample.ui.ModelDetailsFragment.getStringPair;
 
-public class TransactionSection extends StatelessSection {
+import androidx.recyclerview.widget.RecyclerView;
+
+public class TransactionSection extends Section {
 
     private static final int NUM_TXN_RESPONSE_FIELDS = 5;
 

@@ -1,7 +1,5 @@
 package com.aevi.sdk.pos.flow.service;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
@@ -18,6 +16,9 @@ import com.aevi.sdk.pos.flow.stage.*;
 import static com.aevi.sdk.flow.constants.ErrorConstants.STAGE_NOT_SUPPORTED;
 import static com.aevi.sdk.flow.constants.FlowStages.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Base class for payment flow services that wish to handle a request in a service directly.

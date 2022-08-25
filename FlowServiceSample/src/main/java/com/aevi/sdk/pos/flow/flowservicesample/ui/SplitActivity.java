@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,6 +36,8 @@ import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_AMOUNTS;
 import static com.aevi.sdk.flow.constants.SplitDataKeys.SPLIT_TYPE_BASKET;
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
+
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * Sample for a split application.

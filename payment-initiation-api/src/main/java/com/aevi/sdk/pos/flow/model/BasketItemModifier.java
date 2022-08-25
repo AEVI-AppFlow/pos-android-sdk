@@ -1,12 +1,12 @@
 package com.aevi.sdk.pos.flow.model;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * A {@link BasketItemModifier} can be used to associate additional cost/amounts with a basket item, such as tax, discounts or add-ons.

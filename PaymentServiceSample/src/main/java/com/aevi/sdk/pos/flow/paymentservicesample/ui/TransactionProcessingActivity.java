@@ -16,7 +16,6 @@ package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.Switch;
@@ -59,6 +58,8 @@ import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CARD;
 import static com.aevi.sdk.flow.constants.ReferenceKeys.*;
 import static com.aevi.sdk.flow.constants.events.ConfirmationOptionValues.*;
 import static com.aevi.sdk.flow.constants.events.FlowEventTypes.*;
+
+import androidx.appcompat.widget.Toolbar;
 
 
 public class TransactionProcessingActivity extends BaseSampleAppCompatActivity {

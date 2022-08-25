@@ -27,7 +27,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@Config(sdk = Build.VERSION_CODES.N, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class PaymentClientImplTest {
 

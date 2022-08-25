@@ -14,7 +14,7 @@
 package com.aevi.sdk.pos.flow.service;
 
 import com.aevi.sdk.flow.service.BaseListenerService;
-import com.aevi.sdk.pos.flow.PaymentInitiationConfig;
+import com.aevi.sdk.pos.flow.initiation.BuildConfig;
 import com.aevi.sdk.pos.flow.model.PaymentResponse;
 
 /**
@@ -24,6 +24,6 @@ import com.aevi.sdk.pos.flow.model.PaymentResponse;
 public abstract class BasePaymentResponseListenerService extends BaseListenerService<PaymentResponse> {
 
     protected BasePaymentResponseListenerService() {
-        super(PaymentResponse.class, PaymentInitiationConfig.VERSION);
+        super(PaymentResponse.class, BuildConfig.VERSION);
     }
 }

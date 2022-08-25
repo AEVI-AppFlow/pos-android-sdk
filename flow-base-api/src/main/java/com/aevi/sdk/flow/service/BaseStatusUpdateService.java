@@ -14,9 +14,10 @@
 
 package com.aevi.sdk.flow.service;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.aevi.sdk.flow.FlowBaseConfig;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.aevi.sdk.flow.BuildConfig;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;
 import com.aevi.sdk.flow.stage.StatusUpdateModel;
@@ -27,7 +28,7 @@ import com.aevi.sdk.flow.stage.StatusUpdateModel;
 public abstract class BaseStatusUpdateService extends BaseApiService {
 
     public BaseStatusUpdateService() {
-        super(FlowBaseConfig.VERSION);
+        super(BuildConfig.VERSION);
     }
 
     @Override

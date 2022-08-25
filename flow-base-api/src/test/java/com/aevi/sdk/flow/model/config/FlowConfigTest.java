@@ -1,7 +1,5 @@
 package com.aevi.sdk.flow.model.config;
 
-import android.support.annotation.NonNull;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+
+import androidx.annotation.NonNull;
 
 public class FlowConfigTest {
 

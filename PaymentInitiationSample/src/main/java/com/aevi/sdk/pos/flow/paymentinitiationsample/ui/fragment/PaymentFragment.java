@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,6 +51,8 @@ import java.util.List;
 
 import static com.aevi.sdk.flow.constants.ErrorConstants.PROCESSING_SERVICE_BUSY;
 import static com.aevi.sdk.flow.constants.ModifierTypes.MODIFIER_TYPE_EXTRA;
+
+import androidx.annotation.Nullable;
 
 public class PaymentFragment extends BaseObservableFragment {
 

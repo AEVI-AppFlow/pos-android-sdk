@@ -15,9 +15,11 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.appcompat.widget.Toolbar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.aevi.sdk.flow.model.Request;

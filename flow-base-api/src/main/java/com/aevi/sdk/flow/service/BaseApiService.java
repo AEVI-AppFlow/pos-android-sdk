@@ -15,8 +15,6 @@
 package com.aevi.sdk.flow.service;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.android.rxmessenger.service.AbstractChannelService;
@@ -25,6 +23,9 @@ import com.aevi.sdk.flow.model.InternalData;
 
 import static com.aevi.sdk.flow.constants.AppMessageTypes.REQUEST_MESSAGE;
 import static com.aevi.sdk.flow.constants.ErrorConstants.FLOW_SERVICE_ERROR;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Internal base class for all API service implementations.

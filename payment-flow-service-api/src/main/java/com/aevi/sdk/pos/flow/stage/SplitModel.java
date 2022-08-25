@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.service.ClientCommunicator;
@@ -27,6 +26,8 @@ import com.aevi.sdk.pos.flow.service.ActivityProxyService;
 import com.aevi.sdk.pos.flow.service.BasePaymentFlowService;
 
 import static com.aevi.sdk.flow.util.Preconditions.*;
+
+import androidx.annotation.NonNull;
 
 /**
  * Model for the split stage that exposes all the data functions and other utilities required for any app to process this stage.

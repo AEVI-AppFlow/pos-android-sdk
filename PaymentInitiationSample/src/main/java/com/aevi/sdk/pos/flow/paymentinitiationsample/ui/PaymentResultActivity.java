@@ -16,8 +16,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -30,6 +28,9 @@ import com.aevi.sdk.pos.flow.sample.ui.ModelDisplay;
 
 import static com.aevi.sdk.pos.flow.model.PaymentResponse.Outcome.FAILED;
 import static com.aevi.sdk.pos.flow.model.PaymentResponse.Outcome.PARTIALLY_FULFILLED;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PaymentResultActivity extends AppCompatActivity {
 

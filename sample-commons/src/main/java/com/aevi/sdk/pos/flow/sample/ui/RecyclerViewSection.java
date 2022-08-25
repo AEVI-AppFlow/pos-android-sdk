@@ -16,16 +16,18 @@ package com.aevi.sdk.pos.flow.sample.ui;
 
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aevi.sdk.pos.flow.sample.R;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 
 import java.util.List;
 
-public class RecyclerViewSection extends StatelessSection {
+public class RecyclerViewSection extends Section {
 
     private final Context context;
     private final String title;

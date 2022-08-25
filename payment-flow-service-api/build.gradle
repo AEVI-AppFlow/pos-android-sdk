@@ -1,13 +1,14 @@
-apply plugin: 'java-library'
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+apply plugin: 'com.android.library'
 
 apply from: gradleScript('lib/versioning.gradle')
-apply from: gradleScript('android/publishing-utils.gradle')
+apply from: gradleScript('android/versioning.gradle')
+apply from: gradleScript('android/sdk-dev-signing-config.gradle')
+apply from: gradleScript('publish/publishing-utils.gradle')
+apply from: gradleScript('android/basic-library.gradle')
 
 group = 'com.aevi.sdk.pos.flow'
 version = libraryVersion
+description = 'payment-flow-service-api'
 
 publishingUtils?.publication {
     groupId group
@@ -15,22 +16,26 @@ publishingUtils?.publication {
     version libraryVersion
 }
 
+apply from: gradleScript('publish/publish-maven-central.gradle')
+
+android {
+    defaultConfig {
+        buildConfigField("String", "NAME", "\"${project.name}\"")
+        buildConfigField("String", "VERSION", "\"${libraryVersion}\"")
+        buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
+    }
+}
+
 dependencies {
     api project(':payment-initiation-api')
     api project(':flow-base-api')
 
-    compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
     implementation apiDependencies.jsonConverter
 
-    testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
-}
-
-buildConfig {
-    clsName = 'FlowServiceConfig'
 }

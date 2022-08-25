@@ -1,13 +1,11 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
         maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-        maven {
-            name = "github-aevi-uk"
-            url = uri("https://maven.pkg.github.com/aevi-uk/gradle-scripts")
+            name = "github-aevi-appflow"
+            url = uri("https://maven.pkg.github.com/AEVI-AppFlow/gradle-scripts")
             credentials {
                 username = System.getenv("GITHUB_ACTOR") ?: gh_username
                 password = System.getenv("GITHUB_TOKEN") ?: gh_token
@@ -15,111 +13,28 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
-        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
+        classpath 'com.android.tools.build:gradle:7.2.2'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
-        classpath 'com.aevi.sdk.build:gradle-scripts:1.1.8'
+        classpath 'com.aevi.sdk.build:gradle-scripts:1.5.1'
+        classpath 'io.github.gradle-nexus:publish-plugin:1.1.0'
     }
 }
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+apply plugin: 'io.github.gradle-nexus.publish-plugin'
 
 ext.gradleScript = { path ->
     return rootProject.buildscript.classLoader.getResource(path).toURI()
 }
 
 apply from: gradleScript('root/common-tasks.gradle')
-apply from: gradleScript('root/repositories.gradle')
-
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-task cleanDocs(type: Delete) {
-    delete 'documentation/public'
-}
-
-task copyApiLibs(type: Copy) {
-    from 'payment-initiation-api/build/libs'
-    from 'payment-flow-service-api/build/libs'
-    into 'artifacts/libs'
-}
+apply from: gradleScript('publish/maven-central-repo.gradle')
 
 apply from: 'dependencies.gradle'
-
-def exportedProjects = [
-        ":flow-base-api",
-        ":payment-flow-service-api",
-        ":payment-initiation-api"
-]
-
-def baseAndFlowService = [
-        ":flow-base-api",
-        ":payment-initiation-api",
-        ":payment-flow-service-api"
-]
-
-def baseAndInitiation = [
-        ":flow-base-api",
-        ":payment-initiation-api"
-]
-
-configure(subprojects.findAll {
-    exportedProjects.contains(":" + it.name)
-}) {
-    apply plugin: 'java'
-    apply plugin: 'de.fuerstenau.buildconfig'
-    apply plugin: 'idea'
-}
-
-task mergeBaseAndFlowServiceDocs(type: Javadoc) {
-    source baseAndFlowService.collect { project(it).sourceSets.main.allJava }
-    classpath = files(baseAndFlowService.collect {
-        project(it).sourceSets.main.compileClasspath
-    }, baseAndFlowService.collect {
-        project(it).sourceSets.main.runtimeClasspath
-    })
-    destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
-    title = "Payment Flow Service API"
-    exclude "**/BaseApiClient**"
-    exclude "**/PaymentClient**"
-    exclude "**/PaymentApi**"
-    exclude "**/BaseListenerService**"
-    exclude "**/config/**"
-    exclude "**/InternalData**"
-    exclude "**/AppMessage**"
-    exclude "**/util/**"
-    options.memberLevel = JavadocMemberLevel.PUBLIC
-}
-
-task mergeBaseAndInitiationDocs(type: Javadoc) {
-    source baseAndInitiation.collect { project(it).sourceSets.main.allJava }
-    classpath = files(baseAndInitiation.collect {
-        project(it).sourceSets.main.compileClasspath
-    }, baseAndInitiation.collect {
-        project(it).sourceSets.main.runtimeClasspath
-    })
-    destinationDir = file('documentation/public/javadocs/payment-initiation-api')
-    title = "Payment Initiation API"
-    exclude "**/**ClientImpl**"
-    exclude "**/BaseGenericService**"
-    exclude "**/BasePostGenericService**"
-    exclude "**/BaseGenericService**"
-    exclude "**/BaseListenerService**"
-    exclude "**/**StageModel**"
-    exclude "**/InternalData**"
-    exclude "**/AppMessage**"
-    exclude "**/util/**"
-    options.memberLevel = JavadocMemberLevel.PUBLIC
-}
-
-task javadocs(dependsOn: [mergeBaseAndFlowServiceDocs, mergeBaseAndInitiationDocs]) {
-}
-
-task createJavadocsArtifact(dependsOn: [javadocs], type: Zip) {
-    from 'documentation/public/'
-    archiveName 'javadocs.zip'
-    destinationDirectory = file('artifacts/docs')
-}
-
-apply from: 'dist.gradle'

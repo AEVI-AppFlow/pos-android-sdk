@@ -15,8 +15,6 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +30,9 @@ import java.util.List;
 
 import static com.aevi.sdk.flow.constants.CardDataKeys.CARD_DATA_NETWORK;
 import static com.aevi.sdk.flow.constants.ReferenceKeys.REFERENCE_KEY_PAYMENT_SERVICE;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class TransactionResponseAdapter extends RecyclerView.Adapter<TransactionResponseAdapter.ViewHolder> {
 

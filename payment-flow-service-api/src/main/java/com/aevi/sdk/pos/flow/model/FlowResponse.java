@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.model;
 
-import android.support.annotation.Nullable;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.Customer;
 import com.aevi.util.json.JsonConverter;
@@ -25,6 +24,8 @@ import java.util.Objects;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
+
+import androidx.annotation.Nullable;
 
 /**
  * Response model for augmenting the flow.

@@ -15,9 +15,11 @@
 package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.aevi.sdk.pos.flow.sample.R;
 
 public class HelpActivity extends AppCompatActivity {

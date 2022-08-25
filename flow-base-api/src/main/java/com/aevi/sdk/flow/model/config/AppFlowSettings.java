@@ -14,8 +14,6 @@
 
 package com.aevi.sdk.flow.model.config;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -24,6 +22,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static com.aevi.android.rxmessenger.MessageConstants.CHANNEL_MESSENGER;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * General AppFlow settings that may be useful to any application integrated with AppFlow.

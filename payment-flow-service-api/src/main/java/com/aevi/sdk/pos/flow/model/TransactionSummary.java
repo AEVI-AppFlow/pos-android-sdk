@@ -15,7 +15,8 @@
 package com.aevi.sdk.pos.flow.model;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+
 import com.aevi.sdk.flow.model.DeviceAudience;
 import com.aevi.util.json.JsonConverter;
 

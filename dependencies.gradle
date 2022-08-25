@@ -1,42 +1,46 @@
 ext {
+    applicationTargetSdkVersion = 32
+    applicationMinSdkVersion = 24
+
     // API dependencies
-    gsonVersion = '2.8.0'
-    rxJavaVersion = '2.2.2'
+    gsonVersion = '2.9.1'
+    rxJavaVersion = '2.2.21'
     rxAndroidVersion = '2.1.1'
-    jsonConverterVersion = '1.1.1'
-    rxMessengerVersion = '5.0.3'
-    configApiVersion = '1.1.1'
+    jsonConverterVersion = '1.1.5'
+    rxMessengerVersion = '6.0.0'
+    configApiVersion = '1.2.0'
 
     // Test dependencies
-    junitVersion = '4.12'
+    junitVersion = '4.13.2'
     hamcrestVersion = '1.3'
-    mockitoVersion = '3.3.3'
-    assertJVersion = '2.7.0'
-    androidMockableVersion = '26'
-    robolectricVersion = '3.3.2'
+    mockitoVersion = '4.7.0'
+    assertJVersion = '3.23.1'
+    robolectricVersion = '4.8.1'
 
     // Sample Android deps
-    archLifecycleVersion = '1.0.3'
-    archLifecycleJava8Version = '1.1.0'
-    butterKnifeVersion = '9.0.0'
-    recyclerViewVersion = '28.0.0'
-    supportLibraryVersion = '28.0.0'
-    designLibraryVersion = '28.0.0'
-    constraintLayoutVersion = '1.0.2'
+    archLifecycleVersion = '2.3.1'
+    butterKnifeVersion = '10.2.3'
     jsonConverterVersion = "1.1.1"
+    supportLibrary = '1.0.0'
+    recyclerview = '1.2.1'
+    cardview = '1.0.0'
+    appcompat = '1.5.0'
+    annotation = '1.4.0'
+    material = '1.6.1'
+    constraintlayout = '2.1.4'
+    androidxCore = '1.4.0'
 
     // Sample AEVI deps
-    aeviUiLibraryVersion = "2.0.1"
-    appFlowConstantsVersion = '2.3.7'
+    aeviUiLibraryVersion = "2.1.1"
+    appFlowConstantsVersion = '2.3.8'
 
     apiDependencies = [
-            androidMockable   : "com.google:android-mockable-default-values:$androidMockableVersion",
             rxJava            : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
             rxMessenger       : "com.aevi.android:rxmessenger:$rxMessengerVersion",
             rxAndroid         : "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion",
             gson              : "com.google.code.gson:gson:$gsonVersion",
-            archLifecycle     : "android.arch.lifecycle:runtime:$archLifecycleVersion",
-            archLifecycleJava8: "android.arch.lifecycle:common-java8:$archLifecycleJava8Version",
+            archLifecycle     : "androidx.lifecycle:lifecycle-runtime:$archLifecycleVersion",
+            archLifecycleJava8: "androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion",
             jsonConverter     : "com.aevi.util:json-converter:$jsonConverterVersion",
             configApi         : "com.aevi.sdk.config:config-api:$configApiVersion",
     ]
@@ -44,13 +48,13 @@ ext {
     sampleDependencies = [
             aeviUiLibrary    : "com.aevi.ui.library:ui-library:$aeviUiLibraryVersion",
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibraryVersion",
-            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            cardView         : "com.android.support:cardview-v7:$supportLibraryVersion",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibraryVersion",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibraryVersion",
-            design           : "com.android.support:design:$designLibraryVersion",
-            constraintLayout : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+            support          : "androidx.legacy:legacy-support-v4:$supportLibrary",
+            recyclerView     : "androidx.recyclerview:recyclerview:$recyclerview",
+            cardView         : "androidx.cardview:cardview:$cardview",
+            appCompat        : "androidx.appcompat:appcompat:$appcompat",
+            supportAnnotation: "androidx.annotation:annotation:$annotation",
+            design           : "com.google.android.material:material:$material",
+            constraintLayout : "androidx.constraintlayout:constraintlayout:$constraintlayout",
             appFlowConstants : "com.aevi.sdk.flow:api-constants:$appFlowConstantsVersion",
     ]
 
@@ -64,5 +68,6 @@ ext {
             mockito    : "org.mockito:mockito-core:$mockitoVersion",
             assertJ    : "org.assertj:assertj-core:$assertJVersion",
             robolectric: "org.robolectric:robolectric:$robolectricVersion",
+            androidxCore: "androidx.test:core:$androidxCore",
     ]
 }

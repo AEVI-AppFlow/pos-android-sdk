@@ -19,8 +19,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.aevi.sdk.flow.constants.FlowStages;
 import com.aevi.sdk.flow.model.InternalData;
@@ -35,6 +33,9 @@ import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.FINISH_IMMEDIATE
 import static com.aevi.sdk.flow.constants.FlowServiceEventTypes.RESUME_USER_INTERFACE;
 import static com.aevi.sdk.flow.constants.IntentActions.*;
 import static com.aevi.sdk.flow.constants.InternalDataKeys.FLOW_STAGE;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * This service allows an application to proxy a request for any stage to an activity of their choice, without having to implement a custom service.

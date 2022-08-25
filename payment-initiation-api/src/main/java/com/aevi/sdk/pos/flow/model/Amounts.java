@@ -14,7 +14,6 @@
 
 package com.aevi.sdk.pos.flow.model;
 
-import android.support.annotation.NonNull;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
@@ -24,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
+
+import androidx.annotation.NonNull;
 
 /**
  * Representation of all the amounts relevant for a transaction.

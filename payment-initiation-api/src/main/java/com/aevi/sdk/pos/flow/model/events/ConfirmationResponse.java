@@ -13,7 +13,7 @@
  */
 package com.aevi.sdk.pos.flow.model.events;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.Objects;

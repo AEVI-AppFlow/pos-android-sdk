@@ -14,7 +14,8 @@
 
 package com.aevi.sdk.flow.model.config;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 

@@ -15,7 +15,6 @@
 package com.aevi.sdk.pos.flow.flowservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,6 +28,8 @@ import com.aevi.sdk.pos.flow.stage.PostTransactionModel;
 import com.aevi.sdk.pos.flow.stage.StageModelHelper;
 
 import static com.aevi.sdk.flow.model.AuditEntry.AuditSeverity.INFO;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class PostTransactionActivity extends BaseSampleAppCompatActivity {
 

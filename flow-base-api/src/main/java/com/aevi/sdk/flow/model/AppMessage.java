@@ -14,13 +14,13 @@
 
 package com.aevi.sdk.flow.model;
 
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.Jsonable;
 
 import static com.aevi.sdk.flow.constants.ResponseMechanisms.MESSENGER_CONNECTION;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Application message data for use between FPS and applications it calls.

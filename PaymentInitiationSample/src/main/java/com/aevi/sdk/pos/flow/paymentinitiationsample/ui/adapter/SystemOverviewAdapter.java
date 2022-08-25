@@ -17,9 +17,11 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aevi.sdk.flow.model.config.FlowConfig;
 import com.aevi.sdk.flow.model.config.FpsSettings;
 import com.aevi.sdk.pos.flow.PaymentApi;

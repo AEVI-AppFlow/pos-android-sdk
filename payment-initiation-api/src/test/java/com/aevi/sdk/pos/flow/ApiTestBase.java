@@ -32,18 +32,23 @@ public class ApiTestBase extends BaseApiClient {
         MockMessageService mockMessageService = new MockMessageService();
 
         shadowApplication
-                .setComponentNameAndServiceForBindService(FLOW_PROCESSING_SERVICE_COMPONENT, mockMessageService.onBind(null));
+                .setComponentNameAndServiceForBindService(
+                        FLOW_PROCESSING_SERVICE_COMPONENT,
+                        mockMessageService.onBind(null)
+                );
 
         Intent intent = new Intent();
         intent.setComponent(FLOW_PROCESSING_SERVICE_COMPONENT);
 
-        ShadowPackageManager shadowPackageManager = Shadows.shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ShadowPackageManager shadowPackageManager = Shadows.shadowOf(
+                RuntimeEnvironment.application.getPackageManager()
+        );
         ResolveInfo resolveInfo = new ResolveInfo();
         resolveInfo.serviceInfo = new ServiceInfo();
         shadowPackageManager.addResolveInfoForIntent(intent, resolveInfo);
     }
 
-    class MockMessageService extends Service {
+    static class MockMessageService extends Service {
 
         List<Message> messages = new ArrayList<>();
 

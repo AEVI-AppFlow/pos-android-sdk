@@ -12,7 +12,7 @@
             android:orientation="vertical"
             tools:context=".ui.RequestInitiationActivity">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 style="@style/Toolbar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>

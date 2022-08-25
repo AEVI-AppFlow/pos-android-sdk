@@ -17,7 +17,6 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +55,8 @@ import static com.aevi.sdk.flow.constants.FlowTypes.*;
 import static com.aevi.sdk.flow.constants.PaymentMethods.PAYMENT_METHOD_CASH;
 import static com.aevi.sdk.flow.constants.ReceiptKeys.*;
 import static com.aevi.sdk.flow.constants.StatusUpdateKeys.STATUS_UPDATE_BASKET_MODIFIED;
+
+import androidx.annotation.Nullable;
 
 public class GenericRequestFragment extends BaseObservableFragment {
 

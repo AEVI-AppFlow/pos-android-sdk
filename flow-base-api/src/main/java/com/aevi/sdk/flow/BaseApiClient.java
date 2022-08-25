@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
-import android.support.annotation.NonNull;
 
 import com.aevi.android.rxmessenger.ChannelClient;
 import com.aevi.android.rxmessenger.Channels;
@@ -51,6 +50,8 @@ import io.reactivex.functions.Function;
 import static com.aevi.android.rxmessenger.MessageConstants.*;
 import static com.aevi.sdk.flow.constants.AppMessageTypes.*;
 import static com.aevi.sdk.flow.constants.ResponseMechanisms.*;
+
+import androidx.annotation.NonNull;
 
 /**
  * Internal base client for all API domain implementations.
