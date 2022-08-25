@@ -5,8 +5,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GITHUB_ACTOR: ${{ secrets.CI_BOT_USERNAME }}
   GITHUB_TOKEN: ${{ secrets.CI_BOT_PAT }}
-  SDK_DEV_KEYSTORE: ${{ secrets.SDK_DEV_KEYSTORE }}
-  SDK_DEV_KEYSTORE_PASSWORD: ${{ secrets.SDK_DEV_KEYSTORE_PASSWORD }}
 
 on:
   push:
@@ -115,9 +113,9 @@ jobs:
           -Pversion_suffix=${{env.VERSION_SUFFIX}} \
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
 
-      - name: Build and upload library jars to Github repo
+      - name: Build and upload library aars to Github repo
         run: |
-          ./gradlew assembleRelease publishJavaPublicationToGithubRepository \
+          ./gradlew assembleRelease publishReleasePublicationToGithubRepository \
           -Pversion_major=${{env.VERSION_MAJOR}} \
           -Pversion_minor=${{env.VERSION_MINOR}} \
           -Pversion_patch=${{env.VERSION_PATCH}} \

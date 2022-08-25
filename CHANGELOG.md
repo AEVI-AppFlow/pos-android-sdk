@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Migration from jar to aar
 * Migrated to new AGP
 * Migrated to AndroidX
-* [PAYINIT-50](https://jira.aevi.com/browse/PAYINIT-50): Updating test framework in AppFlow stack
 
 ## [2.2.8] - 2021-12-09
 

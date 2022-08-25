@@ -38,3 +38,76 @@ apply from: gradleScript('root/common-tasks.gradle')
 apply from: gradleScript('publish/maven-central-repo.gradle')
 
 apply from: 'dependencies.gradle'
+
+task cleanDocs(type: Delete) {
+    delete 'documentation/public'
+}
+
+task copyApiLibs(type: Copy) {
+    from 'payment-initiation-api/build/libs'
+    from 'payment-flow-service-api/build/libs'
+    into 'artifacts/libs'
+}
+
+def baseAndFlowService = [
+        ":flow-base-api",
+        ":payment-initiation-api",
+        ":payment-flow-service-api"
+]
+
+def baseAndInitiation = [
+        ":flow-base-api",
+        ":payment-initiation-api"
+]
+
+task mergeBaseAndFlowServiceDocs(type: Javadoc) {
+    source baseAndFlowService.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndFlowService.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndFlowService.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-flow-service-api')
+    title = "Payment Flow Service API"
+    exclude "**/BaseApiClient**"
+    exclude "**/PaymentClient**"
+    exclude "**/PaymentApi**"
+    exclude "**/BaseListenerService**"
+    exclude "**/config/**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task mergeBaseAndInitiationDocs(type: Javadoc) {
+    source baseAndInitiation.collect { project(it).sourceSets.main.allJava }
+    classpath = files(baseAndInitiation.collect {
+        project(it).sourceSets.main.compileClasspath
+    }, baseAndInitiation.collect {
+        project(it).sourceSets.main.runtimeClasspath
+    })
+    destinationDir = file('documentation/public/javadocs/payment-initiation-api')
+    title = "Payment Initiation API"
+    exclude "**/**ClientImpl**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BasePostGenericService**"
+    exclude "**/BaseGenericService**"
+    exclude "**/BaseListenerService**"
+    exclude "**/**StageModel**"
+    exclude "**/InternalData**"
+    exclude "**/AppMessage**"
+    exclude "**/util/**"
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+task javadocs(dependsOn: [mergeBaseAndFlowServiceDocs, mergeBaseAndInitiationDocs]) {
+}
+
+task createJavadocsArtifact(dependsOn: [javadocs], type: Zip) {
+    from 'documentation/public/'
+    archiveName 'javadocs.zip'
+    destinationDirectory = file('artifacts/docs')
+}
+
+apply from: 'dist.gradle'
