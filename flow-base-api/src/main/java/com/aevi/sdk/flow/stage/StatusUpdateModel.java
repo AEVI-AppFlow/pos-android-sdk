@@ -16,7 +16,7 @@ package com.aevi.sdk.flow.stage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.sdk.flow.model.*;
 import com.aevi.sdk.flow.service.BaseStatusUpdateService;

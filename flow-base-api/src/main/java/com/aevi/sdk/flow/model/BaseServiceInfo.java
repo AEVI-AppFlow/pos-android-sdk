@@ -15,7 +15,7 @@
 package com.aevi.sdk.flow.model;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.aevi.sdk.flow.util.ComparisonUtil;
 
 import java.util.*;

@@ -1,22 +1,46 @@
-apply plugin: 'java-library'
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+apply plugin: 'com.android.library'
 
 apply from: gradleScript('lib/versioning.gradle')
-apply from: gradleScript('android/publishing-utils.gradle')
+apply from: gradleScript('android/versioning.gradle')
+apply from: gradleScript('android/sdk-dev-signing-config.gradle')
+apply from: gradleScript('publish/publishing-utils.gradle')
+apply from: gradleScript('android/basic-library.gradle')
 
 group = 'com.aevi.sdk.flow'
 version = libraryVersion
+description = 'flow-base-api'
 
 publishingUtils?.publication {
     groupId group
     artifactId project.name
     version libraryVersion
+
+    pom.withXml {
+        def dependenciesNode = asNode().appendNode('dependencies')
+        configurations.api.allDependencies.each {
+            def dependencyNode = dependenciesNode.appendNode('dependency')
+            dependencyNode.appendNode('groupId', it.group)
+            dependencyNode.appendNode('artifactId', it.name)
+            dependencyNode.appendNode('version', it.version)
+        }
+    }
+}
+
+apply from: gradleScript('publish/publish-maven-central.gradle')
+
+android {
+    defaultConfig {
+        buildConfigField("String", "NAME", "\"${project.name}\"")
+        buildConfigField("String", "VERSION", "\"${libraryVersion}\"")
+        buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
-    compileOnly apiDependencies.androidMockable
     implementation apiDependencies.gson
     implementation apiDependencies.rxJava
     implementation apiDependencies.rxMessenger
@@ -26,36 +50,25 @@ dependencies {
     implementation apiDependencies.configApi
 
     testImplementation project(':payment-flow-service-api')
-    testImplementation apiDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.hamcrestAll
     testImplementation testDependencies.mockito
     testImplementation testDependencies.assertJ
     testImplementation testDependencies.robolectric
+    testImplementation testDependencies.androidxCore
 }
 
-javadoc {
-    source = sourceSets.main.allJava
-    destinationDir = file("../documentation/public/javadocs/flow-api")
-    classpath = files(sourceSets.main.compileClasspath, sourceSets.main.runtimeClasspath)
-    exclude "**/**ClientImpl**"
-    exclude "**/util/**"
-    exclude "**/service/**"
-    exclude "**/ApiBase**"
-    exclude "**/AppMessage**"
-    exclude "**/AppMessageTypes**"
-    exclude "**/BaseModel**"
-    exclude "**/InternalData**"
-    exclude "**/NoOpModel**"
-    exclude "**/MessageErrors**"
-    title = "Flow API"
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.sourceFiles
+    source += fileTree(dir: "$buildDir/generated/source/buildConfig/release/")
+    classpath += files(android.getBootClasspath())
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompileProvider.get().classpath
+        }
+    }
+
+    title "Flow API"
     options.memberLevel = JavadocMemberLevel.PUBLIC
-    failOnError = false
+    failOnError false
 }
-
-buildConfig {
-    packageName = 'com.aevi.sdk.flow'
-    clsName = 'FlowBaseConfig'
-}
-
-

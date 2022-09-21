@@ -15,7 +15,7 @@
 package com.aevi.sdk.pos.flow.sample.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.TextView;
 import com.aevi.sdk.flow.model.Request;

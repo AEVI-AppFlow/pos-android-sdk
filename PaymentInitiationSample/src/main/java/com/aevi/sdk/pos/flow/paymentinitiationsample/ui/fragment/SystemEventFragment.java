@@ -14,7 +14,7 @@
 
 package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.BindView;

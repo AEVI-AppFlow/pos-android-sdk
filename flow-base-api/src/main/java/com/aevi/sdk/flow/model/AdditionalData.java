@@ -15,15 +15,24 @@
 package com.aevi.sdk.flow.model;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.aevi.util.json.JsonConverter;
 import com.aevi.util.json.JsonOption;
 import com.aevi.util.json.Jsonable;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -308,6 +317,10 @@ public class AdditionalData implements Jsonable {
                 returnValue = getValueAsStringArray(option);
             }
 
+            // Eeeeeeeeeelse if the input type is a Map/HashMap then serialise and de-serialise back into requested type
+            else if (option.getType().equals(HashMap.class.getName()) || option.getType().equals(Map.class.getName())) {
+                returnValue = JsonConverter.deserialize(JsonConverter.serialize(option.getValue()), desiredType);
+            }
             // Fallback - log as a warning
             else {
                 Log.w(AdditionalData.class.getSimpleName(), "Failed to convert " + option.getType() + " to " + desiredType.getName());
@@ -410,27 +423,95 @@ public class AdditionalData implements Jsonable {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        for (String key : data.keySet()) {
-            if (stringBuilder.length() > 1) {
-                stringBuilder.append(", ");
-            }
-            stringBuilder.append(key);
-            stringBuilder.append("=\"");
-            stringBuilder.append(data.get(key).getValue().toString());
-            stringBuilder.append("\"");
-        }
-        stringBuilder.append("}");
-        return stringBuilder.toString();
+        return toJson();
     }
 
     @Override
     public String toJson() {
-        return JsonConverter.serialize(this);
+        Map<String, Object> rawData = new HashMap();
+        for (Map.Entry<String, JsonOption> entry : this.data.entrySet()) {
+            rawData.put(entry.getKey(), convertToRaw(entry.getValue()));
+        }
+        return JsonConverter.serialize(rawData);
+    }
+
+    private Object convertToRaw(JsonOption option) {
+        try {
+            return getValueByType(Class.forName(option.getType()), option.getValue());
+        } catch (ClassNotFoundException e) {
+
+        }
+        return null;
     }
 
     public static AdditionalData fromJson(String json) {
-        return JsonConverter.deserialize(json, AdditionalData.class);
+        JsonElement jsonElement = JsonParser.parseString(json);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (jsonObject.has("data")) {
+                return JsonConverter.deserialize(json, AdditionalData.class);
+            } else {
+                AdditionalData additionalData = new AdditionalData();
+                for (Map.Entry<String, JsonElement> objEntry : jsonObject.entrySet()) {
+                    JsonElement element = objEntry.getValue();
+                    if (element.isJsonPrimitive()) {
+                        JsonPrimitive prim = objEntry.getValue().getAsJsonPrimitive();
+                        additionalData.addData(objEntry.getKey(), extractPrimitive(prim));
+                    } else if (objEntry.getValue().isJsonArray()) {
+                        JsonArray array = objEntry.getValue().getAsJsonArray();
+                        additionalData.addData(objEntry.getKey(), extractArray(array));
+                    } else if (objEntry.getValue().isJsonObject()) {
+                        JsonObject obj = objEntry.getValue().getAsJsonObject();
+                        additionalData.addData(objEntry.getKey(), extractObject(obj));
+                    }
+                }
+                return additionalData;
+            }
+        }
+        return null;
+    }
+
+    private static Object[] extractArray(JsonArray jsonArray) {
+        List<Object> outputArr = new ArrayList<>();
+        for (JsonElement arrElem : jsonArray) {
+            if (arrElem.isJsonPrimitive()) {
+                outputArr.add(extractPrimitive(arrElem.getAsJsonPrimitive()));
+            } else if (arrElem.isJsonArray()) {
+                outputArr.add(extractArray(arrElem.getAsJsonArray()));
+            } else {
+                outputArr.add(extractObject(arrElem.getAsJsonObject()));
+            }
+        }
+        return outputArr.toArray();
+    }
+
+    private static Object extractObject(JsonObject jsonObject) {
+        // TODO best we can do is return a Map????
+        Map<String, Object> mapObject = new HashMap<>();
+        for (Map.Entry<String, JsonElement> objEntry : jsonObject.entrySet()) {
+            JsonElement element = objEntry.getValue();
+            if (element.isJsonPrimitive()) {
+                JsonPrimitive prim = objEntry.getValue().getAsJsonPrimitive();
+                mapObject.put(objEntry.getKey(), extractPrimitive(prim));
+            } else if (objEntry.getValue().isJsonArray()) {
+                JsonArray array = objEntry.getValue().getAsJsonArray();
+                mapObject.put(objEntry.getKey(), extractArray(array));
+            } else if (objEntry.getValue().isJsonObject()) {
+                JsonObject obj = objEntry.getValue().getAsJsonObject();
+                mapObject.put(objEntry.getKey(), extractObject(obj));
+            }
+        }
+        return mapObject;
+    }
+
+    private static Object extractPrimitive(JsonPrimitive prim) {
+        if (prim.isBoolean()) {
+            return prim.getAsBoolean();
+        } else if (prim.isNumber()) {
+            // TODO is this good enough? What happens to floats/doubles?
+            return prim.getAsLong();
+        } else {
+            return prim.getAsString();
+        }
     }
 }

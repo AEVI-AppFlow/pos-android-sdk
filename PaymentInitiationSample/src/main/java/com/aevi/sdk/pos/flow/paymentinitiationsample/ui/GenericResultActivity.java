@@ -17,7 +17,7 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;

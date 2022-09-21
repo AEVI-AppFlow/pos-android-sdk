@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - TBD
+
+### Changed
+- Updated all android/gradle build tools
+- Update to Androidx
+- Changed to build aar as the main archive output instead of jars
+- Fix up most/all dependencies
+- Fix up tests
+- Fix up javadcos and merged javadocs
+- Begin work to allow AppFlow v3 data to be (de)serialised so that ALL java apps will parse it seamlessly with v2 data
+
 ## [2.2.8] - 2021-12-09
 
 ### Changed

@@ -15,7 +15,10 @@
 package com.aevi.sdk.pos.flow;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+
+import com.aevi.sdk.pos.flow.service.BuildConfig;
+
 
 /**
  * Provides general API information.
@@ -34,6 +37,6 @@ public final class PaymentFlowServiceApi {
      */
     @NonNull
     public static String getApiVersion() {
-        return FlowServiceConfig.VERSION;
+        return BuildConfig.VERSION;
     }
 }

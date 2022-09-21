@@ -13,8 +13,9 @@
  */
 package com.aevi.sdk.flow.service;
 
-import android.support.annotation.NonNull;
-import com.aevi.sdk.flow.FlowBaseConfig;
+import androidx.annotation.NonNull;
+
+import com.aevi.sdk.flow.BuildConfig;
 import com.aevi.sdk.flow.model.Response;
 
 /**
@@ -23,7 +24,7 @@ import com.aevi.sdk.flow.model.Response;
 public abstract class BaseResponseListenerService extends BaseListenerService<Response> {
 
     protected BaseResponseListenerService() {
-        super(Response.class, FlowBaseConfig.VERSION);
+        super(Response.class, BuildConfig.VERSION);
     }
 
     @Override

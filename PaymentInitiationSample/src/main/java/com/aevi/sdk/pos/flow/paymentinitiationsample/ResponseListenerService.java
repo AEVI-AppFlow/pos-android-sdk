@@ -14,7 +14,7 @@
 package com.aevi.sdk.pos.flow.paymentinitiationsample;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.flow.model.FlowException;

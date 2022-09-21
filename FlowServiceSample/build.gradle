@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 
 ext.applicationId = "com.aevi.sdk.pos.flow.flowservicesample"
 ext.applicationName = "FlowServiceSample"
-ext.applicationTargetSdkVersion = 28
-ext.applicationMinSdkVersion = 21
 
 apply from: gradleScript('android/artifacts.gradle')
 apply from: gradleScript('android/versioning.gradle')
@@ -39,6 +37,7 @@ dependencies {
     implementation apiDependencies.archLifecycle
     implementation apiDependencies.archLifecycleJava8
     implementation apiDependencies.rxJava
+
     implementation sampleDependencies.aeviUiLibrary
     implementation project(':payment-flow-service-api')
     implementation project(':sample-commons')

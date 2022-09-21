@@ -15,7 +15,7 @@
 package com.aevi.sdk.pos.flow.paymentservicesample;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.sdk.pos.flow.model.Merchant;

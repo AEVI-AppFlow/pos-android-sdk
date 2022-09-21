@@ -1,6 +1,6 @@
 package com.aevi.sdk.pos.flow.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import static com.aevi.sdk.flow.util.Preconditions.checkArgument;
 import static com.aevi.sdk.flow.util.Preconditions.checkNotEmpty;
