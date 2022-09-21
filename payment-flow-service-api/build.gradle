@@ -2,8 +2,17 @@ apply plugin: 'com.android.library'
 
 apply from: gradleScript('lib/versioning.gradle')
 apply from: gradleScript('android/versioning.gradle')
-apply from: gradleScript('android/sdk-dev-signing-config.gradle')
 apply from: gradleScript('publish/publishing-utils.gradle')
+
+// this is here to allow the basic-library script below to execute without a signing config
+// once this has been removed from https://github.com/AEVI-AppFlow/gradle-scripts/blob/main/src/main/resources/android/sdk-dev-signing-config.gradle
+// then this fudge below can also be removed
+android {
+    signingConfigs {
+        sdkDev {
+        }
+    }
+}
 apply from: gradleScript('android/basic-library.gradle')
 
 group = 'com.aevi.sdk.pos.flow'
