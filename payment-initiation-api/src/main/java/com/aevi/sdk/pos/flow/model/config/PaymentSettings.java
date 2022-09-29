@@ -14,7 +14,7 @@
 
 package com.aevi.sdk.pos.flow.model.config;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.aevi.sdk.flow.model.AdditionalData;
 import com.aevi.sdk.flow.model.config.*;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;

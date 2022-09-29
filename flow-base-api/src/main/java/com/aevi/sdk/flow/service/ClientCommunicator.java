@@ -1,6 +1,6 @@
 package com.aevi.sdk.flow.service;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import com.aevi.android.rxmessenger.ChannelServer;
 import com.aevi.sdk.flow.model.AppMessage;

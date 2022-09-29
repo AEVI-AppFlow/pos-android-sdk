@@ -1,7 +1,7 @@
 package com.aevi.sdk.pos.flow.service;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import com.aevi.sdk.flow.model.InternalData;
 import com.aevi.sdk.flow.model.Request;

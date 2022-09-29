@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 
 ext.applicationId = "com.aevi.sdk.pos.flow.paymentservicesample"
 ext.applicationName = "PaymentServiceSample"
-ext.applicationTargetSdkVersion = 28
-ext.applicationMinSdkVersion = 21
 
 apply from: gradleScript('android/artifacts.gradle')
 apply from: gradleScript('android/versioning.gradle')

@@ -14,7 +14,7 @@
 
 package com.aevi.sdk.pos.flow.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Amount represented by a value in its subunit form (such as cents or pence) and currency (ISO 4217).

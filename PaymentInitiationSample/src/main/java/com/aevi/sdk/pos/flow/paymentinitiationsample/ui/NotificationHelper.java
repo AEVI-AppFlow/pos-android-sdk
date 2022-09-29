@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.aevi.sdk.flow.model.FlowEvent;
 import com.aevi.sdk.pos.flow.model.events.ConfirmationOption;

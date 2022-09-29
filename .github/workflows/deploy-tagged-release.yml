@@ -34,10 +34,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: zulu
+          java-version: 11
 
       - name: Extract tag from ref
         # ref is refs/tag/<tag> - split by / and retrieve the 3rd element
@@ -112,9 +113,9 @@ jobs:
           -Pversion_suffix=${{env.VERSION_SUFFIX}} \
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
 
-      - name: Build and upload library jars to maven repo
+      - name: Build and upload library aars to Github repo
         run: |
-          ./gradlew jar publishJavaPublicationToGithubRepository \
+          ./gradlew assembleRelease publishReleasePublicationToGithubRepository \
           -Pversion_major=${{env.VERSION_MAJOR}} \
           -Pversion_minor=${{env.VERSION_MINOR}} \
           -Pversion_patch=${{env.VERSION_PATCH}} \
@@ -122,12 +123,6 @@ jobs:
           -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Copy API libs to artifacts dir
-        run: ./gradlew copyApiLibs
-
-      - name: Generate javadocs artifact and publish javadocs
-        run: ./gradlew createJavadocsArtifact publishJavadocsByVersion publishJavadocsAsLatest
 
       - name: Create github release and upload libs and samples
         id: create-release
@@ -137,26 +132,25 @@ jobs:
           body: See [CHANGELOG](https://github.com/${{github.repository}}/blob/${{env.TAG}}/CHANGELOG.md) for release notes.
           prerelease: ${{env.PRE_RELEASE}}
           files: |
-            artifacts/**/*
             ${{ steps.payment-initiation-apk-file-path.outputs.apk_path_release }}
             ${{ steps.payment-service-apk-file-path.outputs.apk_path_release }}
             ${{ steps.flow-service-apk-file-path.outputs.apk_path_release }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Increment app version patch and suffix if final version was released
+      - name: Publish final release versions to Maven Central
         if: contains(env.TAG, '-') != true
         run: |
-          git checkout -- .
-          ./gradlew prepareForNextRelease
-
-      - name: Create Pull Request to prepare for next release if final version was released
-        if: contains(env.TAG, '-') != true
-        uses: peter-evans/create-pull-request@v3
-        with:
-          commit-message: Prepare for next release
-          title: Prepare for next release
-          body: Prepare for next release
-          branch: feature/prepare-for-next-release-from-${{env.TAG}}
-          base: main
-          delete-branch: true
+          ./gradlew assembleRelease publishToSonatype closeAndReleaseSonatypeStagingRepository \
+          -Pversion_major=${{env.VERSION_MAJOR}} \
+          -Pversion_minor=${{env.VERSION_MINOR}} \
+          -Pversion_patch=${{env.VERSION_PATCH}} \
+          -Pversion_suffix=${{env.VERSION_SUFFIX}} \
+          -Pversion_build_counter=${{env.VERSION_BUILD_NUMBER}} \
+        env:
+          MVN_CENTRAL_USERNAME: ${{ secrets.MVN_CENTRAL_USERNAME }}
+          MVN_CENTRAL_PASSWORD: ${{ secrets.MVN_CENTRAL_PASSWORD }}
+          MVN_CENTRAL_PGP_KEY_ID: ${{ secrets.MVN_CENTRAL_PGP_KEY_ID }}
+          MVN_CENTRAL_PGP_PRIVATE_KEY: ${{ secrets.MVN_CENTRAL_PGP_PRIVATE_KEY }}
+          MVN_CENTRAL_PGP_PASSWORD: ${{ secrets.MVN_CENTRAL_PGP_PASSWORD }}
+          MVN_CENTRAL_STAGING_PROFILE_ID: ${{ secrets.MVN_CENTRAL_STAGING_PROFILE_ID }}

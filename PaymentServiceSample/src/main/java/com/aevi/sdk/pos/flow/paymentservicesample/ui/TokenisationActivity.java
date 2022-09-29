@@ -15,7 +15,7 @@
 package com.aevi.sdk.pos.flow.paymentservicesample.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

@@ -3,7 +3,6 @@ package com.aevi.sdk.flow;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import com.aevi.android.rxmessenger.client.ObservableMessengerClient;
 import com.aevi.sdk.flow.model.*;
 import io.reactivex.Observable;
@@ -14,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
@@ -27,14 +25,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+import androidx.test.core.app.ApplicationProvider;
+
+@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class BaseApiClientTest {
 
     class TestApiBase extends BaseApiClient {
 
         public TestApiBase(String propsFile) {
-            super(propsFile, RuntimeEnvironment.application);
+            super(propsFile, ApplicationProvider.getApplicationContext());
         }
 
         @Override
@@ -75,21 +75,21 @@ public class BaseApiClientTest {
 
     @Test
     public void callStartFpsShouldSendStartServiceIntent() throws Exception {
-        apiBase.callStartFps(RuntimeEnvironment.application);
+        apiBase.callStartFps(ApplicationProvider.getApplicationContext());
         Intent intent = ShadowApplication.getInstance().peekNextStartedService();
         assertThat(intent.getComponent()).isEqualTo(apiBase.getFpsComponent());
     }
 
     @Test
     public void callIsProcessingServiceInstalledShouldReturnFalse() throws Exception {
-        assertThat(BaseApiClient.isProcessingServiceInstalled(RuntimeEnvironment.application)).isFalse();
+        assertThat(BaseApiClient.isProcessingServiceInstalled(ApplicationProvider.getApplicationContext())).isFalse();
     }
 
     @Test
     public void callIsProcessingServiceInstalledShouldReturnTrueIfPackageManagerThinksSo() throws Exception {
         pretendServiceIsInstalled(BaseApiClient.FLOW_PROCESSING_SERVICE_COMPONENT);
 
-        assertThat(BaseApiClient.isProcessingServiceInstalled(RuntimeEnvironment.application)).isTrue();
+        assertThat(BaseApiClient.isProcessingServiceInstalled(ApplicationProvider.getApplicationContext())).isTrue();
     }
 
     @Test

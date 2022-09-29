@@ -2,19 +2,23 @@ package com.aevi.sdk.flow;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
 
-import static org.robolectric.Shadows.shadowOf;
+import androidx.test.core.app.ApplicationProvider;
+
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
+import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowPackageManager;
 
 public class TestHelper {
 
     public static void pretendServiceIsInstalled(ComponentName componentName) {
-        ShadowPackageManager packageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ShadowPackageManager packageManager = Shadows.shadowOf(ApplicationProvider.getApplicationContext().getPackageManager());
         Intent intent = new Intent();
         intent.setComponent(componentName);
 
@@ -29,6 +33,11 @@ public class TestHelper {
 
         resolveInfo.serviceInfo = serviceInfo;
 
-        packageManager.addResolveInfoForIntent(intent, resolveInfo);
+        try {
+            packageManager.addServiceIfNotPresent(componentName);
+            packageManager.addIntentFilterForService(componentName, new IntentFilter());
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

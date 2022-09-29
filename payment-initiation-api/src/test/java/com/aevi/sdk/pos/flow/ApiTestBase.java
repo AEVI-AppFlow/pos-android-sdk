@@ -21,6 +21,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
+import androidx.test.core.app.ApplicationProvider;
+
 public class ApiTestBase extends BaseApiClient {
 
     protected ApiTestBase(String version) {
@@ -37,7 +39,7 @@ public class ApiTestBase extends BaseApiClient {
         Intent intent = new Intent();
         intent.setComponent(FLOW_PROCESSING_SERVICE_COMPONENT);
 
-        ShadowPackageManager shadowPackageManager = Shadows.shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ShadowPackageManager shadowPackageManager = Shadows.shadowOf(ApplicationProvider.getApplicationContext().getPackageManager());
         ResolveInfo resolveInfo = new ResolveInfo();
         resolveInfo.serviceInfo = new ServiceInfo();
         shadowPackageManager.addResolveInfoForIntent(intent, resolveInfo);

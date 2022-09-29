@@ -27,7 +27,9 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+import androidx.test.core.app.ApplicationProvider;
+
+@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class PaymentClientImplTest {
 
@@ -40,7 +42,7 @@ public class PaymentClientImplTest {
     public void setup() {
         ShadowLog.stream = System.out;
         initMocks(this);
-        paymentClient = new PaymentClientImpl(RuntimeEnvironment.application) {
+        paymentClient = new PaymentClientImpl(ApplicationProvider.getApplicationContext()) {
             @Override
             protected ObservableMessengerClient getMessengerClient(ComponentName componentName) {
                 return messengerClient;

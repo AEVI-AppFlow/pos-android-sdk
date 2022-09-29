@@ -15,8 +15,9 @@
 package com.aevi.sdk.pos.flow;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.aevi.sdk.flow.BaseApiClient;
+import com.aevi.sdk.pos.flow.initiation.BuildConfig;
 
 /**
  * Main entry point to obtain references to the payment related clients.
@@ -35,7 +36,7 @@ public final class PaymentApi {
      */
     @NonNull
     public static String getApiVersion() {
-        return PaymentInitiationConfig.VERSION;
+        return BuildConfig.VERSION;
     }
 
     /**

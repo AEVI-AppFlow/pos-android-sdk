@@ -11,7 +11,9 @@ import org.robolectric.annotation.Config;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+import androidx.test.core.app.ApplicationProvider;
+
+@Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class PaymentApiTest extends ApiTestBase {
 
@@ -21,13 +23,13 @@ public class PaymentApiTest extends ApiTestBase {
 
     @Test
     public void checkIsProcessingServiceInstalledReportsFalse() throws Exception {
-        assertThat(PaymentApi.isProcessingServiceInstalled(RuntimeEnvironment.application)).isFalse();
+        assertThat(PaymentApi.isProcessingServiceInstalled(ApplicationProvider.getApplicationContext())).isFalse();
     }
 
     @Test
     public void checkIsProcessingServiceInstalledFlagReportsTrue() throws RemoteException {
         setupMockBoundMessengerService();
 
-        assertThat(PaymentApi.isProcessingServiceInstalled(RuntimeEnvironment.application)).isTrue();
+        assertThat(PaymentApi.isProcessingServiceInstalled(ApplicationProvider.getApplicationContext())).isTrue();
     }
 }

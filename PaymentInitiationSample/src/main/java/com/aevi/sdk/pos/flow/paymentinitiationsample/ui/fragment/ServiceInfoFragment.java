@@ -17,8 +17,8 @@ package com.aevi.sdk.pos.flow.paymentinitiationsample.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.TextView;
 import butterknife.BindView;
 import com.aevi.sdk.pos.flow.model.PaymentFlowServiceInfo;
