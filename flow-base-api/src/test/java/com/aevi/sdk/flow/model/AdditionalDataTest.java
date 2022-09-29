@@ -1,15 +1,14 @@
 package com.aevi.sdk.flow.model;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdditionalDataTest {
 
@@ -163,51 +162,5 @@ public class AdditionalDataTest {
         additionalData.addData("three", "hello");
         Map<String, Number> dataOfType = additionalData.getDataOfType(Number.class);
         assertThat(dataOfType).hasSize(4).containsKeys("int", "long", "double", "float");
-    }
-
-    @Test
-    public void canExtractAdditionalDataFromV3Json() {
-        String v3Json = "{ \"bob\": \"alice\", \"number\": 46, \"boolean\": true, \"friends\" : { \"john\": \"julie\", \"dave\": \"bob\" }, \"the-list\": [ \"cheeese\", \"bacon\", \"banana\", \"apple\", { \"sneaky\" : \"object\" } ] }";
-        AdditionalData data = AdditionalData.fromJson(v3Json);
-        assertThat(data).isNotNull();
-        assertThat(data.getValue("bob")).isEqualTo("alice");
-        assertThat(data.getValue("bob", String.class)).isEqualTo("alice");
-        assertThat(data.getValue("number")).isEqualTo(46L);
-        assertThat(data.getValue("boolean")).isEqualTo(true);
-        assertThat(data.hasData("friends")).isTrue();
-        assertThat(data.getValue("friends")).hasSameClassAs(new HashMap<>());
-        assertThat(data.getValue("friends", HashMap.class).get("dave")).isEqualTo("bob");
-        assertThat(data.hasData("the-list")).isTrue();
-        assertThat(data.getValue("the-list")).hasSameClassAs(new Object[0]);
-        assertThat(data.getValue("the-list", Object[].class)).hasSize(5);
-        assertThat(data.getValue("the-list", Object[].class)[0]).isEqualTo("cheeese");
-        assertThat(data.getValue("the-list", Object[].class)[4]).hasSameClassAs(new HashMap<>());
-    }
-
-    @Test
-    public void canSerialiseToV3Json() {
-        additionalData.addData("one", 12);
-        additionalData.addData("two", new int[]{1, 2});
-        additionalData.addData("three", "hello", "bye");
-        Map<String, String> mapy = new HashMap<>();
-        mapy.put("burp", "boop");
-        mapy.put("barp", "beep");
-        additionalData.addData("four", mapy);
-        additionalData.addData("five", true);
-        Customer c = new Customer("Bert");
-        c.setFullName("Bert Blahdeblah");
-        c.addToken(new Token("tiktok", "wingwang"));
-        additionalData.addData("six", c);
-
-        String json = additionalData.toJson();
-        System.out.println(json);
-        assertThat(json).isNotNull();
-
-        AdditionalData deserialised = AdditionalData.fromJson(json);
-
-        assertThat(deserialised.hasData("six")).isTrue();
-        assertThat(deserialised.getValue("six", Customer.class).getFullName()).isEqualTo("Bert Blahdeblah");
-        assertThat(deserialised.getValue("six", Customer.class).getTokens().get(0).getSource()).isEqualTo("wingwang");
-        assertThat(deserialised.getValue("six", Customer.class).getTokens().get(0).getValue()).isEqualTo("tiktok");
     }
 }
