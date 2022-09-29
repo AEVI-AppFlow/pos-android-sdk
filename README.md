@@ -19,7 +19,7 @@ Please download the latest developer bundle from [here](https://github.com/AEVI-
 
 ## Integrate
 
-AppFlow and its dependencies are as of `v2.2.4` published to the MavenCentral packages repository.
+AppFlow and its dependencies are as of `v2.4.0` published to the MavenCentral packages repository.
 
 In your root project `build.gradle` file, add
 
