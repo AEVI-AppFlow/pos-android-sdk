@@ -19,25 +19,13 @@ Please download the latest developer bundle from [here](https://github.com/AEVI-
 
 ## Integrate
 
-AppFlow and its dependencies are as of `v2.2.4` published to the Github packages repository. This is in response to `bintray` and `jcenter` shutting down in May 2021. Version `2.2.4` is functionally equivalent to the last published `jcenter()` version (`2.2.3`).
-
-If you require access to an earlier version once `jcenter` has shut down, please contact AEVI for assistance.
-
-Unfortunately Github enforces authentication for retrieving Github packages, even for public repositories. This means that you must use a valid Github user and generate a personal access token with `read:packages` ticked and provide as credentials as per below.
-If you do not have a Github user or require assistance with this, please contact AEVI for support.
+AppFlow and its dependencies are as of `v2.4.0` published to the MavenCentral packages repository.
 
 In your root project `build.gradle` file, add
 
 ```
 repositories {
-    maven {
-        name = "AEVI-repos"
-        url = uri("https://maven.pkg.github.com/aevi-appflow/*")
-        credentials {
-            username = <your Github username>
-            password = <your Github personal access token with `read:packages` enabled>
-        }
-    }
+    mavenCentral()
 }
 ```
 
