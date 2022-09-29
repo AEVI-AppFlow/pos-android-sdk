@@ -18,27 +18,12 @@ public class BaseServiceInfoProviderTest {
 
     private static final String SERVICE_INFO_STRING = "heeeelloooo";
 
-    private Context context;
-
     @Test
     public void shouldSetServiceInfoInBundleWithCorrectKey() throws Exception {
         TestServiceInfoProvider serviceInfoProvider = new TestServiceInfoProvider("");
         Bundle bundle = serviceInfoProvider.call("", "", null);
         assertThat(bundle.getString(BaseServiceInfoProvider.SERVICE_INFO_KEY)).isEqualTo(SERVICE_INFO_STRING);
     }
-
-//    @Test
-//    public void shouldSendCorrectBroadcastForServiceInfoChange() throws Exception {
-//        TestServiceInfoProvider serviceInfoProvider = new TestServiceInfoProvider("my.broadcast");
-//
-//        serviceInfoProvider.notifyServiceInfoChange();
-//
-//        ArgumentCaptor<Intent> broadcastCaptor = ArgumentCaptor.forClass(Intent.class);
-//        verify(context).sendBroadcast(broadcastCaptor.capture());
-//
-//        assertThat(broadcastCaptor.getValue().getAction()).isEqualTo("my.broadcast");
-//        assertThat(broadcastCaptor.getValue().getData().toString()).isEqualTo("package:com.test");
-//    }
 
     class TestServiceInfoProvider extends BaseServiceInfoProvider {
 
@@ -50,12 +35,5 @@ public class BaseServiceInfoProviderTest {
         protected String getServiceInfo() {
             return SERVICE_INFO_STRING;
         }
-
-//        @Override
-//        public Context getContext() {
-//            context = mock(Context.class);
-//            when(context.getPackageName()).thenReturn("com.test");
-//            return context;
-//        }
     }
 }
