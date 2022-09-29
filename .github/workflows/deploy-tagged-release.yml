@@ -141,7 +141,7 @@ jobs:
       - name: Publish final release versions to Maven Central
         if: contains(env.TAG, '-') != true
         run: |
-          ./gradlew assembleRelease publishToSonatype closeAndReleaseSonatypeStagingRepository \
+          ./gradlew assembleRelease publishLibraryPublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository \
           -Pversion_major=${{env.VERSION_MAJOR}} \
           -Pversion_minor=${{env.VERSION_MINOR}} \
           -Pversion_patch=${{env.VERSION_PATCH}} \
