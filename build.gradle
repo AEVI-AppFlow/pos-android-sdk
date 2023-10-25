@@ -22,13 +22,21 @@ buildscript {
 }
 
 allprojects {
-    ext.applicationTargetSdkVersion = 32
+    ext.applicationTargetSdkVersion = 33
     ext.applicationMinSdkVersion = 24
     repositories {
         google()
         mavenCentral()
         mavenLocal()
         maven { url 'https://jitpack.io' }
+        maven {
+            name = "github-aevi-internal"
+            url = uri("https://maven.pkg.github.com/aevi-pd/*")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR_AEVI")
+                password = System.getenv("GITHUB_TOKEN_AEVI")
+            }
+        }
     }
 }
 

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aevi.sdk.pos.flow.paymentinitiationsample">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,13 +28,13 @@
         <activity
             android:name=".ui.PopupActivity"
             android:excludeFromRecents="true"
-            android:noHistory="true"></activity>
+            android:noHistory="true"/>
         <activity
             android:name=".ui.PaymentResultActivity"
-            android:label="@string/payment_result"></activity>
+            android:label="@string/payment_result"/>
         <activity
             android:name=".ui.GenericResultActivity"
-            android:label="@string/payment_result"></activity>
+            android:label="@string/payment_result"/>
 
         <receiver
             android:name=".ConfirmationActionReceiver"

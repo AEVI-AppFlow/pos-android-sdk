@@ -5,6 +5,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GITHUB_ACTOR: ${{ secrets.CI_BOT_USERNAME }}
   GITHUB_TOKEN: ${{ secrets.CI_BOT_PAT }}
+  GITHUB_ACTOR_AEVI: ${{ secrets.AEVI_GH_USERNAME }}
+  GITHUB_TOKEN_AEVI: ${{ secrets.AEVI_GH_TOKEN }}
 
 on:
   push:
