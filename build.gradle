@@ -22,7 +22,7 @@ buildscript {
 }
 
 allprojects {
-    ext.applicationTargetSdkVersion = 32
+    ext.applicationTargetSdkVersion = 33
     ext.applicationMinSdkVersion = 24
     repositories {
         google()

@@ -66,7 +66,7 @@ public class NotificationHelper {
                         confAction.putExtra(EXTRA_CONFIRMATION_ID, conf.getId());
                         confAction.putExtra(EXTRA_RESPONSE, option.getValue());
                         confAction.putExtra(EXTRA_ORIGINATING_ID, flowEvent.getOriginatingRequestId());
-                        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, rCount++, confAction, PendingIntent.FLAG_CANCEL_CURRENT);
+                        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, rCount++, confAction, PendingIntent.FLAG_IMMUTABLE);
                         builder.addAction(R.drawable.ic_question_answer, option.getLabel(), actionPendingIntent);
                     }
                 }

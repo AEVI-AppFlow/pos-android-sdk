@@ -85,7 +85,7 @@ public abstract class BaseApiClient {
     private void checkCommsChannel(Context context) {
         // here we only check the channel once and once only for each instance of this client
         // once setup the client will use the same comm channel until it is disposed of and re-created
-        ConfigClient configClient = ConfigApi.getConfigClient(context);
+        ConfigClient configClient = ConfigApi.INSTANCE.getConfigClient(context);
         AppFlowSettings appFlowSettings = AppFlowSettings.fromJson(configClient.getConfigValue(KEY_APPFLOW_SETTINGS));
         if (appFlowSettings == null) {
             appFlowSettings = new AppFlowSettings();
