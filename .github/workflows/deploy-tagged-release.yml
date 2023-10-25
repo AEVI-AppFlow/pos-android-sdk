@@ -5,6 +5,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GITHUB_ACTOR: ${{ secrets.CI_BOT_USERNAME }}
   GITHUB_TOKEN: ${{ secrets.CI_BOT_PAT }}
+  GITHUB_ACTOR_AEVI: ${{ secrets.AEVI_GH_USERNAME }}
+  GITHUB_TOKEN_AEVI: ${{ secrets.AEVI_GH_TOKEN }}
 
 on:
   push:
@@ -34,11 +36,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Set up JDK 17
+      - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 11
 
       - name: Extract tag from ref
         # ref is refs/tag/<tag> - split by / and retrieve the 3rd element
