@@ -1,5 +1,8 @@
 # AEVI AppFlow - POS Android SDK
 
+> [!IMPORTANT]
+> This repo is as of February 2024 deprecated and further development will take place in a private Aevi repository. Please contact Aevi for any questions or concerns.
+
 AEVI AppFlow is a solution that enables a client application to initiate a _flow_ that consists of one to many _stages_ in which any number of applications may be called. A set of input and output data structures are defined for each stage, allowing applications to view the latest state and/or augment it.
 
 The point of sale (POS) Android SDK for AEVI AppFlow applies this solution to Android "SmartPOS" devices, allowing a POS application to initiate various
